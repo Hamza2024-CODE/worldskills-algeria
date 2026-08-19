@@ -41,6 +41,12 @@ class PlatformAppearanceManager extends Component
     public string $favicon_url;
     public string $hero_banner_url;
 
+    // Coming Soon Settings
+    public bool $coming_soon_mode = false;
+    public string $coming_soon_title = '';
+    public string $coming_soon_message = '';
+    public string $coming_soon_launch_date = '';
+
     public string $previewDevice = 'desktop';
 
     public mixed $site_logo_file = null;
@@ -85,6 +91,11 @@ class PlatformAppearanceManager extends Component
         $this->site_logo_url = $settings->get('branding.site_logo', '/logo.svg');
         $this->favicon_url = $settings->get('branding.favicon', '/favicon.ico');
         $this->hero_banner_url = $settings->get('branding.hero_banner', '/banner.png');
+
+        $this->coming_soon_mode = $settings->getBool('coming_soon_mode', false);
+        $this->coming_soon_title = $settings->get('coming_soon_title', 'انتظرونا قريباً — الإطلاق الرسمي لأولمبياد المهن');
+        $this->coming_soon_message = $settings->get('coming_soon_message', 'المنصة الوطنية لأولمبياد المهن والمهارات الجزائرية في مرحلة اللمسات الأخيرة والتجهيز النهائي لتوفير تجربة استثنائية.');
+        $this->coming_soon_launch_date = $settings->get('coming_soon_launch_date', '2026-11-01T09:00:00');
     }
 
     public function saveAppearance(SettingsEngine $settings)
@@ -114,6 +125,9 @@ class PlatformAppearanceManager extends Component
             'site_logo_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,svg', 'max:2048'],
             'favicon_file' => ['nullable', 'file', 'mimes:ico,png,svg', 'max:1024'],
             'hero_banner_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:4096'],
+            'coming_soon_title' => ['nullable', 'string', 'max:255'],
+            'coming_soon_message' => ['nullable', 'string', 'max:1000'],
+            'coming_soon_launch_date' => ['nullable', 'string'],
         ]);
 
         // Process File Uploads Safely
@@ -159,6 +173,12 @@ class PlatformAppearanceManager extends Component
         $settings->set('appearance.radius_xl', $this->radius_xl, 'string', 'appearance');
 
         $settings->set('branding.site_name', $this->site_name, 'string', 'branding');
+
+        // Save Coming Soon Settings
+        $settings->set('coming_soon_mode', $this->coming_soon_mode ? '1' : '0', 'boolean', 'general');
+        $settings->set('coming_soon_title', $this->coming_soon_title, 'string', 'general');
+        $settings->set('coming_soon_message', $this->coming_soon_message, 'string', 'general');
+        $settings->set('coming_soon_launch_date', $this->coming_soon_launch_date, 'string', 'general');
 
         $settings->flushCache();
 

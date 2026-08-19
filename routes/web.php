@@ -92,6 +92,7 @@ Route::get('/profile', UserProfile::class)->middleware('auth')->name('profile');
 Route::get('/notifications', \App\Livewire\User\UserNotifications::class)->middleware('auth')->name('user.notifications');
 
 // Legal & CMS Public Routes
+Route::get('/coming-soon', \App\Livewire\Public\ComingSoon::class)->name('coming-soon');
 Route::get('/privacy', Privacy::class)->name('privacy');
 Route::get('/terms', Terms::class)->name('terms');
 

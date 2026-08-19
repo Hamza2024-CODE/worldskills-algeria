@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckComingSoonModeMiddleware;
 use App\Http\Middleware\SecurityHeadersMiddleware;
 use App\Http\Middleware\SetLocaleMiddleware;
 use Illuminate\Foundation\Application;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             SetLocaleMiddleware::class,
             SecurityHeadersMiddleware::class,
+            CheckComingSoonModeMiddleware::class,
         ]);
 
         $middleware->alias([
