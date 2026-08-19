@@ -154,19 +154,23 @@
              :style="`transform: translate3d(${mouseX - 28}px, ${mouseY - 28}px, 0);`"></div>
     </div>
 
-    <!-- Modular Top Header Navigation Component -->
-    <x-navbar />
+    @unless(request()->routeIs('coming-soon'))
+        <!-- Modular Top Header Navigation Component -->
+        <x-navbar />
+    @endunless
 
     <!-- Page Main Content -->
     <main class="flex-grow pb-28 md:pb-0">
         {{ $slot }}
     </main>
 
-    <!-- Modular Dark Deep Blue Footer Component -->
-    <x-footer />
+    @unless(request()->routeIs('coming-soon'))
+        <!-- Modular Dark Deep Blue Footer Component -->
+        <x-footer />
 
-    <!-- Native Smartphone Mobile App Bottom Tab Bar Navigation -->
-    <x-mobile-bottom-nav />
+        <!-- Native Smartphone Mobile App Bottom Tab Bar Navigation -->
+        <x-mobile-bottom-nav />
+    @endunless
 
     <!-- Dynamic Scroll Mascot Popup Widget (WorldSkills Algeria Mascot 2026) -->
     <div x-data="{ 
