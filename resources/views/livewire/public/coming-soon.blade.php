@@ -104,16 +104,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
             </div>
         </div>
 
-        {{-- Notice Banner --}}
-        <div class="p-6 rounded-3xl bg-slate-900/80 backdrop-blur-xl border border-white/10 max-w-xl mx-auto space-y-2 text-xs text-slate-400 shadow-xl">
-            <div class="flex items-center justify-center gap-2 text-amber-400 font-bold">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>{{ $t('ملاحظة لأعضاء اللجنة والخبراء المعتمدين', 'Note aux membres et experts', 'Note for committee & experts') }}</span>
-            </div>
-            <p>
-                {{ $t('يمكن للمسؤولين وأعضاء اللجان الفنية الدخول إلى لوحة التحكم عبر الرابط المخصص للولوج.', 'Les administrateurs et membres du comité peuvent accéder au portail via leur lien sécurisé.', 'Administrators and committee members can log in to the management portal via their designated login URL.') }}
-            </p>
-        </div>
+
 
     </main>
 

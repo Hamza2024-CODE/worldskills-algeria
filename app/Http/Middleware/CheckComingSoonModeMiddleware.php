@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\RoleEnum;
 use App\Models\GlobalSetting;
 use Closure;
 use Illuminate\Http\Request;
@@ -19,8 +20,8 @@ class CheckComingSoonModeMiddleware
         $comingSoonEnabled = GlobalSetting::getByKey('coming_soon_mode', '0') === '1';
 
         if ($comingSoonEnabled) {
-            // Allow admin routes, auth routes, coming-soon route, assets, and language switcher
-            $isAllowedPath = $request->is('hamza*')
+            // Check if current request path is an admin route, auth route, asset, or coming-soon page
+            $isAdminRoute = $request->is('hamza*')
                 || $request->is('admin*')
                 || $request->is('login*')
                 || $request->is('logout*')
@@ -29,17 +30,23 @@ class CheckComingSoonModeMiddleware
                 || $request->is('vendor/*')
                 || $request->is('api/*')
                 || $request->is('sw.js')
-                || $request->is('manifest.webmanifest');
+                || $request->is('manifest.webmanifest')
+                || $request->is('livewire/*');
 
-            if (!$isAllowedPath) {
-                // If user is an authenticated admin/super_admin, allow browsing
+            if (!$isAdminRoute) {
+                // Check if user is an authenticated admin
                 $user = auth()->user();
-                if ($user && ($user->hasRole('super_admin') || $user->hasRole('national_admin') || $user->is_admin)) {
-                    return $next($request);
-                }
+                $isAdminUser = $user && (
+                    $user->hasRole(RoleEnum::SUPER_ADMIN->value) ||
+                    $user->hasRole(RoleEnum::NATIONAL_ADMIN->value) ||
+                    $user->hasRole(RoleEnum::MEDIA_MANAGER->value) ||
+                    !empty($user->is_admin)
+                );
 
-                // Redirect public visitors to coming-soon page
-                return redirect()->route('coming-soon');
+                if (!$isAdminUser) {
+                    // Block public browsing entirely & redirect to Coming Soon landing page
+                    return redirect()->route('coming-soon');
+                }
             }
         }
 

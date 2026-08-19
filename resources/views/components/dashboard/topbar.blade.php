@@ -94,7 +94,8 @@ $dashboardRoute = match($rawRole) {
             @if(\App\Models\GlobalSetting::getByKey('coming_soon_mode', '0') === '1')
                 <a href="{{ route('admin.appearance') }}" class="hidden md:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-600 dark:text-amber-400 text-xs font-black animate-pulse shadow-sm ms-2" title="{{ __('انقر لضبط أو إلغاء تفعيل وضع الترقب') }}">
                     <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                    <span>🚀 وضع الترقب (Coming Soon) مفعّل</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                    <span>وضع الترقب (Coming Soon) مفعّل</span>
                 </a>
             @endif
         </a>

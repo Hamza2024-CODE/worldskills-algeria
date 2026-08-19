@@ -29,8 +29,8 @@
             <div class="rounded-3xl p-6 border transition-all duration-300 shadow-lg {{ $coming_soon_mode ? 'bg-amber-500/10 border-amber-500/50 dark:bg-amber-950/40' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700' }}">
                 <div class="flex items-center justify-between gap-4 border-b border-slate-200/60 dark:border-slate-700 pb-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl shadow-md {{ $coming_soon_mode ? 'bg-amber-500 text-slate-950 animate-pulse' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200' }}">
-                            🚀
+                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black shadow-md {{ $coming_soon_mode ? 'bg-amber-500 text-slate-950 animate-pulse' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200' }}">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
                         </div>
                         <div>
                             <h2 class="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
@@ -83,7 +83,7 @@
             <!-- Branding Section -->
             <div class="glass-card rounded-2xl p-6 border border-slate-200/80 shadow-xs space-y-6">
                 <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
-                    <span>🏛️</span>
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0V9m0 4h.01M15 9h.01M15 13h.01M11 13h.01M11 17h.01M15 17h.01"/></svg>
                     <span>{{ app()->getLocale() === 'fr' ? 'Charte & Identité Visuelle' : (app()->getLocale() === 'en' ? 'Branding & Assets' : 'الهوية البصرية والرموز الرسمية') }}</span>
                 </h2>
 
@@ -105,7 +105,7 @@
             <!-- Color Tokens Studio -->
             <div class="glass-card rounded-2xl p-6 border border-slate-200/80 shadow-xs space-y-6">
                 <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
-                    <span>🌈</span>
+                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
                     <span>{{ app()->getLocale() === 'fr' ? 'Palette de Couleurs (Design Tokens)' : (app()->getLocale() === 'en' ? 'Color Tokens Palette' : 'لوحة الألوان ورموز الهوية') }}</span>
                 </h2>
 
