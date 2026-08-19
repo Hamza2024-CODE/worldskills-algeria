@@ -66,7 +66,7 @@ class NotificationBusService
             'تم تكليفك بمهمة تحكيم',
             "تم تعيينك محكماً رسمياً في تخصص [{$skillName}]. يمكنك الوصول إلى نظام التقييم من لوحتك.",
             'INFO',
-            '/admin/cis'
+            '/hamza/cis'
         );
     }
 
@@ -104,7 +104,7 @@ class NotificationBusService
             'صدر قرار الطعن الفني',
             "صدر قرار اللجنة بشأن الطعن [{$appealUuid}]: {$decision}.",
             $decision === 'UPHELD' ? 'SUCCESS' : 'WARNING',
-            '/admin/appeals'
+            '/hamza/appeals'
         );
     }
 

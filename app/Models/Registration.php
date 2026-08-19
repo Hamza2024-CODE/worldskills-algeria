@@ -62,15 +62,21 @@ class Registration extends Model
 
     public function getPhotoUrlAttribute(): string
     {
-        $photoDoc = $this->documents?->where('document_type', 'PHOTO')->first();
-        $path = $photoDoc?->file_path ?? $this->participant?->photo_path;
-
-        if (!$path) {
-            $name = $this->participant?->first_name_ar ?? $this->user?->name ?? 'Candidate';
-            return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=06205C&color=fff&bold=true&size=200';
+        if ($this->user?->avatar_path) {
+            return self::resolveFileUrl($this->user->avatar_path);
         }
 
-        return self::resolveFileUrl($path);
+        $photoDoc = $this->documents?->whereIn('document_type', ['PHOTO', 'photo', 'official_photo'])->first();
+        if ($photoDoc?->file_path) {
+            return self::resolveFileUrl($photoDoc->file_path);
+        }
+
+        if (!empty($this->participant?->photo_path)) {
+            return self::resolveFileUrl($this->participant->photo_path);
+        }
+
+        $name = $this->participant?->first_name_ar ?? $this->user?->name ?? 'Candidate';
+        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=06205C&color=fff&bold=true&size=200';
     }
 
     public static function resolveFileUrl(?string $path): string

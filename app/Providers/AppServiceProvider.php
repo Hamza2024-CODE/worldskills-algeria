@@ -23,25 +23,33 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        try {
+            if (request()->header('X-Forwarded-Proto') === 'https' || request()->secure() || env('APP_ENV') !== 'local') {
+                \Illuminate\Support\Facades\URL::forceScheme('https');
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         Gate::policy(Country::class, CountryPolicy::class);
         Gate::policy(CountryDelegation::class, DelegationPolicy::class);
         Gate::policy(Registration::class, ParticipantPolicy::class);
 
-        // Named Rate Limiters
+        // Named Rate Limiters (Generous for live production user experience)
         RateLimiter::for('verify', function (Request $request) {
-            return Limit::perMinute(30)->by($request->ip());
+            return Limit::perMinute(120)->by($request->ip());
         });
 
         RateLimiter::for('certificate', function (Request $request) {
-            return Limit::perMinute(30)->by($request->ip());
+            return Limit::perMinute(120)->by($request->ip());
         });
 
         RateLimiter::for('registration', function (Request $request) {
-            return Limit::perMinute(5)->by($request->ip());
+            return Limit::perMinute(120)->by($request->ip());
         });
 
         RateLimiter::for('login', function (Request $request) {
-            return Limit::perMinute(60)->by($request->ip());
+            return Limit::perMinute(120)->by($request->ip());
         });
     }
 }

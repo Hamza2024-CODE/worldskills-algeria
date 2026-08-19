@@ -7,30 +7,22 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
      x-data="{ formOpen: $wire.entangle('formOpen'), drawerOpen: $wire.entangle('drawerOpen'), deleteConfirmOpen: $wire.entangle('deleteConfirmOpen'), pdfModalOpen: $wire.entangle('pdfModalOpen') }">
 
     {{-- ── Page Header ── --}}
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100">
-                {{ $t('إدارة التخصصات الأولمبية، الصور، والكراسات التقنية (PDF)', 'Gestion des Compétences, Photos & PDFs', 'Skills, Photos & Technical Description Management') }}
-            </h1>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-                {{ $totalSkills }} {{ $t('تخصص أولمبي معتمد', 'compétences homologuées', 'accredited skills') }} —
-                {{ $activeSkills }} {{ $t('نشط', 'actives', 'active') }}
-            </p>
-        </div>
-        <div class="flex items-center gap-2">
-            <button wire:click="exportExcel" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition shadow-sm shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <span>تصدير التخصصات إلى Excel (CSV)</span>
-            </button>
-            <button wire:click="openCreate"
-                    class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-black transition shadow-sm shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/>
-                </svg>
-                {{ $t('إضافة تخصص جديد', 'Ajouter Compétence', 'Add New Skill') }}
-            </button>
-        </div>
-    </div>
+    <x-dashboard.page-header
+        :title="$t('إدارة التخصصات الأولمبية، الصور، والكراسات التقنية (PDF)', 'Gestion des Compétences, Photos & PDFs', 'Skills, Photos & Technical Description Management')"
+        :subtitle="$totalSkills . ' ' . $t('تخصص أولمبي معتمد', 'compétences homologuées', 'accredited skills') . ' — ' . $activeSkills . ' ' . $t('نشط', 'actives', 'active')"
+    >
+        <button wire:click="exportExcel" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-black transition backdrop-blur-md shadow-sm shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>تصدير إلى Excel (CSV)</span>
+        </button>
+        <button wire:click="openCreate"
+                class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-black transition shadow-lg shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/>
+            </svg>
+            {{ $t('إضافة تخصص جديد', 'Ajouter Compétence', 'Add New Skill') }}
+        </button>
+    </x-dashboard.page-header>
 
     {{-- ── Filters ── --}}
     <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex flex-col sm:flex-row gap-3">
@@ -79,9 +71,9 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             <td class="px-5 py-3.5 text-xs font-mono font-bold text-slate-400">{{ $skill->sort_order }}</td>
                             <td class="px-5 py-3.5">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-12 h-10 rounded-xl bg-slate-900 overflow-hidden shrink-0 border border-slate-200 relative">
-                                        <img src="{{ $skill->image_path ?: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80' }}"
-                                             alt="Cover" class="w-full h-full object-cover">
+                                    <div class="w-12 h-10 rounded-xl bg-slate-900 overflow-hidden shrink-0 border border-slate-200 relative shadow-xs">
+                                        <img src="{{ $skill->getImageUrl() }}"
+                                             alt="{{ $skill->name_ar }}" class="w-full h-full object-cover">
                                     </div>
                                     <div>
                                         <button wire:click="openDrawer({{ $skill->id }})" class="text-sm font-black text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 block text-start">
@@ -228,15 +220,16 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                     </div>
                 </div>
 
-                {{-- PDF Upload Input --}}
-                <div class="p-4 rounded-2xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 space-y-2">
+                {{-- PDF Upload Input & Path --}}
+                <div class="p-4 rounded-2xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 space-y-3">
                     <label class="text-xs font-black text-blue-900 dark:text-blue-200 block flex items-center gap-2">
                         <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                        <span>رفع / رفع بديل لملف التوصيف الفني PDF الخاص بالتخصص:</span>
+                        <span>رفع / تعديل ملف التوصيف الفني (PDF):</span>
                     </label>
                     <input type="file" wire:model="pdf_file" accept=".pdf" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-blue-600 file:text-white hover:file:bg-blue-700">
+                    <input wire:model="pdf_path" type="text" placeholder="أو أدخل مسار ملف PDF مباشر (مثال: docs/td/WSC2026_TD01_en.pdf)..." class="w-full px-3 py-2 text-xs font-mono rounded-xl border border-blue-200 dark:border-blue-700 bg-white dark:bg-slate-900 dark:text-white">
                     @error('pdf_file') <span class="text-xs text-rose-500 font-bold block">{{ $message }}</span> @enderror
-                    <p class="text-[10px] text-slate-500 font-medium">سيتم تخزين الملف بصيغة PDF وتحديث زر العرض المباشر للتخصص تلقائياً.</p>
+                    <p class="text-[10px] text-slate-500 font-medium">يمكنك رفع ملف PDF جديد أو إدخال مسار كراسة التخصص المعتمدة يدويًا.</p>
                 </div>
 
                 {{-- Description AR --}}

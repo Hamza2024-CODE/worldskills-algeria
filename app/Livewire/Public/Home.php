@@ -50,16 +50,16 @@ class Home extends Component
         $this->activeEvent = Event::where('is_active', true)->where('status', 'PUBLISHED')->first() 
             ?? Event::where('status', 'PUBLISHED')->orderBy('start_at')->first();
 
-        $this->featuredVideoUrl = $settings->get('featured_video_url', 'https://www.youtube.com/embed/ee7fzNFUKIM');
+        $this->featuredVideoUrl = $settings->get('featured_video_url', 'https://www.youtube.com/embed/nzy4f7GBSVw');
 
         // Retrieve Admin Settings for Countdown Chronometer V8.4
-        $this->countdownTitleAr     = $settings->get('countdown_title_ar', 'الحدث القادم - العد التنازلي لافتتاح الأولمبياد الإفريقي');
-        $this->countdownTitleFr     = $settings->get('countdown_title_fr', 'Événement à venir — Décompte du Lancement des Olympiades Africaines 2026');
-        $this->countdownTitleEn     = $settings->get('countdown_title_en', 'Upcoming Event — Countdown to African Skills Competition 2026');
+        $this->countdownTitleAr     = $settings->get('countdown_title_ar', 'العد التنازلي لافتتاح أولمبياد المهن 2026');
+        $this->countdownTitleFr     = $settings->get('countdown_title_fr', 'Décompte du Lancement des Olympiades des Métiers 2026');
+        $this->countdownTitleEn     = $settings->get('countdown_title_en', 'Countdown to the Opening of the 2026 Olympiad of Professions');
 
-        $this->countdownSubtitleAr  = $settings->get('countdown_subtitle_ar', 'WorldSkills Algeria 2026 – 2026');
-        $this->countdownSubtitleFr  = $settings->get('countdown_subtitle_fr', 'WorldSkills Algeria 2026 – 2026');
-        $this->countdownSubtitleEn  = $settings->get('countdown_subtitle_en', 'WorldSkills Algeria 2026 – 2026');
+        $this->countdownSubtitleAr  = $settings->get('countdown_subtitle_ar', 'أولمبياد المهن 2026 — مركز المؤتمرات محمد بن أحمد - وهران');
+        $this->countdownSubtitleFr  = $settings->get('countdown_subtitle_fr', 'Olympiades des Métiers 2026 — Centre des Conventions Mohamed Benahmed - Oran');
+        $this->countdownSubtitleEn  = $settings->get('countdown_subtitle_en', 'Olympiad of Professions 2026 — Mohamed Benahmed Convention Center - Oran');
 
         $this->countdownTargetDate  = $settings->get('countdown_target_date', '2026-09-15 09:00:00');
         $this->countdownTimezone     = $settings->get('countdown_timezone', 'Africa/Algiers');
@@ -97,7 +97,7 @@ class Home extends Component
             ->whereIn('code', ['SKILL-16', 'SKILL-14', 'SKILL-13', 'SKILL-15', 'SKILL-39', 'SKILL-54'])
             ->get();
 
-        if ($skills->isEmpty()) {
+        if ($skills->count() < 6) {
             $skills = Skill::where('is_active', true)->limit(6)->get();
         }
 
@@ -118,12 +118,12 @@ class Home extends Component
 
         $partners = Partner::where('status', 'ACTIVE')->where('is_featured', true)->orderBy('sort_order')->orderBy('name_ar')->get();
 
-        return view('livewire.public.home', [
+        return view('livewire.public.home', array_merge(get_object_vars($this), [
             'skills'   => $skills,
             'news'     => $news,
             'albums'   => $albums,
             'videos'   => $videos,
             'partners' => $partners,
-        ]);
+        ]));
     }
 }

@@ -80,6 +80,18 @@ class AdminQrScanner extends Component
                 ->where('badge_id', $this->scannedBadge->id)
                 ->get()
                 ->toArray();
+
+            if (empty($this->zonePermissions)) {
+                $allowedIds = $this->scannedBadge->allowed_zone_ids ?? [1, 2, 3, 4, 5];
+                $zones = \App\Models\Zone::whereIn('id', $allowedIds)->get();
+                foreach ($zones as $z) {
+                    $this->zonePermissions[] = [
+                        'zone_id'    => $z->id,
+                        'permission' => 'ALLOW',
+                        'zone'       => $z->toArray(),
+                    ];
+                }
+            }
         }
     }
 

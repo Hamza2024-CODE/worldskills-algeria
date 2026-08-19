@@ -3,8 +3,22 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- PWA Manifest & Mobile Meta Tags -->
+        <link rel="manifest" href="/manifest.json">
+        <link rel="manifest" href="/manifest.webmanifest">
+        <meta name="theme-color" content="#020A24">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="WorldSkills DZ">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png">
+        <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+        <link rel="icon" type="image/svg+xml" href="/logo.svg">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'WorldSkills Algeria') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -273,5 +287,6 @@
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
+        <x-pwa-installer />
     </body>
 </html>

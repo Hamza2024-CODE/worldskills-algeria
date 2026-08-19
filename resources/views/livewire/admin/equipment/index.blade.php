@@ -6,37 +6,23 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
 <div class="space-y-6 pb-8 font-sans" dir="{{ $locale === 'ar' ? 'rtl' : 'ltr' }}">
 
     {{-- HEADER --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 dark:border-slate-700 pb-4">
-        <div>
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-white font-bold shadow-md">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                        {{ $t('إدارة معدات وتجهيزات التخصصات المهنية (Infrastructure List)', 'Gestion des Équipements & Infrastructures', 'Skill Equipment & Infrastructure List') }}
-                    </h1>
-                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">
-                        {{ $t('إجمالي المعدات والآلات المسجلة: ', 'Total Équipements: ', 'Total Equipment Items: ') }}<span class="text-indigo-600 dark:text-indigo-400 font-bold">{{ $totalItems }}</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="flex items-center gap-2.5">
-            <button wire:click="exportExcel" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition shadow-sm shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <span>{{ $t('تصدير المعدات إلى Excel (CSV)', 'Exporter vers Excel (CSV)', 'Export Equipment to Excel (CSV)') }}</span>
-            </button>
-            <button wire:click="openCatCreate" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-800 dark:text-slate-100 text-xs font-black transition border border-slate-300 dark:border-slate-600 shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>{{ $t('إضافة فئة معدات', 'Ajouter une Catégorie', 'Add Category') }}</span>
-            </button>
-            <button wire:click="openCreate" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black transition shadow-sm shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                <span>{{ $t('إضافة معدة / تجهيز لتخصص', 'Ajouter un Équipement', 'Add Equipment Item') }}</span>
-            </button>
-        </div>
-    </div>
+    <x-dashboard.page-header
+        :title="$t('إدارة معدات وتجهيزات التخصصات المهنية (Infrastructure List)', 'Gestion des Équipements & Infrastructures', 'Skill Equipment & Infrastructure List')"
+        :subtitle="$t('إجمالي المعدات والآلات المسجلة: ', 'Total Équipements: ', 'Total Equipment Items: ') . $totalItems . ' — ' . $t('إدارة قائمة البنية التحتية والمعدات التقنية المعتمدة', 'Répertoire des équipements techniques', 'Technical infrastructure directory')"
+    >
+        <button wire:click="exportExcel" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-black transition backdrop-blur-md shadow-sm shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>{{ $t('تصدير المعدات إلى Excel (CSV)', 'Exporter vers Excel (CSV)', 'Export Equipment to Excel (CSV)') }}</span>
+        </button>
+        <button wire:click="openCatCreate" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-black transition backdrop-blur-md shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>{{ $t('إضافة فئة معدات', 'Ajouter une Catégorie', 'Add Category') }}</span>
+        </button>
+        <button wire:click="openCreate" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition shadow-lg shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            <span>{{ $t('إضافة معدة / تجهيز لتخصص', 'Ajouter un Équipement', 'Add Equipment Item') }}</span>
+        </button>
+    </x-dashboard.page-header>
 
     @if(session('success'))
         <div class="p-3 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-xl border border-emerald-200">✓ {{ session('success') }}</div>

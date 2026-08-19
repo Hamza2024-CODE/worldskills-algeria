@@ -8,35 +8,42 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
          cameraOpen: false,
          stream: null,
          animFrame: null,
-         startCamera() {
+         async startCamera() {
              this.cameraOpen = true;
-             navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-                 .then(s => {
-                     this.stream = s;
-                     $refs.scanVideo.srcObject = s;
-                      if ('BarcodeDetector' in window) {
-                         const detector = new BarcodeDetector({ formats: ['qr_code'] });
-                         const scanLoop = () => {
-                             if (!this.cameraOpen) return;
-                             detector.detect($refs.scanVideo).then(codes => {
-                                 if (codes.length > 0) {
-                                     $wire.set('query', codes[0].rawValue);
-                                     $wire.scan();
-                                     this.stopCamera();
-                                 } else {
-                                     this.animFrame = requestAnimationFrame(scanLoop);
-                                 }
-                             }).catch(() => {
-                                 this.animFrame = requestAnimationFrame(scanLoop);
-                             });
-                         };
-                         scanLoop();
-                     }
-                 })
-                 .catch(err => {
-                     alert('{{ $t('تعذر فتح الكاميرا: ', 'Impossible d\'ouvrir la caméra: ', 'Unable to open camera: ') }}' + err.message);
+             let s = null;
+             try {
+                 s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+             } catch (e1) {
+                 try {
+                     s = await navigator.mediaDevices.getUserMedia({ video: true });
+                 } catch (e2) {
+                     alert('{{ $t('تعذر فتح الكاميرا: يرجى التأكد من السماح بصلاحيات الكاميرا في المتصفح، أو استخدام إدخال الكود يدويًا.', 'Impossible d\'ouvrir la caméra. Veuillez autoriser la caméra ou utiliser la recherche manuelle.', 'Unable to open camera. Please allow camera permissions or use manual search.') }}');
                      this.cameraOpen = false;
-                 });
+                     return;
+                 }
+             }
+
+             this.stream = s;
+             $refs.scanVideo.srcObject = s;
+
+             if ('BarcodeDetector' in window) {
+                 const detector = new BarcodeDetector({ formats: ['qr_code'] });
+                 const scanLoop = () => {
+                     if (!this.cameraOpen) return;
+                     detector.detect($refs.scanVideo).then(codes => {
+                         if (codes.length > 0) {
+                             $wire.set('query', codes[0].rawValue);
+                             $wire.scan();
+                             this.stopCamera();
+                         } else {
+                             this.animFrame = requestAnimationFrame(scanLoop);
+                         }
+                     }).catch(() => {
+                         this.animFrame = requestAnimationFrame(scanLoop);
+                     });
+                 };
+                 scanLoop();
+             }
          },
          stopCamera() {
              if (this.animFrame) cancelAnimationFrame(this.animFrame);

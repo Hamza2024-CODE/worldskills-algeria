@@ -15,27 +15,19 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
     @endif
 
     {{-- Header --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                <div class="w-8 h-8 rounded-xl bg-[#06205C] flex items-center justify-center flex-shrink-0">
-                    <svg class="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016 2.993 2.993 0 002.25-1.016 3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z"/></svg>
-                </div>
-                <span>{{ $t('مركز إدارة المطاعم والوجبات', 'Centre de Gestion de Restauration', 'Catering & Meals Management Center') }}</span>
-            </h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">WSAP — Catering & Meal Access Control System</p>
-        </div>
-        <div class="flex items-center gap-2">
-            <a href="{{ route('admin.meal.scanner') }}" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-md transition flex items-center gap-1.5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16.97 16.97l2.83 2.83M5 5l14 14"/></svg>
-                <span>{{ $t('ماسح شارة المطعم', 'Scanner Repas', 'Meal Badge Scanner') }}</span>
-            </a>
-            <button wire:click="openRestaurantForm()" class="px-4 py-2 rounded-xl bg-[#06205C] hover:bg-blue-900 text-white font-black text-xs shadow-md transition flex items-center gap-1.5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                <span>{{ $t('إضافة مطعم', 'Ajouter un Restaurant', 'Add Restaurant') }}</span>
-            </button>
-        </div>
-    </div>
+    <x-dashboard.page-header
+        :title="$t('مركز إدارة المطاعم والوجبات والمطابخ', 'Centre de Gestion de Restauration', 'Catering & Meals Management Center')"
+        subtitle="WSAP — Catering & Meal Access Control System"
+    >
+        <a href="{{ route('admin.meal.scanner') }}" class="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-black text-xs transition backdrop-blur-md shadow-sm shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16.97 16.97l2.83 2.83M5 5l14 14"/></svg>
+            <span>{{ $t('ماسح شارة المطعم', 'Scanner Repas', 'Meal Badge Scanner') }}</span>
+        </a>
+        <button wire:click="openRestaurantForm()" class="flex items-center gap-1.5 px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-lg transition shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            <span>{{ $t('إضافة مطعم جديد', 'Ajouter un Restaurant', 'Add Restaurant') }}</span>
+        </button>
+    </x-dashboard.page-header>
 
     {{-- KPI Dashboard --}}
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">

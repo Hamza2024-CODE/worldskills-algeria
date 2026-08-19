@@ -12,7 +12,7 @@
                     <img src="{{ $logoUrl }}" alt="WorldSkills Logo" class="h-12 sm:h-16 w-auto object-contain brightness-0 invert filter drop-shadow-md">
                 </div>
                 <p class="text-xs text-slate-400 leading-relaxed">
-                    {{ app()->getLocale() === 'fr' ? 'Rassemblement des délégations nationales et internationales au Centre International des Conférences d\'Alger.' : (app()->getLocale() === 'en' ? 'Gathering of national and international delegations at the International Conference Centre of Algiers.' : 'تجمع الوفود الوطنية والدولية بالمركز الدولي للمؤتمرات بالجزائر العاصمة.') }}
+                    {{ app()->getLocale() === 'fr' ? 'Rassemblement des délégations nationales et internationales au Centre des Conventions Mohamed Benahmed à Oran.' : (app()->getLocale() === 'en' ? 'Gathering of national and international delegations at Mohamed Benahmed Convention Center in Oran.' : 'تجمع الوفود الوطنية والدولية بمركز المؤتمرات محمد بن أحمد بمدينة وهران.') }}
                 </p>
             </div>
 
@@ -24,7 +24,7 @@
                     <li><a href="{{ route('schedule') }}" class="hover:text-brand-sky transition">{{ __('messages.schedule') }}</a></li>
                     <li><a href="{{ route('results') }}" class="hover:text-brand-sky transition">{{ __('messages.results') }}</a></li>
                     <li><a href="{{ route('events') }}" class="hover:text-brand-sky transition">{{ __('messages.events') }}</a></li>
-                    <li><a href="{{ route('live-tv') }}" target="_blank" class="text-rose-400 hover:text-rose-300 font-bold transition flex items-center gap-1.5"><span>🔴 {{ app()->getLocale() === 'fr' ? 'Direct TV (Écrans)' : (app()->getLocale() === 'en' ? 'Live TV Broadcast' : 'شاشة البث المباشر (Live TV)') }}</span></a></li>
+                    <li><a href="{{ route('live-tv') }}" target="_blank" class="text-rose-400 hover:text-rose-300 font-bold transition flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-500 animate-ping inline-block"></span><span>{{ app()->getLocale() === 'fr' ? 'Direct TV (Écrans)' : (app()->getLocale() === 'en' ? 'Live TV Broadcast' : 'شاشة البث المباشر (Live TV)') }}</span></a></li>
                 </ul>
             </div>
 

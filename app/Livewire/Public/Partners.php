@@ -4,12 +4,20 @@ namespace App\Livewire\Public;
 
 use App\Models\Partner;
 use App\Services\HomepageStatisticsService;
+use App\Services\SettingsEngine;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 #[Layout('components.layouts.public')]
 class Partners extends Component
 {
+    public bool $pagePartnersEnabled = true;
+
+    public function mount(SettingsEngine $settings)
+    {
+        $this->pagePartnersEnabled = (bool) $settings->get('page_partners_enabled', true);
+    }
+
     public function render(HomepageStatisticsService $statsService)
     {
         $featuredPartners = Partner::where('status', 'ACTIVE')
@@ -24,9 +32,10 @@ class Partners extends Component
             ->get();
 
         return view('livewire.public.partners', [
-            'featuredPartners' => $featuredPartners,
-            'allPartners'      => $allPartners,
-            'stats'            => $statsService->getStatistics(),
+            'featuredPartners'    => $featuredPartners,
+            'allPartners'         => $allPartners,
+            'pagePartnersEnabled' => $this->pagePartnersEnabled,
+            'stats'               => $statsService->getStatistics(),
         ]);
     }
 }

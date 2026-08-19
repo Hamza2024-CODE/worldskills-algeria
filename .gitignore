@@ -31,3 +31,6 @@ worldskills_env_production.txt
 "image copy*.png"
 "image*.png"
 "portait*.png"
+*.zip
+*.sql
+composer.phar

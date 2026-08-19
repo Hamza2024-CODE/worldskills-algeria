@@ -1,56 +1,73 @@
-const CACHE_NAME = 'wsap-2027-v1';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'wsap-2026-v4';
+const STATIC_ASSETS = [
   '/',
   '/manifest.json',
-  '/LOGO01.png',
-  '/logo.svg',
-  '/lanyard-strap.png'
+  '/manifest.webmanifest',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png',
+  '/favicon.ico',
+  '/favicon.png',
+  '/logo.svg'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
   );
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
-          }
-        })
-      );
-    })
+    caches.keys().then((keys) => Promise.all(
+      keys.map((k) => k !== CACHE_NAME ? caches.delete(k) : null)
+    ))
   );
   self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
+  if (!url.protocol.startsWith('http')) return;
+
+  // Network-First for HTML and Livewire requests
+  if (event.request.headers.get('accept')?.includes('text/html') || url.pathname.startsWith('/livewire')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response.status === 200) {
+            const resClone = response.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(event.request, resClone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request).then((c) => c || caches.match('/')))
+    );
+    return;
+  }
+
+  // Cache-First for static assets
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).catch(() => {
-        return caches.match('/');
+    caches.match(event.request).then((cached) => {
+      return cached || fetch(event.request).then((response) => {
+        if (response.status === 200 && (url.pathname.endsWith('.png') || url.pathname.endsWith('.svg') || url.pathname.endsWith('.jpg') || url.pathname.endsWith('.css') || url.pathname.endsWith('.js'))) {
+          const resClone = response.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(event.request, resClone));
+        }
+        return response;
       });
     })
   );
 });
 
-// PWA Push Notification Event Listener
+// Push Notification Listener
 self.addEventListener('push', (event) => {
   let data = { 
     title: 'WorldSkills Algeria 2026 🇩🇿', 
     body: 'تنبيه جديد من لجنة التنظيم والنتائج الأولمبية', 
-    icon: '/logo.svg', 
+    icon: '/icon-192.png', 
     url: '/notifications' 
   };
 
@@ -67,8 +84,8 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: data.body,
-    icon: data.icon || '/logo.svg',
-    badge: '/logo.svg',
+    icon: data.icon || '/icon-192.png',
+    badge: '/icon-192.png',
     vibrate: [200, 100, 200, 100, 200],
     data: { url: data.url || '/notifications' },
     tag: 'wsap-notification-' + Date.now(),

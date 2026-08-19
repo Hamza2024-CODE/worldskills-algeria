@@ -1,6 +1,26 @@
 <div class="py-12 bg-[#F4F7FC]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
+        @if(!$pagePartnersEnabled)
+            <!-- Page Disabled Card -->
+            <div class="max-w-xl mx-auto my-12 bg-white rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-xl border border-slate-200">
+                <div class="w-16 h-16 rounded-3xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center mx-auto shadow-sm">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <div class="space-y-2">
+                    <h2 class="text-xl font-black text-[#06205C]">
+                        {{ app()->getLocale() === 'fr' ? 'Page des Partenaires Indisponible' : (app()->getLocale() === 'en' ? 'Partners Page Currently Unavailable' : 'صفحة الشركاء غير متاحة حالياً بقرار تنظيمي') }}
+                    </h2>
+                    <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                        {{ app()->getLocale() === 'fr' ? 'Cette section a été désactivée temporairement par l\'administration.' : (app()->getLocale() === 'en' ? 'This section has been temporarily disabled by administration.' : 'تم إغلاق وتجميد عرض هذه الصفحة مؤقتاً بقرار من إدارة المنصة الرسمية.') }}
+                    </p>
+                </div>
+                <a href="{{ route('home') }}" class="inline-block px-6 py-2.5 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs shadow-md transition">
+                    {{ app()->getLocale() === 'fr' ? 'Retour à l\'Accueil' : (app()->getLocale() === 'en' ? 'Return to Homepage' : 'العودة للرئيسية') }}
+                </a>
+            </div>
+        @else
+        
         <!-- Header -->
         <div class="text-center max-w-3xl mx-auto space-y-3">
             <h1 class="text-3xl sm:text-4xl font-black text-[#06205C]">
@@ -37,24 +57,52 @@
                             <!-- Logo container -->
                             <div class="w-24 h-24 rounded-2xl bg-slate-50 p-4 border border-slate-100 flex items-center justify-center mx-auto shadow-sm group-hover:scale-105 transition-transform overflow-hidden">
                                 @if($logoUrl)
-                                    <img src="{{ $logoUrl }}" alt="{{ $p->name_ar }}" class="max-h-full max-w-full object-contain">
+                                    <img src="{{ $logoUrl }}" alt="{{ $p->getLocalized('name') }}" class="max-h-full max-w-full object-contain">
                                 @else
-                                    <span class="font-black text-xl text-blue-600 uppercase tracking-tight">{{ $p->name_en ?: $p->name_ar }}</span>
+                                    <span class="font-black text-xl text-blue-600 uppercase tracking-tight">{{ $p->getLocalized('name') }}</span>
                                 @endif
                             </div>
                             <div class="space-y-1">
-                                <h3 class="text-lg font-black text-[#06205C]">{{ $p->name_ar }}</h3>
-                                <p class="text-xs text-brand-500 font-bold font-mono">{{ $p->name_fr ?: $p->name_en }}</p>
+                                <h3 class="text-lg font-black text-[#06205C]">{{ $p->getLocalized('name') }}</h3>
+                                @php
+                                    $subName = match(app()->getLocale()) {
+                                        'fr' => ($p->name_fr ? ($p->name_en ?: $p->name_ar) : null),
+                                        'en' => ($p->name_en ? ($p->name_fr ?: $p->name_ar) : null),
+                                        default => ($p->name_fr ?: $p->name_en)
+                                    };
+                                @endphp
+                                @if($subName && $subName !== $p->getLocalized('name'))
+                                    <p class="text-xs text-brand-500 font-bold font-mono">{{ $subName }}</p>
+                                @endif
                             </div>
                             <p class="text-xs text-slate-500 leading-relaxed font-medium">
-                                {{ $p->description_ar ?: 'راعي رسمي ومساهم استراتيجي في منافسات أولمبياد المهن الجزائرية 2026.' }}
+                                {{ $p->getLocalized('description') ?: (
+                                    app()->getLocale() === 'fr' 
+                                        ? 'Partenaire officiel et contributeur stratégique aux Olympiades des Métiers Algérie 2026.' 
+                                        : (app()->getLocale() === 'en' 
+                                            ? 'Official partner and strategic contributor to WorldSkills Algeria 2026.' 
+                                            : 'راعي رسمي ومساهم استراتيجي في منافسات أولمبياد المهن الجزائرية 2026.')
+                                ) }}
                             </p>
                         </div>
 
                         <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-400">
-                            <span class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 font-mono text-[10px]">★ {{ $p->partner_type }}</span>
+                            @php
+                                $typeLabel = match(strtoupper($p->partner_type ?? '')) {
+                                    'STRATEGIC' => app()->getLocale() === 'fr' ? 'STRATÉGIQUE' : (app()->getLocale() === 'en' ? 'STRATEGIC' : 'استراتيجي'),
+                                    'OFFICIAL' => app()->getLocale() === 'fr' ? 'OFFICIEL' : (app()->getLocale() === 'en' ? 'OFFICIAL' : 'رسمي'),
+                                    'INSTITUTIONAL' => app()->getLocale() === 'fr' ? 'INSTITUTIONNEL' : (app()->getLocale() === 'en' ? 'INSTITUTIONAL' : 'مؤسساتي'),
+                                    'SPONSOR' => app()->getLocale() === 'fr' ? 'SPONSOR' : (app()->getLocale() === 'en' ? 'SPONSOR' : 'راعي'),
+                                    'MEDIA' => app()->getLocale() === 'fr' ? 'MÉDIA' : (app()->getLocale() === 'en' ? 'MEDIA' : 'إعلامي'),
+                                    'TECHNICAL' => app()->getLocale() === 'fr' ? 'TECHNIQUE' : (app()->getLocale() === 'en' ? 'TECHNICAL' : 'تقني'),
+                                    default => $p->partner_type
+                                };
+                            @endphp
+                            <span class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 font-mono text-[10px]">★ {{ $typeLabel }}</span>
                             @if($p->website_url)
-                                <a href="{{ $p->website_url }}" target="_blank" class="text-blue-600 hover:underline font-mono text-[10px]">{{ app()->getLocale() === 'fr' ? 'Visiter le site →' : (app()->getLocale() === 'en' ? 'Visit Website →' : 'زيارة الموقع ←') }}</a>
+                                <a href="{{ $p->website_url }}" target="_blank" class="text-blue-600 hover:underline font-mono text-[10px]">
+                                    {{ app()->getLocale() === 'fr' ? 'Visiter le site →' : (app()->getLocale() === 'en' ? 'Visit Website →' : 'زيارة الموقع ←') }}
+                                </a>
                             @endif
                         </div>
                     </div>
@@ -96,5 +144,6 @@
             </div>
         </div>
 
+        @endif
     </div>
 </div>

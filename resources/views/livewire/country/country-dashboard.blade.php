@@ -111,11 +111,6 @@
             <span>{{ app()->getLocale() === 'fr' ? 'Suivi des Recours Techniques (' . ($appeals->count() ?? 0) . ')' : (app()->getLocale() === 'en' ? 'Technical Appeals Tracking (' . ($appeals->count() ?? 0) . ')' : 'متابعة الطعون والتظلمات الفنية (' . ($appeals->count() ?? 0) . ')') }}</span>
         </button>
 
-        <button wire:click="$set('activeTab', 'map')" class="px-5 py-2.5 rounded-2xl font-black text-xs transition border-b-2 flex items-center gap-2 {{ ($activeTab ?? 'roster') === 'map' ? 'bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 border-emerald-600 dark:border-emerald-400 shadow-xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
-            <span>{{ app()->getLocale() === 'fr' ? 'Carte 3D du Village' : (app()->getLocale() === 'en' ? '3D Venue Map' : 'خرائط القرية والتوأم الرقمي') }}</span>
-        </button>
-
         <button wire:click="$set('activeTab', 'rules')" class="px-5 py-2.5 rounded-2xl font-black text-xs transition border-b-2 flex items-center gap-2 {{ ($activeTab ?? 'roster') === 'rules' ? 'bg-white dark:bg-slate-800 text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-400 shadow-xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
             <span>{{ app()->getLocale() === 'fr' ? 'Règlements & Conditions' : (app()->getLocale() === 'en' ? 'Rules & Regulations' : 'الشروط واللوائح القانونية') }}</span>
@@ -329,42 +324,6 @@
                         {{ app()->getLocale() === 'fr' ? 'Aucun recours enregistré.' : (app()->getLocale() === 'en' ? 'No technical appeals logged.' : 'لا توجد طعون فنية مسجلة حالياً للوفد.') }}
                     </div>
                 @endforelse
-            </div>
-        </div>
-    @endif
-
-    <!-- TAB 3: 3D VENUE & VILLAGE DIGITAL TWIN MAP -->
-    @if(($activeTab ?? 'roster') === 'map')
-        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                <div>
-                    <h3 class="text-lg font-black text-[#06205C]">{{ app()->getLocale() === 'fr' ? 'Carte du Village & Jumeau Numérique 3D' : (app()->getLocale() === 'en' ? '3D Digital Twin & Venue Map' : 'خريطة القرية والتوأم الرقمي (3D Venue Map)') }}</h3>
-                    <p class="text-xs text-slate-500 font-medium mt-0.5">{{ app()->getLocale() === 'fr' ? 'Localisation des ateliers, pavillons d\'hébergement et zones de restauration.' : (app()->getLocale() === 'en' ? 'Locate workshops, accommodation wings, and dining halls.' : 'استعراض ورشات التخصصات، أماكن المبيت والإطعام، والمباني المخصصة للوفد') }}</p>
-                </div>
-                <div class="flex gap-2">
-                    <a href="{{ route('my.venue-map') }}" class="px-4 py-2 rounded-xl bg-[#0066FF] text-white font-bold text-xs shadow-md flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <span>{{ app()->getLocale() === 'fr' ? 'Ma Carte 3D' : (app()->getLocale() === 'en' ? 'My 3D Map' : 'خريطتي التفاعلية') }}</span>
-                    </a>
-                    <a href="{{ route('kiosk.venue-map') }}" target="_blank" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold text-xs shadow-md flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                        <span>{{ app()->getLocale() === 'fr' ? 'Borne Kiosque' : (app()->getLocale() === 'en' ? 'Kiosk Mode' : 'شاشة الكشك Kiosk') }}</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="bg-slate-900 rounded-3xl p-8 text-center text-white space-y-4 border border-slate-800">
-                <div class="w-16 h-16 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mx-auto">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
-                </div>
-                <h4 class="text-xl font-black">{{ app()->getLocale() === 'fr' ? 'Centre d\'Exploration Spatial & Jumeau Numérique' : (app()->getLocale() === 'en' ? 'Spatial Exploration Center & Digital Twin' : 'مركز الاستكشاف المكاني والتوأم الرقمي للقرية') }}</h4>
-                <p class="text-xs text-slate-400 max-w-lg mx-auto leading-relaxed">
-                    {{ app()->getLocale() === 'fr' ? 'Système 3D interactif permettant de visualiser les trajets, pavillons d\'hébergement et ateliers.' : (app()->getLocale() === 'en' ? 'Interactive 3D system to visualize routes, accommodation wings and trade workshops.' : 'يتيح نظام التوأم الرقمي للوفد معرفة المسارات، مواقع ورش المنافسة الخاصة بكل مهنة، مطاعم القرية والأجنحة المخصصة للإقامة.') }}
-                </p>
-                <a href="{{ route('venue-map') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#0066FF] hover:bg-[#0052CC] text-white font-black text-xs shadow-lg transition">
-                    <span>{{ app()->getLocale() === 'fr' ? 'Ouvrir la Carte 3D Interactive' : (app()->getLocale() === 'en' ? 'Open Interactive 3D Map' : 'الانتقال للخريطة الثلاثية الأبعاد المباشرة') }}</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                </a>
             </div>
         </div>
     @endif

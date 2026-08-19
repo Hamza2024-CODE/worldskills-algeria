@@ -1,24 +1,15 @@
 <div class="space-y-6 pb-8">
 
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100">مركز إدارة الأحداث والفاعليات المنظّمة</h1>
-                    <p class="text-xs text-slate-500 font-medium mt-1">التحكم بالحدث النشط، العد التنازلي، التواريخ، والربط الفوري بالبوابة الوطنية</p>
-                </div>
-            </div>
-        </div>
-        <button wire:click="openCreate"
-            class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-black transition shadow-sm shrink-0">
+    <x-dashboard.page-header
+        title="مركز إدارة الأحداث والفاعليات المنظّمة"
+        subtitle="التحكم بالحدث النشط، العد التنازلي، التواريخ، والربط الفوري بالبوابة الوطنية"
+    >
+        <button wire:click="openCreate" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition shadow-lg shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/></svg>
             <span>إضافة حدث/فاعلية جديدة</span>
         </button>
-    </div>
+    </x-dashboard.page-header>
 
     <!-- Search & Filters -->
     <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex flex-col sm:flex-row gap-3">

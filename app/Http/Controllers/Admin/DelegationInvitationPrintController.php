@@ -39,7 +39,7 @@ class DelegationInvitationPrintController extends Controller
             'email'      => $user?->email ?? "{$slug}.admin@worldskills.africa",
             'password'   => $password,
             'delegation' => $delegation,
-            'login_url'  => 'http://192.168.3.95:8001/login',
+            'login_url'  => url('/login'),
         ];
 
         return view('admin.delegation-invitations.print-single', [

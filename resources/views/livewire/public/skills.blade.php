@@ -16,17 +16,11 @@ $getSkillIcon = function($skill) {
 };
 
 $getSkillImageUrl = function($skill) {
-    if (!$skill || !$skill->image_path) {
-        return asset('images/skills/manufacturing.png');
-    }
-    if (str_starts_with($skill->image_path, 'http://') || str_starts_with($skill->image_path, 'https://')) {
-        return $skill->image_path;
-    }
-    return asset($skill->image_path);
+    return $skill ? $skill->getImageUrl() : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80';
 };
 @endphp
 
-<div class="py-12" x-data="{ showPdfModal: false, pdfUrl: '', pdfTitle: '' }" x-on:open-pdf-viewer.window="pdfUrl = $event.detail.pdfUrl; pdfTitle = $event.detail.pdfTitle; showPdfModal = true;">
+<div class="py-12" x-data="{ showPdfModal: false, pdfUrl: '', pdfTitle: '' }" x-on:open-pdf-viewer.window="pdfUrl = $event.detail.pdfUrl || ($event.detail[0] ? $event.detail[0].pdfUrl : ''); pdfTitle = $event.detail.pdfTitle || ($event.detail[0] ? $event.detail[0].pdfTitle : ''); showPdfModal = true;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         <!-- Hero Header with Glassmorphism Effect -->
@@ -311,7 +305,12 @@ $getSkillImageUrl = function($skill) {
                         <span>النص التوصيفي</span>
                     </button>
 
-                    <button type="button" @click="showPdfModal = false" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center font-bold text-sm transition mr-2">
+                    <a :href="pdfUrl" target="_blank" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow" title="فتح الملف في نافذة جديدة">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        <span class="hidden sm:inline">فتح في نافذة جديدة ↗</span>
+                    </a>
+
+                    <button type="button" @click="showPdfModal = false" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center font-bold text-sm transition ms-2">
                         ✕
                     </button>
                 </div>

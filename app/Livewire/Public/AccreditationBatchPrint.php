@@ -19,7 +19,7 @@ class AccreditationBatchPrint extends Component
     public function mount()
     {
         $user = auth()->user();
-        if (!$user || !$user->hasRole(RoleEnum::SUPER_ADMIN->value)) {
+        if (!$user || !$user->hasAnyRole(['SUPER_ADMIN', 'NATIONAL_ADMIN', 'ORGANIZATION_ADMIN', 'COUNTRY_ADMIN'])) {
             abort(403, 'غير مصرح لك بإجراء طباعة الاعتمادات بالجملة.');
         }
 
@@ -64,7 +64,7 @@ class AccreditationBatchPrint extends Component
                 });
             }
 
-            $this->users = $query->take(50)->get()->all();
+            $this->users = $query->take(250)->get()->all();
         }
     }
 

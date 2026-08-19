@@ -4,7 +4,7 @@
         <!-- Header -->
         <div class="text-center max-w-3xl mx-auto space-y-3">
             <h1 class="text-3xl sm:text-4xl font-black text-[#06205C]">
-                {{ app()->getLocale() === 'fr' ? 'Guide de Participation Olympiades 2026 / 2027' : (app()->getLocale() === 'en' ? 'WorldSkills Algeria Participation Guide' : 'دليل المشاركة الرسمي في أولمبياد المهن') }}
+                {{ app()->getLocale() === 'fr' ? 'Guide de Participation Olympiades 2026' : (app()->getLocale() === 'en' ? 'WorldSkills Algeria Participation Guide 2026' : 'دليل المشاركة الرسمي في أولمبياد المهن 2026') }}
             </h1>
             <p class="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
                 {{ app()->getLocale() === 'fr' ? 'Portail officiel pour comprendre les objectifs, conditions d\'éligibilité et règlements.' : (app()->getLocale() === 'en' ? 'Official portal to understand competition goals, eligibility and regulations.' : 'البوابة المعرفية الرسمية لفهم أهداف المسابقة، شروط المشاركة، وآليات التأهل والتنظيم.') }}

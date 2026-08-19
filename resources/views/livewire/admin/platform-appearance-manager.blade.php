@@ -1,36 +1,17 @@
 <div class="space-y-8">
-    <!-- Studio Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
-        <div>
-            <div class="flex items-center gap-3">
-                <div class="p-2.5 rounded-2xl bg-brand-50 text-brand-600 border border-brand-200">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-23" />
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black text-slate-900 tracking-tight">
-                        {{ app()->getLocale() === 'fr' ? 'Studio d\'Apparence & Design Tokens' : (app()->getLocale() === 'en' ? 'Platform Appearance & Design Tokens Studio' : 'استوديو مظهر المنصة والهوية البصرية') }}
-                    </h1>
-                    <p class="text-xs font-bold text-slate-500 mt-0.5">
-                        {{ app()->getLocale() === 'fr' ? 'Personnalisez dynamiquement la charte graphique et les éléments visuels de la plateforme sans modifier le code source.' : (app()->getLocale() === 'en' ? 'Dynamically control design tokens, colors, branding, and assets across all portals without touching code.' : 'إدارة رموز التصميم، ألوان الهوية الوطنية، ومرفقات المنصة ديناميكياً بدون لمس الكود.') }}
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-            <button wire:click="resetDefaults" wire:confirm="{{ __('هل أنت أصلًا متأكد من إعادة ضبط رموز المظهر إلى الافتراضيات؟') }}" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs transition touch-target">
-                {{ app()->getLocale() === 'fr' ? 'Réinitialiser' : (app()->getLocale() === 'en' ? 'Reset Defaults' : 'إعادة ضبط الافتراضيات') }}
-            </button>
-            <button wire:click="saveAppearance" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-xs shadow-md transition touch-target flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>{{ app()->getLocale() === 'fr' ? 'Enregistrer les Changements' : (app()->getLocale() === 'en' ? 'Save Appearance Tokens' : 'حفظ رموز المظهر') }}</span>
-            </button>
-        </div>
-    </div>
+    {{-- Studio Header --}}
+    <x-dashboard.page-header
+        :title="app()->getLocale() === 'fr' ? 'Studio d\'Apparence & Design Tokens' : (app()->getLocale() === 'en' ? 'Platform Appearance Studio' : 'استوديو مظهر المنصة والهوية البصرية')"
+        :subtitle="app()->getLocale() === 'fr' ? 'Personnalisez la charte graphique et les éléments visuels de la plateforme.' : (app()->getLocale() === 'en' ? 'Dynamically control design tokens, colors, branding, and assets across all portals.' : 'إدارة رموز التصميم، ألوان الهوية الوطنية، ومرفقات المنصة ديناميكياً بدون لمس الكود.')"
+    >
+        <button wire:click="resetDefaults" wire:confirm="{{ __('هل أنت أصلًا متأكد من إعادة ضبط رموز المظهر إلى الافتراضيات؟') }}" class="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-extrabold text-xs transition backdrop-blur-md">
+            {{ app()->getLocale() === 'fr' ? 'Réinitialiser' : (app()->getLocale() === 'en' ? 'Reset Defaults' : 'إعادة ضبط الافتراضيات') }}
+        </button>
+        <button wire:click="saveAppearance" class="px-6 py-2.5 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-black text-xs shadow-lg transition flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <span>{{ app()->getLocale() === 'fr' ? 'Enregistrer les Changements' : (app()->getLocale() === 'en' ? 'Save Appearance Tokens' : 'حفظ رموز المظهر') }}</span>
+        </button>
+    </x-dashboard.page-header>
 
     <!-- Alert Feedback -->
     @if ($savedMessage)

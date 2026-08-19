@@ -4,7 +4,7 @@
         <!-- Header -->
         <div class="text-center max-w-3xl mx-auto space-y-3">
             <h1 class="text-3xl sm:text-4xl font-black text-[#06205C]">
-                {{ app()->getLocale() === 'fr' ? 'Calendrier Officiel des Olympiades 2026 / 2027' : (app()->getLocale() === 'en' ? 'Official WorldSkills Schedule 2026 / 2027' : 'جدول ومواعيد أولمبياد المهن 2026 / 2027') }}
+                {{ app()->getLocale() === 'fr' ? 'Calendrier Officiel des Olympiades 2026' : (app()->getLocale() === 'en' ? 'Official WorldSkills Schedule 2026' : 'جدول ومواعيد أولمبياد المهن 2026') }}
             </h1>
             <p class="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
                 {{ app()->getLocale() === 'fr' ? 'Suivez les étapes clés et le calendrier officiel des compétitions nationales et internationales.' : (app()->getLocale() === 'en' ? 'Track key milestones and official schedule of national and international competitions.' : 'تتبع المواعيد الزمنية الدقيقة لكل مرحلة من مراحل المنافسة الوطنية والدولية.') }}
@@ -26,7 +26,7 @@
                     </p>
                 </div>
                 <div class="font-mono text-xs font-bold text-[#06205C] bg-slate-50 px-4 py-2.5 rounded-2xl border border-slate-200 shrink-0">
-                    02 Mars - 02 Avril 2027
+                    02 Mars - 02 Avril 2026
                 </div>
             </div>
 
@@ -43,7 +43,7 @@
                     </p>
                 </div>
                 <div class="font-mono text-xs font-bold text-[#06205C] bg-slate-50 px-4 py-2.5 rounded-2xl border border-slate-200 shrink-0">
-                    20 - 24 Avril 2027
+                    20 - 24 Avril 2026
                 </div>
             </div>
 
@@ -60,7 +60,7 @@
                     </p>
                 </div>
                 <div class="font-mono text-xs font-bold text-[#06205C] bg-slate-50 px-4 py-2.5 rounded-2xl border border-slate-200 shrink-0">
-                    21 - 25 Septembre 2027
+                    21 - 25 Septembre 2026
                 </div>
             </div>
 
@@ -77,7 +77,7 @@
                     </p>
                 </div>
                 <div class="font-mono text-xs font-bold text-[#06205C] bg-slate-50 px-4 py-2.5 rounded-2xl border border-slate-200 shrink-0">
-                    17 - 21 Novembre 2027
+                    16 - 21 Novembre 2026
                 </div>
             </div>
         </div>

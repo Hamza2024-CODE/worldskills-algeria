@@ -1,24 +1,15 @@
 <div class="space-y-6 pb-12">
 
     {{-- HEADER --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
-        <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-2xl bg-[#06205C] text-white flex items-center justify-center shadow-md">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            </div>
-            <div>
-                <h1 class="text-2xl font-black text-[#06205C]">محرك الجدولة الميداني والتنظيم الشامل (WSAP Master Schedule Engine)</h1>
-                <p class="text-xs text-slate-500 font-medium">
-                    لوحة الإدارة الشاملة للاجتماعات التقنية، المسابقات، الوجبات، النقل، السكن والفعاليات.
-                </p>
-            </div>
-        </div>
-
-        <button wire:click="$set('showCreateModal', true)" class="px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs transition shadow-md flex items-center gap-2">
+    <x-dashboard.page-header
+        title="محرك الجدولة الميداني والتنظيم الشامل (WSAP Master Schedule Engine)"
+        subtitle="لوحة الإدارة الشاملة للاجتماعات التقنية، المسابقات، الوجبات، النقل، السكن والفعاليات."
+    >
+        <button wire:click="$set('showCreateModal', true)" class="px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs transition shadow-lg flex items-center gap-2 shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
             <span>إضافة حدث مجدول جديد</span>
         </button>
-    </div>
+    </x-dashboard.page-header>
 
     {{-- FLASH MESSAGE --}}
     @if($flashMessage ?? null)

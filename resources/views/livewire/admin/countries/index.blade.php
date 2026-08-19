@@ -5,26 +5,19 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
 
 <div class="space-y-6" dir="{{ $locale === 'ar' ? 'rtl' : 'ltr' }}">
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                {{ $t('إدارة الدول المشاركة والوفود الوطنية', 'Gestion des Pays & Délégations Nationales', 'Participating Countries & Delegations Management') }}
-            </h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">
-                {{ $t('إدارة واعتماد الوفود الوطنية والبلدان المشاركة في مسابقة WorldSkills Algeria', 'Gestion et accréditation des pays africains et délégations nationales.', 'Manage and accredit participating African nations and delegations.') }}
-            </p>
-        </div>
-        <div class="flex items-center gap-2">
-            <button wire:click="exportExcel" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <span>{{ $t('تصدير الدول والوفود إلى Excel (CSV)', 'Exporter vers Excel (CSV)', 'Export Countries to Excel (CSV)') }}</span>
-            </button>
-            <button wire:click="openCreate" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs shadow-lg shadow-brand-500/20 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                <span>{{ $t('إضافة دولة جديدة', 'Ajouter un Nouveau Pays', 'Add New Country') }}</span>
-            </button>
-        </div>
-    </div>
+    <x-dashboard.page-header
+        :title="$t('إدارة الدول المشاركة والوفود الوطنية', 'Gestion des Pays & Délégations Nationales', 'Participating Countries & Delegations Management')"
+        :subtitle="$t('إدارة واعتماد الوفود الوطنية والبلدان المشاركة في مسابقة WorldSkills Algeria', 'Gestion et accréditation des pays africains et délégations nationales.', 'Manage and accredit participating African nations and delegations.')"
+    >
+        <button wire:click="exportExcel" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-black transition backdrop-blur-md shadow-sm shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>{{ $t('تصدير الدول والوفود إلى Excel (CSV)', 'Exporter vers Excel (CSV)', 'Export Countries to Excel (CSV)') }}</span>
+        </button>
+        <button wire:click="openCreate" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-lg transition shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span>{{ $t('إضافة دولة جديدة', 'Ajouter un Nouveau Pays', 'Add New Country') }}</span>
+        </button>
+    </x-dashboard.page-header>
 
     <!-- Stats Bar -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -34,7 +27,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                 <p class="text-2xl font-black text-slate-900 dark:text-white mt-1">{{ number_format($totalCountries) }}</p>
             </div>
             <div class="w-10 h-10 rounded-xl bg-blue-50 text-brand-500 flex items-center justify-center font-bold">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.5a2.5 2.5 0 002.5-2.5V8.5dM12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.5a2.5 2.5 0 002.5-2.5V8.5M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
             </div>
         </div>
         <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs flex items-center justify-between">

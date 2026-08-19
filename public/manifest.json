@@ -1,21 +1,78 @@
 {
-  "name": "WorldSkills Africa 2027",
-  "short_name": "WSAP 2027",
+  "name": "أولمبياد المهن الجزائرية — WorldSkills Algeria",
+  "short_name": "WorldSkills DZ",
   "start_url": "/",
+  "id": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
   "background_color": "#020A24",
-  "theme_color": "#06205C",
-  "description": "Official Operating System for WorldSkills Africa 2027 - Algeria 🇩🇿",
+  "theme_color": "#0066FF",
+  "description": "المنصة الوطنية الرسمية لأولمبياد المهن والاعتمادات الميدانية — الجزائر 🇩🇿",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["education", "productivity", "utilities"],
   "icons": [
     {
-      "src": "/LOGO01.png",
-      "sizes": "192x192",
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon-96.png",
+      "sizes": "96x96",
       "type": "image/png"
     },
     {
-      "src": "/LOGO01.png",
-      "sizes": "512x512",
+      "src": "/icon-144.png",
+      "sizes": "144x144",
       "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/LOGO01.png",
+      "sizes": "2000x2000",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "التسجيل المباشر",
+      "short_name": "التسجيل",
+      "description": "التسجيل في أولمبياد المهن",
+      "url": "/registration",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "بطاقة الاعتماد",
+      "short_name": "الشارة",
+      "description": "معاينة شارة الاعتماد الرقمية",
+      "url": "/profile",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "التخصصات الأولمبية",
+      "short_name": "التخصصات",
+      "description": "تصفح دليل التخصصات والمهن",
+      "url": "/skills",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

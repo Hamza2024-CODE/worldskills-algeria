@@ -1,48 +1,115 @@
-<div class="space-y-12 pb-16" x-data="{ showVideoModal: false }">
+<div class="pb-16" x-data="{ showVideoModal: false }">
+@php
+    $activeEvent = $activeEvent ?? null;
+    $stats = $stats ?? [];
+    $countdownEnabled = $countdownEnabled ?? true;
+    $countdownStatus = $countdownStatus ?? 'COUNTDOWN';
+    $countdownTargetDate = $countdownTargetDate ?? '2026-09-15 09:00:00';
+    $countdownFlipAnimation = $countdownFlipAnimation ?? true;
+    $countdownColorSec = $countdownColorSec ?? '#0284C7';
+    $countdownColorMin = $countdownColorMin ?? '#059669';
+    $countdownColorHrs = $countdownColorHrs ?? '#D97706';
+    $countdownColorDays = $countdownColorDays ?? '#7C3AED';
+    $countdownTitleFr = $countdownTitleFr ?? 'Décompte du Lancement des Olympiades des Métiers 2026';
+    $countdownTitleEn = $countdownTitleEn ?? 'Countdown to the Opening of the 2026 Olympiad of Professions';
+    $countdownTitleAr = $countdownTitleAr ?? 'العد التنازلي لافتتاح أولمبياد المهن 2026';
+    $countdownSubtitleFr = $countdownSubtitleFr ?? 'Olympiades des Métiers 2026 — Centre des Conventions Mohamed Benahmed - Oran';
+    $countdownSubtitleEn = $countdownSubtitleEn ?? 'Olympiad of Professions 2026 — Mohamed Benahmed Convention Center - Oran';
+    $countdownSubtitleAr = $countdownSubtitleAr ?? 'أولمبياد المهن 2026 — مركز المؤتمرات محمد بن أحمد - وهران';
+@endphp
     
-    <!-- 1. Hero Section with Video Background Layer (Ultra-light blue overlay so video is crystal clear) -->
-    <section class="relative bg-[#020A24] text-white pt-16 pb-28 px-4 sm:px-6 lg:px-8 overflow-hidden rounded-b-[3rem] border-b border-brand-500/20 shadow-2xl">
+    <style>
+        @keyframes heroFadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes heroGlowPulse {
+            0%, 100% {
+                text-shadow: 0 4px 24px rgba(0,0,0,0.95), 0 0 15px rgba(0, 163, 255, 0.3);
+            }
+            50% {
+                text-shadow: 0 4px 28px rgba(0,0,0,0.98), 0 0 35px rgba(0, 163, 255, 0.7);
+            }
+        }
+        .animate-hero-title {
+            animation: heroFadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards, heroGlowPulse 4s ease-in-out infinite 1s;
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+        .animate-hero-sub {
+            opacity: 0;
+            animation: heroFadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+        .animate-hero-btns {
+            opacity: 0;
+            animation: heroFadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.55s forwards;
+        }
+        .hero-text-block {
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hero-text-block:hover {
+            transform: translateY(-6px);
+        }
+        .hero-text-block:hover .animate-hero-title {
+            color: #FCD34D !important;
+            text-shadow: 0 8px 32px rgba(252, 211, 77, 0.55), 0 0 40px rgba(0, 163, 255, 0.85) !important;
+        }
+        .hero-text-block:hover .animate-hero-sub {
+            color: #FFFFFF !important;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.98) !important;
+        }
+    </style>
+
+    <!-- 1. Hero Section with Full-Bleed High-Definition Video Background -->
+    <section class="relative bg-[#020A24] text-white min-h-[70vh] sm:min-h-[78vh] py-20 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden rounded-b-[3rem] border-b border-brand-500/20 shadow-2xl flex items-center">
         
-        <!-- Full-Bleed 100% Seamless Cover Video Background Layer (Zero Black Side Bars) -->
-        <div class="absolute inset-0 z-0 overflow-hidden opacity-85 pointer-events-none">
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180vw] h-[180vh] min-w-[177.77vh] min-h-[56.25vw]">
+        <!-- Full-Bleed 100% Seamless Cover Video Background Layer (Expands to cover full space) -->
+        <div class="absolute inset-0 z-0 overflow-hidden opacity-90 pointer-events-none">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200vw] h-[200vh] min-w-[177.77vh] min-h-[56.25vw]">
                 <iframe class="w-full h-full pointer-events-none object-cover" 
-                        src="https://www.youtube.com/embed/ee7fzNFUKIM?autoplay=1&mute=1&controls=0&loop=1&playlist=ee7fzNFUKIM&playsinline=1" 
-                        title="Background Video" 
+                        src="https://www.youtube-nocookie.com/embed/nzy4f7GBSVw?autoplay=1&mute=1&controls=0&loop=1&playlist=nzy4f7GBSVw&playsinline=1&rel=0&modestbranding=1&enablejsapi=1&iv_load_policy=3&disablekb=1&showinfo=0&vq=hd1080" 
+                        title="WorldSkills Background Video HD" 
                         frameborder="0" 
                         allow="autoplay; encrypted-media"></iframe>
             </div>
-            <!-- Elegant Light Cinematic Gradient Overlay for Maximum Video Clarity -->
-            <div class="absolute inset-0 bg-gradient-to-t from-[#020A24] via-[#020A24]/30 to-black/15"></div>
+            <!-- Elegant Light Cinematic Gradient Overlay for Maximum Text Legibility & Video Clarity -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#020A24] via-[#020A24]/40 to-black/20"></div>
         </div>
 
-        <!-- Dynamic Animated Radial Particles -->
-        <div class="absolute -top-24 -left-24 w-[30rem] h-[30rem] bg-brand-sky/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
-        <div class="absolute -bottom-24 -right-24 w-[30rem] h-[30rem] bg-brand-500/25 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+        <!-- Dynamic Animated Ambient Glow Particles -->
+        <div class="absolute -top-24 -left-24 w-[32rem] h-[32rem] bg-brand-sky/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+        <div class="absolute -bottom-24 -right-24 w-[32rem] h-[32rem] bg-brand-500/25 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
 
-        <div class="max-w-7xl mx-auto relative z-10 text-right space-y-6">
+        <div class="max-w-7xl mx-auto w-full relative z-10 text-right space-y-6">
 
-            <!-- Text-Only Glassmorphism Hero Block (No Container Box/Frame, Direct Glass Text Styling + Hover Zoom) -->
-            <div class="space-y-4 max-w-3xl cursor-pointer group transition-all duration-500 ease-out transform origin-top-right inline-block hover:scale-[1.03]">
+            <!-- Animated Interactive Typography Section -->
+            <div class="hero-text-block space-y-4 max-w-4xl cursor-pointer">
                 
-                <!-- Glass Title: Small by default, zooms on hover -->
-                <h1 class="text-lg sm:text-2xl lg:text-3xl group-hover:text-2xl group-hover:sm:text-4xl group-hover:lg:text-5xl font-black tracking-tight leading-[1.2] text-white group-hover:text-amber-300 transition-all duration-500 ease-out drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]">
+                <!-- Main Title: Smooth Entrance + Pulse Glow + Hover Golden Glow -->
+                <h1 class="animate-hero-title text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] text-white">
                     {{ $activeEvent ? $activeEvent->getLocalized('title') : __('messages.hero_title') }}
                 </h1>
 
-                <!-- Glass Subtext: Small by default, zooms on hover -->
-                <p class="text-xs sm:text-sm group-hover:text-sm group-hover:sm:text-base text-slate-100 group-hover:text-white font-medium group-hover:font-semibold leading-relaxed transition-all duration-500 ease-out drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]">
+                <!-- Subtitle: Staggered Fade Up + Hover White Highlight -->
+                <p class="animate-hero-sub text-sm sm:text-lg text-slate-100 font-semibold leading-relaxed drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)] max-w-3xl">
                     {{ $activeEvent ? $activeEvent->getLocalized('summary') : __('messages.hero_subtitle') }}
                 </p>
 
             </div>
 
-            <!-- Action Buttons -->
-            <div class="flex flex-wrap items-center gap-4 pt-4">
-                <a href="{{ route('guide') }}" class="px-8 py-3.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-extrabold text-sm shadow-xl shadow-brand-500/30 transition-all transform hover:-translate-y-1">
+            <!-- Action Buttons Grid: Animated Entrance -->
+            <div class="animate-hero-btns flex flex-wrap items-center gap-4 pt-4">
+                <a href="{{ route('guide') }}" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-black text-sm shadow-xl shadow-brand-500/30 transition-all transform hover:-translate-y-1 hover:scale-[1.02] active:scale-95">
                     {{ __('messages.explore_more') }}
                 </a>
-                <a href="{{ route('registration') }}" class="px-8 py-3.5 rounded-xl bg-white hover:bg-slate-100 text-[#06205C] font-extrabold text-sm shadow-xl transition-all flex items-center gap-2 transform hover:-translate-y-1">
+
+                <a href="{{ route('registration') }}" class="px-8 py-4 rounded-2xl bg-white hover:bg-slate-100 text-[#06205C] font-black text-sm shadow-xl transition-all flex items-center gap-2 transform hover:-translate-y-1 hover:scale-[1.02] active:scale-95">
                     <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     <span>{{ __('messages.register_now') }}</span>
                 </a>
@@ -138,7 +205,7 @@
                         <span>مباشر</span>
                     </div>
                     <div id="wsap-live-clock" class="font-mono text-xs font-black text-slate-900 leading-tight">14:30:22</div>
-                    <div id="wsap-live-date" class="text-[9px] font-bold text-slate-600 mt-0.5 leading-none">05 أوت 2026</div>
+                    <div id="wsap-live-date" class="text-[9px] font-bold text-slate-600 mt-0.5 leading-none">16 - 21 نوفمبر 2026</div>
                 </div>
             </div>
 
@@ -306,14 +373,14 @@
     @endif
 
     <!-- 3. Dynamic Real DB Statistics Grid with Image Logos, Text & Animated Counters -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-aos="fade-up" data-aos-duration="800">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            <x-animated-counter :target="$stats['partners'] ?? 20" :label="app()->getLocale() === 'fr' ? 'Partenaires Officiels' : (app()->getLocale() === 'en' ? 'Official Partners' : 'الشركاء والرعاة')" :description="app()->getLocale() === 'fr' ? 'Soutien industriel & institutionnel' : (app()->getLocale() === 'en' ? 'Industrial & Institutional Support' : 'الدعم الصناعي والمؤسساتي')" image="/logo.svg" color="text-brand-500" />
-            <x-animated-counter :target="$stats['organizations'] ?? 150" :label="app()->getLocale() === 'fr' ? 'Centres de Formation' : (app()->getLocale() === 'en' ? 'Training Institutes' : 'المؤسسات التدريبية')" :description="app()->getLocale() === 'fr' ? 'Instituts & Établissements' : (app()->getLocale() === 'en' ? 'Institutes & Establishments' : 'المعاهد والمؤسسات التكوينية')" color="text-brand-sky" />
-            <x-animated-counter :target="$stats['experts'] ?? 250" :label="app()->getLocale() === 'fr' ? 'Experts & Juges' : (app()->getLocale() === 'en' ? 'Experts & Judges' : 'الخبراء والحكام')" :description="app()->getLocale() === 'fr' ? 'Jury international certifié' : (app()->getLocale() === 'en' ? 'Certified International Jury' : 'لجان التحكيم المعتمدة')" color="text-purple-600" />
-            <x-animated-counter :target="$stats['participants'] ?? 1250" :label="app()->getLocale() === 'fr' ? 'Candidats Inscrits' : (app()->getLocale() === 'en' ? 'Registered Competitors' : 'المشاركين المسجلين')" :description="app()->getLocale() === 'fr' ? 'Jeunes talents compétiteurs' : (app()->getLocale() === 'en' ? 'Young Competitor Talents' : 'المتنافسون الشباب')" color="text-emerald-600" />
-            <x-animated-counter :target="$stats['skills'] ?? 45" :label="app()->getLocale() === 'fr' ? 'Métiers & Compétences' : (app()->getLocale() === 'en' ? 'Skills & Occupations' : 'التخصصات والمهن')" :description="app()->getLocale() === 'fr' ? 'Disciplines Olympiques' : (app()->getLocale() === 'en' ? 'Olympic Skill Disciplines' : 'التخصصات التنافسية')" color="text-amber-500" />
-            <x-animated-counter :target="$stats['countries'] ?? 54" :label="app()->getLocale() === 'fr' ? 'Pays Africains' : (app()->getLocale() === 'en' ? 'African Nations' : 'الدول الإفريقية')" :description="app()->getLocale() === 'fr' ? 'Délégations souveraines' : (app()->getLocale() === 'en' ? 'Sovereign Delegations' : 'الوفود الوطنية الرسمية')" color="text-red-500" />
+            <x-animated-counter :target="!empty($stats['partners']) ? $stats['partners'] : 10" :label="app()->getLocale() === 'fr' ? 'Partenaires Officiels' : (app()->getLocale() === 'en' ? 'Official Partners' : 'الشركاء والرعاة')" :description="app()->getLocale() === 'fr' ? 'Soutien industriel & institutionnel' : (app()->getLocale() === 'en' ? 'Industrial & Institutional Support' : 'الدعم الصناعي والمؤسساتي')" image="/logo.svg" color="text-brand-500" />
+            <x-animated-counter :target="!empty($stats['organizations']) ? $stats['organizations'] : 150" :label="app()->getLocale() === 'fr' ? 'Centres de Formation' : (app()->getLocale() === 'en' ? 'Training Institutes' : 'المؤسسات التدريبية')" :description="app()->getLocale() === 'fr' ? 'Instituts & Établissements' : (app()->getLocale() === 'en' ? 'Institutes & Establishments' : 'المعاهد والمؤسسات التكوينية')" color="text-brand-sky" />
+            <x-animated-counter :target="!empty($stats['experts']) ? $stats['experts'] : 250" :label="app()->getLocale() === 'fr' ? 'Experts & Juges' : (app()->getLocale() === 'en' ? 'Experts & Judges' : 'الخبراء والحكام')" :description="app()->getLocale() === 'fr' ? 'Jury international certifié' : (app()->getLocale() === 'en' ? 'Certified International Jury' : 'لجان التحكيم المعتمدة')" color="text-purple-600" />
+            <x-animated-counter :target="!empty($stats['participants']) ? $stats['participants'] : 1250" :label="app()->getLocale() === 'fr' ? 'Candidats Inscrits' : (app()->getLocale() === 'en' ? 'Registered Competitors' : 'المشاركين المسجلين')" :description="app()->getLocale() === 'fr' ? 'Jeunes talents compétiteurs' : (app()->getLocale() === 'en' ? 'Young Competitor Talents' : 'المتنافسون الشباب')" color="text-emerald-600" />
+            <x-animated-counter :target="!empty($stats['skills']) ? $stats['skills'] : 64" :label="app()->getLocale() === 'fr' ? 'Métiers & Compétences' : (app()->getLocale() === 'en' ? 'Skills & Occupations' : 'التخصصات والمهن')" :description="app()->getLocale() === 'fr' ? 'Disciplines Olympiques' : (app()->getLocale() === 'en' ? 'Olympic Skill Disciplines' : 'التخصصات التنافسية')" color="text-amber-500" />
+            <x-animated-counter :target="!empty($stats['countries']) ? $stats['countries'] : 54" :label="app()->getLocale() === 'fr' ? 'Pays Africains' : (app()->getLocale() === 'en' ? 'African Nations' : 'الدول الإفريقية')" :description="app()->getLocale() === 'fr' ? 'Délégations souveraines' : (app()->getLocale() === 'en' ? 'Sovereign Delegations' : 'الوفود الوطنية الرسمية')" color="text-red-500" />
         </div>
     </section>
 
@@ -364,7 +431,7 @@
                 @php
                     $imgUrl = asset($skill->image_path ?: 'images/skills/trade_16.png');
                 @endphp
-                <div data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 120 }}" class="bg-white rounded-3xl overflow-hidden shadow-xl border border-slate-200/90 hover:shadow-2xl transition-all duration-400 transform hover:-translate-y-2 group cursor-pointer flex flex-col justify-between hover:border-[#0066FF] wsap-hover-card">
+                <div class="bg-white rounded-3xl overflow-hidden shadow-xl border border-slate-200/90 hover:shadow-2xl transition-all duration-400 transform hover:-translate-y-2 group cursor-pointer flex flex-col justify-between hover:border-[#0066FF] wsap-hover-card">
                     
                     {{-- Photo Banner Header --}}
                     <div class="h-48 bg-slate-950 relative overflow-hidden">
@@ -592,6 +659,7 @@
     </section>
 
     <!-- 6. Featured Partners & Sponsors Banner Grid -->
+    @if(app(\App\Services\SettingsEngine::class)->get('page_partners_enabled', true))
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div class="flex flex-col items-center text-center space-y-2 relative pb-4 group/head cursor-default">
             {{-- Dynamic Ambient Light Glow with Hover Shimmer --}}
@@ -650,6 +718,7 @@
             @endforelse
         </div>
     </section>
+    @endif
 
     <!-- 7. Call to Action Banner -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -665,10 +734,10 @@
 
             <div class="space-y-3 max-w-xl text-center {{ app()->getLocale() === 'ar' ? 'md:text-right' : 'md:text-left' }}">
                 <h2 class="text-2xl sm:text-3xl font-black leading-tight">
-                    {{ app()->getLocale() === 'fr' ? 'Rejoignez le plus grand événement des compétences en Afrique !' : (app()->getLocale() === 'en' ? 'Join the Largest Skills Event in Africa!' : 'كن جزءاً من أكبر حدث للمهارات في إفريقيا!') }}
+                    {{ app()->getLocale() === 'fr' ? 'Rejoignez le plus grand événement des compétences en Algérie !' : (app()->getLocale() === 'en' ? 'Join the Largest Skills Event in Algeria!' : 'كن جزءاً من أكبر حدث للمهارات في الجزائر!') }}
                 </h2>
                 <p class="text-xs text-blue-100 font-medium">
-                    {{ app()->getLocale() === 'fr' ? 'Inscrivez-vous maintenant pour participer au développement des compétences nationales et internationales.' : (app()->getLocale() === 'en' ? 'Register now to shape the future of national and international skill standards.' : 'سجل الآن وشارك في صناعة المستقبل وتطوير المهارات الوطنية والدولية بالمركز الدولي للمؤتمرات.') }}
+                    {{ app()->getLocale() === 'fr' ? 'Inscrivez-vous maintenant pour participer au développement des compétences nationales à Oran.' : (app()->getLocale() === 'en' ? 'Register now to shape the future of national skill standards in Oran.' : 'سجل الآن وشارك في صناعة المستقبل وتطوير المهارات الوطنية بمركز المؤتمرات بوهران.') }}
                 </p>
             </div>
             
@@ -686,7 +755,7 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
             <div class="aspect-video w-full">
-                <iframe class="w-full h-full" src="https://www.youtube.com/embed/ee7fzNFUKIM?autoplay=1" title="WorldSkills Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe class="w-full h-full" src="https://www.youtube-nocookie.com/embed/nzy4f7GBSVw?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&vq=hd1080" title="WorldSkills Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
     </div>

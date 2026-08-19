@@ -47,6 +47,9 @@
 
     @livewireStyles
     <livewire:styles />
+    
+    <!-- Platform Media & Content Protection System -->
+    <x-content-protection />
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col text-white select-none">
     {{ $slot }}

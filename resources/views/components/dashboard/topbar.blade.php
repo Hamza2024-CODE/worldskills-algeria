@@ -1,6 +1,7 @@
 @props(['user', 'activeEvent'])
 
 @php
+$user = $user ?? auth()->user();
 $locale = app()->getLocale();
 $rawRole = $user?->roles->first()?->name ?? 'USER';
 
@@ -65,31 +66,34 @@ $dashboardRoute = match($rawRole) {
             </svg>
         </button>
 
-        {{-- WSAP Admin Brand --}}
-        <a href="{{ $dashboardRoute }}" class="flex items-center gap-2 group shrink-0" aria-label="WSAP Admin">
-            {{-- Logo mark --}}
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-700 via-blue-500 to-sky-400 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                     class="w-5 h-5" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>
-                </svg>
+        {{-- Official WorldSkills Algeria Brand Logo & Title --}}
+        <a href="{{ $dashboardRoute }}" class="flex items-center gap-2 sm:gap-3 group shrink-0" aria-label="أولمبياد المهن الجزائرية">
+            {{-- Official Ministry Logo (FIRST) --}}
+            <div class="h-9 sm:h-11 shrink-0 flex items-center justify-center px-2 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 shadow-sm group-hover:scale-105 transition-transform">
+                <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-full w-auto object-contain max-h-8">
             </div>
+
+            <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 shrink-0"></div>
+
+            {{-- WorldSkills Logo (SECOND) --}}
+            <div class="h-9 sm:h-11 shrink-0 flex items-center justify-center px-2 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 shadow-sm group-hover:scale-105 transition-transform">
+                <img src="/logo.svg" alt="WorldSkills Algeria" class="h-full w-auto object-contain max-h-8">
+            </div>
+
             {{-- Brand text --}}
             <div class="hidden sm:flex flex-col">
-                <span class="text-sm font-black tracking-tight leading-none whitespace-nowrap"
-                      :style="dark ? 'color:#E2E8F0;' : 'color:#020A24;'">
-                    WSAP <span :style="dark ? 'color:#60A5FA;' : 'color:#2563EB;'">Admin</span>
+                <span class="text-xs sm:text-sm font-black tracking-tight leading-snug whitespace-nowrap"
+                      :style="dark ? 'color:#F8FAFC;' : 'color:#06205C;'">
+                    {{ app()->getLocale() === 'fr' ? 'WorldSkills Algeria' : (app()->getLocale() === 'en' ? 'WorldSkills Algeria' : 'أولمبياد المهن الجزائرية') }}
                 </span>
-                <span class="text-[10px] font-semibold mt-0.5 whitespace-nowrap"
-                      :style="dark ? 'color:#475569;' : 'color:#94A3B8;'">
+                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">
                     {{ $wsapLabel }}
                 </span>
             </div>
         </a>
 
         {{-- Active Event Pill --}}
-        @if($activeEvent)
+        @if(!empty($activeEvent))
             <div class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-bold whitespace-nowrap max-w-[220px] truncate shrink-0"
                  :style="dark ? 'background:rgba(30,58,138,0.3);border-color:#1D4ED8;color:#93C5FD;' : 'background:#EFF6FF;border-color:#BFDBFE;color:#1D4ED8;'">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
@@ -118,7 +122,7 @@ $dashboardRoute = match($rawRole) {
         <div class="flex items-center p-0.5 sm:p-1 rounded-xl text-xs font-bold shrink-0"
              :style="dark ? 'background:#1E293B;' : 'background:#F1F5F9;'">
             @foreach(['ar' => 'عربي', 'fr' => 'FR', 'en' => 'EN'] as $lang => $langLabel)
-                <a href="{{ route('lang.switch', $lang) }}"
+                <a href="{{ route('lang.switch', $lang) }}" data-navigate-ignore rel="external"
                    class="px-2 sm:px-2.5 py-1 rounded-lg transition text-[11px] sm:text-xs whitespace-nowrap {{ $locale === $lang ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs' : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200' }}"
                 >{{ $langLabel }}</a>
             @endforeach
@@ -146,12 +150,7 @@ $dashboardRoute = match($rawRole) {
             @endif
         </a>
 
-        {{-- Role Badge --}}
-        <div class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-black whitespace-nowrap shrink-0"
-             :style="dark ? 'background:rgba(30,58,138,0.2);border-color:rgba(59,130,246,0.3);color:#93C5FD;' : 'background:#EFF6FF;border-color:#BFDBFE;color:#1D4ED8;'">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
-            <span class="whitespace-nowrap">{{ $roleDisplay }}</span>
-        </div>
+
 
         {{-- Profile Dropdown --}}
         <div class="relative shrink-0">

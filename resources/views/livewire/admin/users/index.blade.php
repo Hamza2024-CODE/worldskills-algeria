@@ -17,37 +17,29 @@ $roleBadge = [
 <div class="space-y-5 pb-8" x-data="{ drawerOpen: @entangle('drawerOpen'), roleModalOpen: @entangle('roleModalOpen'), createModalOpen: @entangle('createModalOpen'), deleteConfirmOpen: @entangle('deleteConfirmOpen') }">
 
     {{-- ── Page Header ── --}}
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
-        <div>
-            <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100">
-                {{ $t('إدارة المستخدمين وحسابات الوفود والحكام والصحافة', 'Gestion des Utilisateurs', 'User Accounts & Credentials') }}
-            </h1>
-            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">
-                {{ $t('إجمالي الحسابات','Total comptes','Total accounts') }}: <span class="font-bold text-blue-600">{{ $totalUsers }}</span>
-                — {{ $t('الحسابات النشطة','Comptes actifs','Active accounts') }}: <span class="font-bold text-emerald-600">{{ $activeUsers }}</span>
-            </p>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-            <button wire:click="toggleOfficialRegistration" class="flex items-center gap-2 px-4 py-2.5 rounded-xl {{ $officialRegistrationOpen ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white' }} text-xs font-black transition shadow-xs">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                <span>{{ $officialRegistrationOpen
-                    ? $t('إغلاق التسجيل الرسمي','Fermer les inscriptions','Close Registration')
-                    : $t('فتح التسجيل الرسمي','Ouvrir les inscriptions','Open Registration') }}</span>
-            </button>
-            <a href="{{ route('official.registration') }}" target="_blank" class="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition border border-slate-300">
-                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                <span>{{ $t('معاينة صفحة التسجيل','Aperçu inscription','Preview Registration') }}</span>
-            </a>
-            <button wire:click="exportExcel" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition shadow-xs">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <span>{{ $t('تصدير Excel','Exporter Excel','Export Excel') }}</span>
-            </button>
-            <button wire:click="openCreateModal" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition shadow-xs">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                <span>{{ $t('إنشاء حساب جديد','Nouveau compte','New Account') }}</span>
-            </button>
-        </div>
-    </div>
+    <x-dashboard.page-header
+        :title="$t('إدارة المستخدمين وحسابات الوفود والحكام والصحافة', 'Gestion des Utilisateurs', 'User Accounts & Credentials')"
+        :subtitle="$t('إجمالي الحسابات','Total comptes','Total accounts') . ': ' . $totalUsers . ' — ' . $t('الحسابات النشطة','Comptes actifs','Active accounts') . ': ' . $activeUsers"
+    >
+        <button wire:click="toggleOfficialRegistration" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl {{ $officialRegistrationOpen ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white' }} text-xs font-black transition shadow-lg shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            <span>{{ $officialRegistrationOpen
+                ? $t('إغلاق التسجيل الرسمي','Fermer les inscriptions','Close Registration')
+                : $t('فتح التسجيل الرسمي','Ouvrir les inscriptions','Open Registration') }}</span>
+        </button>
+        <a href="{{ route('official.registration') }}" target="_blank" class="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-bold transition backdrop-blur-md shrink-0">
+            <svg class="w-4 h-4 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            <span>{{ $t('معاينة صفحة التسجيل','Aperçu inscription','Preview Registration') }}</span>
+        </a>
+        <button wire:click="exportExcel" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-black transition backdrop-blur-md shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>{{ $t('تصدير Excel','Exporter Excel','Export Excel') }}</span>
+        </button>
+        <button wire:click="openCreateModal" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition shadow-lg shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            <span>{{ $t('إنشاء حساب جديد','Nouveau compte','New Account') }}</span>
+        </button>
+    </x-dashboard.page-header>
 
     @if(session('success'))
         <div class="p-3 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-xl border border-emerald-200">✓ {{ session('success') }}</div>

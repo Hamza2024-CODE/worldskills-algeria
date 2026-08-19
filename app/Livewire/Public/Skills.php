@@ -64,19 +64,24 @@ class Skills extends Component
 
     public function render()
     {
-        $categories = SkillCategory::all();
+        $categories = SkillCategory::orderBy('name_ar')->get();
 
-        $skills = Skill::where('is_active', true)
+        $skills = Skill::with('category')
+            ->where('is_active', true)
             ->when($this->selectedCategory, fn($q) => $q->where('category_id', $this->selectedCategory))
-            ->when($this->search, fn($q) => $q->where('name_ar', 'like', "%{$this->search}%")
-                ->orWhere('code', 'like', "%{$this->search}%")
-                ->orWhere('name_fr', 'like', "%{$this->search}%"))
+            ->when($this->search, fn($q) => $q->where(function($sub) {
+                $sub->where('name_ar', 'like', "%{$this->search}%")
+                    ->orWhere('code', 'like', "%{$this->search}%")
+                    ->orWhere('name_fr', 'like', "%{$this->search}%")
+                    ->orWhere('name_en', 'like', "%{$this->search}%");
+            }))
             ->orderBy('sort_order')
+            ->orderBy('code')
             ->get();
 
         return view('livewire.public.skills', [
             'categories' => $categories,
-            'skills' => $skills,
+            'skills'     => $skills,
         ]);
     }
 }

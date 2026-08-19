@@ -214,9 +214,14 @@ class DocumentVerificationService
             // Algorithmic NIN checksum (18 digits)
             if ($expectedType === 'national_id') {
                 if (!preg_match('/^[0-9]{18}$/', $num)) {
+                    $locale = app()->getLocale();
                     return [
                         'is_valid' => false,
-                        'message'  => 'رقم بطاقة التعريف الوطنية البيومترية يجب أن يتكون من 18 رقماً بالضبط.',
+                        'message'  => $locale === 'fr' 
+                            ? 'Le numéro NIN doit comporter exactement 18 chiffres.' 
+                            : ($locale === 'en' 
+                                ? 'National ID Number (NIN) must be exactly 18 digits.' 
+                                : 'رقم بطاقة التعريف الوطنية البيومترية يجب أن يتكون من 18 رقماً بالضبط.'),
                     ];
                 }
             }

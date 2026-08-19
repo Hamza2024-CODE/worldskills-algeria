@@ -183,7 +183,7 @@
                 </div>
             @else
                 <div class="animate-ticker whitespace-nowrap text-xs sm:text-sm font-black text-white">
-                    <span class="mx-10">مرحباً بكم في البث المباشر الرسمي لأولمبياد المهن الوطنية والإفريقية — WorldSkills Algeria 2026</span>
+                    <span class="mx-10">مرحباً بكم في البث المباشر الرسمي لأولمبياد المهن الوطنية — WorldSkills Algeria 2026</span>
                     <span class="mx-4 text-[#00A3FF]">◆</span>
                     <span class="mx-10">Bienvenue au direct officiel des Olympiades des Métiers — WorldSkills Algeria 2026</span>
                     <span class="mx-4 text-[#00A3FF]">◆</span>

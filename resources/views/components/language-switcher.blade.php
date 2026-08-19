@@ -4,16 +4,16 @@
         <span class="uppercase font-mono font-black text-[11px] text-[#0066FF]">{{ app()->getLocale() }}</span>
         <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
     </button>
-    <div x-show="open" x-transition class="absolute top-full right-0 mt-2 w-32 rounded-2xl bg-white shadow-xl border border-slate-100 py-1.5 z-50 overflow-hidden">
-        <a href="{{ route('lang.switch', 'ar') }}" class="flex items-center justify-between px-4 py-2 text-xs font-bold transition {{ app()->getLocale() === 'ar' ? 'text-[#0066FF] bg-blue-50 font-black' : 'text-[#06205C] hover:bg-slate-50' }}">
+    <div x-show="open" x-cloak x-transition class="absolute top-full ltr:right-0 rtl:left-0 mt-2 w-36 rounded-2xl bg-white shadow-xl border border-slate-100 py-1.5 z-50 overflow-hidden">
+        <a href="{{ route('lang.switch', 'ar') }}" data-navigate-ignore rel="external" class="flex items-center justify-between px-4 py-2 text-xs font-bold transition {{ app()->getLocale() === 'ar' ? 'text-[#0066FF] bg-blue-50 font-black' : 'text-[#06205C] hover:bg-slate-50' }}">
             <span>العربية</span>
             <span class="text-[10px] text-slate-400 font-mono">AR</span>
         </a>
-        <a href="{{ route('lang.switch', 'fr') }}" class="flex items-center justify-between px-4 py-2 text-xs font-bold transition {{ app()->getLocale() === 'fr' ? 'text-[#0066FF] bg-blue-50 font-black' : 'text-[#06205C] hover:bg-slate-50' }}">
+        <a href="{{ route('lang.switch', 'fr') }}" data-navigate-ignore rel="external" class="flex items-center justify-between px-4 py-2 text-xs font-bold transition {{ app()->getLocale() === 'fr' ? 'text-[#0066FF] bg-blue-50 font-black' : 'text-[#06205C] hover:bg-slate-50' }}">
             <span>Français</span>
             <span class="text-[10px] text-slate-400 font-mono">FR</span>
         </a>
-        <a href="{{ route('lang.switch', 'en') }}" class="flex items-center justify-between px-4 py-2 text-xs font-bold transition {{ app()->getLocale() === 'en' ? 'text-[#0066FF] bg-blue-50 font-black' : 'text-[#06205C] hover:bg-slate-50' }}">
+        <a href="{{ route('lang.switch', 'en') }}" data-navigate-ignore rel="external" class="flex items-center justify-between px-4 py-2 text-xs font-bold transition {{ app()->getLocale() === 'en' ? 'text-[#0066FF] bg-blue-50 font-black' : 'text-[#06205C] hover:bg-slate-50' }}">
             <span>English</span>
             <span class="text-[10px] text-slate-400 font-mono">EN</span>
         </a>

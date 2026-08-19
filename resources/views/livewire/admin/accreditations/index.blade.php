@@ -1,30 +1,19 @@
 <div class="space-y-6 pb-8" x-data="{ selected: @entangle('selectedUsers') }">
 
     {{-- HEADER --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
-        <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center shadow-xs">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2"/></svg>
-            </div>
-            <div>
-                <h1 class="text-2xl font-black text-[#06205C]">مركز طباعة وإصدار شارات الاعتماد (Accreditation Badges)</h1>
-                <p class="text-xs text-slate-500 font-medium">
-                    طباعة شارات الاعتماد المشفرة بالـ QR لجميع الأدوار الرسمية: <span class="text-brand-500 font-bold">مشارك، رئيس وفد، حكم، إعلامي، VIP، SPEAKER، منظم، متطوع</span>.
-                </p>
-            </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-            <button wire:click="openCreate()" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#06205C] hover:bg-blue-900 text-white text-xs font-black transition shadow-md">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                <span>إصدار شارات مخصصة</span>
-            </button>
-            <a href="{{ route('admin.accreditations.batch-print', array_filter(['role' => $filterRole, 'country_id' => $filterCountry])) }}" target="_blank" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition shadow-md">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                <span>طباعة جميع الشارات المعروضة (Batch Print)</span>
-            </a>
-        </div>
-    </div>
+    <x-dashboard.page-header
+        title="مركز طباعة وإصدار شارات الاعتماد (Accreditation Badges)"
+        subtitle="طباعة شارات الاعتماد المشفرة بالـ QR لجميع الأدوار الرسمية: مشارك، رئيس وفد، حكم، إعلامي، VIP، SPEAKER، منظم، متطوع."
+    >
+        <button wire:click="openCreate()" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-black transition backdrop-blur-md shadow-sm shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            <span>إصدار شارات مخصصة</span>
+        </button>
+        <a href="{{ route('admin.accreditations.batch-print', array_filter(['role' => $filterRole, 'country_id' => $filterCountry])) }}" target="_blank" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition shadow-lg shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            <span>طباعة جميع الشارات المعروضة (Batch Print)</span>
+        </a>
+    </x-dashboard.page-header>
 
     {{-- FLASH MESSAGES --}}
     @if(session('success'))

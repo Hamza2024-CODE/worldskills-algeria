@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="h-full bg-[#F4F7FC]">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="h-full bg-[#F4F7FC] overflow-x-hidden w-full max-w-full">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,11 +9,19 @@
     {!! app(\App\Services\SettingsEngine::class)->getDesignTokensCss() !!}
 
     <!-- PWA Manifest & Mobile Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
     <link rel="manifest" href="/manifest.webmanifest">
     <meta name="theme-color" content="#020A24">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="/icon-192.png">
+    <meta name="apple-mobile-web-app-title" content="WorldSkills DZ">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,19 +69,15 @@
 
     <style>
         .wsap-glass {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
         }
-        .wsap-hover-card {
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        .wsap-glass-dark {
+            background: rgba(6, 32, 92, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
-        .wsap-hover-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 25px 35px -5px rgba(0, 102, 255, 0.2), 0 10px 15px -5px rgba(0, 102, 255, 0.08);
-        }
-
-        /* Floating Slow Animation */
         @keyframes floatSlow {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-8px) rotate(1deg); }
@@ -81,27 +85,17 @@
         .wsap-float-slow {
             animation: floatSlow 6s ease-in-out infinite;
         }
+        
+        [x-cloak] { display: none !important; }
 
-        /* Shimmer Ambient Glow Pulse */
-        @keyframes ambientPulse {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.15); }
-        }
-        .wsap-ambient-pulse {
-            animation: ambientPulse 4s ease-in-out infinite;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, ::before, ::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
+        @media (max-width: 640px) {
+            .container, .max-w-7xl, .max-w-6xl, .max-w-5xl, .max-w-4xl, .max-w-3xl, .max-w-2xl {
+                padding-left: 0.85rem !important;
+                padding-right: 0.85rem !important;
             }
-        }
-        .touch-target {
-            min-height: 44px;
-            min-width: 44px;
+            h1 { font-size: 1.65rem !important; line-height: 1.25 !important; }
+            h2 { font-size: 1.35rem !important; line-height: 1.3 !important; }
+            h3 { font-size: 1.15rem !important; line-height: 1.35 !important; }
         }
     </style>
 
@@ -109,68 +103,70 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
     @livewireStyles
+    
+    <!-- Platform Media & Content Protection System -->
+    <x-content-protection />
 </head>
-<body x-data="{ pwaUpdateAvailable: false, swWaiting: null }" x-init="
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').then((reg) => {
-            if (reg.waiting) {
-                swWaiting = reg.waiting;
-                pwaUpdateAvailable = true;
-            }
-            reg.addEventListener('updatefound', () => {
-                const newWorker = reg.installing;
-                newWorker.addEventListener('statechange', () => {
-                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        swWaiting = newWorker;
-                        pwaUpdateAvailable = true;
-                    }
+<body class="font-sans antialiased h-full flex flex-col text-[#06205C] bg-[#F4F7FC] relative overflow-x-hidden w-full max-w-full">
+
+    <!-- Interactive Mouse Cursor Follower Ambient Light Trail Animation -->
+    <div x-data="{
+            mouseX: -500,
+            mouseY: -500,
+            targetX: -500,
+            targetY: -500,
+            isVisible: false,
+            init() {
+                window.addEventListener('mousemove', (e) => {
+                    this.targetX = e.clientX;
+                    this.targetY = e.clientY;
+                    this.isVisible = true;
                 });
-            });
-        });
+                window.addEventListener('mouseleave', () => {
+                    this.isVisible = false;
+                });
 
-        let refreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-            if (!refreshing) {
-                refreshing = true;
-                window.location.reload();
+                const updateCursor = () => {
+                    this.mouseX += (this.targetX - this.mouseX) * 0.15;
+                    this.mouseY += (this.targetY - this.mouseY) * 0.15;
+                    requestAnimationFrame(updateCursor);
+                };
+                requestAnimationFrame(updateCursor);
             }
-        });
-    }
-" class="font-sans antialiased h-full flex flex-col text-[#06205C] bg-[#F4F7FC] relative">
+        }" 
+        x-init="init()"
+        x-show="isVisible"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 pointer-events-none z-30 overflow-hidden print:hidden" 
+        style="display: none;">
+        
+        <!-- Smooth Ambient Color Glow Trail Aura -->
+        <div class="absolute w-80 h-80 rounded-full bg-gradient-to-r from-[#0066FF]/25 via-sky-400/20 to-amber-300/20 blur-3xl pointer-events-none transition-transform duration-75 ease-out"
+             :style="`transform: translate3d(${mouseX - 160}px, ${mouseY - 160}px, 0);`"></div>
 
-    <!-- Controlled PWA Update Notification Banner -->
-    <div x-show="pwaUpdateAvailable" x-cloak class="fixed bottom-6 left-6 right-6 md:left-auto md:right-6 md:max-w-md z-50 bg-[#020A24] text-white rounded-2xl p-4 shadow-2xl border border-brand-sky/40 flex items-center justify-between gap-4 animate-bounce">
-        <div class="flex items-center gap-3">
-            <span class="w-3 h-3 rounded-full bg-brand-sky animate-ping"></span>
-            <div class="text-xs font-bold">
-                <span class="block text-slate-200">
-                    {{ app()->getLocale() === 'fr' ? 'Mise à jour disponible' : (app()->getLocale() === 'en' ? 'New update available' : 'تحديث جديد لمنصة WSAP متوفر') }}
-                </span>
-                <span class="text-[10px] text-slate-400 font-medium">
-                    {{ app()->getLocale() === 'fr' ? 'Cliquez pour mettre à jour la plateforme' : (app()->getLocale() === 'en' ? 'Click to update platform' : 'اضغط لتحديث المنصة بآخر المميزات') }}
-                </span>
-            </div>
-        </div>
-        <div class="flex items-center gap-2">
-            <button @click="if (swWaiting) { swWaiting.postMessage({ type: 'SKIP_WAITING' }); }" class="px-4 py-2 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-xs font-bold transition shadow-md">
-                {{ app()->getLocale() === 'fr' ? 'Mettre à jour' : (app()->getLocale() === 'en' ? 'Update Now' : 'تحديث الآن') }}
-            </button>
-            <button @click="pwaUpdateAvailable = false" class="text-slate-400 hover:text-white p-1 text-xs font-bold">
-                ✕
-            </button>
-        </div>
+        <!-- Inner Spark Core -->
+        <div class="absolute w-14 h-14 rounded-full bg-gradient-to-r from-sky-400/35 to-blue-600/35 blur-xl pointer-events-none transition-transform duration-75 ease-out"
+             :style="`transform: translate3d(${mouseX - 28}px, ${mouseY - 28}px, 0);`"></div>
     </div>
 
     <!-- Modular Top Header Navigation Component -->
     <x-navbar />
 
     <!-- Page Main Content -->
-    <main class="flex-grow">
+    <main class="flex-grow pb-28 md:pb-0">
         {{ $slot }}
     </main>
 
     <!-- Modular Dark Deep Blue Footer Component -->
     <x-footer />
+
+    <!-- Native Smartphone Mobile App Bottom Tab Bar Navigation -->
+    <x-mobile-bottom-nav />
 
     <!-- Dynamic Scroll Mascot Popup Widget (WorldSkills Algeria Mascot 2026) -->
     <div x-data="{ 
@@ -178,14 +174,16 @@
             dismissed: false,
             mobileNavOpen: false,
             init() {
-                window.addEventListener('scroll', () => {
+                const checkScroll = () => {
                     if (this.dismissed) return;
                     const scrollPos = window.innerHeight + window.scrollY;
                     const totalHeight = document.documentElement.scrollHeight;
-                    if (scrollPos >= totalHeight - 950) {
+                    if (window.scrollY > 250 || scrollPos >= totalHeight - 400) {
                         this.showMascot = true;
                     }
-                });
+                };
+                window.addEventListener('scroll', checkScroll);
+                setTimeout(checkScroll, 1500);
                 window.addEventListener('mobile-menu-toggled', (e) => {
                     this.mobileNavOpen = !!e.detail;
                 });
@@ -199,7 +197,7 @@
          x-transition:leave="transition ease-in duration-500 transform"
          x-transition:leave-start="translate-y-0 opacity-100 scale-100"
          x-transition:leave-end="translate-y-32 opacity-0 scale-75"
-         class="fixed bottom-3 start-3 sm:bottom-6 sm:start-6 z-40 flex items-end gap-2 sm:gap-3 pointer-events-auto max-w-[88vw] sm:max-w-sm">
+         class="fixed bottom-20 start-3 sm:bottom-6 sm:start-6 z-40 flex items-end gap-2 sm:gap-3 pointer-events-auto max-w-[88vw] sm:max-w-sm">
 
         <!-- Speech Bubble Card -->
         <div class="bg-white/95 backdrop-blur-xl p-3 sm:p-4 rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-blue-500/30 text-slate-900 space-y-1.5 sm:space-y-2 relative transform -rotate-1 group hover:rotate-0 transition-transform">
@@ -213,13 +211,13 @@
             <div class="flex items-center gap-1.5 sm:gap-2">
                 <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#0066FF] animate-ping"></span>
                 <span class="text-[9px] sm:text-[10px] font-black text-[#0066FF] uppercase tracking-wider">
-                    ✦ {{ app()->getLocale() === 'fr' ? 'Mascotte Officielle 2026' : (app()->getLocale() === 'en' ? 'Official Mascot 2026' : 'تعويذة أولمبياد المهن 2026') }}
+                    {{ app()->getLocale() === 'fr' ? 'Mascotte Officielle 2026' : (app()->getLocale() === 'en' ? 'Official Mascot 2026' : 'تعويذة أولمبياد المهن 2026') }}
                 </span>
             </div>
 
             <!-- Welcome Text Message -->
             <p class="text-[11px] sm:text-xs font-bold text-[#06205C] leading-snug sm:leading-relaxed">
-                {{ app()->getLocale() === 'fr' ? 'Bienvenue aux Olympiades Africaines des Métiers 2026 ! L\'Algérie vous accueille.' : (app()->getLocale() === 'en' ? 'Welcome to the African WorldSkills Competition 2026!' : 'أهلاً بكم في أولمبياد المهن إفريقيا 2026! الجزائر ترحب بجميع المتنافسين والوفود المشاركة.') }}
+                {{ app()->getLocale() === 'fr' ? 'Bienvenue aux Olympiades des Métiers 2026 ! L\'Algérie vous accueille.' : (app()->getLocale() === 'en' ? 'Welcome to WorldSkills Algeria 2026!' : 'أهلاً بكم في أولمبياد المهن الجزائر 2026! نرحب بجميع المتنافسين والوفود المشاركة.') }}
             </p>
 
             <!-- Interactive Quick Link Button -->
@@ -257,5 +255,7 @@
             }
         });
     </script>
+    <x-cookie-banner />
+    <x-pwa-installer />
 </body>
 </html>

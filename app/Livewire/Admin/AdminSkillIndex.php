@@ -37,6 +37,7 @@ class AdminSkillIndex extends Component
     #[Validate('nullable|integer')]public ?int   $max_age   = null;
     #[Validate('nullable')]        public string $icon       = '';
     #[Validate('nullable')]        public string $image_path  = '';
+    #[Validate('nullable')]        public string $pdf_path    = '';
     public bool   $is_active  = true;
     public int    $sort_order = 0;
 
@@ -87,6 +88,7 @@ class AdminSkillIndex extends Component
         $this->max_age        = $skill->max_age;
         $this->icon           = $skill->icon ?? '';
         $this->image_path     = $skill->image_path ?? '';
+        $this->pdf_path        = $skill->pdf_path ?? '';
         $this->is_active      = (bool) $skill->is_active;
         $this->sort_order     = (int) $skill->sort_order;
         $this->pdf_file       = null;
@@ -132,6 +134,7 @@ class AdminSkillIndex extends Component
             'max_age'        => $this->max_age,
             'icon'           => $this->icon,
             'image_path'     => $this->image_path,
+            'pdf_path'       => $this->pdf_path ?: null,
             'is_active'      => $this->is_active,
             'sort_order'     => $this->sort_order,
         ];
@@ -171,6 +174,8 @@ class AdminSkillIndex extends Component
                 mkdir($targetDir, 0777, true);
             }
             copy($this->pdf_file->getRealPath(), $targetDir . '/' . $filename);
+            $savedPdfPath = 'docs/td/' . $filename;
+            $skill->update(['pdf_path' => $savedPdfPath]);
             $msg .= ' وتحديث ملف التوصيف الفني PDF بنجاح';
         }
 
@@ -210,7 +215,7 @@ class AdminSkillIndex extends Component
         $this->editingId = null;
         $this->name_ar = $this->name_fr = $this->name_en = '';
         $this->description_ar = $this->description_fr = $this->description_en = '';
-        $this->code = $this->icon = $this->image_path = '';
+        $this->code = $this->icon = $this->image_path = $this->pdf_path = '';
         $this->category_id = null;
         $this->min_age = $this->max_age = null;
         $this->is_active  = true;
@@ -262,16 +267,17 @@ class AdminSkillIndex extends Component
             ->when($this->search, fn($q) => $q->where(function ($q) {
                 $q->where('name_ar', 'like', '%'.$this->search.'%')
                   ->orWhere('name_fr', 'like', '%'.$this->search.'%')
+                  ->orWhere('name_en', 'like', '%'.$this->search.'%')
                   ->orWhere('code',    'like', '%'.$this->search.'%');
             }))
             ->when($this->filterCategory, fn($q) => $q->where('category_id', $this->filterCategory))
             ->when($this->filterStatus !== '', fn($q) => $q->where('is_active', $this->filterStatus === '1'))
             ->orderBy('sort_order')
-            ->orderBy('name_ar');
+            ->orderBy('code');
 
         return view('livewire.admin.skills.index', [
-            'skills'     => $query->paginate(15),
-            'categories' => SkillCategory::orderBy('name_ar')->get(),
+            'skills'       => $query->paginate(20),
+            'categories'   => SkillCategory::orderBy('name_ar')->get(),
             'totalSkills'  => Skill::count(),
             'activeSkills' => Skill::where('is_active', true)->count(),
         ]);

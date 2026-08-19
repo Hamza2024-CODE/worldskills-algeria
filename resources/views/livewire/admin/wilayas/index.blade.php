@@ -6,28 +6,15 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
 <div class="space-y-5 pb-8" dir="{{ $locale === 'ar' ? 'rtl' : 'ltr' }}">
 
     {{-- HEADER --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100">
-                        {{ $t('إدارة الولايات والتقسيم الجغرافي', 'Gestion des Wilayas & Régions', 'Wilayas & Geographic Regions') }}
-                    </h1>
-                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
-                        {{ $t('إجمالي الولايات: ', 'Total Wilayas: ', 'Total Wilayas: ') }}<span class="text-blue-600 dark:text-blue-400 font-bold">{{ $totalWilayas }}</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <button wire:click="openCreate"
-            class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-black transition shadow-sm shrink-0">
+    <x-dashboard.page-header
+        :title="$t('إدارة الولايات والتقسيم الجغرافي (58 ولاية)', 'Gestion des Wilayas & Régions', 'Wilayas & Geographic Regions')"
+        :subtitle="$t('إجمالي الولايات: ', 'Total Wilayas: ', 'Total Wilayas: ') . $totalWilayas . ' — ' . $t('دليل التقسيمات الجغرافية الرسمية عبر كافة التراب الوطني', 'Répertoire géographique officiel', 'Official geographic directory')"
+    >
+        <button wire:click="openCreate" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition shadow-lg shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-            <span>{{ $t('إضافة ولاية', 'Ajouter Wilaya', 'Add Wilaya') }}</span>
+            <span>{{ $t('إضافة ولاية جديدة', 'Ajouter une Wilaya', 'Add New Wilaya') }}</span>
         </button>
-    </div>
+    </x-dashboard.page-header>
 
     {{-- FILTERS --}}
     <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex flex-col sm:flex-row gap-3">

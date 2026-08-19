@@ -6,27 +6,15 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
 <div class="space-y-6 pb-12" dir="{{ $locale === 'ar' ? 'rtl' : 'ltr' }}">
 
     {{-- TOP COMMAND HEADER --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-[#06205C] text-white p-6 rounded-3xl shadow-xl relative overflow-hidden">
-        <div class="space-y-1 relative z-10">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-black tracking-wider uppercase border border-emerald-400/30">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>WSAP LIVE FIELD OPERATIONS</span>
-            </div>
-            <h1 class="text-2xl font-black text-white">
-                {{ $t('غرفة القيادة والعمليات الميدانية المباشرة', 'Centre de Commandement des Opérations sur le Terrain', 'Live Field Operations Command Center') }}
-            </h1>
-            <p class="text-xs text-blue-100/80 font-medium">
-                {{ $t('متابعة حية وشاملة لقرارات الوصول للشارات، الإطعام، الإقامة، النقل، الأمان الميداني، والتنظيم المباشر.', 'Suivi en temps réel de la logistique, restauration, transport et sécurité sur le terrain.', 'Real-time tracking of logistics, meals, transport, housing, and field security.') }}
-            </p>
-        </div>
-
-        <div class="flex items-center gap-3 relative z-10">
-            <button wire:click="$set('showEmergencyModal', true)" class="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition shadow-lg flex items-center gap-2 border border-rose-400/30">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                <span>{{ $t('التحكم بالطوارئ', 'Contrôle d\'Urgence', 'Emergency Control') }}</span>
-            </button>
-        </div>
-    </div>
+    <x-dashboard.page-header
+        :title="$t('غرفة القيادة والعمليات الميدانية المباشرة', 'Centre de Commandement des Opérations sur le Terrain', 'Live Field Operations Command Center')"
+        :subtitle="$t('متابعة حية وشاملة لقرارات الوصول للشارات، الإطعام، الإقامة، النقل، الأمان الميداني، والتنظيم المباشر.', 'Suivi en temps réel de la logistique, restauration, transport et sécurité sur le terrain.', 'Real-time tracking of logistics, meals, transport, housing, and field security.')"
+    >
+        <button wire:click="$set('showEmergencyModal', true)" class="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition shadow-lg flex items-center gap-2 border border-rose-400/30 shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <span>{{ $t('التحكم بالطوارئ', 'Contrôle d\'Urgence', 'Emergency Control') }}</span>
+        </button>
+    </x-dashboard.page-header>
 
     {{-- FLASH MESSAGE --}}
     @if($flashMessage ?? null)

@@ -6,28 +6,16 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
 <div class="space-y-5 pb-8" dir="{{ $locale === 'ar' ? 'rtl' : 'ltr' }}">
 
     {{-- HEADER --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100">
-                        {{ $t('إدارة طلبات التسجيل والترشيحات', 'Gestion des Inscriptions & Candidatures', 'Registrations & Applications Management') }}
-                    </h1>
-                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
-                        {{ $t('إجمالي الطلبات: ', 'Total Inscriptions: ', 'Total Applications: ') }}<span class="text-blue-600 dark:text-blue-400 font-bold">{{ $totalRegistrations }}</span>
-                    </p>
-                </div>
-            </div>
-        </div>
+    <x-dashboard.page-header
+        :title="$t('إدارة طلبات التسجيل والترشيحات', 'Gestion des Inscriptions & Candidatures', 'Registrations & Applications Management')"
+        :subtitle="$t('إجمالي الطلبات: ', 'Total Inscriptions: ', 'Total Applications: ') . $totalRegistrations . ' — ' . $t('مقبول: ', 'Approuvé: ', 'Approved: ') . $approvedCount . ' — ' . $t('قيد الدراسة: ', 'En Cours: ', 'Pending: ') . $pendingCount"
+    >
         <div class="flex items-center gap-2">
-            <span class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 text-xs font-black">{{ $t('مقبول: ', 'Approuvé: ', 'Approved: ') }}{{ $approvedCount }}</span>
-            <span class="px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 text-xs font-black">{{ $t('قيد الدراسة: ', 'En Cours: ', 'Pending: ') }}{{ $pendingCount }}</span>
-            <span class="px-3 py-1.5 rounded-xl bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300 text-xs font-black">{{ $t('مرفوض: ', 'Refusé: ', 'Rejected: ') }}{{ $rejectedCount }}</span>
+            <span class="px-3.5 py-2 rounded-2xl bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-black backdrop-blur-md">{{ $t('مقبول: ', 'Approuvé: ', 'Approved: ') }}{{ $approvedCount }}</span>
+            <span class="px-3.5 py-2 rounded-2xl bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-black backdrop-blur-md">{{ $t('قيد الدراسة: ', 'En Cours: ', 'Pending: ') }}{{ $pendingCount }}</span>
+            <span class="px-3.5 py-2 rounded-2xl bg-rose-500/20 border border-rose-400/30 text-rose-300 text-xs font-black backdrop-blur-md">{{ $t('مرفوض: ', 'Refusé: ', 'Rejected: ') }}{{ $rejectedCount }}</span>
         </div>
-    </div>
+    </x-dashboard.page-header>
 
     {{-- FILTERS --}}
     <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex flex-col sm:flex-row gap-3">

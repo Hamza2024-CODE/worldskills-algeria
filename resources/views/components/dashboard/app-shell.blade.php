@@ -1,12 +1,13 @@
 @props(['title' => 'WSAP Workspace'])
 
 @php
-    $navService  = app(\App\Services\DashboardNavigationService::class);
-    $user        = auth()->user();
-    $items       = $user ? $navService->getNavigation($user) : [];
-    $activeEvent = app(\App\Services\ActiveEventService::class)->getActiveEvent();
-    $locale      = app()->getLocale();
-    $dir         = $locale === 'ar' ? 'rtl' : 'ltr';
+    $navService      = app(\App\Services\DashboardNavigationService::class);
+    $user            = auth()->user();
+    $categorizedNav  = $user ? $navService->getCategorizedNavigation($user) : [];
+    $items           = $user ? $navService->getNavigation($user) : [];
+    $activeEvent     = app(\App\Services\ActiveEventService::class)->getActiveEvent();
+    $locale          = app()->getLocale();
+    $dir             = $locale === 'ar' ? 'rtl' : 'ltr';
 @endphp
 
 <!DOCTYPE html>
@@ -19,9 +20,19 @@
     <meta name="description" content="WSAP — المنصة الوطنية الرسمية لأولمبياد المهن الجزائرية">
     <meta name="theme-color" content="#020A24">
 
-    {{-- PWA --}}
+    {{-- PWA Manifest & Mobile Meta Tags --}}
+    <link rel="manifest" href="/manifest.json">
     <link rel="manifest" href="/manifest.webmanifest">
-    <link rel="apple-touch-icon" href="/icon-192.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="WorldSkills DZ">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
 
     {{-- Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -102,16 +113,39 @@
         }
         .animate-fade-slide-in { animation: fadeSlideIn 0.3s ease both; }
 
-        /* ── Reduced Motion ── */
-        @media (prefers-reduced-motion: reduce) {
-            *, ::before, ::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
-            }
+        /* ── Global Mobile Responsiveness Engine ── */
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden !important;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
-        /* ── Touch Targets ── */
+        img, svg, video, iframe {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Responsive Table Containers */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Touch Targets */
         .touch-target { min-width: 44px; min-height: 44px; }
+
+        @media (max-width: 640px) {
+            main {
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+                padding-top: 1rem !important;
+                padding-bottom: 1.5rem !important;
+            }
+            h1 { font-size: 1.5rem !important; line-height: 1.25 !important; }
+            h2 { font-size: 1.25rem !important; line-height: 1.3 !important; }
+        }
     </style>
 
     @livewireStyles
@@ -127,16 +161,19 @@
     <div class="flex-1 flex w-full">
 
         {{-- Desktop Collapsible Sidebar --}}
-        <x-dashboard.sidebar :items="$items" />
+        <x-dashboard.sidebar :categorizedNav="$categorizedNav" :items="$items" />
 
         {{-- Mobile Drawer Navigation --}}
-        <x-dashboard.mobile-nav :items="$items" />
+        <x-dashboard.mobile-nav :categorizedNav="$categorizedNav" :items="$items" />
 
         {{-- Main Content --}}
-        <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 space-y-6 animate-fade-slide-in overflow-x-hidden">
+        <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-20 md:pb-8 space-y-6 animate-fade-slide-in overflow-x-hidden">
             {{ $slot }}
         </main>
     </div>
+
+    {{-- Native Smartphone Mobile App Bottom Tab Bar Navigation --}}
+    <x-mobile-bottom-nav />
 
     @livewireScripts
 
@@ -198,5 +235,6 @@
             document.documentElement.classList.toggle('dark', dark);
         })();
     </script>
+    <x-pwa-installer />
 </body>
 </html>

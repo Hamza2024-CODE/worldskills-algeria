@@ -1,6 +1,6 @@
 @props([
     'target'      => 0,
-    'duration'    => 2200,
+    'duration'    => 2000,
     'label'       => '',
     'description' => '',
     'color'       => 'text-brand-500',
@@ -12,13 +12,30 @@
 
 @php
     $numericTarget = (int) filter_var($target, FILTER_SANITIZE_NUMBER_INT);
+    if ($numericTarget === 0 && (int)$target > 0) {
+        $numericTarget = (int)$target;
+    }
 @endphp
 
 <div x-data="{
-    count: 0,
+    count: {{ $numericTarget }},
     target: {{ $numericTarget }},
     duration: {{ (int) $duration }},
     started: false,
+    init() {
+        if ('IntersectionObserver' in window) {
+            this.count = 0;
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    this.startAnimation();
+                    observer.disconnect();
+                }
+            }, { threshold: 0.1 });
+            observer.observe(this.$el);
+        } else {
+            this.startAnimation();
+        }
+    },
     startAnimation() {
         if (this.started) return;
         this.started = true;
@@ -47,7 +64,6 @@
         return n.toLocaleString();
     }
 }"
-x-intersect.once="startAnimation()"
 class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 text-center space-y-3 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden group cursor-default select-none">
 
     {{-- Decorative glow --}}
@@ -68,7 +84,7 @@ class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 text-center
     <div class="flex items-end justify-center gap-0.5 font-black leading-none {{ $color }}">
         @if($prefix) <span class="text-2xl sm:text-3xl mb-0.5">{{ $prefix }}</span> @endif
         <span x-text="target >= 1000 ? formatCount(count) : count.toLocaleString()"
-              class="text-3xl sm:text-5xl font-black tabular-nums tracking-tight">0</span>
+              class="text-3xl sm:text-5xl font-black tabular-nums tracking-tight">{{ $numericTarget }}</span>
         @if($suffix) <span class="text-xl sm:text-2xl mb-1">{{ $suffix }}</span> @endif
     </div>
 

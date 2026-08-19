@@ -6,28 +6,15 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
 <div class="space-y-6 pb-8" dir="{{ $locale === 'ar' ? 'rtl' : 'ltr' }}">
 
     {{-- HEADER --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100">
-                        {{ $t('إدارة الشركاء والرعاة الرسميّين', 'Gestion des Partenaires & Sponsors', 'Official Partners & Sponsors Management') }}
-                    </h1>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                        {{ $t('إجمالي الشركاء: ', 'Total Partenaires: ', 'Total Partners: ') }}<span class="font-bold text-blue-600 dark:text-blue-400">{{ $totalPartners }}</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <button wire:click="openCreate" class="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-black transition shadow-sm">
+    <x-dashboard.page-header
+        :title="$t('إدارة الشركاء والرعاة الرسميّين', 'Gestion des Partenaires & Sponsors', 'Official Partners & Sponsors Management')"
+        :subtitle="$t('إجمالي الشركاء: ', 'Total Partenaires: ', 'Total Partners: ') . $totalPartners . ' — ' . $t('إدارة وتفعيل/إيقاف ظهور الشركاء في البوابة الوطنية', 'Gestion de l\'affichage des partenaires', 'Manage partner visibility on national portal')"
+    >
+        <button wire:click="openCreate" class="flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition shadow-lg shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/></svg>
             <span>{{ $t('إضافة شريك جديد', 'Ajouter un Partenaire', 'Add New Partner') }}</span>
         </button>
-    </div>
+    </x-dashboard.page-header>
 
     {{-- SEARCH & FILTERS --}}
     <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-xs flex flex-col sm:flex-row gap-3 items-center justify-between">

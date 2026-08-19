@@ -23,6 +23,10 @@ class UserProfile extends Component
     public string $locale = 'ar';
     public $photo; // Uploaded temporary photo
 
+    public string $suit_size = 'M';
+    public string $shoe_size = '42';
+    public string $height_cm = '175';
+
     public string $current_password = '';
     public string $new_password = '';
     public string $new_password_confirmation = '';
@@ -39,6 +43,12 @@ class UserProfile extends Component
             $this->locale = $user->locale ?? 'ar';
 
             $member = DelegationMember::where('user_id', $user->id)->first();
+            $latestReg = $user->participant?->registrations()?->latest()->first();
+
+            $this->suit_size = $latestReg?->suit_size ?? ($member?->suit_size ?? 'M');
+            $this->shoe_size = $latestReg?->shoe_size ?? ($member?->shoe_size ?? '42');
+            $this->height_cm = (string) ($latestReg?->height_cm ?? 175);
+
             if ($member) {
                 $this->phone           = $member->phone ?? $user->participant?->phone ?? '';
                 $this->passport_number = $member->passport_number ?? $user->participant?->passport_number ?? '';
@@ -59,6 +69,9 @@ class UserProfile extends Component
             'phone'           => 'nullable|string|max:50',
             'passport_number' => 'nullable|string|max:50',
             'nin_number'      => 'nullable|string|max:50',
+            'suit_size'       => 'nullable|string|max:20',
+            'shoe_size'       => 'nullable|string|max:20',
+            'height_cm'       => 'nullable|numeric',
             'photo'           => 'nullable|image|max:5120',
             'locale'          => 'required|in:ar,fr,en',
         ]);
@@ -77,7 +90,26 @@ class UserProfile extends Component
                 $data['avatar_path'] = $path;
 
                 if ($user->participant) {
-                    $user->participant->update(['photo_path' => $path]);
+                    if (\Illuminate\Support\Facades\Schema::hasColumn('participant_profiles', 'photo_path')) {
+                        $user->participant->update(['photo_path' => $path]);
+                    }
+
+                    $latestReg = $user->participant->registrations()->latest()->first();
+                    if ($latestReg) {
+                        $existingPhotoDoc = $latestReg->documents()->whereIn('document_type', ['PHOTO', 'photo', 'official_photo'])->first();
+                        if ($existingPhotoDoc) {
+                            $existingPhotoDoc->update(['file_path' => $path]);
+                        } else {
+                            \App\Models\ParticipantDocument::create([
+                                'registration_id' => $latestReg->id,
+                                'document_type'   => 'PHOTO',
+                                'file_path'       => $path,
+                                'original_name'   => 'avatar.jpg',
+                                'mime_type'       => 'image/jpeg',
+                                'file_size'       => 0,
+                            ]);
+                        }
+                    }
                 }
 
                 DelegationMember::where('user_id', $user->id)->update(['photo_path' => $path]);
@@ -91,12 +123,23 @@ class UserProfile extends Component
                     'passport_number' => $this->passport_number,
                     'nin_number'      => $this->nin_number,
                 ]);
+
+                $latestReg = $user->participant->registrations()->latest()->first();
+                if ($latestReg) {
+                    $latestReg->update([
+                        'suit_size' => $this->suit_size,
+                        'shoe_size' => $this->shoe_size,
+                        'height_cm' => (int) $this->height_cm,
+                    ]);
+                }
             }
 
             DelegationMember::where('user_id', $user->id)->update([
                 'phone'           => $this->phone,
                 'passport_number' => $this->passport_number,
                 'nin_number'      => $this->nin_number,
+                'suit_size'       => $this->suit_size,
+                'shoe_size'       => $this->shoe_size,
             ]);
 
             session(['locale' => $this->locale]);

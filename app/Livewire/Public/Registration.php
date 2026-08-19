@@ -65,9 +65,13 @@ class Registration extends Component
     public bool $isSubmitted = false;
 
     public bool $isArabicCountry = true;
+    public bool $registrationEnabled = true;
 
     public function mount(): void
     {
+        $settings = app(\App\Services\SettingsEngine::class);
+        $this->registrationEnabled = (bool) $settings->get('registration_competitors_enabled', true);
+
         $algeria = Country::where('iso2', 'DZ')->first();
         if ($algeria) {
             $this->countryId = $algeria->id;
@@ -102,6 +106,30 @@ class Registration extends Component
         }
     }
 
+    public function getPhonePlaceholderProperty(): string
+    {
+        $country = Country::find($this->countryId);
+        $locale = app()->getLocale();
+        if (!$country) {
+            return $locale === 'fr' ? 'Ex: 0550123456 ou +213550123456' : ($locale === 'en' ? 'Ex: 0550123456 or +213550123456' : 'مثال: 0550123456 أو +213550123456');
+        }
+
+        $code = $country->phone_code ?: ($country->is_algeria ? '+213' : '');
+
+        return match($country->iso2) {
+            'DZ' => $locale === 'fr' ? 'Ex: 0550123456 ou +213550123456' : ($locale === 'en' ? 'Ex: 0550123456 or +213550123456' : 'مثال: 0550123456 أو +213550123456'),
+            'TN' => "{$code} 20 123 456",
+            'MA' => "{$code} 6 12 34 56 78",
+            'EG' => "{$code} 10 1234 5678",
+            'LY' => "{$code} 91 123 4567",
+            'MR' => "{$code} 45 12 34 56",
+            'SD' => "{$code} 91 234 5678",
+            default => !empty($code) 
+                ? ($locale === 'fr' ? "Ex: {$code} 55 000 0000" : ($locale === 'en' ? "Ex: {$code} 55 000 0000" : "مثال: {$code} 55 000 0000"))
+                : ($locale === 'fr' ? 'Ex: +213 550 00 00 00' : ($locale === 'en' ? 'Ex: +213 550 00 00 00' : 'مثال: 0550000000 / +213'))
+        };
+    }
+
     public function validateAge(): bool
     {
         if (empty($this->dateOfBirth)) {
@@ -111,7 +139,7 @@ class Registration extends Component
         $dob = Carbon::parse($this->dateOfBirth);
         $ageYears = $dob->diffInYears(Carbon::now());
 
-        return $ageYears <= 25;
+        return $ageYears <= 26;
     }
 
     public function nextStep()
@@ -140,16 +168,25 @@ class Registration extends Component
                 $rules['lastNameAr']  = ['required', 'min:2', 'regex:/^[\x{0600}-\x{06FF}\s\-]+$/u'];
             }
 
+            $locale = app()->getLocale();
+
             $this->validate($rules, [
-                'countryId.required'   => 'يرجى اختيار دولة الوفد المشارك.',
-                'firstNameAr.regex'    => 'الاسم بالعربية يجب أن يتكون من أحرف عربية فقط.',
-                'lastNameAr.regex'     => 'اللقب بالعربية يجب أن يتكون من أحرف عربية فقط.',
-                'firstNameLatin.regex' => 'الاسم بالفرنسية/اللاتينية يجب أن يحتوي على أحرف لاتينية فقط.',
-                'lastNameLatin.regex'  => 'اللقب بالفرنسية/اللاتينية يجب أن يحتوي على أحرف لاتينية فقط.',
-                'email.regex'          => 'يرجى إدخال بريد إلكتروني صحيح ومعتمد.',
+                'countryId.required'   => $locale === 'fr' ? 'Veuillez sélectionner le pays de la délégation.' : ($locale === 'en' ? 'Please select delegation country.' : 'يرجى اختيار دولة الوفد المشارك.'),
+                'firstNameAr.required' => $locale === 'fr' ? 'Le prénom en arabe est requis.' : ($locale === 'en' ? 'First name in Arabic is required.' : 'الاسم الشخصي بالعربية مطلوب.'),
+                'lastNameAr.required'  => $locale === 'fr' ? 'Le nom en arabe est requis.' : ($locale === 'en' ? 'Last name in Arabic is required.' : 'اللقب العائلي بالعربية مطلوب.'),
+                'firstNameAr.regex'    => $locale === 'fr' ? 'Le prénom en arabe doit contenir uniquement des lettres arabes.' : ($locale === 'en' ? 'First name in Arabic must contain Arabic characters only.' : 'الاسم بالعربية يجب أن يتكون من أحرف عربية فقط.'),
+                'lastNameAr.regex'     => $locale === 'fr' ? 'Le nom en arabe doit contenir uniquement des lettres arabes.' : ($locale === 'en' ? 'Last name in Arabic must contain Arabic characters only.' : 'اللقب بالعربية يجب أن يتكون من أحرف عربية فقط.'),
+                'firstNameLatin.required' => $locale === 'fr' ? 'Le prénom en latin est requis.' : ($locale === 'en' ? 'First name in Latin characters is required.' : 'الاسم بالفرنسية/اللاتينية مطلوب.'),
+                'lastNameLatin.required'  => $locale === 'fr' ? 'Le nom en latin est requis.' : ($locale === 'en' ? 'Last name in Latin characters is required.' : 'اللقب بالفرنسية/اللاتينية مطلوب.'),
+                'firstNameLatin.regex' => $locale === 'fr' ? 'Le prénom doit contenir uniquement des lettres latines.' : ($locale === 'en' ? 'First name must contain Latin characters only.' : 'الاسم بالفرنسية/اللاتينية يجب أن يحتوي على أحرف لاتينية فقط.'),
+                'lastNameLatin.regex'  => $locale === 'fr' ? 'Le nom doit contenir uniquement des lettres latines.' : ($locale === 'en' ? 'Last name must contain Latin characters only.' : 'اللقب بالفرنسية/اللاتينية يجب أن يحتوي على أحرف لاتينية فقط.'),
+                'email.required'       => $locale === 'fr' ? 'L\'adresse email est requise.' : ($locale === 'en' ? 'Email address is required.' : 'البريد الإلكتروني مطلوب.'),
+                'email.regex'          => $locale === 'fr' ? 'Veuillez saisir une adresse email valide.' : ($locale === 'en' ? 'Please enter a valid email address.' : 'يرجى إدخال بريد إلكتروني صحيح ومعتمد.'),
+                'phone.required'       => $locale === 'fr' ? 'Le numéro de téléphone est requis.' : ($locale === 'en' ? 'Phone number is required.' : 'رقم الهاتف مطلوب.'),
                 'phone.regex'          => $this->isAlgeria 
-                                            ? 'رقم الهاتف الجزائري غير صحيح. يجب أن يتكون من 10 أرقام ويبدأ بـ (05/06/07).' 
-                                            : 'رقم الهاتف غير صحيح.',
+                                            ? ($locale === 'fr' ? 'Numéro algérien invalide. Doit comporter 10 chiffres et commencer par (05/06/07).' : ($locale === 'en' ? 'Invalid Algerian phone number. Must be 10 digits starting with 05/06/07.' : 'رقم الهاتف الجزائري غير صحيح. يجب أن يتكون من 10 أرقام ويبدأ بـ (05/06/07).'))
+                                            : ($locale === 'fr' ? 'Numéro de téléphone invalide.' : ($locale === 'en' ? 'Invalid phone number.' : 'رقم الهاتف غير صحيح.')),
+                'dateOfBirth.required' => $locale === 'fr' ? 'La date de naissance est requise.' : ($locale === 'en' ? 'Date of birth is required.' : 'تاريخ الميلاد مطلوب.'),
             ]);
 
             // Uniqueness Check for Email and Phone
@@ -163,27 +200,30 @@ class Registration extends Component
             }
 
             if (!$this->validateAge()) {
-                $this->addError('dateOfBirth', 'عذراً، يجب ألا يتجاوز عمر المترشح 25 سنة بالضبط للمشاركة في أولمبياد المهن (Age <= 25 years).');
+                $this->addError('dateOfBirth', $locale === 'fr' ? 'Désolé, le candidat ne doit pas dépasser 26 ans pour participer.' : ($locale === 'en' ? 'Sorry, candidate age must not exceed 26 years.' : 'عذراً، يجب ألا يتجاوز عمر المترشح 26 سنة للمشاركة في أولمبياد المهن (≤ 26 سنة).'));
                 return;
             }
         } elseif ($this->step === 2) {
+            $locale = app()->getLocale();
             $rules = [
                 'photoFile' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
             ];
 
             $messages = [
-                'photoFile.required' => 'يرجى تحميل الصورة الشخصية الرسمية للمترشح.',
-                'photoFile.image'    => 'الملف المرفق للصورة يجب أن يكون صورة بحجم مناسب.',
+                'photoFile.required' => $locale === 'fr' ? 'Veuillez charger la photo officielle du candidat.' : ($locale === 'en' ? 'Please upload the candidate\'s official photo.' : 'يرجى تحميل الصورة الشخصية الرسمية للمترشح.'),
+                'photoFile.image'    => $locale === 'fr' ? 'Le fichier photo doit être une image valide.' : ($locale === 'en' ? 'Uploaded photo file must be a valid image.' : 'الملف المرفق للصورة يجب أن يكون صورة بحجم مناسب.'),
             ];
 
             if ($this->isAlgeria) {
                 $rules['nationalId'] = 'required|regex:/^[0-9]{18}$/';
                 $rules['nationalIdFile'] = 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240';
-                $messages['nationalId.regex'] = 'يجب أن يتكون رقم بطاقة التعريف الوطنية (NIN) من 18 رقماً بالضبط دون حروف.';
+                $messages['nationalId.required'] = $locale === 'fr' ? 'Le numéro NIN (18 chiffres) est requis.' : ($locale === 'en' ? 'NIN number (18 digits) is required.' : 'رقم التعريف الوطني (18 رقماً) مطلوب.');
+                $messages['nationalId.regex'] = $locale === 'fr' ? 'Le numéro NIN doit comporter exactement 18 chiffres.' : ($locale === 'en' ? 'National ID Number (NIN) must be exactly 18 digits.' : 'يجب أن يتكون رقم بطاقة التعريف الوطنية (NIN) من 18 رقماً بالضبط دون حروف.');
             } else {
                 $rules['passportNumber'] = 'required|regex:/^[0-9]{18}$/';
                 $rules['passportFile'] = 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240';
-                $messages['passportNumber.regex'] = 'يجب أن يتكون رقم جواز السفر من 18 رقماً بالضبط.';
+                $messages['passportNumber.required'] = $locale === 'fr' ? 'Le numéro de passeport est requis.' : ($locale === 'en' ? 'Passport number is required.' : 'رقم جواز السفر مطلوب.');
+                $messages['passportNumber.regex'] = $locale === 'fr' ? 'Le numéro de passeport doit comporter exactement 18 chiffres.' : ($locale === 'en' ? 'Passport number must be exactly 18 digits.' : 'يجب أن يتكون رقم جواز السفر من 18 رقماً بالضبط.');
             }
 
             $this->validate($rules, $messages);
@@ -241,12 +281,16 @@ class Registration extends Component
 
     public function submitRegistration()
     {
+        $locale = app()->getLocale();
         $this->validate([
             'skillId' => 'required|exists:skills,id',
+        ], [
+            'skillId.required' => $locale === 'fr' ? 'Veuillez sélectionner le métier de compétition.' : ($locale === 'en' ? 'Please select competition skill.' : 'يرجى اختيار مهنة التنافس.'),
+            'skillId.exists'   => $locale === 'fr' ? 'Le métier sélectionné est invalide.' : ($locale === 'en' ? 'Selected skill is invalid.' : 'المجال المختار غير موجود.'),
         ]);
 
         if (!$this->validateAge()) {
-            $this->addError('dateOfBirth', 'عذراً، يجب ألا يتجاوز عمر المترشح 25 سنة بالضبط للمشاركة في أولمبياد المهن (Age <= 25 years).');
+            $this->addError('dateOfBirth', $locale === 'fr' ? 'Désolé, le candidat ne doit pas dépasser 25 ans exactement.' : ($locale === 'en' ? 'Sorry, candidate age must not exceed 25 years.' : 'عذراً، يجب ألا يتجاوز عمر المترشح 25 سنة بالضبط للمشاركة في أولمبياد المهن (Age <= 25 years).'));
             return;
         }
 
@@ -326,6 +370,9 @@ class Registration extends Component
             'edition_id'     => $activeEdition?->id,
             'country_id'     => $this->countryId,
             'skill_id'       => $this->skillId,
+            'suit_size'      => $this->suitSize,
+            'shoe_size'      => $this->shoeSize,
+            'height_cm'      => $this->heightCm,
             'status'         => ParticipantStatus::PENDING,
             'submitted_at'   => now(),
         ]);

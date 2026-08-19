@@ -35,25 +35,20 @@ class WsapAccessRulesEngine
         ?int $zoneId = null,
         ?string $scannerUserId = null
     ): array {
-        $cleanBadge = trim((string) $badgeIdentifier);
+        $rawBadge   = trim((string) $badgeIdentifier);
+        $cleanBadge = $this->extractCleanIdentifier($rawBadge);
+
+        if (empty($cleanBadge)) {
+            return $this->deny('BADGE_NOT_FOUND', 'الشارة غير معروفة في النظام', 'Unknown badge identifier', null, $zoneId, $serviceType, $serviceId, $scannerUserId);
+        }
 
         // 1. Emergency Lockdown Check
         if ($serviceType && $this->emergencyService->isScopeLockedDown($serviceType, $serviceId)) {
             return $this->deny('EMERGENCY_LOCKDOWN_ACTIVE', 'الموقع أو الخدمة تحت وضع الإغلاق الأمني التام للطوارئ', 'Service under active emergency lockdown', null, $zoneId, $serviceType, $serviceId, $scannerUserId);
         }
 
-        // 2. Resolve Badge
-        $badgeQuery = Badge::with(['user.roles', 'user.country', 'user.participant.registrations'])
-            ->where('access_token', $cleanBadge)
-            ->orWhere('badge_uuid', $cleanBadge)
-            ->orWhere('id', $cleanBadge);
-
-        if (strlen($cleanBadge) >= 8) {
-            $badgeQuery->orWhere('badge_uuid', 'like', $cleanBadge . '%')
-                       ->orWhere('access_token', 'like', $cleanBadge . '%');
-        }
-
-        $badge = $badgeQuery->first();
+        // 2. Resolve Badge (or User)
+        $badge = $this->resolveBadge($cleanBadge, $rawBadge);
 
         if (!$badge) {
             return $this->deny('BADGE_NOT_FOUND', 'الشارة غير معروفة في النظام', 'Unknown badge identifier', null, $zoneId, $serviceType, $serviceId, $scannerUserId);
@@ -239,5 +234,113 @@ class WsapAccessRulesEngine
                 'zone_id'      => $zoneId,
             ],
         ]);
+    }
+
+    /**
+     * Clean and extract identifier from raw input (URLs, tokens, emails, etc.)
+     */
+    protected function extractCleanIdentifier(string $raw): string
+    {
+        $clean = trim($raw);
+        if (empty($clean)) {
+            return '';
+        }
+
+        if (filter_var($clean, FILTER_VALIDATE_URL) || str_contains($clean, 'http://') || str_contains($clean, 'https://')) {
+            $parsed = parse_url($clean);
+            if (isset($parsed['query'])) {
+                parse_str($parsed['query'], $queryParams);
+                foreach (['identifier', 'token', 'badge', 'id', 'uuid', 'code', 'user_id', 'email', 'number'] as $key) {
+                    if (!empty($queryParams[$key])) {
+                        return trim((string) $queryParams[$key]);
+                    }
+                }
+            }
+            if (isset($parsed['path'])) {
+                $path = rtrim($parsed['path'], '/');
+                $segments = array_filter(explode('/', $path));
+                if (!empty($segments)) {
+                    $lastSegment = end($segments);
+                    if (!empty($lastSegment) && !in_array(strtolower($lastSegment), ['dashboard', 'scanner', 'badge', 'accreditation', 'certificate', 'verify', 'official'])) {
+                        return trim($lastSegment);
+                    }
+                }
+            }
+        }
+
+        return $clean;
+    }
+
+    /**
+     * Resolve badge model or auto-bind active badge for registered user.
+     */
+    protected function resolveBadge(string $cleanBadge, string $rawBadge): ?Badge
+    {
+        // Direct search on Badge
+        $badge = Badge::with(['user.roles', 'user.country', 'user.participant.registrations'])
+            ->where('access_token', $cleanBadge)
+            ->orWhere('badge_uuid', $cleanBadge)
+            ->orWhere('id', $cleanBadge)
+            ->first();
+
+        if (!$badge && strlen($cleanBadge) >= 6) {
+            $badge = Badge::with(['user.roles', 'user.country', 'user.participant.registrations'])
+                ->where('badge_uuid', 'like', $cleanBadge . '%')
+                ->orWhere('access_token', 'like', $cleanBadge . '%')
+                ->first();
+        }
+
+        if ($badge) {
+            return $badge;
+        }
+
+        // Search User
+        $user = User::with(['roles', 'country', 'wilaya', 'organization', 'participant.registrations'])
+            ->where('email', $cleanBadge)
+            ->orWhere('email', $rawBadge)
+            ->orWhere('uuid', $cleanBadge)
+            ->orWhere('id', $cleanBadge)
+            ->first();
+
+        if (!$user) {
+            $member = \App\Models\DelegationMember::where('email', $cleanBadge)
+                ->orWhere('email', $rawBadge)
+                ->orWhere('passport_number', $cleanBadge)
+                ->orWhere('nin_number', $cleanBadge)
+                ->first();
+
+            if ($member && $member->user_id) {
+                $user = User::with(['roles', 'country', 'wilaya', 'organization', 'participant.registrations'])->find($member->user_id);
+            }
+        }
+
+        if (!$user) {
+            $registration = \App\Models\Registration::where('registration_number', $cleanBadge)->first();
+            if ($registration && $registration->participant?->user_id) {
+                $user = User::with(['roles', 'country', 'wilaya', 'organization', 'participant.registrations'])->find($registration->participant->user_id);
+            }
+        }
+
+        if (!$user) {
+            return null;
+        }
+
+        $badge = Badge::where('user_id', $user->id)->first();
+
+        if (!$badge) {
+            $roleTitle = $user->roles->first()?->name ?: 'MEMBER';
+            $badge = Badge::create([
+                'user_id'          => $user->id,
+                'badge_uuid'       => $user->uuid ?: (string) \Illuminate\Support\Str::uuid(),
+                'access_token'     => \Illuminate\Support\Str::random(32),
+                'role_title'       => $roleTitle,
+                'status'           => 'ACTIVE',
+                'allowed_zone_ids' => [1, 2, 3, 4, 5],
+                'valid_until'      => now()->addYear(),
+            ]);
+        }
+
+        $badge->loadMissing(['user.roles', 'user.country', 'user.participant.registrations']);
+        return $badge;
     }
 }

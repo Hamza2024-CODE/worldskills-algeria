@@ -54,10 +54,13 @@ class AdminAccommodationIndex extends Component
     public bool            $deleteConfirmOpen    = false;
     public ?int            $deleteTargetId       = null;
 
-    // Allocation Modal
-    public bool $allocateModalOpen = false;
-    public ?int $selectedParticipantId = null;
-    public ?int $selectedRoomId = null;
+    // Allocation Modal Filters & Selections
+    public bool $allocateModalOpen        = false;
+    public ?int $allocateCountryId        = null;
+    public ?int $allocateWilayaId         = null;
+    public ?int $allocateAccommodationId  = null;
+    public ?int $selectedParticipantId    = null;
+    public ?int $selectedRoomId           = null;
 
     protected $queryString = ['search', 'filterStatus', 'filterCountry', 'filterSkill', 'filterAccommodation', 'filterArrivalStatus'];
 
@@ -171,7 +174,7 @@ class AdminAccommodationIndex extends Component
     /* ─── Allocation Handlers ─── */
     public function openAllocateModal(): void
     {
-        $this->reset(['selectedParticipantId', 'selectedRoomId']);
+        $this->reset(['allocateCountryId', 'allocateWilayaId', 'allocateAccommodationId', 'selectedParticipantId', 'selectedRoomId']);
         $this->allocateModalOpen = true;
     }
 
@@ -293,16 +296,36 @@ class AdminAccommodationIndex extends Component
         ->when($this->filterArrivalStatus, fn($q) => $q->where('status', $this->filterArrivalStatus))
         ->latest();
 
+        $modalParticipantsQuery = ParticipantProfile::with(['user.country', 'wilaya', 'registrations.skill', 'registrations.country'])
+            ->when($this->allocateCountryId, function ($q) {
+                $q->where(function ($sub) {
+                    $sub->whereHas('user', fn($u) => $u->where('country_id', $this->allocateCountryId))
+                        ->orWhereHas('registrations', fn($r) => $r->where('country_id', $this->allocateCountryId));
+                });
+            })
+            ->when($this->allocateWilayaId, fn($q) => $q->where('wilaya_id', $this->allocateWilayaId));
+
+        $modalRoomsQuery = AccommodationRoom::with('accommodation')
+            ->when($this->allocateAccommodationId, fn($q) => $q->where('accommodation_id', $this->allocateAccommodationId));
+
         return view('livewire.admin.accommodations.index', [
-            'accommodations'      => $query->paginate(10),
-            'allocations'         => $allocationsQuery->paginate(15, ['*'], 'alloc_page'),
-            'totalAccommodations' => Accommodation::count(),
-            'totalCapacity'       => Accommodation::sum('total_capacity'),
-            'allParticipants'     => ParticipantProfile::with('user')->get(),
-            'allRooms'            => AccommodationRoom::with('accommodation')->get(),
-            'countries'           => Country::orderBy('name_ar')->get(),
-            'skills'              => Skill::where('is_active', true)->orderBy('name_ar')->get(),
+            'accommodations'        => $query->paginate(10),
+            'allocations'           => $allocationsQuery->paginate(15, ['*'], 'alloc_page'),
+            'totalAccommodations'   => Accommodation::count(),
+            'totalCapacity'         => Accommodation::sum('total_capacity'),
+            'allParticipants'       => ParticipantProfile::with('user')->get(),
+            'allRooms'              => AccommodationRoom::with('accommodation')->get(),
+            'countries'             => Country::orderBy('name_ar')->get(),
+            'skills'                => Skill::where('is_active', true)->orderBy('name_ar')->get(),
+            'wilayas'               => \App\Models\Wilaya::orderBy('code')->get(),
+            'modalParticipants'     => $modalParticipantsQuery->take(100)->get(),
+            'modalRooms'            => $modalRoomsQuery->take(100)->get(),
             'allAccommodationsList' => Accommodation::orderBy('name_ar')->get(),
+            'formOpen'              => $this->formOpen,
+            'allocateModalOpen'     => $this->allocateModalOpen,
+            'roomsFormOpen'         => $this->roomsFormOpen,
+            'deleteConfirmOpen'     => $this->deleteConfirmOpen,
+            'drawerOpen'            => $this->drawerOpen,
         ]);
     }
 }

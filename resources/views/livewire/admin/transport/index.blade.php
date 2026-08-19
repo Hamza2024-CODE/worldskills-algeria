@@ -6,34 +6,19 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
 <div class="space-y-5 pb-8" dir="{{ $locale === 'ar' ? 'rtl' : 'ltr' }}">
 
     {{-- HEADER --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2.5.01M13 16H9m4 0h2m4 0h2v-5l-3-5H17M3 16h2.5"/></svg>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100">
-                        {{ $t('إدارة مسارات النقل والرحلات', 'Gestion des Lignes de Transport & Navettes', 'Transport Lines & Shuttle Schedules') }}
-                    </h1>
-                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
-                        {{ $t('إجمالي المسارات: ', 'Total Lignes: ', 'Total Routes: ') }}<span class="text-blue-600 dark:text-blue-400 font-bold">{{ $totalRoutes }}</span> — {{ $t('الرحلات: ', 'Trajets: ', 'Trips: ') }}<span class="text-emerald-600 font-bold">{{ $totalTrips }}</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="flex items-center gap-2">
-            <button wire:click="exportExcel" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition shadow-sm shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <span>{{ $t('تصدير المسارات إلى Excel (CSV)', 'Exporter vers Excel (CSV)', 'Export Routes to Excel (CSV)') }}</span>
-            </button>
-            <button wire:click="openCreate"
-                class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-black transition shadow-sm shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                <span>{{ $t('إضافة مسار', 'Ajouter une Ligne', 'Add Route') }}</span>
-            </button>
-        </div>
-    </div>
+    <x-dashboard.page-header
+        :title="$t('إدارة مسارات النقل والرحلات', 'Gestion des Lignes de Transport & Navettes', 'Transport Lines & Shuttle Schedules')"
+        :subtitle="$t('إجمالي المسارات: ', 'Total Lignes: ', 'Total Routes: ') . $totalRoutes . ' — ' . $t('الرحلات: ', 'Trajets: ', 'Trips: ') . $totalTrips"
+    >
+        <button wire:click="exportExcel" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-black transition backdrop-blur-md shadow-sm shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>{{ $t('تصدير المسارات إلى Excel (CSV)', 'Exporter vers Excel (CSV)', 'Export Routes to Excel (CSV)') }}</span>
+        </button>
+        <button wire:click="openCreate" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition shadow-lg shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            <span>{{ $t('إضافة مسار', 'Ajouter une Ligne', 'Add Route') }}</span>
+        </button>
+    </x-dashboard.page-header>
 
     {{-- FILTERS --}}
     <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex flex-col sm:flex-row gap-3">

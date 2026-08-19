@@ -3,7 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'منصة أولمبياد المهن — WorldSkills Algeria' }}</title>
+    <!-- PWA Manifest & Mobile Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#020A24">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="WorldSkills DZ">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
 
     <!-- Google Fonts: Outfit & Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -84,6 +97,9 @@
     </style>
 
     @livewireStyles
+    
+    <!-- Platform Media & Content Protection System -->
+    <x-content-protection />
 </head>
 <body class="h-full antialiased font-sans flex flex-col">
 
@@ -94,9 +110,7 @@
             <!-- Brand Logo & Identity -->
             <div class="flex items-center gap-4">
                 <a href="/" class="flex items-center gap-3 group">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-700 via-brand-500 to-brand-sky flex items-center justify-center text-white font-black text-xl shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform">
-                        W
-                    </div>
+                    <img src="/logo.svg" alt="WorldSkills Algeria" class="h-10 w-auto object-contain group-hover:scale-105 transition-transform">
                     <div class="flex flex-col">
                         <span class="text-xl font-black text-brand-dark tracking-tight leading-none">WorldSkills <span class="text-brand-500">Algeria</span></span>
                         <span class="text-xs font-semibold text-brand-muted mt-1">منصة إدارة أولمبياد المهن — WSAP</span>
@@ -111,10 +125,6 @@
                         <a href="{{ route('participant.dashboard') }}" class="flex items-center gap-2 {{ request()->routeIs('participant.dashboard') ? 'text-brand-500 border-b-2 border-brand-500 pb-1' : 'text-slate-600 hover:text-brand-500' }}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                             <span>{{ app()->getLocale() === 'fr' ? 'Mon Espace' : (app()->getLocale() === 'en' ? 'My Dashboard' : 'لوحة المتنافس') }}</span>
-                        </a>
-                        <a href="{{ route('my.venue-map') }}" class="flex items-center gap-2 {{ request()->routeIs('my.venue-map') ? 'text-brand-500 border-b-2 border-brand-500 pb-1' : 'text-slate-600 hover:text-brand-500' }}">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
-                            <span>{{ app()->getLocale() === 'fr' ? 'Ma Carte 3D' : (app()->getLocale() === 'en' ? 'My 3D Map' : 'خريطتي الميدانية 3D') }}</span>
                         </a>
                         <a href="{{ route('my.badge') }}" class="flex items-center gap-2 {{ request()->routeIs('my.badge') || request()->routeIs('accreditation.badge') ? 'text-brand-500 border-b-2 border-brand-500 pb-1' : 'text-slate-600 hover:text-brand-500' }}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
@@ -167,15 +177,15 @@
                     </button>
                     <div x-show="open" x-transition x-cloak
                         class="absolute top-full {{ app()->getLocale() === 'ar' ? 'left-0' : 'right-0' }} mt-1.5 w-32 rounded-xl bg-white shadow-xl border border-slate-100 py-1 z-50">
-                        <a href="{{ route('lang.switch', 'ar') }}"
+                        <a href="{{ route('lang.switch', 'ar') }}" data-navigate-ignore rel="external"
                             class="flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-slate-50 {{ app()->getLocale() === 'ar' ? 'text-brand-500 bg-brand-50' : 'text-[#06205C]' }}">
                             <span class="text-base leading-none">🇩🇿</span> العربية
                         </a>
-                        <a href="{{ route('lang.switch', 'fr') }}"
+                        <a href="{{ route('lang.switch', 'fr') }}" data-navigate-ignore rel="external"
                             class="flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-slate-50 {{ app()->getLocale() === 'fr' ? 'text-brand-500 bg-brand-50' : 'text-[#06205C]' }}">
                             <span class="text-base leading-none">🇫🇷</span> Français
                         </a>
-                        <a href="{{ route('lang.switch', 'en') }}"
+                        <a href="{{ route('lang.switch', 'en') }}" data-navigate-ignore rel="external"
                             class="flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-slate-50 {{ app()->getLocale() === 'en' ? 'text-brand-500 bg-brand-50' : 'text-[#06205C]' }}">
                             <span class="text-base leading-none">🇬🇧</span> English
                         </a>
@@ -219,6 +229,8 @@
         </div>
     </footer>
 
+    <x-cookie-banner />
+    <x-pwa-installer />
     @livewireScripts
 </body>
 </html>

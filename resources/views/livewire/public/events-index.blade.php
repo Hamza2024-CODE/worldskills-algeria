@@ -4,7 +4,7 @@
         <!-- Header -->
         <div class="text-center max-w-3xl mx-auto space-y-3">
             <h1 class="text-3xl sm:text-4xl font-black text-[#06205C]">
-                {{ app()->getLocale() === 'fr' ? 'Agenda WorldSkills Algeria' : (app()->getLocale() === 'en' ? 'WorldSkills Algeria Events' : 'أحداث وفعاليات أولمبياد المهن 2027') }}
+                {{ app()->getLocale() === 'fr' ? 'Agenda WorldSkills Algeria 2026' : (app()->getLocale() === 'en' ? 'WorldSkills Algeria Events 2026' : 'أحداث وفعاليات أولمبياد المهن 2026') }}
             </h1>
             <p class="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
                 {{ app()->getLocale() === 'fr' ? 'Découvrez le programme des qualifications, séminaires et cérémonies.' : (app()->getLocale() === 'en' ? 'Explore upcoming competition events, seminars and ceremonies.' : 'تابع برنامج التصفيات والندوات وحفلات التتويج الرسمية.') }}

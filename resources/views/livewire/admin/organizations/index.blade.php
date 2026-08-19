@@ -5,20 +5,15 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
 
 <div class="space-y-6" dir="{{ $locale === 'ar' ? 'rtl' : 'ltr' }}">
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                {{ $t('إدارة المؤسسات التكوينية والمعاهد (SIG)', 'Gestion des Établissements & Instituts (SIG)', 'Training Institutes & Centers Management (SIG)') }}
-            </h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">
-                {{ $t('محتوى المستودع الوطني للمؤسسات المعاهد ومراكز التكوين المهني والتمهين عبر الـ 58 ولاية', 'Répertoire national des établissements et centres de formation professionnelle à travers les 58 wilayas.', 'National directory of vocational training institutes across all 58 wilayas.') }}
-            </p>
-        </div>
-        <button wire:click="openCreate" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs shadow-lg shadow-brand-500/20 transition">
+    <x-dashboard.page-header
+        :title="$t('إدارة المؤسسات التكوينية والمعاهد (SIG)', 'Gestion des Établissements & Instituts (SIG)', 'Training Institutes & Centers Management (SIG)')"
+        :subtitle="$t('محتوى المستودع الوطني للمؤسسات المعاهد ومراكز التكوين المهني والتمهين عبر الـ 58 ولاية', 'Répertoire national des établissements et centres de formation professionnelle à travers les 58 wilayas.', 'National directory of vocational training institutes across all 58 wilayas.')"
+    >
+        <button wire:click="openCreate" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-lg transition shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             <span>{{ $t('إضافة مؤسسة جديدة', 'Ajouter un Établissement', 'Add New Institution') }}</span>
         </button>
-    </div>
+    </x-dashboard.page-header>
 
     <!-- Stats -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">

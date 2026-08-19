@@ -133,8 +133,21 @@ Route::get('/offline.html', function () {
     ]);
 });
 
+// Published Livewire Assets Fallback Route
+Route::get('/vendor/livewire/{file}', function (string $file) {
+    $path = public_path('vendor/livewire/' . $file);
+    if (file_exists($path) && is_file($path)) {
+        $mime = str_ends_with($file, '.css') ? 'text/css' : 'application/javascript';
+        return response()->file($path, [
+            'Content-Type'  => $mime . '; charset=utf-8',
+            'Cache-Control' => 'public, max-age=31536000',
+        ]);
+    }
+    return response('Livewire asset not found', 404);
+});
+
 // Language Switcher Route
-Route::match(['get', 'post'], '/lang/{locale}', function (string $locale) {
+Route::match(['get', 'post'], '/lang/{locale}', function (string $locale, \Illuminate\Http\Request $request) {
     if (in_array($locale, ['ar', 'fr', 'en'])) {
         session(['locale' => $locale]);
         session()->save();
@@ -145,15 +158,19 @@ Route::match(['get', 'post'], '/lang/{locale}', function (string $locale) {
     }
 
     $back = url()->previous();
-    if (empty($back) || $back === url()->current()) {
+    if (empty($back) || $back === $request->fullUrl()) {
         $back = route('home');
+    }
+
+    if ($request->expectsJson() || $request->header('X-Livewire')) {
+        return response()->json(['status' => 'success', 'locale' => $locale, 'redirect' => $back]);
     }
 
     return redirect($back);
 })->name('lang.switch');
 
 // Shared CMS & Media Routes (Accessible by Super Admin & Media Manager)
-Route::prefix('admin')->middleware(['auth', 'role:' . RoleEnum::SUPER_ADMIN->value . '|' . RoleEnum::MEDIA_MANAGER->value])->name('admin.')->group(function () {
+Route::prefix('hamza')->middleware(['auth', 'role:' . RoleEnum::SUPER_ADMIN->value . '|' . RoleEnum::MEDIA_MANAGER->value])->name('admin.')->group(function () {
     Route::get('/media/dashboard', MediaManagerDashboard::class)->name('media.dashboard');
     Route::get('/cms/news',        AdminNewsIndex::class)->name('cms.news');
     Route::get('/cms/gallery',     AdminGalleryIndex::class)->name('cms.gallery');
@@ -161,10 +178,11 @@ Route::prefix('admin')->middleware(['auth', 'role:' . RoleEnum::SUPER_ADMIN->val
     Route::get('/cms/homepage',    CmsHomepageManager::class)->name('cms.homepage');
     Route::get('/cms/guide', \App\Livewire\Admin\AdminGuideCmsManager::class)->name('cms.guide');
     Route::get('/appearance',      \App\Livewire\Admin\PlatformAppearanceManager::class)->name('appearance');
+    Route::get('/live-tv',         \App\Livewire\Admin\LiveTvIndex::class)->name('live-tv');
 });
 
 // Smart Admin Dashboard Route — Handles all roles seamlessly without 403 Access Denied errors
-Route::get('/admin/dashboard', function () {
+Route::get('/hamza/dashboard', function () {
     /** @var \App\Models\User|null $user */
     $user = Auth::user();
     if (!$user) {
@@ -191,7 +209,7 @@ Route::get('/admin/dashboard', function () {
 })->middleware('auth')->name('admin.dashboard');
 
 // Super Admin Command Center Routes
-Route::prefix('admin')->middleware(['auth', 'role:' . RoleEnum::SUPER_ADMIN->value])->name('admin.')->group(function () {
+Route::prefix('hamza')->middleware(['auth', 'role:' . RoleEnum::SUPER_ADMIN->value])->name('admin.')->group(function () {
     Route::get('/logistics/arrivals', \App\Livewire\Admin\ArrivalsCenter::class)->name('logistics.arrivals');
     Route::get('/users', AdminUserIndex::class)->name('users');
     Route::get('/participants', AdminParticipantIndex::class)->name('participants');
@@ -274,24 +292,7 @@ Route::prefix('country')->middleware(['auth', 'role:' . RoleEnum::COUNTRY_ADMIN-
     Route::get('/skills', SkillSelectionManager::class)->name('skills');
     Route::get('/dietary', DietaryManager::class)->name('dietary');
     Route::get('/arrivals', \App\Livewire\Country\DelegationArrivals::class)->name('arrivals');
-    Route::get('/venue-map', \App\Livewire\Public\MyVenueMap::class)->name('venue-map');
     Route::get('/regulations', \App\Livewire\Public\GuideRegulations::class)->name('regulations');
-});
-
-// WSAP V9.0 — 3D Digital Twin & Smart Venue Operating System Routes
-Route::get('/venue-map', function () {
-    /** @var \App\Models\User|null $user */
-    $user = Auth::user();
-    if ($user && $user->hasRole(\App\Enums\RoleEnum::SUPER_ADMIN->value)) {
-        return redirect()->route('admin.venue-map');
-    }
-    return app(\App\Livewire\Public\VenueMap::class)();
-})->name('venue-map');
-Route::get('/my/venue-map', \App\Livewire\Public\MyVenueMap::class)->middleware('auth')->name('my.venue-map');
-Route::get('/kiosk/venue-map', \App\Livewire\Public\KioskVenueMap::class)->name('kiosk.venue-map');
-
-Route::prefix('admin')->middleware(['auth', 'role:' . RoleEnum::SUPER_ADMIN->value])->group(function () {
-    Route::get('/venue-map', \App\Livewire\Admin\VenueMapManager::class)->name('admin.venue-map');
 });
 
 // Dedicated REST Spatial API fallback

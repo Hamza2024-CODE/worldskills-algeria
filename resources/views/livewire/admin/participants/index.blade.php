@@ -5,22 +5,15 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
 
 <div class="space-y-6" x-data="{ docModalOpen: false, previewUrl: '', previewTitle: '' }" dir="{{ $locale === 'ar' ? 'rtl' : 'ltr' }}">
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                {{ $t('إدارة المتنافسين والمشاركين', 'Gestion des Compétiteurs & Participants', 'Competitors & Participants Management') }}
-            </h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">
-                {{ $t('متابعة واعتماد تسجيلات المتنافسين الشباب وحفظ الملفات الشخصية حسب التخصصات والوفود', 'Suivi et validation des inscriptions des jeunes compétiteurs selon les métiers et délégations.', 'Track and validate youth competitor registrations across skills and national delegations.') }}
-            </p>
-        </div>
-        <div>
-            <button wire:click="exportExcel" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition shadow-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <span>{{ $t('تصدير المشاركين إلى Excel (CSV)', 'Exporter vers Excel (CSV)', 'Export Participants to Excel (CSV)') }}</span>
-            </button>
-        </div>
-    </div>
+    <x-dashboard.page-header
+        :title="$t('إدارة المتنافسين والمشاركين', 'Gestion des Compétiteurs & Participants', 'Competitors & Participants Management')"
+        :subtitle="$t('متابعة واعتماد تسجيلات المتنافسين الشباب وحفظ الملفات الشخصية حسب التخصصات والوفود', 'Suivi et validation des inscriptions des jeunes compétiteurs selon les métiers et délégations.', 'Track and validate youth competitor registrations across skills and national delegations.')"
+    >
+        <button wire:click="exportExcel" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-black transition backdrop-blur-md shadow-sm shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>{{ $t('تصدير المشاركين إلى Excel (CSV)', 'Exporter vers Excel (CSV)', 'Export Participants to Excel (CSV)') }}</span>
+        </button>
+    </x-dashboard.page-header>
 
     <!-- Stats -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">

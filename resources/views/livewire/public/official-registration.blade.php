@@ -33,7 +33,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
             </p>
         </div>
 
-        @if(!$isOpen)
+        @if(!$isOpen || !$accreditationRegistrationEnabled)
             <!-- Locked / Closed Registration Banner -->
             <div class="bg-white rounded-3xl p-8 border-2 border-rose-200 shadow-xl text-center space-y-4">
                 <div class="w-16 h-16 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto shadow-inner">
@@ -115,7 +115,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                         <button type="button" wire:click="$set('role', 'COUNTRY_ADMIN')"
                             class="p-4 rounded-2xl border-2 text-center transition flex flex-col items-center justify-center gap-2 {{ $role === 'COUNTRY_ADMIN' ? 'border-blue-600 bg-blue-50/70 text-blue-950 font-black shadow-xs ring-1 ring-blue-500' : 'border-slate-200 bg-slate-50/60 text-slate-600 font-bold hover:bg-slate-100' }}">
                             <div class="w-10 h-10 rounded-xl {{ $role === 'COUNTRY_ADMIN' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-600' }} flex items-center justify-center transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.5a2.5 2.5 0 002.5-2.5V8.5dM12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.5a2.5 2.5 0 002.5-2.5V8.5M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
                             </div>
                             <span class="text-xs font-black">{{ $t('مسؤول وفد وطني / دولي', 'Chef de Délégation', 'Delegation Head') }}</span>
                         </button>
@@ -137,17 +137,54 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                     <div x-data="{
                         mode: 'upload',
                         cameraOpen: false,
-                        stream: null,
-                        startCamera() {
+                        facingMode: 'user',
+                        async getMediaStream(mode) {
+                            const getUM = (c) => {
+                                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                                    return navigator.mediaDevices.getUserMedia(c);
+                                }
+                                const legacyFn = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.getUserMedia;
+                                if (legacyFn) {
+                                    return new Promise((res, rej) => legacyFn.call(navigator, c, res, rej));
+                                }
+                                return Promise.reject(new Error('Camera API Not Supported'));
+                            };
+                            try {
+                                return await getUM({ video: { facingMode: mode } });
+                            } catch(e1) {
+                                try {
+                                    return await getUM({ video: { facingMode: { exact: mode } } });
+                                } catch(e2) {
+                                    return await getUM({ video: true });
+                                }
+                            }
+                        },
+                        async startCamera() {
                             this.mode = 'camera';
-                            navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } }).then(s => {
+                            try {
+                                const s = await this.getMediaStream(this.facingMode);
                                 this.stream = s;
-                                $refs.video.srcObject = s;
                                 this.cameraOpen = true;
-                            }).catch(err => {
-                                alert('تعذر فتح الكاميرا: ' + err.message);
+                                setTimeout(async () => {
+                                    const videoEl = $refs.video;
+                                    if (videoEl) {
+                                        videoEl.setAttribute('playsinline', 'true');
+                                        videoEl.setAttribute('webkit-playsinline', 'true');
+                                        videoEl.setAttribute('muted', 'true');
+                                        videoEl.muted = true;
+                                        videoEl.srcObject = s;
+                                        try { await videoEl.play(); } catch(pe) { console.log('iOS play fallback:', pe); }
+                                    }
+                                }, 100);
+                            } catch(err) {
+                                alert('{{ __('messages.camera_access_error') }}: ' + (err.message || err));
                                 this.mode = 'upload';
-                            });
+                            }
+                        },
+                        async toggleCamera() {
+                            this.facingMode = this.facingMode === 'user' ? 'environment' : 'user';
+                            if (this.stream) { this.stream.getTracks().forEach(t => t.stop()); }
+                            await this.startCamera();
                         },
                         stopCamera() {
                             if (this.stream) { this.stream.getTracks().forEach(t => t.stop()); }
@@ -183,26 +220,32 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                         <!-- Live Camera Video Window -->
                         <div x-show="mode === 'camera'" class="flex flex-col items-center gap-3 pt-2">
                             <div class="relative w-full max-w-sm rounded-2xl overflow-hidden border-2 border-indigo-600 shadow-lg bg-black aspect-video flex items-center justify-center">
-                                <video x-ref="video" autoplay playsinline class="w-full h-full object-cover"></video>
+                                <video x-ref="video" autoplay playsinline webkit-playsinline muted class="w-full h-full object-cover"></video>
                                 <div class="absolute inset-0 border-2 border-dashed border-white/50 rounded-2xl pointer-events-none"></div>
                             </div>
-                            <button type="button" @click="capture()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-md transition flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                <span>{{ $t('التقاط الصورة الآن', 'Prendre la photo', 'Capture Photo Now') }}</span>
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <button type="button" @click="toggleCamera()" class="px-3.5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs transition flex items-center gap-1.5" title="Switch Camera">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                    <span>{{ $t('تبديل الكاميرا', 'Changer caméra', 'Switch Camera') }}</span>
+                                </button>
+                                <button type="button" @click="capture()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-md transition flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    <span>{{ $t('التقاط الصورة الآن', 'Prendre la photo', 'Capture Photo Now') }}</span>
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Upload File Input / Preview -->
-                        <div x-show="mode !== 'camera'" class="flex flex-col sm:flex-row items-center gap-4">
+                        <div x-show="mode !== 'camera'" class="flex flex-col sm:flex-row items-center gap-4 pt-1">
                             <div class="shrink-0">
-                                @if ($captured_photo_data)
-                                    <img src="{{ $captured_photo_data }}" alt="Captured" class="w-20 h-20 rounded-2xl object-cover border-2 border-emerald-600 shadow-md">
-                                @elseif ($photo)
-                                    <img src="{{ $photo->temporaryUrl() }}" alt="Preview" class="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-600 shadow-md">
+                                @if($captured_photo_data)
+                                    <img src="{{ $captured_photo_data }}" alt="Captured Photo" class="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-600 shadow-md">
+                                @elseif($photo)
+                                    <img src="{{ $photo->temporaryUrl() }}" alt="Preview" class="w-20 h-20 rounded-2xl object-cover border-2 border-slate-200 shadow-sm">
                                 @else
                                     <div class="w-20 h-20 rounded-2xl bg-slate-200 text-slate-500 flex flex-col items-center justify-center border-2 border-dashed border-slate-300">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                        <span class="text-[9px] font-bold mt-1">صورة رسمية</span>
+                                        <span class="text-[9px] font-bold mt-1">{{ $t('صورة رسمية', 'Photo officielle', 'Official Photo') }}</span>
                                     </div>
                                 @endif
                             </div>
@@ -260,7 +303,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                             <label class="block text-slate-700 font-bold mb-1">
                                 {{ $t('رقم الهاتف / الواتساب الرسمي *', 'N° Téléphone / WhatsApp *', 'Phone / WhatsApp Number *') }}
                             </label>
-                            <input wire:model.blur="phone" type="text" placeholder="{{ $isAlgeria ? '0550000000 / +213' : '+213 550 00 00 00' }}" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold">
+                            <input wire:model.blur="phone" type="text" required placeholder="{{ $this->phonePlaceholder }}" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold">
                             @error('phone') <span class="text-rose-500 text-[10px] font-bold">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -273,7 +316,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                             </label>
                             <select wire:model.live="country_id" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold">
                                 @foreach($countries as $c)
-                                    <option value="{{ $c->id }}">{{ $c->name_ar }} ({{ $c->code }})</option>
+                                    <option value="{{ $c->id }}">{{ app()->getLocale() === 'fr' ? $c->name_fr : (app()->getLocale() === 'en' ? $c->name_en : $c->name_ar) }} ({{ $c->code }})</option>
                                 @endforeach
                             </select>
                             @error('country_id') <span class="text-rose-500 text-[10px] font-bold">{{ $message }}</span> @enderror
@@ -286,7 +329,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                 </label>
                                 <select wire:model="skill_id" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-indigo-900 border-indigo-200">
                                     @foreach($skills as $s)
-                                        <option value="{{ $s->id }}">{{ $s->name_ar }} ({{ $s->code }})</option>
+                                        <option value="{{ $s->id }}">{{ $s->getLocalized('name') }} ({{ $s->code }})</option>
                                     @endforeach
                                 </select>
                                 @error('skill_id') <span class="text-rose-500 text-[10px] font-bold">{{ $message }}</span> @enderror
@@ -317,7 +360,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                     $refs.docVideo.srcObject = s;
                                     this.cameraOpen = true;
                                 }).catch(err => {
-                                    alert('تعذر فتح الكاميرا: ' + err.message);
+                                    alert('{{ __('messages.camera_access_error') }}');
                                     this.mode = 'upload';
                                 });
                             },
@@ -356,7 +399,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                 <div class="relative w-full max-w-md rounded-2xl overflow-hidden border-2 border-amber-500 shadow-lg bg-black aspect-video flex items-center justify-center">
                                     <video x-ref="docVideo" autoplay playsinline class="w-full h-full object-cover"></video>
                                     <div class="absolute inset-4 border-2 border-dashed border-amber-300 rounded-xl pointer-events-none flex items-center justify-center text-white/70 text-xs font-bold">
-                                        ضع بطاقة الصحافة داخل الإطار
+                                        {{ $t('ضع بطاقة الصحافة داخل الإطار', 'Placez la carte de presse dans le cadre', 'Place press card inside frame') }}
                                     </div>
                                 </div>
                                 <button type="button" @click="capture()" class="px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-xs shadow-md transition flex items-center gap-1.5">
@@ -391,7 +434,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                     $refs.docVideo.srcObject = s;
                                     this.cameraOpen = true;
                                 }).catch(err => {
-                                    alert('تعذر فتح الكاميرا: ' + err.message);
+                                    alert('{{ __('messages.camera_access_error') }}');
                                     this.mode = 'upload';
                                 });
                             },
@@ -427,6 +470,19 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                     </button>
                                 </div>
                             </div>
+
+                            <!-- Live Video Window for Document Scan -->
+                            <div x-show="mode === 'camera'" class="flex flex-col items-center gap-3 pt-2">
+                                <div class="relative w-full max-w-md rounded-2xl overflow-hidden border-2 border-blue-600 shadow-lg bg-black aspect-video flex items-center justify-center">
+                                    <video x-ref="docVideo" autoplay playsinline class="w-full h-full object-cover"></video>
+                                    <div class="absolute inset-4 border-2 border-dashed border-white/60 rounded-xl pointer-events-none flex items-center justify-center text-white/80 text-xs font-bold">
+                                        {{ $t('ضع بطاقة التعريف أو جواز السفر داخل الإطار', 'Placez la carte d\'identité ou passeport dans le cadre', 'Place ID card or passport inside frame') }}
+                                    </div>
+                                </div>
+                                <button type="button" @click="capture()" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md transition flex items-center gap-1.5">
+                                    <span>📸 {{ $t('التقاط صورة الوثيقة الآن', 'Capturer le document', 'Capture ID / Passport Document') }}</span>
+                                </button>
+                            </div>iv>
 
                             <!-- Live Video Window for Document Scan -->
                             <div x-show="mode === 'camera'" class="flex flex-col items-center gap-3 pt-2">

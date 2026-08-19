@@ -52,6 +52,22 @@
             </a>
         </div>
 
+        <div class="glass-card rounded-2xl p-6 space-y-4 border-2 border-rose-200 bg-rose-50/30">
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-black text-rose-900 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-600 animate-ping"></span>
+                    <span>{{ app()->getLocale() === 'fr' ? 'Direct TV & Diffusion' : (app()->getLocale() === 'en' ? 'Live TV & Stream Control' : 'البث المباشر وشاشات التلفزيون (Live TV)') }}</span>
+                </h3>
+                <span class="px-2.5 py-1 rounded-xl bg-rose-600 text-white font-black text-[10px] uppercase">Live Broadcast</span>
+            </div>
+            <p class="text-xs font-bold text-slate-600 leading-relaxed">
+                {{ app()->getLocale() === 'fr' ? 'Contrôlez le flux vidéo en direct, les annonces défilantes et les visuels de présentation.' : (app()->getLocale() === 'en' ? 'Control live video stream URL, ticker announcements, and promo presentation slides.' : 'التحكم المباشر في قناة البث الحي، إضافة وتعديل الأخبار العاجلة المتحركة، وشرائح الإعلانات والعروض على شاشات التلفزيون.') }}
+            </p>
+            <a href="{{ route('admin.live-tv') }}" class="inline-flex items-center gap-2 text-xs font-black text-rose-600 hover:text-rose-700">
+                <span>{{ app()->getLocale() === 'fr' ? 'Gérer le Direct TV' : (app()->getLocale() === 'en' ? 'Manage Live TV' : 'الانتقال إلى لوحة البث المباشر') }} &rarr;</span>
+            </a>
+        </div>
+
         <div class="glass-card rounded-2xl p-6 space-y-4">
             <h3 class="text-sm font-black text-slate-900">
                 {{ app()->getLocale() === 'fr' ? 'Médiathèque et Galerie' : (app()->getLocale() === 'en' ? 'Media Library & Gallery' : 'مكتبة الصور والفيديوهات') }}

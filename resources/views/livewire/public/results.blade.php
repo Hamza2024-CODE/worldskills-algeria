@@ -22,7 +22,7 @@
             </div>
             <div class="space-y-2">
                 <h3 class="text-xl font-black text-[#06205C]">
-                    {{ app()->getLocale() === 'fr' ? 'Les résultats 2026 / 2027 seront publiés dès validation' : (app()->getLocale() === 'en' ? '2026 / 2027 Results Will Be Published Upon Certification' : 'نتائج الدورة الوطنية والإفريقية ستنشر فور الكشف عنها') }}
+                    {{ app()->getLocale() === 'fr' ? 'Les résultats 2026 seront publiés dès validation' : (app()->getLocale() === 'en' ? '2026 Results Will Be Published Upon Certification' : 'نتائج الدورة الوطنية 2026 ستنشر فور الكشف عنها') }}
                 </h3>
                 <p class="text-xs text-slate-500 font-medium leading-relaxed">
                     {{ app()->getLocale() === 'fr' ? 'Les résultats officiels des sélections seront proclamés progressivement selon le calendrier.' : (app()->getLocale() === 'en' ? 'Official qualification lists will be announced gradually according to schedule.' : 'سيتم إعلان النتائج الرسمية للمرحلة المؤسساتية والولائية تباعاً وفق الرزنامة المعروضة.') }}
