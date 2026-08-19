@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\RoleEnum;
 use App\Services\SettingsEngine;
 use Closure;
 use Illuminate\Http\Request;
@@ -21,8 +20,8 @@ class CheckComingSoonModeMiddleware
         $comingSoonEnabled = $settings->getBool('coming_soon_mode', false);
 
         if ($comingSoonEnabled) {
-            // Check if current request path is an admin route, auth route, asset, or coming-soon page
-            $isAdminRoute = $request->is('hamza*')
+            // Allowed paths when Coming Soon mode is active (Admin backend, login, assets, coming-soon route)
+            $isAllowedPath = $request->is('hamza*')
                 || $request->is('admin*')
                 || $request->is('login*')
                 || $request->is('logout*')
@@ -34,20 +33,9 @@ class CheckComingSoonModeMiddleware
                 || $request->is('manifest.webmanifest')
                 || $request->is('livewire/*');
 
-            if (!$isAdminRoute) {
-                // Check if user is an authenticated admin
-                $user = auth()->user();
-                $isAdminUser = $user && (
-                    $user->hasRole(RoleEnum::SUPER_ADMIN->value) ||
-                    $user->hasRole(RoleEnum::NATIONAL_ADMIN->value) ||
-                    $user->hasRole(RoleEnum::MEDIA_MANAGER->value) ||
-                    !empty($user->is_admin)
-                );
-
-                if (!$isAdminUser) {
-                    // Block public visitors entirely & redirect to Coming Soon landing page
-                    return redirect()->route('coming-soon');
-                }
+            if (!$isAllowedPath) {
+                // Strictly redirect ALL public visitors to the coming-soon page
+                return redirect()->route('coming-soon');
             }
         }
 
