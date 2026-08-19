@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Enums\RoleEnum;
-use App\Models\GlobalSetting;
+use App\Services\SettingsEngine;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +17,8 @@ class CheckComingSoonModeMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $comingSoonEnabled = GlobalSetting::getByKey('coming_soon_mode', '0') === '1';
+        $settings = app(SettingsEngine::class);
+        $comingSoonEnabled = $settings->getBool('coming_soon_mode', false);
 
         if ($comingSoonEnabled) {
             // Check if current request path is an admin route, auth route, asset, or coming-soon page
@@ -44,7 +45,7 @@ class CheckComingSoonModeMiddleware
                 );
 
                 if (!$isAdminUser) {
-                    // Block public browsing entirely & redirect to Coming Soon landing page
+                    // Block public visitors entirely & redirect to Coming Soon landing page
                     return redirect()->route('coming-soon');
                 }
             }

@@ -98,6 +98,20 @@ class PlatformAppearanceManager extends Component
         $this->coming_soon_launch_date = $settings->get('coming_soon_launch_date', '2026-11-01T09:00:00');
     }
 
+    public function updatedComingSoonMode($value): void
+    {
+        $settings = app(SettingsEngine::class);
+        $settings->set('coming_soon_mode', $value ? '1' : '0', 'boolean', 'general');
+        $settings->flushCache();
+
+        $msg = $value 
+            ? 'تم تفعيل وضع انتظرونا قريباً وتحويل كافة الزوار العموميين لصفحة الترقب بنجاح.'
+            : 'تم إلغاء تفعيل وضع الترقب وإعادة فتح الواجهة العامة لجميع الزوار بنجاح.';
+
+        $this->savedMessage = __($msg);
+        $this->dispatch('notify', ['type' => 'success', 'msg' => $msg]);
+    }
+
     public function saveAppearance(SettingsEngine $settings)
     {
         $user = Auth::user();
