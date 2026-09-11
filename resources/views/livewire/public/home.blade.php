@@ -67,7 +67,7 @@
     </style>
 
     <!-- 1. Hero Section with Full-Bleed High-Definition Video Background -->
-    <section data-aos="fade" data-aos-duration="1000" class="relative bg-[#020A24] text-white min-h-[70vh] sm:min-h-[78vh] py-20 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden rounded-b-[3rem] border-b border-brand-500/20 shadow-2xl flex items-center">
+    <section class="relative bg-[#020A24] text-white min-h-[70vh] sm:min-h-[78vh] py-20 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden rounded-b-[3rem] border-b border-brand-500/20 shadow-2xl flex items-center">
         
         <!-- Full-Bleed 100% Seamless Cover Video Background Layer (Expands to cover full space) -->
         <div class="absolute inset-0 z-0 overflow-hidden opacity-90 pointer-events-none">
@@ -520,7 +520,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
             <!-- Card 1: معرض الصور المميز -->
-            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-hover-lift flex flex-col justify-between" data-aos="fade-up" data-aos-duration="700" data-aos-delay="150">
+            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-motion flex flex-col justify-between">
                 <div>
                     <h3 class="text-sm font-bold text-[#06205C] mb-4">
                         {{ app()->getLocale() === 'fr' ? 'Galerie Photos' : (app()->getLocale() === 'en' ? 'Photo Gallery' : 'معرض الصور') }}
@@ -560,7 +560,7 @@
             </div>
 
             <!-- Card 2: الأجندة والفعاليات القادمة -->
-            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-hover-lift flex flex-col justify-between" data-aos="fade-up" data-aos-duration="700" data-aos-delay="150">
+            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-motion flex flex-col justify-between">
                 <div>
                     <h3 class="text-sm font-bold text-[#06205C] mb-4">
                         {{ app()->getLocale() === 'fr' ? 'Agenda & Événements' : (app()->getLocale() === 'en' ? 'Events & Calendar' : 'الأجندة والفعاليات') }}
@@ -587,7 +587,7 @@
             </div>
 
             <!-- Card 3: الأخبار والمستجدات -->
-            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-hover-lift flex flex-col justify-between" data-aos="fade-up" data-aos-duration="700" data-aos-delay="150">
+            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-motion flex flex-col justify-between">
                 <div>
                     <h3 class="text-sm font-bold text-[#06205C] mb-4">
                         {{ app()->getLocale() === 'fr' ? 'Actualités & Articles' : (app()->getLocale() === 'en' ? 'News & Updates' : 'الأخبار والمشاركات') }}
@@ -627,7 +627,7 @@
             </div>
 
             <!-- Card 4: فيديو مميز -->
-            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-hover-lift flex flex-col justify-between" data-aos="fade-up" data-aos-duration="700" data-aos-delay="150">
+            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-motion flex flex-col justify-between">
                 <div>
                     <h3 class="text-sm font-bold text-[#06205C] mb-4">
                         {{ app()->getLocale() === 'fr' ? 'Centre Vidéos' : (app()->getLocale() === 'en' ? 'Video Center' : 'مركز الفيديوهات والتغطيات') }}
@@ -660,7 +660,7 @@
 
     <!-- 6. Featured Partners & Sponsors Banner Grid -->
     @if(true)
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 mb-16 sm:mb-20" data-aos="fade-up" data-aos-duration="800">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 mb-16 sm:mb-20">
         <div class="flex flex-col items-center text-center space-y-2 relative pb-4 group/head cursor-default">
             {{-- Dynamic Ambient Light Glow with Hover Shimmer --}}
             <div class="absolute -top-12 inset-x-0 mx-auto w-72 h-24 bg-gradient-to-r from-blue-600/10 via-indigo-500/15 to-purple-600/10 rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-blue-600/25 group-hover/head:to-purple-500/25 transition-all duration-700"></div>
@@ -722,8 +722,8 @@
 
     
     <!-- 6.5 Africa Skills Policy Forum 2026 Showcase Section -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20" data-aos="zoom-in-up" data-aos-duration="900">
-        <div class="rounded-3xl bg-white/80 backdrop-blur-2xl text-slate-900 p-8 lg:p-12 shadow-2xl border-2 border-amber-300/60 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 group hover:border-amber-500 hover:shadow-amber-500/10 transition-all duration-500">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20">
+        <div class="rounded-3xl bg-white/80 backdrop-blur-2xl text-slate-900 p-8 lg:p-12 shadow-2xl border-2 border-amber-300/60 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 group hover:border-amber-500 wsap-card-motion">
             
             {{-- Ambient Gold & Emerald Glow --}}
             <div class="absolute -top-20 -right-20 w-80 h-80 bg-amber-500/20 rounded-full blur-3xl pointer-events-none group-hover:scale-125 transition-transform duration-700"></div>
@@ -758,8 +758,8 @@
     </section>
 
     <!-- 7. Call to Action Banner -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20" data-aos="fade-up" data-aos-duration="800">
-        <div class="rounded-3xl bg-gradient-to-r from-[#0038A8] via-[#0066FF] to-[#00A3FF] text-white p-8 lg:p-12 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 group">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20">
+        <div class="rounded-3xl bg-gradient-to-r from-[#0038A8] via-[#0066FF] to-[#00A3FF] text-white p-8 lg:p-12 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 group wsap-card-motion">
             
             @php
                 $siteLogo = app(\App\Services\SettingsEngine::class)->get('site_logo', '/logo.svg');

@@ -21,7 +21,7 @@ $getSkillImageUrl = function($skill) {
 @endphp
 
 <div class="py-12" x-data="{ showPdfModal: false, pdfUrl: '', pdfTitle: '' }" x-on:open-pdf-viewer.window="pdfUrl = $event.detail.pdfUrl || ($event.detail[0] ? $event.detail[0].pdfUrl : ''); pdfTitle = $event.detail.pdfTitle || ($event.detail[0] ? $event.detail[0].pdfTitle : ''); showPdfModal = true;">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12" data-aos="fade-up" data-aos-duration="800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         <!-- Hero Header with Glassmorphism Effect -->
         <div class="relative rounded-[36px] overflow-hidden bg-slate-950/80 backdrop-blur-xl text-white p-8 sm:p-14 shadow-2xl border border-white/20">

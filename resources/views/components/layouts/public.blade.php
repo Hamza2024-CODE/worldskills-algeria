@@ -64,8 +64,8 @@
     </script>
     
     <!-- AOS Animation Library CDN -->
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    
+    
 
     <style>
         .wsap-glass {
@@ -128,6 +128,28 @@
         .wsap-hover-lift:hover {
             transform: translateY(-6px) scale(1.01);
             box-shadow: 0 20px 35px -10px rgba(0, 102, 255, 0.15);
+        }
+    </style>
+
+
+    <!-- Pure CSS Interactive Mouse Hover Motion System (No AOS dependencies) -->
+    <style id=wsap-interactive-hover-styles>
+        .wsap-card-motion {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease !important;
+            will-change: transform, box-shadow;
+        }
+        .wsap-card-motion:hover {
+            transform: translateY(-6px) scale(1.012) !important;
+            box-shadow: 0 20px 40px -10px rgba(0, 102, 255, 0.15) !important;
+        }
+        .wsap-btn-motion {
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease !important;
+        }
+        .wsap-btn-motion:hover {
+            transform: translateY(-3px) scale(1.03) !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 102, 255, 0.25) !important;
         }
     </style>
 

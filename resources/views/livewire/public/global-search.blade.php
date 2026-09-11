@@ -2,7 +2,7 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         <!-- Header Title Banner -->
-        <div class="text-center space-y-3 relative group" data-aos="fade-down">
+        <div class="text-center space-y-3 relative group">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/80 shadow-xs">
                 <span class="relative flex h-2.5 w-2.5">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0066FF] opacity-75"></span>
@@ -23,7 +23,7 @@
         </div>
 
         <!-- Search Input Bar & Category Filters -->
-        <div class="space-y-4" data-aos="zoom-in">
+        <div class="space-y-4">
             <div class="relative max-w-3xl mx-auto">
                 <div class="absolute inset-y-0 start-0 ps-5 flex items-center pointer-events-none text-[#0066FF]">
                     <svg class="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,7 +75,7 @@
             <div class="space-y-10 pt-4">
                 
                 <!-- Search Summary Bar -->
-                <div class="flex items-center justify-between bg-white rounded-2xl p-4 border border-slate-200 shadow-sm" data-aos="fade-up">
+                <div class="flex items-center justify-between bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
                     <span class="text-xs font-bold text-slate-600">
                         @if(mb_strlen($query) >= 1)
                             {{ app()->getLocale() === 'fr' ? 'Résultats pour :' : (app()->getLocale() === 'en' ? 'Search results for:' : 'نتائج البحث عن:') }}
@@ -91,7 +91,7 @@
                 </div>
 
                 @if($totalResults === 0)
-                    <div class="bg-white rounded-3xl p-12 text-center shadow-lg border border-slate-200 space-y-3" data-aos="zoom-in">
+                    <div class="bg-white rounded-3xl p-12 text-center shadow-lg border border-slate-200 space-y-3">
                         <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
@@ -106,7 +106,7 @@
 
                 <!-- 1. Skills Results -->
                 @if($skills->count() > 0)
-                    <div class="space-y-4" data-aos="fade-up">
+                    <div class="space-y-4">
                         <h3 class="text-lg font-black text-[#06205C] flex items-center gap-2 border-b-2 border-slate-200 pb-2">
                             <span class="w-3 h-3 rounded-full bg-[#0066FF]"></span>
                             <span>{{ app()->getLocale() === 'fr' ? 'Métiers & Disciplines' : (app()->getLocale() === 'en' ? 'Skills & Occupations' : 'التخصصات والمهن الأولمبية') }}</span>
@@ -140,7 +140,7 @@
 
                 <!-- 2. News Articles Results -->
                 @if($news->count() > 0)
-                    <div class="space-y-4" data-aos="fade-up">
+                    <div class="space-y-4">
                         <h3 class="text-lg font-black text-[#06205C] flex items-center gap-2 border-b-2 border-slate-200 pb-2">
                             <span class="w-3 h-3 rounded-full bg-amber-500"></span>
                             <span>{{ app()->getLocale() === 'fr' ? 'Actualités & Presse' : (app()->getLocale() === 'en' ? 'News & Articles' : 'الأخبار والتغطيات الإعلامية') }}</span>
@@ -169,7 +169,7 @@
 
                 <!-- 3. Events Results -->
                 @if($events->count() > 0)
-                    <div class="space-y-4" data-aos="fade-up">
+                    <div class="space-y-4">
                         <h3 class="text-lg font-black text-[#06205C] flex items-center gap-2 border-b-2 border-slate-200 pb-2">
                             <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
                             <span>{{ app()->getLocale() === 'fr' ? 'Agenda & Événements' : (app()->getLocale() === 'en' ? 'Events & Calendar' : 'الأجندة والفعاليات الرسمية') }}</span>
@@ -198,7 +198,7 @@
 
                 <!-- 4. Partners & Sponsors Results -->
                 @if($partners->count() > 0)
-                    <div class="space-y-4" data-aos="fade-up">
+                    <div class="space-y-4">
                         <h3 class="text-lg font-black text-[#06205C] flex items-center gap-2 border-b-2 border-slate-200 pb-2">
                             <span class="w-3 h-3 rounded-full bg-rose-500"></span>
                             <span>{{ app()->getLocale() === 'fr' ? 'Partenaires & Sponsors' : (app()->getLocale() === 'en' ? 'Partners & Sponsors' : 'الشركاء والجهات الراعية') }}</span>
@@ -228,7 +228,7 @@
 
         @else
             <!-- Default Prompt when no query typed yet and no category selected -->
-            <div class="bg-white rounded-3xl p-12 text-center shadow-lg border border-slate-200 space-y-4 max-w-3xl mx-auto" data-aos="zoom-in">
+            <div class="bg-white rounded-3xl p-12 text-center shadow-lg border border-slate-200 space-y-4 max-w-3xl mx-auto">
                 <div class="w-16 h-16 rounded-full bg-blue-50 text-[#0066FF] mx-auto flex items-center justify-center border border-blue-100 shadow-inner">
                     <svg class="w-8 h-8 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
