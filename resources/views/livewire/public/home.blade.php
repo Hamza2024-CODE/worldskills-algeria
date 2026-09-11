@@ -520,7 +520,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
             <!-- Card 1: معرض الصور المميز -->
-            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-motion flex flex-col justify-between">
+            <div class="group bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-animated wsap-shine-effect flex flex-col justify-between">
                 <div>
                     <h3 class="text-sm font-bold text-[#06205C] mb-4">
                         {{ app()->getLocale() === 'fr' ? 'Galerie Photos' : (app()->getLocale() === 'en' ? 'Photo Gallery' : 'معرض الصور') }}
@@ -560,7 +560,7 @@
             </div>
 
             <!-- Card 2: الأجندة والفعاليات القادمة -->
-            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-motion flex flex-col justify-between">
+            <div class="group bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-animated wsap-shine-effect flex flex-col justify-between">
                 <div>
                     <h3 class="text-sm font-bold text-[#06205C] mb-4">
                         {{ app()->getLocale() === 'fr' ? 'Agenda & Événements' : (app()->getLocale() === 'en' ? 'Events & Calendar' : 'الأجندة والفعاليات') }}
@@ -587,7 +587,7 @@
             </div>
 
             <!-- Card 3: الأخبار والمستجدات -->
-            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-motion flex flex-col justify-between">
+            <div class="group bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-animated wsap-shine-effect flex flex-col justify-between">
                 <div>
                     <h3 class="text-sm font-bold text-[#06205C] mb-4">
                         {{ app()->getLocale() === 'fr' ? 'Actualités & Articles' : (app()->getLocale() === 'en' ? 'News & Updates' : 'الأخبار والمشاركات') }}
@@ -627,7 +627,7 @@
             </div>
 
             <!-- Card 4: فيديو مميز -->
-            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-motion flex flex-col justify-between">
+            <div class="group bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-animated wsap-shine-effect flex flex-col justify-between">
                 <div>
                     <h3 class="text-sm font-bold text-[#06205C] mb-4">
                         {{ app()->getLocale() === 'fr' ? 'Centre Vidéos' : (app()->getLocale() === 'en' ? 'Video Center' : 'مركز الفيديوهات والتغطيات') }}
@@ -723,7 +723,7 @@
     
     <!-- 6.5 Africa Skills Policy Forum 2026 Showcase Section -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20">
-        <div class="rounded-3xl bg-white/80 backdrop-blur-2xl text-slate-900 p-8 lg:p-12 shadow-2xl border-2 border-amber-300/60 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 group hover:border-amber-500 wsap-card-motion">
+        <div class="rounded-3xl bg-white/80 backdrop-blur-2xl text-slate-900 p-8 lg:p-12 shadow-2xl border-2 border-amber-300/60 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 group hover:border-amber-500 wsap-card-animated wsap-shine-effect">
             
             {{-- Ambient Gold & Emerald Glow --}}
             <div class="absolute -top-20 -right-20 w-80 h-80 bg-amber-500/20 rounded-full blur-3xl pointer-events-none group-hover:scale-125 transition-transform duration-700"></div>
@@ -759,7 +759,7 @@
 
     <!-- 7. Call to Action Banner -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20">
-        <div class="rounded-3xl bg-gradient-to-r from-[#0038A8] via-[#0066FF] to-[#00A3FF] text-white p-8 lg:p-12 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 group wsap-card-motion">
+        <div class="rounded-3xl bg-gradient-to-r from-[#0038A8] via-[#0066FF] to-[#00A3FF] text-white p-8 lg:p-12 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 group wsap-card-animated wsap-shine-effect">
             
             @php
                 $siteLogo = app(\App\Services\SettingsEngine::class)->get('site_logo', '/logo.svg');

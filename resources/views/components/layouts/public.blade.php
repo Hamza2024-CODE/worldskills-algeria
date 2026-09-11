@@ -153,6 +153,61 @@
         }
     </style>
 
+
+    <!-- Ultra Rich Animations & Micro-Interactions Engine -->
+    <style id="wsap-ultra-animations">
+        @keyframes shineSweep {
+            0% { transform: translateX(-100%) rotate(25deg); }
+            100% { transform: translateX(200%) rotate(25deg); }
+        }
+        @keyframes floatGentle {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .wsap-shine-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        .wsap-shine-effect::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                60deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.35) 50%,
+                transparent 70%
+            );
+            transform: translateX(-100%) rotate(25deg);
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .wsap-shine-effect:hover::after {
+            opacity: 1;
+            animation: shineSweep 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .wsap-card-animated {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease !important;
+        }
+        .wsap-card-animated:hover {
+            transform: translateY(-8px) scale(1.018) !important;
+            box-shadow: 0 25px 45px -12px rgba(0, 102, 255, 0.22) !important;
+        }
+
+        .wsap-icon-animated {
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .group:hover .wsap-icon-animated {
+            transform: scale(1.18) rotate(8deg);
+        }
+    </style>
+
 </head>
 <body class="font-sans antialiased h-full flex flex-col text-[#06205C] bg-[#F4F7FC] relative overflow-x-hidden w-full max-w-full">
 
