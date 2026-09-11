@@ -106,6 +106,31 @@
     
     <!-- Platform Media & Content Protection System -->
     <x-content-protection />
+
+    <style id=wsap-dynamic-animations>
+        .wsap-float-slow {
+            animation: wsapFloat 6s ease-in-out infinite;
+        }
+        .wsap-pulse-slow {
+            animation: wsapPulse 4s ease-in-out infinite;
+        }
+        @keyframes wsapFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes wsapPulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.04); }
+        }
+        .wsap-hover-lift {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .wsap-hover-lift:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 20px 35px -10px rgba(0, 102, 255, 0.15);
+        }
+    </style>
+
 </head>
 <body class="font-sans antialiased h-full flex flex-col text-[#06205C] bg-[#F4F7FC] relative overflow-x-hidden w-full max-w-full">
 
