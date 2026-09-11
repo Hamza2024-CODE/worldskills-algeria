@@ -732,7 +732,7 @@
             <div class="space-y-4 max-w-3xl text-center {{ app()->getLocale() === 'ar' ? 'lg:text-right' : 'lg:text-left' }} relative z-10">
                 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[11px] font-black uppercase tracking-wider backdrop-blur-md">
                     <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                    <span>{{ app()->getLocale() === 'fr' ? 'Forum Politique d'Excellence 2026' : (app()->getLocale() === 'en' ? 'High-Level Political Forum 2026' : 'منتدى السياسات الأفريقية للمهارات 2026') }}</span>
+                    <span>{{ app()->getLocale() === 'fr' ? "Forum Politique d'Excellence 2026" : (app()->getLocale() === 'en' ? 'High-Level Political Forum 2026' : 'منتدى السياسات الأفريقية للمهارات 2026') }}</span>
                 </div>
 
                 <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black leading-tight text-white drop-shadow-md">
@@ -740,11 +740,11 @@
                 </h2>
 
                 <p class="text-xs sm:text-sm font-extrabold text-amber-300 tracking-wide">
-                    {{ app()->getLocale() === 'fr' ? '« Façonner l'avenir des compétences, autonomiser la jeunesse africaine »' : (app()->getLocale() === 'en' ? '“Shaping the Future of Skills, Empowering African Youth”' : '« صياغة مستقبل المهارات، تمكين الشباب الأفريقي »') }}
+                    {{ app()->getLocale() === 'fr' ? "« Façonner l'avenir des compétences, autonomiser la jeunesse africaine »" : (app()->getLocale() === 'en' ? '“Shaping the Future of Skills, Empowering African Youth”' : '« صياغة مستقبل المهارات، تمكين الشباب الأفريقي »') }}
                 </p>
 
                 <p class="text-xs sm:text-sm text-slate-200 font-medium leading-relaxed">
-                    {{ app()->getLocale() === 'fr' ? 'L'événement politique majeur de haut niveau réunissant ministres africains, experts techniques et partenaires institutionnels et internationaux, concrétisant un principe fondamental : l'avenir des compétences en Afrique doit être façonné par les Africains eux-mêmes.' : (app()->getLocale() === 'en' ? 'The flagship high-level political event bringing together African ministers, technical experts, institutional and international partners, embodying a core principle: Africa's skills future must be shaped by Africans themselves.' : 'الحدث السياسي الرفيع المستوى الرئيسي الذي يجمع الوزراء الأفارقة والخبراء التقنيين والشركاء المؤسساتيين والدوليين، تجسيدًا لمبدأ أساسي: مستقبل المهارات في إفريقيا يجب أن يُصاغ من قِبل الأفارقة أنفسهم.') }}
+                    {{ app()->getLocale() === 'fr' ? "L'événement politique majeur de haut niveau réunissant ministres africains, experts techniques et partenaires institutionnels et internationaux, concrétisant un principe fondamental : l'avenir des compétences en Afrique doit être façonné par les Africains eux-mêmes." : (app()->getLocale() === 'en' ? "The flagship high-level political event bringing together African ministers, technical experts, institutional and international partners, embodying a core principle: Africa's skills future must be shaped by Africans themselves." : 'الحدث السياسي الرفيع المستوى الرئيسي الذي يجمع الوزراء الأفارقة والخبراء التقنيين والشركاء المؤسساتيين والدوليين، تجسيدًا لمبدأ أساسي: مستقبل المهارات في إفريقيا يجب أن يُصاغ من قِبل الأفارقة أنفسهم.') }}
                 </p>
             </div>
 
