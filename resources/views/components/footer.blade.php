@@ -24,6 +24,7 @@
                     <li><a href="{{ route('schedule') }}" class="hover:text-brand-sky transition">{{ __('messages.schedule') }}</a></li>
                     <li><a href="{{ route('results') }}" class="hover:text-brand-sky transition">{{ __('messages.results') }}</a></li>
                     <li><a href="{{ route('events') }}" class="hover:text-brand-sky transition">{{ __('messages.events') }}</a></li>
+                                        <li><a href="https://africaskills-policyforum.worldskills.dz/" target="_blank" class="text-amber-400 hover:text-amber-300 font-bold transition flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg><span>{{ app()->getLocale() === 'fr' ? 'Forum Politique 2026' : (app()->getLocale() === 'en' ? 'Africa Policy Forum 2026' : 'منتدى السياسات الأفريقية 2026') }}</span></a></li>
                     <li><a href="{{ route('live-tv') }}" target="_blank" class="text-rose-400 hover:text-rose-300 font-bold transition flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-500 animate-ping inline-block"></span><span>{{ app()->getLocale() === 'fr' ? 'Direct TV (Écrans)' : (app()->getLocale() === 'en' ? 'Live TV Broadcast' : 'شاشة البث المباشر (Live TV)') }}</span></a></li>
                 </ul>
             </div>

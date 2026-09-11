@@ -385,7 +385,7 @@
     </section>
 
     <!-- 4. Featured Skills Showcase -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 mb-16 sm:mb-20">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b-2 border-slate-100/80 relative group/head cursor-default">
             {{-- Dynamic Ambient Light Glow with Hover Shimmer --}}
             <div class="absolute -top-12 start-0 w-64 h-24 bg-gradient-to-r from-blue-600/10 via-cyan-500/15 to-indigo-600/10 rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-blue-600/25 group-hover/head:to-cyan-400/25 transition-all duration-700"></div>
@@ -481,7 +481,7 @@
     </section>
 
     <!-- 5. Media & Event Highlights Grid -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 mb-16 sm:mb-20">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b-2 border-slate-100/80 relative group/head cursor-default">
             {{-- Dynamic Ambient Light Glow with Hover Shimmer --}}
             <div class="absolute -top-12 start-0 w-64 h-24 bg-gradient-to-r from-amber-500/10 via-orange-500/15 to-rose-500/10 rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-amber-500/25 group-hover/head:to-orange-400/25 transition-all duration-700"></div>
@@ -660,7 +660,7 @@
 
     <!-- 6. Featured Partners & Sponsors Banner Grid -->
     @if(app(\App\Services\SettingsEngine::class)->get('page_partners_enabled', true))
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 mb-16 sm:mb-20">
         <div class="flex flex-col items-center text-center space-y-2 relative pb-4 group/head cursor-default">
             {{-- Dynamic Ambient Light Glow with Hover Shimmer --}}
             <div class="absolute -top-12 inset-x-0 mx-auto w-72 h-24 bg-gradient-to-r from-blue-600/10 via-indigo-500/15 to-purple-600/10 rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-blue-600/25 group-hover/head:to-purple-500/25 transition-all duration-700"></div>
@@ -720,8 +720,45 @@
     </section>
     @endif
 
+    
+    <!-- 6.5 Africa Skills Policy Forum 2026 Showcase Section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20">
+        <div class="rounded-3xl bg-gradient-to-br from-[#06205C] via-[#041640] to-[#020A24] text-white p-8 lg:p-12 shadow-2xl backdrop-blur-2xl border-2 border-amber-400/40 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 group hover:border-amber-400 transition-all duration-500">
+            
+            {{-- Ambient Gold & Emerald Glow --}}
+            <div class="absolute -top-20 -right-20 w-80 h-80 bg-amber-500/20 rounded-full blur-3xl pointer-events-none group-hover:scale-125 transition-transform duration-700"></div>
+            <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="space-y-4 max-w-3xl text-center {{ app()->getLocale() === 'ar' ? 'lg:text-right' : 'lg:text-left' }} relative z-10">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[11px] font-black uppercase tracking-wider backdrop-blur-md">
+                    <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                    <span>{{ app()->getLocale() === 'fr' ? 'Forum Politique d'Excellence 2026' : (app()->getLocale() === 'en' ? 'High-Level Political Forum 2026' : 'منتدى السياسات الأفريقية للمهارات 2026') }}</span>
+                </div>
+
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black leading-tight text-white drop-shadow-md">
+                    {{ app()->getLocale() === 'fr' ? 'Forum sur les Politiques Africaines des Compétences 2026' : (app()->getLocale() === 'en' ? 'Africa Skills Policy Forum 2026' : 'منتدى السياسات الأفريقية للمهارات 2026') }}
+                </h2>
+
+                <p class="text-xs sm:text-sm font-extrabold text-amber-300 tracking-wide">
+                    {{ app()->getLocale() === 'fr' ? '« Façonner l'avenir des compétences, autonomiser la jeunesse africaine »' : (app()->getLocale() === 'en' ? '“Shaping the Future of Skills, Empowering African Youth”' : '« صياغة مستقبل المهارات، تمكين الشباب الأفريقي »') }}
+                </p>
+
+                <p class="text-xs sm:text-sm text-slate-200 font-medium leading-relaxed">
+                    {{ app()->getLocale() === 'fr' ? 'L'événement politique majeur de haut niveau réunissant ministres africains, experts techniques et partenaires institutionnels et internationaux, concrétisant un principe fondamental : l'avenir des compétences en Afrique doit être façonné par les Africains eux-mêmes.' : (app()->getLocale() === 'en' ? 'The flagship high-level political event bringing together African ministers, technical experts, institutional and international partners, embodying a core principle: Africa's skills future must be shaped by Africans themselves.' : 'الحدث السياسي الرفيع المستوى الرئيسي الذي يجمع الوزراء الأفارقة والخبراء التقنيين والشركاء المؤسساتيين والدوليين، تجسيدًا لمبدأ أساسي: مستقبل المهارات في إفريقيا يجب أن يُصاغ من قِبل الأفارقة أنفسهم.') }}
+                </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center gap-3 shrink-0 relative z-10 w-full lg:w-auto">
+                <a href="https://africaskills-policyforum.worldskills.dz/" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#06205C] font-black text-xs shadow-xl shadow-amber-500/30 transition transform hover:scale-105 flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    <span>{{ app()->getLocale() === 'fr' ? 'Visiter le Portail Officiel du Forum' : (app()->getLocale() === 'en' ? 'Visit Official Forum Portal' : 'زيارة المنصة الرسمية للمنتدى') }}</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- 7. Call to Action Banner -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20">
         <div class="rounded-3xl bg-gradient-to-r from-[#0038A8] via-[#0066FF] to-[#00A3FF] text-white p-8 lg:p-12 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 group">
             
             @php
