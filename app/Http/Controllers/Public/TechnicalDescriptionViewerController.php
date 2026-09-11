@@ -34,6 +34,7 @@ class TechnicalDescriptionViewerController extends Controller
         }
 
         // Try extracting TD number from key (e.g., td01_industrial_mechanics, SKILL-04, td04, 4)
+         $num = null;
         if (preg_match('/(?:td|skill[-_]?)?(\d+)/i', $key, $m)) {
             $num = (int)$m[1];
         }
