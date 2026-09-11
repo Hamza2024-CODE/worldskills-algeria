@@ -208,6 +208,66 @@
         }
     </style>
 
+
+    <!-- macOS Dock Spring Magnification & Aurora Mesh Background CSS -->
+    <style>
+        .mac-dock-hover {
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.35s ease,
+                        background-color 0.35s ease;
+            will-change: transform, box-shadow;
+        }
+
+        .mac-dock-hover:hover {
+            transform: translateY(-14px) scale(1.045);
+            box-shadow: 0 25px 50px -12px rgba(2, 132, 199, 0.3), 0 0 30px rgba(2, 132, 199, 0.18);
+            border-color: rgba(2, 132, 199, 0.5) !important;
+        }
+
+        .mac-dock-hover:active {
+            transform: translateY(-3px) scale(0.98);
+        }
+
+        /* Glossy Light Sweep Effect on Hover */
+        .mac-dock-hover .shine-overlay {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 45%,
+                rgba(255, 255, 255, 0.4) 50%,
+                transparent 55%
+            );
+            transform: rotate(30deg) translateX(-100%);
+            transition: transform 0.75s ease-in-out;
+            pointer-events: none;
+        }
+
+        .mac-dock-hover:hover .shine-overlay {
+            transform: rotate(30deg) translateX(100%);
+        }
+
+        /* Subtle Floating Aurora Orbs Animation */
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.08); }
+        }
+
+        .animate-orb-float-1 {
+            animation: orbFloat 8s ease-in-out infinite;
+        }
+        .animate-orb-float-2 {
+            animation: orbFloat 12s ease-in-out infinite 2s;
+        }
+        .animate-orb-float-3 {
+            animation: orbFloat 10s ease-in-out infinite 4s;
+        }
+    </style>
+
 </head>
 <body class="font-sans antialiased h-full flex flex-col text-[#06205C] bg-[#F4F7FC] relative overflow-x-hidden w-full max-w-full">
 

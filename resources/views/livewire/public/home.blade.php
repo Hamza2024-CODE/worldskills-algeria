@@ -1,7 +1,21 @@
-<div class="pb-16" x-data="{ showVideoModal: false }">
+
+<div class="pb-16 relative overflow-hidden bg-[#FAFBFD]" x-data="{ showVideoModal: false }">
+
+    <!-- Dynamic Aurora Ambient Glass Orbs Background -->
+    <div class="absolute top-10 right-1/4 w-[32rem] h-[32rem] bg-brand-500/10 rounded-full blur-[100px] pointer-events-none animate-orb-float-1"></div>
+    <div class="absolute top-96 left-10 w-[36rem] h-[36rem] bg-sky-400/10 rounded-full blur-[120px] pointer-events-none animate-orb-float-2"></div>
+    <div class="absolute bottom-40 right-10 w-[28rem] h-[28rem] bg-amber-400/10 rounded-full blur-[90px] pointer-events-none animate-orb-float-3"></div>
+
 @php
     $activeEvent = $activeEvent ?? null;
     $stats = $stats ?? [];
+    $skills = $skills ?? collect();
+    $news = $news ?? collect();
+    $albums = $albums ?? collect();
+    $videos = $videos ?? collect();
+    $partners = $partners ?? collect();
+    $skillCategories = $skillCategories ?? collect();
+    $upcomingEvents = $upcomingEvents ?? collect();
     $countdownEnabled = $countdownEnabled ?? true;
     $countdownStatus = $countdownStatus ?? 'COUNTDOWN';
     $countdownTargetDate = $countdownTargetDate ?? '2026-09-15 09:00:00';
@@ -105,11 +119,11 @@
 
             <!-- Action Buttons Grid: Animated Entrance -->
             <div class="animate-hero-btns flex flex-wrap items-center gap-4 pt-4">
-                <a href="{{ route('guide') }}" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-black text-sm shadow-xl shadow-brand-500/30 transition-all transform hover:-translate-y-1 hover:scale-[1.02] active:scale-95">
+                <a href="{{ route('guide') }}" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-black text-sm shadow-xl shadow-brand-500/30 transition-all transform mac-dock-hover relative overflow-hidden  hover:scale-[1.02] active:scale-95">
                     {{ __('messages.explore_more') }}
                 </a>
 
-                <a href="{{ route('registration') }}" class="px-8 py-4 rounded-2xl bg-white hover:bg-slate-100 text-[#06205C] font-black text-sm shadow-xl transition-all flex items-center gap-2 transform hover:-translate-y-1 hover:scale-[1.02] active:scale-95">
+                <a href="{{ route('registration') }}" class="px-8 py-4 rounded-2xl bg-white hover:bg-slate-100 text-[#06205C] font-black text-sm shadow-xl transition-all flex items-center gap-2 transform mac-dock-hover relative overflow-hidden  hover:scale-[1.02] active:scale-95">
                     <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     <span>{{ __('messages.register_now') }}</span>
                 </a>
@@ -420,7 +434,7 @@
                 </p>
             </div>
 
-            <a href="{{ route('skills') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-[#06205C] to-[#0066FF] hover:from-[#0066FF] hover:to-[#00A3FF] text-white text-xs font-black shadow-lg shadow-blue-900/20 hover:shadow-blue-500/40 hover:scale-105 transition-all duration-300 group/btn self-start md:self-auto border border-white/20">
+            <a href="{{ route('skills') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-[#06205C] to-[#0066FF] hover:from-[#0066FF] hover:to-[#00A3FF] text-white text-xs font-black shadow-lg shadow-blue-900/20 hover:shadow-blue-500/40 mac-dock-hover relative overflow-hidden  transition-all duration-300 group/btn self-start md:self-auto border border-white/20">
                 <span>{{ __('messages.view_all_skills') }}</span>
                 <svg class="w-4 h-4 text-white group-hover/btn:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
@@ -431,14 +445,14 @@
                 @php
                     $imgUrl = asset($skill->image_path ?: 'images/skills/trade_16.png');
                 @endphp
-                <div class="bg-white rounded-3xl overflow-hidden shadow-xl border border-slate-200/90 hover:shadow-2xl transition-all duration-400 transform hover:-translate-y-2 group cursor-pointer flex flex-col justify-between hover:border-[#0066FF] wsap-hover-card">
+                <div class="bg-white rounded-3xl overflow-hidden shadow-xl border border-slate-200/90 hover:shadow-2xl transition-all duration-400 transform mac-dock-hover relative overflow-hidden  group cursor-pointer flex flex-col justify-between hover:border-[#0066FF] wsap-hover-card">
                     
                     {{-- Photo Banner Header --}}
                     <div class="h-48 bg-slate-950 relative overflow-hidden">
                         <img src="{{ $imgUrl }}"
                              onerror="this.onerror=null; this.src='{{ asset('images/skills/ict.png') }}';"
                              alt="{{ $skill->getLocalized('name') }}"
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-95">
+                             class="w-full h-full object-cover group-mac-dock-hover relative overflow-hidden  transition-transform duration-700 opacity-95">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-black/20 to-black/10"></div>
 
                         {{-- Code Badge (Top-Start) --}}
@@ -634,14 +648,14 @@
                     </h3>
                     <button @click="showVideoModal = true" class="relative rounded-2xl overflow-hidden bg-[#020A24] group block w-full text-right focus:outline-none h-32 border border-slate-800 shadow-md">
                         @if($videos->first()?->thumbnail_path)
-                            <img src="{{ $videos->first()->thumbnail_url }}" alt="Featured Video" class="w-full h-32 object-cover opacity-80 group-hover:scale-105 transition-transform duration-300">
+                            <img src="{{ $videos->first()->thumbnail_url }}" alt="Featured Video" class="w-full h-32 object-cover opacity-80 group-mac-dock-hover relative overflow-hidden  transition-transform duration-300">
                         @else
                             <div class="w-full h-32 bg-gradient-to-br from-[#020A24] via-[#06205C] to-blue-900 flex items-center justify-center p-4">
                                 <img src="/logo.svg" alt="WorldSkills Algeria" class="h-12 w-auto opacity-30 filter drop-shadow">
                             </div>
                         @endif
                         <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-12 h-12 rounded-full bg-[#0066FF] text-white flex items-center justify-center shadow-xl shadow-blue-500/50 group-hover:scale-110 transition-transform">
+                            <div class="w-12 h-12 rounded-full bg-[#0066FF] text-white flex items-center justify-center shadow-xl shadow-blue-500/50 group-mac-dock-hover relative overflow-hidden  transition-transform">
                                 <svg class="w-6 h-6 fill-current translate-x-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                             </div>
                         </div>
@@ -697,7 +711,7 @@
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200/80 flex items-center justify-center flex-wrap gap-8 sm:gap-12">
             @forelse($partners as $p)
                 @php $logoUrl = $p->logo_path ? asset($p->logo_path) : null; @endphp
-                <div class="flex flex-col items-center justify-center gap-2 group transition transform hover:scale-105 py-2 px-3">
+                <div class="flex flex-col items-center justify-center gap-2 group transition transform mac-dock-hover relative overflow-hidden  py-2 px-3">
                     <div class="h-10 sm:h-12 w-auto flex items-center justify-center">
                         @if($logoUrl)
                             <img src="{{ $logoUrl }}" alt="{{ $p->getLocalized('name') }}" class="h-10 sm:h-12 w-auto object-contain filter grayscale group-hover:grayscale-0 transition duration-300">
@@ -726,7 +740,7 @@
         <div class="rounded-3xl bg-white/80 backdrop-blur-2xl text-slate-900 p-8 lg:p-12 shadow-2xl border-2 border-amber-300/60 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 group hover:border-amber-500 wsap-card-animated wsap-shine-effect">
             
             {{-- Ambient Gold & Emerald Glow --}}
-            <div class="absolute -top-20 -right-20 w-80 h-80 bg-amber-500/20 rounded-full blur-3xl pointer-events-none group-hover:scale-125 transition-transform duration-700"></div>
+            <div class="absolute -top-20 -right-20 w-80 h-80 bg-amber-500/20 rounded-full blur-3xl pointer-events-none group-mac-dock-hover relative overflow-hidden  transition-transform duration-700"></div>
             <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
             <div class="space-y-4 max-w-3xl text-center {{ app()->getLocale() === 'ar' ? 'lg:text-right' : 'lg:text-left' }} relative z-10">
@@ -749,7 +763,7 @@
             </div>
 
             <div class="flex flex-col sm:flex-row items-center gap-3 shrink-0 relative z-10 w-full lg:w-auto">
-                <a href="https://africaskills-policyforum.worldskills.dz/" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#06205C] font-black text-xs shadow-xl shadow-amber-500/30 transition transform hover:scale-105 flex items-center justify-center gap-2">
+                <a href="https://africaskills-policyforum.worldskills.dz/" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#06205C] font-black text-xs shadow-xl shadow-amber-500/30 transition transform mac-dock-hover relative overflow-hidden  flex items-center justify-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                     <span>{{ app()->getLocale() === 'fr' ? 'Visiter le Portail Officiel du Forum' : (app()->getLocale() === 'en' ? 'Visit Official Forum Portal' : 'زيارة المنصة الرسمية للمنتدى') }}</span>
                 </a>
@@ -778,7 +792,7 @@
                 </p>
             </div>
             
-            <a href="{{ route('registration') }}" class="px-8 py-3.5 rounded-2xl bg-white text-[#0052CC] font-bold text-xs shadow-xl hover:bg-blue-50 transition flex items-center gap-2 flex-shrink-0 hover:scale-105">
+            <a href="{{ route('registration') }}" class="px-8 py-3.5 rounded-2xl bg-white text-[#0052CC] font-bold text-xs shadow-xl hover:bg-blue-50 transition flex items-center gap-2 flex-shrink-0 mac-dock-hover relative overflow-hidden ">
                 <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 <span>{{ __('messages.register_now') }}</span>
             </a>
