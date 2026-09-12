@@ -316,7 +316,7 @@
              :style="`transform: translate3d(${mouseX - 28}px, ${mouseY - 28}px, 0);`"></div>
     </div>
 
-    @unless(request()->routeIs('coming-soon'))
+    @unless(request()->routeIs('coming-soon') || request()->is('coming-soon'))
         <!-- Modular Top Header Navigation Component -->
         <x-navbar />
     @endunless
@@ -326,7 +326,7 @@
         {{ $slot }}
     </main>
 
-    @unless(request()->routeIs('coming-soon'))
+    @unless(request()->routeIs('coming-soon') || request()->is('coming-soon'))
         <!-- Modular Dark Deep Blue Footer Component -->
         <x-footer />
 
