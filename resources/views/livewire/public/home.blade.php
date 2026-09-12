@@ -799,16 +799,132 @@
         </div>
     </section>
 
-    <!-- 8. Inline Video Pop-Up Modal (Plays video directly inside site without redirecting) -->
-    <div x-show="showVideoModal" x-transition.opacity class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4" style="display: none;">
-        <div @click.outside="showVideoModal = false" class="bg-slate-900 rounded-3xl overflow-hidden max-w-4xl w-full shadow-2xl border border-slate-700 relative">
-            <button @click="showVideoModal = false" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black transition">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        <!-- 8. Continuous Auto-Next Video Playlist Player Modal -->
+    <div x-data="videoPlaylistPlayer()" 
+         x-show="showVideoModal" 
+         x-transition.opacity
+         @keydown.escape.window="closeModal()"
+         class="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6" 
+         style="display: none;">
+        
+        <div class="bg-slate-900 rounded-3xl overflow-hidden max-w-5xl w-full shadow-2xl relative border border-slate-800 flex flex-col lg:flex-row max-h-[90vh]"
+             @click.away="closeModal()">
+            
+            <!-- Close Button -->
+            <button @click="closeModal()" class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-red-600 transition-colors font-bold shadow-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
-            <div class="aspect-video w-full">
-                <iframe class="w-full h-full" src="https://www.youtube-nocookie.com/embed/nzy4f7GBSVw?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&vq=hd1080" title="WorldSkills Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+            <!-- Video Player Column (Left/Main) -->
+            <div class="lg:w-2/3 flex flex-col justify-between bg-black">
+                <div class="aspect-video w-full relative">
+                    <iframe id="wsap-yt-player" 
+                            class="w-full h-full" 
+                            :src="'https://www.youtube-nocookie.com/embed/' + currentVideo.ytId + '?enablejsapi=1&autoplay=1&rel=0'" 
+                            title="WorldSkills Video Player" 
+                            frameborder="0" 
+                            allow="autoplay; encrypted-media" 
+                            allowfullscreen></iframe>
+                </div>
+
+                <!-- Active Video Info & Next/Prev Controls -->
+                <div class="p-4 sm:p-6 bg-slate-950/90 border-t border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                            <span class="text-[11px] font-black text-emerald-400 uppercase tracking-wider">تشغيل تلقائي متواصل (Auto-Next Playlist)</span>
+                        </div>
+                        <h4 class="text-sm sm:text-base font-bold text-white mt-1 line-clamp-1" x-text="currentVideo.title"></h4>
+                    </div>
+
+                    <!-- Next & Previous Navigation Buttons -->
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <button @click="prevVideo()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-colors flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                            <span>السابق</span>
+                        </button>
+                        <button @click="nextVideo()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md transition-colors flex items-center gap-1">
+                            <span>الفيديو التالي</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
             </div>
+
+            <!-- Playlist Sidebar Queue (Right Column) -->
+            <div class="lg:w-1/3 p-4 sm:p-5 bg-slate-900 border-t lg:border-t-0 lg:border-r border-slate-800 overflow-y-auto max-h-[40vh] lg:max-h-full space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <h5 class="text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                        <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        <span>قائمة الفيديوهات (التسلسل التلقائي)</span>
+                    </h5>
+                    <span class="text-[10px] bg-slate-800 text-brand-400 font-bold px-2 py-0.5 rounded-full" x-text="(currentIndex + 1) + ' / ' + playlist.length"></span>
+                </div>
+
+                <div class="space-y-2.5">
+                    <template x-for="(vid, idx) in playlist" :key="idx">
+                        <div @click="selectVideo(idx)" 
+                             :class="idx === currentIndex ? 'bg-brand-900/40 border-brand-500/60 text-white' : 'bg-slate-950/60 border-slate-800/80 text-slate-400 hover:bg-slate-800/80 hover:text-slate-200'"
+                             class="p-3 rounded-2xl border transition-all duration-200 cursor-pointer flex items-center gap-3 group">
+                            
+                            <!-- Thumbnail with Playing Indicator -->
+                            <div class="w-16 h-12 rounded-xl bg-slate-800 overflow-hidden relative flex-shrink-0">
+                                <img :src="'https://img.youtube.com/vi/' + vid.ytId + '/hqdefault.jpg'" class="w-full h-full object-cover">
+                                <div x-show="idx === currentIndex" class="absolute inset-0 bg-brand-600/70 flex items-center justify-center">
+                                    <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                                </div>
+                            </div>
+
+                            <div class="flex-1 min-w-0">
+                                <h6 class="text-xs font-bold truncate group-hover:text-brand-400 transition-colors" x-text="vid.title"></h6>
+                                <span class="text-[10px] text-slate-500 mt-0.5 block" x-text="idx === currentIndex ? 'قيد التشغيل الآن...' : 'انقر للتشغيل'"></span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
         </div>
+    </div>
+
+    <!-- Alpine.js Auto-Next Playlist Controller Script -->
+    <script>
+        function videoPlaylistPlayer() {
+            return {
+                currentIndex: 0,
+                playlist: [
+                    { title: "تغطية ميكاترونكس والتحكم الآلي — WorldSkills Algeria", ytId: "nzy4f7GBSVw" },
+                    { title: "تغطية حلول البرمجيات والأمن السيبراني — WorldSkills Algeria", ytId: "ee7fzNFUKIM" },
+                    { title: "تغطية التصنيع وتكنولوجيا الهندسة — WorldSkills Algeria", ytId: "K0zLspMssns" },
+                    { title: "تغطية تكنولوجيا البناء المستدام — WorldSkills Algeria", ytId: "nzy4f7GBSVw" }
+                ],
+                get currentVideo() {
+                    return this.playlist[this.currentIndex] || this.playlist[0];
+                },
+                selectVideo(idx) {
+                    this.currentIndex = idx;
+                    this.reloadPlayer();
+                },
+                nextVideo() {
+                    this.currentIndex = (this.currentIndex + 1) % this.playlist.length;
+                    this.reloadPlayer();
+                },
+                prevVideo() {
+                    this.currentIndex = (this.currentIndex - 1 + this.playlist.length) % this.playlist.length;
+                    this.reloadPlayer();
+                },
+                reloadPlayer() {
+                    var iframe = document.getElementById('wsap-yt-player');
+                    if (iframe) {
+                        iframe.src = 'https://www.youtube-nocookie.com/embed/' + this.currentVideo.ytId + '?enablejsapi=1&autoplay=1&rel=0';
+                    }
+                },
+                closeModal() {
+                    this.$data.showVideoModal = false;
+                }
+            };
+        }
+    </script>
     </div>
 
 </div>
