@@ -14,6 +14,21 @@
                 <p class="text-xs text-slate-400 leading-relaxed">
                     {{ app()->getLocale() === 'fr' ? 'Rassemblement des délégations nationales et internationales au Centre des Conventions Mohamed Benahmed à Oran.' : (app()->getLocale() === 'en' ? 'Gathering of national and international delegations at Mohamed Benahmed Convention Center in Oran.' : 'تجمع الوفود الوطنية والدولية بمركز المؤتمرات محمد بن أحمد بمدينة وهران.') }}
                 </p>
+                
+                <!-- Footer Photo Banner Under Text -->
+                <div class="mt-4 pt-2">
+                    <div class="relative h-28 rounded-2xl overflow-hidden border border-slate-800 shadow-xl group cursor-pointer">
+                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=600&auto=format&fit=crop" 
+                             alt="Mohamed Benahmed Convention Center Oran" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-85">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent flex items-end p-2.5">
+                            <div class="flex items-center gap-1.5 text-[10px] font-bold text-slate-200">
+                                <svg class="w-3.5 h-3.5 text-brand-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                                <span>{{ app()->getLocale() === 'fr' ? 'Centre des Conventions - Oran' : (app()->getLocale() === 'en' ? 'Convention Center - Oran' : 'مركز المؤتمرات محمد بن أحمد - وهران') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Col 2: Competition Links -->
