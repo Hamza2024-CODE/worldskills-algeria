@@ -1,12 +1,12 @@
 <footer class="relative text-white border-t border-slate-800/80 py-12 mt-16 overflow-hidden">
     
     <!-- Full-Bleed Cover Photo Background Layer across entire Footer -->
-    <div class="absolute inset-0 z-0 pointer-events-none">
+    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden bg-[#020A24]">
         <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1600&auto=format&fit=crop" 
              alt="WorldSkills Algeria Oran Venue" 
-             class="w-full h-full object-cover object-center opacity-20 filter brightness-90 saturate-110">
-        <!-- Deep Cinematic Gradient Overlay for 100% Text Legibility -->
-        <div class="absolute inset-0 bg-gradient-to-b from-[#020A24]/95 via-[#020A24]/90 to-[#010618]/98"></div>
+             class="w-full h-full object-cover object-center opacity-15 filter brightness-50 contrast-125 mix-blend-luminosity">
+        <!-- Deep Dark Gradient Layer for 100% High-Contrast Text Legibility -->
+        <div class="absolute inset-0 bg-gradient-to-b from-[#020A24] via-[#020A24]/90 to-[#01071E]"></div>
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -21,7 +21,7 @@
                 <div class="flex items-center">
                     <img src="{{ $logoUrl }}" alt="WorldSkills Logo" class="h-12 sm:h-16 w-auto object-contain brightness-0 invert filter drop-shadow-md">
                 </div>
-                <p class="text-xs text-slate-300 leading-relaxed font-medium">
+                <p class="text-xs text-slate-200 font-semibold leading-relaxed font-medium">
                     {{ app()->getLocale() === 'fr' ? 'Rassemblement des délégations nationales et internationales au Centre des Conventions Mohamed Benahmed à Oran.' : (app()->getLocale() === 'en' ? 'Gathering of national and international delegations at Mohamed Benahmed Convention Center in Oran.' : 'تجمع الوفود الوطنية والدولية بمركز المؤتمرات محمد بن أحمد بمدينة وهران.') }}
                 </p>
                 <div class="inline-flex items-center gap-1.5 text-[11px] font-bold text-brand-400 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
@@ -33,7 +33,7 @@
             <!-- Col 2: Competition Links -->
             <div>
                 <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-4">{{ __('messages.competition') }}</h4>
-                <ul class="space-y-2.5 text-xs text-slate-300 font-medium">
+                <ul class="space-y-2.5 text-xs text-slate-200 font-semibold font-medium">
                     <li><a href="{{ route('skills') }}" class="hover:text-brand-sky transition">{{ __('messages.skills') }}</a></li>
                     <li><a href="{{ route('schedule') }}" class="hover:text-brand-sky transition">{{ __('messages.schedule') }}</a></li>
                     <li><a href="{{ route('results') }}" class="hover:text-brand-sky transition">{{ __('messages.results') }}</a></li>
@@ -46,7 +46,7 @@
             <!-- Col 3: Quick Links -->
             <div>
                 <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-4">{{ __('messages.guide') }}</h4>
-                <ul class="space-y-2.5 text-xs text-slate-300 font-medium">
+                <ul class="space-y-2.5 text-xs text-slate-200 font-semibold font-medium">
                     <li><a href="{{ route('guide') }}" class="hover:text-brand-sky transition">{{ __('messages.guide') }}</a></li>
                     <li><a href="{{ route('regulations') }}" class="hover:text-brand-sky transition">{{ __('messages.regulations') }}</a></li>
                     <li><a href="{{ route('faq') }}" class="hover:text-brand-sky transition">{{ __('messages.faq') }}</a></li>
