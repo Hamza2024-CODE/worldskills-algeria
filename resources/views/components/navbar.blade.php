@@ -4,8 +4,8 @@
     $locale = app()->getLocale();
 @endphp
 
-<header class="sticky top-3 sm:top-4 z-50 w-full px-3 sm:px-6 lg:px-8 pointer-events-none {{ request()->routeIs('home') ? '-mb-20 sm:-mb-24' : 'mb-6 sm:mb-10' }}" x-data="{ mobileMenuOpen: false, activeDropdown: null }">
-    <div class="max-w-[1360px] mx-auto rounded-full bg-white/75 dark:bg-white/85 backdrop-blur-2xl border border-white/80 shadow-[0_10px_35px_rgba(0,0,0,0.08)] p-1.5 sm:p-2 flex items-center justify-between gap-2 pointer-events-auto">
+<header class="sticky top-3 sm:top-4 z-50 w-full px-3 sm:px-6 lg:px-8 pointer-events-none {{ request()->routeIs('home') ? '-mb-20 sm:-mb-24' : 'mb-6 sm:mb-10' }}" x-data="{ mobileMenuOpen: false, activeDropdown: null, dark: document.documentElement.classList.contains('dark'), toggleDark() { this.dark = !this.dark; localStorage.setItem('wsap_dark_mode', this.dark); document.documentElement.classList.toggle('dark', this.dark); } }">
+    <div class="max-w-[1360px] mx-auto rounded-full bg-white/80 dark:bg-[#081226]/85 backdrop-blur-2xl border border-white/80 dark:border-slate-800/80 shadow-[0_10px_35px_rgba(0,0,0,0.08)] p-1.5 sm:p-2 flex items-center justify-between gap-2 pointer-events-auto">
 
         <!-- ═════════════════════════════════════════════════════════════════
              1. RIGHT: OFFICIAL LOGO CAPSULE (Translucent White Glass Pill)
@@ -379,7 +379,14 @@
             </a>
         </div>
 
-        <div class="pt-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-800">
+        <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-800 dark:text-slate-200">
+            <div class="flex items-center gap-2">
+                <button type="button" @click="toggleDark()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-amber-300">
+                    <template x-if="dark"><svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg></template>
+                    <template x-if="!dark"><svg class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg></template>
+                </button>
+                <span class="font-bold text-[11px]" x-text="dark ? 'الوضع الليلي' : 'الوضع الفاتح'"></span>
+            </div>
             <span class="font-bold">اللغة / Langue:</span>
             <div class="flex items-center gap-2">
                 <a href="{{ route('lang.switch', 'ar') }}" class="px-2.5 py-1 rounded-full {{ $locale === 'ar' ? 'bg-ws-primary text-white font-black' : 'bg-slate-100' }}">AR</a>

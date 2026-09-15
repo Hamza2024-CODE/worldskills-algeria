@@ -39,14 +39,14 @@ $dashboardRoute = match($rawRole) {
 <header
     x-data="{
         dropdownOpen: false,
-        dark: localStorage.getItem('wsap_dark_mode') === 'true',
+        dark: document.documentElement.classList.contains('dark'),
         toggleDark() {
             this.dark = !this.dark;
             localStorage.setItem('wsap_dark_mode', this.dark);
             document.documentElement.classList.toggle('dark', this.dark);
         }
     }"
-    x-init="document.documentElement.classList.toggle('dark', dark)"
+    
     class="sticky top-0 z-40 h-16 w-full flex items-center justify-between px-3 sm:px-6 bg-white/85 dark:bg-[#0B1120]/90 backdrop-blur-2xl border-b border-slate-200/80 dark:border-slate-800/80 shadow-xs select-none transition-colors"
 >
     {{-- ════ START / LEFT (Logos & Identity) ════ --}}

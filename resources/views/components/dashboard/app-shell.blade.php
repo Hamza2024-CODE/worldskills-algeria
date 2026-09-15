@@ -13,6 +13,14 @@
 <!DOCTYPE html>
 <html lang="{{ $locale }}" dir="{{ $dir }}" class="h-full" x-data="{ dark: localStorage.getItem('wsap_dark_mode') === 'true' }" x-init="document.documentElement.classList.toggle('dark', dark)" :class="dark ? 'dark' : ''">
 <head>
+    <!-- Instant Dark Mode Detection -->
+    <script>
+        if (localStorage.getItem('wsap_dark_mode') === 'true' || (!('wsap_dark_mode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">

@@ -197,7 +197,7 @@
                     @endif
 
                     <!-- TAB 3: Breaking News Ticker (شريط الأخبار والإعلانات التفاعلي) -->
-                    @if( === 'news_ticker')
+                    @if($activeTab === 'news_ticker')
                     <div class="space-y-8 animate-fade-in">
                         <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div>

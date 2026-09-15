@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="h-full bg-[#F8FAFC]">
 <head>
+    <!-- Instant Dark Mode Detection (Zero FOUC) -->
+    <script>
+        if (localStorage.getItem('wsap_dark_mode') === 'true' || (!('wsap_dark_mode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -31,7 +39,7 @@
     <!-- Content & Media Protection -->
     <x-content-protection />
 </head>
-<body class="font-sans antialiased min-h-full flex flex-col text-ws-slate bg-ws-bg text-start selection:bg-ws-primary selection:text-white relative">
+<body class="font-sans antialiased min-h-full flex flex-col text-ws-slate dark:text-slate-100 bg-ws-bg dark:bg-[#070E20] text-start selection:bg-ws-primary selection:text-white relative transition-colors duration-200">
 
     @unless(request()->routeIs('coming-soon') || request()->is('coming-soon'))
         <!-- Floating Glassmorphic Official Navbar -->
