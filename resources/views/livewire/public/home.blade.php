@@ -731,7 +731,7 @@
     </section>
 
     <!-- 6. Featured Partners & Sponsors Banner Grid -->
-    @if(($pagePartnersEnabled ?? true) && $partners->isNotEmpty())
+    @if(!empty($pagePartnersEnabled) && $partners->isNotEmpty())
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 mb-16 sm:mb-20 overflow-hidden ws-contain-render">
         <div class="p-6 sm:p-8 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_10px_35px_rgba(0,82,204,0.06)] hover:shadow-[0_20px_45px_rgba(0,82,204,0.12)] hover:-translate-y-1.5 transition-all duration-500 relative group/head cursor-default overflow-hidden flex flex-col items-center text-center space-y-3">
             {{-- Ambient Decorative Glass Glow (Transforms from Navy/Blue to Cyan on Hover) --}}

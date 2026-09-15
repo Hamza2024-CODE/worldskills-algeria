@@ -41,7 +41,7 @@ class Home extends Component
     public bool   $countdownShowIcons;
     public bool   $countdownFlipAnimation;
     public bool   $countdownEnabled;
-    public bool   $pagePartnersEnabled = true;
+    public bool   $pagePartnersEnabled = false;
 
     // Breaking News Ticker Controls from Admin Settings
     public bool   $newsTickerEnabled = true;

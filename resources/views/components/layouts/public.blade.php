@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="h-full bg-[#F8FAFC]">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="h-full bg-[#F8FAFC] overflow-x-hidden w-full max-w-full">
 <head>
     <!-- Instant Dark Mode Detection (Zero FOUC) -->
     <script>
@@ -39,7 +39,7 @@
     <!-- Content & Media Protection -->
     <x-content-protection />
 </head>
-<body class="font-sans antialiased min-h-full flex flex-col text-ws-slate dark:text-slate-100 bg-ws-bg dark:bg-[#070E20] text-start selection:bg-ws-primary selection:text-white relative transition-colors duration-200">
+<body class="font-sans antialiased min-h-full flex flex-col text-ws-slate dark:text-slate-100 bg-ws-bg dark:bg-[#070E20] text-start selection:bg-ws-primary selection:text-white relative transition-colors duration-200 overflow-x-hidden w-full max-w-full">
 
     @unless(request()->routeIs('coming-soon') || request()->is('coming-soon'))
         <!-- Floating Glassmorphic Official Navbar -->
@@ -47,7 +47,7 @@
     @endunless
 
     <!-- Main Content Area -->
-    <main class="flex-grow min-h-[calc(100vh-320px)] {{ request()->routeIs('home') ? '' : 'pt-2 sm:pt-4' }} pb-20 sm:pb-28">
+    <main class="flex-grow min-h-[calc(100vh-320px)] {{ request()->routeIs('home') ? '' : 'pt-2 sm:pt-4' }} pb-20 sm:pb-28 overflow-x-hidden w-full max-w-full">
         {{ $slot }}
     </main>
 
