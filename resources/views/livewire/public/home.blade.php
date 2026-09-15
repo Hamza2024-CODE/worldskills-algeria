@@ -481,7 +481,7 @@
     @include('partials.news-ticker')
 
     <!-- 4. Featured Skills Showcase -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 mb-16 sm:mb-20">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 mb-16 sm:mb-20 ws-contain-render">
         <div class="p-6 sm:p-8 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_10px_35px_rgba(0,82,204,0.06)] hover:shadow-[0_20px_45px_rgba(0,82,204,0.12)] hover:-translate-y-1.5 transition-all duration-500 relative group/head cursor-default overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
             {{-- Ambient Decorative Glass Glow (Transforms from Blue to Cyan on Hover) --}}
             <div class="absolute -top-16 -start-16 w-60 h-60 bg-gradient-to-br from-blue-500/15 via-cyan-400/10 to-transparent rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-cyan-500/25 group-hover/head:via-blue-600/20 transition-all duration-700"></div>
@@ -565,7 +565,7 @@
     </section>
 
     <!-- 5. Media & Event Highlights Grid -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 mb-16 sm:mb-20">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 mb-16 sm:mb-20 ws-contain-render">
         <div class="p-6 sm:p-8 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_10px_35px_rgba(245,158,11,0.06)] hover:shadow-[0_20px_45px_rgba(245,158,11,0.15)] hover:-translate-y-1.5 transition-all duration-500 relative group/head cursor-default overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
             {{-- Ambient Decorative Glass Glow (Transforms from Amber to Orange on Hover) --}}
             <div class="absolute -top-16 -start-16 w-60 h-60 bg-gradient-to-br from-amber-500/15 via-orange-400/10 to-transparent rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-orange-500/25 group-hover/head:via-amber-600/20 transition-all duration-700"></div>
@@ -732,7 +732,7 @@
 
     <!-- 6. Featured Partners & Sponsors Banner Grid -->
     @if(($pagePartnersEnabled ?? true) && $partners->isNotEmpty())
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 mb-16 sm:mb-20 overflow-hidden">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 mb-16 sm:mb-20 overflow-hidden ws-contain-render">
         <div class="p-6 sm:p-8 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_10px_35px_rgba(0,82,204,0.06)] hover:shadow-[0_20px_45px_rgba(0,82,204,0.12)] hover:-translate-y-1.5 transition-all duration-500 relative group/head cursor-default overflow-hidden flex flex-col items-center text-center space-y-3">
             {{-- Ambient Decorative Glass Glow (Transforms from Navy/Blue to Cyan on Hover) --}}
             <div class="absolute -top-16 inset-x-0 mx-auto w-72 h-48 bg-gradient-to-b from-blue-500/15 via-cyan-400/10 to-transparent rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-cyan-500/25 group-hover/head:via-blue-600/20 transition-all duration-700"></div>
@@ -832,7 +832,7 @@
     @endif
 
     <!-- 6.5 Africa Skills Policy Forum 2026 Showcase Section (متناسق مع مظهر المنصة الفاتح الفاخر) -->
-    <section id="african-skills-policy-forum" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20">
+    <section id="african-skills-policy-forum" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20 ws-contain-render">
         <div class="relative rounded-3xl sm:rounded-[36px] overflow-hidden bg-gradient-to-br from-white via-[#F4F9FF] to-[#EBF5FE] border-2 border-sky-100 shadow-[0_20px_60px_-15px_rgba(2,132,199,0.12)] p-8 sm:p-10 lg:p-12 group/forum">
             
             {{-- Ambient Cyan & Sky Aurora Glows --}}
@@ -945,7 +945,7 @@
     </section>
 
     <!-- 7. Call to Action Banner -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20 ws-contain-render">
         <div class="rounded-3xl bg-gradient-to-r from-[#0038A8] via-[#0066FF] to-[#00A3FF] text-white p-8 lg:p-12 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 group wsap-card-animated wsap-shine-effect">
             
             @php

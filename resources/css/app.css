@@ -150,3 +150,62 @@
         scroll-behavior: auto !important;
     }
 }
+
+
+/* ══════════════════════════════════════════════════════════
+   120Hz HIGH-REFRESH RATE MOBILE & GPU PERFORMANCE OPTIMIZATIONS
+   ══════════════════════════════════════════════════════════ */
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Eliminate tap delay and highlight flashing on touch */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Hardware Compositor Layer Promotion */
+.will-change-transform,
+.animate-aurora-mesh-1,
+.animate-aurora-mesh-2,
+.animate-aurora-mesh-3,
+.animate-aurora-mesh-4,
+.ws-ticker-track-rtl,
+.ws-ticker-track-ltr {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* Rendering containment for offscreen sections */
+.ws-contain-render {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 650px;
+}
+
+/* Mobile Screen Fillrate Optimization (Drop heavy multi-pass blur on small screens) */
+@media (max-width: 768px) {
+    /* Replace costly GPU backdrop-filter with lightweight 94% opacity backgrounds */
+    .backdrop-blur-xl,
+    .backdrop-blur-2xl,
+    .backdrop-blur-lg {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    
+    /* Ensure high contrast and clear readability on mobile without blur calculation overhead */
+    .bg-white\/70,
+    .bg-white\/80,
+    .bg-white\/60 {
+        background-color: rgba(255, 255, 255, 0.94) !important;
+    }
+
+    .dark .bg-slate-900\/70,
+    .dark .bg-slate-900\/80,
+    .dark .bg-slate-900\/60,
+    .dark .bg-\[\#06205C\]\/70 {
+        background-color: rgba(15, 23, 42, 0.94) !important;
+    }
+}
