@@ -114,10 +114,10 @@ class CmsHomepageManager extends Component
         $this->countdown_enabled       = (bool) $settings->get('countdown_enabled', true);
 
         // Load Master Registration & Page Switches
-        $this->registration_competitors_enabled = (bool) $settings->get('registration_competitors_enabled', true);
-        $this->registration_supporters_enabled  = (bool) $settings->get('registration_supporters_enabled', true);
-        $this->registration_accreditation_enabled = (bool) $settings->get('registration_accreditation_enabled', true);
-        $this->page_partners_enabled              = (bool) $settings->get('page_partners_enabled', true);
+        $this->registration_competitors_enabled = $settings->getBool('registration_competitors_enabled', true);
+        $this->registration_supporters_enabled  = $settings->getBool('registration_supporters_enabled', true);
+        $this->registration_accreditation_enabled = $settings->getBool('registration_accreditation_enabled', true);
+        $this->page_partners_enabled              = $settings->getBool('page_partners_enabled', true);
 
         // Load News Ticker Settings
         $this->news_ticker_enabled   = (bool) $settings->get('news_ticker_enabled', true);
@@ -142,8 +142,10 @@ class CmsHomepageManager extends Component
         $this->savedMessage = "تم تعديل حالة شريط الأخبار إلى: {$status}";
     }
 
-    public function toggleRegistration(string $type, SettingsEngine $settings)
+    public function toggleRegistration(string $type, ?SettingsEngine $settings = null)
     {
+        $settings = $settings ?? app(SettingsEngine::class);
+
         if ($type === 'competitors') {
             $this->registration_competitors_enabled = !$this->registration_competitors_enabled;
             $settings->set('registration_competitors_enabled', $this->registration_competitors_enabled);
@@ -162,18 +164,6 @@ class CmsHomepageManager extends Component
         } elseif ($type === 'partners') {
             $this->page_partners_enabled = !$this->page_partners_enabled;
             $settings->set('page_partners_enabled', $this->page_partners_enabled);
-
-        // Save News Ticker Settings
-        $settings->set('news_ticker_enabled', $this->news_ticker_enabled);
-        $settings->set('news_ticker_badge_ar', $this->news_ticker_badge_ar);
-        $settings->set('news_ticker_badge_fr', $this->news_ticker_badge_fr);
-        $settings->set('news_ticker_badge_en', $this->news_ticker_badge_en);
-        $settings->set('news_ticker_text_ar', $this->news_ticker_text_ar);
-        $settings->set('news_ticker_text_fr', $this->news_ticker_text_fr);
-        $settings->set('news_ticker_text_en', $this->news_ticker_text_en);
-        $settings->set('news_ticker_url', $this->news_ticker_url);
-        $settings->set('news_ticker_theme', $this->news_ticker_theme);
-        $settings->set('news_ticker_speed', $this->news_ticker_speed);
             $status = $this->page_partners_enabled ? 'مفعلة ومتاحة' : 'معطلة ومخفية';
             $this->savedMessage = "تم تعديل حالة صفحة وقسم الشركاء والرعاة إلى: {$status}";
         }

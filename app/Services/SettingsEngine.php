@@ -60,8 +60,8 @@ class SettingsEngine
         GlobalSetting::updateOrCreate(
             ['key' => $key],
             [
-                'value' => is_array($value) ? json_encode($value) : (string) $value,
-                'type' => $type,
+                'value' => is_bool($value) ? ($value ? '1' : '0') : (is_array($value) ? json_encode($value) : (string) $value),
+                'type' => is_bool($value) ? 'boolean' : $type,
                 'group' => $group,
                 'description' => $description,
             ]
@@ -81,7 +81,10 @@ class SettingsEngine
 
     public function getBool(string $key, bool $default = false): bool
     {
-        $val = $this->get($key, $default);
+        $val = $this->get($key, null);
+        if ($val === null) {
+            return $default;
+        }
         return filter_var($val, FILTER_VALIDATE_BOOLEAN);
     }
 

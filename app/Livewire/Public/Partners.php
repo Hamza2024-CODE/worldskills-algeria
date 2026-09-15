@@ -15,7 +15,7 @@ class Partners extends Component
 
     public function mount(SettingsEngine $settings)
     {
-        $this->pagePartnersEnabled = (bool) $settings->get('page_partners_enabled', true);
+        $this->pagePartnersEnabled = $settings->getBool('page_partners_enabled', true);
     }
 
     public function render(HomepageStatisticsService $statsService)

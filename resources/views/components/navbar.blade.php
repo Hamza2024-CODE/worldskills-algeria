@@ -95,9 +95,11 @@
                     <a href="{{ route('results') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
                         {{ __('messages.results') }}
                     </a>
+                    @if(app(\App\Services\SettingsEngine::class)->getBool('page_partners_enabled', true))
                     <a href="{{ route('partners') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition border-t border-slate-100 mt-1 pt-2">
                         {{ __('messages.partners') }}
                     </a>
+                    @endif
                     <a href="{{ route('verify') }}" class="block px-4 py-2 text-xs font-bold text-emerald-600 hover:bg-emerald-50 ws-transition">
                         {{ __('messages.verify_nav') }}
                     </a>

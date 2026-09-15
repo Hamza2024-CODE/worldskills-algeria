@@ -41,6 +41,7 @@ class Home extends Component
     public bool   $countdownShowIcons;
     public bool   $countdownFlipAnimation;
     public bool   $countdownEnabled;
+    public bool   $pagePartnersEnabled = true;
 
     // Breaking News Ticker Controls from Admin Settings
     public bool   $newsTickerEnabled = true;
@@ -101,6 +102,21 @@ class Home extends Component
         ];
 
         $this->stats = $statsService->getStatistics();
+
+        // Retrieve Admin Settings for Partners Page & Section
+        $this->pagePartnersEnabled = $settings->getBool('page_partners_enabled', true);
+
+        // Retrieve Admin Settings for News Ticker
+        $this->newsTickerEnabled   = $settings->getBool('news_ticker_enabled', true);
+        $this->newsTickerBadgeAr  = $settings->get('news_ticker_badge_ar', $this->newsTickerBadgeAr);
+        $this->newsTickerBadgeFr  = $settings->get('news_ticker_badge_fr', $this->newsTickerBadgeFr);
+        $this->newsTickerBadgeEn  = $settings->get('news_ticker_badge_en', $this->newsTickerBadgeEn);
+        $this->newsTickerTextAr   = $settings->get('news_ticker_text_ar', $this->newsTickerTextAr);
+        $this->newsTickerTextFr   = $settings->get('news_ticker_text_fr', $this->newsTickerTextFr);
+        $this->newsTickerTextEn   = $settings->get('news_ticker_text_en', $this->newsTickerTextEn);
+        $this->newsTickerUrl      = $settings->get('news_ticker_url', $this->newsTickerUrl);
+        $this->newsTickerTheme    = $settings->get('news_ticker_theme', $this->newsTickerTheme);
+        $this->newsTickerSpeed    = $settings->get('news_ticker_speed', $this->newsTickerSpeed);
     }
 
     public function render()
@@ -128,7 +144,9 @@ class Home extends Component
             $videos = Video::orderBy('created_at', 'desc')->limit(3)->get();
         }
 
-        $partners = Partner::where('status', 'ACTIVE')->where('is_featured', true)->orderBy('sort_order')->orderBy('name_ar')->get();
+        $partners = $this->pagePartnersEnabled
+            ? Partner::where('status', 'ACTIVE')->where('is_featured', true)->orderBy('sort_order')->orderBy('name_ar')->get()
+            : collect();
 
         return view('livewire.public.home', array_merge(get_object_vars($this), [
             'skills'   => $skills,
