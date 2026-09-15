@@ -105,9 +105,9 @@
     <section class="relative bg-[#020A24] text-white min-h-[92vh] lg:min-h-screen w-full overflow-hidden flex items-center justify-center pt-32 sm:pt-40 pb-20 px-4 sm:px-6 lg:px-8">
         
         <!-- Full-Bleed 100% Seamless Cover Video Background Layer -->
-        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none w-full h-full">
+        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none w-full max-w-full h-full">
             <iframe 
-                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" 
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none max-w-none" 
                 style="width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.78vh; object-fit: cover;"
                 src="https://www.youtube-nocookie.com/embed/nzy4f7GBSVw?autoplay=1&mute=1&controls=0&loop=1&playlist=nzy4f7GBSVw&playsinline=1&rel=0&modestbranding=1&enablejsapi=1&iv_load_policy=3&disablekb=1&showinfo=0&vq=hd1080" 
                 title="WorldSkills Background Video HD" 

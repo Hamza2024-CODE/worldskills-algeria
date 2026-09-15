@@ -65,7 +65,7 @@
          x-transition:leave="transition ease-in duration-300 transform" 
          x-transition:leave-start="translate-y-0 opacity-100" 
          x-transition:leave-end="translate-y-full opacity-0" 
-         class="fixed bottom-20 md:bottom-6 start-4 end-4 sm:start-auto sm:end-6 sm:max-w-md z-50 print:hidden select-none" 
+         class="fixed bottom-3 sm:bottom-6 start-3 end-3 sm:start-auto sm:end-6 sm:max-w-md z-[55] print:hidden select-none" 
          x-cloak>
 
         <div class="bg-gradient-to-r from-[#020A24] via-[#06205C] to-[#0052CC] text-white p-4.5 rounded-3xl shadow-2xl border border-white/20 backdrop-blur-xl relative overflow-hidden">

@@ -10,14 +10,14 @@
         <!-- ═════════════════════════════════════════════════════════════════
              1. RIGHT: OFFICIAL LOGO CAPSULE (Translucent White Glass Pill)
              ═════════════════════════════════════════════════════════════════ -->
-        <a href="{{ route('home') }}" class="bg-white/95 px-3 sm:px-4 py-1.5 rounded-full flex items-center gap-2 sm:gap-3 shrink-0 shadow-2xs border border-slate-200/60 group ws-transition hover:shadow-xs" title="الجمهورية الجزائرية الديمقراطية الشعبية — وزارة التكوين والتعليم المهنيين — أولمبياد المهن 2026">
-            <!-- 1. Ministry Logo FIRST -->
-            <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-6 sm:h-8 w-auto object-contain ws-transition group-hover:scale-105">
+        <a href="{{ route('home') }}" class="bg-white/95 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full flex items-center gap-1.5 sm:gap-3 shrink-0 shadow-2xs border border-slate-200/60 group ws-transition hover:shadow-xs" title="الجمهورية الجزائرية الديمقراطية الشعبية — وزارة التكوين والتعليم المهنيين — أولمبياد المهن 2026">
+            <!-- 1. Ministry Logo (Hidden on mobile phones < 640px to prevent squishing) -->
+            <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-6 sm:h-8 w-auto object-contain ws-transition group-hover:scale-105 hidden sm:block">
 
             <!-- Separator -->
-            <div class="h-4 sm:h-6 w-px bg-slate-200 shrink-0"></div>
+            <div class="h-4 sm:h-6 w-px bg-slate-200 shrink-0 hidden sm:block"></div>
 
-            <!-- 2. WorldSkills Algeria Logo SECOND -->
+            <!-- 2. WorldSkills Algeria Logo (Always visible) -->
             <img src="{{ $logoUrl }}" alt="WorldSkills Algeria Logo" class="h-6 sm:h-8 w-auto object-contain ws-transition group-hover:scale-105">
         </a>
 
@@ -294,10 +294,10 @@
                     </div>
                 </div>
 
-                <!-- تسجيل الدخول (White Pill with Green Door Icon) -->
+                <!-- تسجيل الدخول (White Pill with Green Door Icon - Hidden on mobile phones < 640px) -->
                 <a
                     href="{{ route('login') }}"
-                    class="bg-white text-slate-900 hover:bg-slate-50 font-black px-3.5 sm:px-4 py-2 rounded-full text-xs sm:text-sm flex items-center gap-1.5 shadow-sm border border-slate-200/90 ws-transition active:translate-y-[1px]"
+                    class="hidden sm:flex bg-white text-slate-900 hover:bg-slate-50 font-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm items-center gap-1.5 shadow-sm border border-slate-200/90 ws-transition active:translate-y-[1px]"
                 >
                     <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                         <svg class="w-3 h-3 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
@@ -333,6 +333,12 @@
         class="xl:hidden mt-2 max-w-[1360px] mx-auto rounded-3xl bg-white/95 backdrop-blur-2xl border border-white/80 p-5 shadow-2xl text-start pointer-events-auto space-y-3"
     >
         @guest
+            <a href="{{ route('login') }}" class="w-full p-2.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 flex items-center justify-center gap-2 font-black text-xs shadow-xs ws-transition">
+                <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                    <svg class="w-3 h-3 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+                </span>
+                <span>{{ __('messages.login') }}</span>
+            </a>
             <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-start">
                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{{ $locale === 'fr' ? 'Portail d inscription' : ($locale === 'en' ? 'Registration Portal' : 'بوابات التسجيل في الأولمبياد') }}</span>
                 <div class="grid grid-cols-1 gap-2">

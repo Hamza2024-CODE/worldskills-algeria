@@ -18,9 +18,9 @@
         document.cookie = 'wsap_cookie_consent=essentials; path=/; max-age=' + (365 * 86400);
         this.showCookieBanner = false;
     }
-}" x-init="init()" x-show="showCookieBanner" x-transition:enter="transition ease-out duration-500 transform" x-transition:enter-start="translate-y-full opacity-0" x-transition:enter-end="translate-y-0 opacity-100" x-transition:leave="transition ease-in duration-300 transform" x-transition:leave-start="translate-y-0 opacity-100" x-transition:leave-end="translate-y-full opacity-0" class="fixed bottom-20 md:bottom-6 start-4 end-4 md:start-6 md:end-auto md:max-w-xl z-50 print:hidden select-none" x-cloak dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+}" x-init="init()" x-show="showCookieBanner" x-transition:enter="transition ease-out duration-500 transform" x-transition:enter-start="translate-y-full opacity-0" x-transition:enter-end="translate-y-0 opacity-100" x-transition:leave="transition ease-in duration-300 transform" x-transition:leave-start="translate-y-0 opacity-100" x-transition:leave-end="translate-y-full opacity-0" class="fixed bottom-3 sm:bottom-6 start-3 end-3 sm:start-6 sm:end-auto sm:max-w-lg z-[60] print:hidden select-none" x-cloak dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 
-    <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-slate-200/90 text-slate-800 relative overflow-hidden">
+    <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-4 sm:p-6 shadow-2xl border border-slate-200/90 text-slate-800 relative overflow-hidden">
         
         <!-- Header Glow -->
         <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl pointer-events-none"></div>
