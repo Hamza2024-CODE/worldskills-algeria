@@ -42,10 +42,10 @@ $roleBadge = [
     </x-dashboard.page-header>
 
     @if(session('success'))
-        <div class="p-3 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-xl border border-emerald-200">✓ {{ session('success') }}</div>
+        <div class="p-3 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-xl border border-emerald-200"><x-ws.icon name="check-circle" class="w-4 h-4 inline-block me-1 text-emerald-600" /> {{ session('success') }}</div>
     @endif
     @if(session('error'))
-        <div class="p-3 bg-rose-50 text-rose-700 text-xs font-bold rounded-xl border border-rose-200">⚠ {{ session('error') }}</div>
+        <div class="p-3 bg-rose-50 text-rose-700 text-xs font-bold rounded-xl border border-rose-200"><x-ws.icon name="exclamation-triangle" class="w-4 h-4 inline-block me-1 text-rose-600" /> {{ session('error') }}</div>
     @endif
 
     {{-- ── Filters Bar ── --}}

@@ -28,7 +28,7 @@ return [
     'explore_more' => 'Découvrir Plus',
     'register_now' => 'S\'inscrire Maintenant',
     'african_event_countdown' => 'Compte à rebours — Ouverture des Olympiades Afrique 2026',
-    'national_registration_countdown' => 'Compte à rebours — Inscriptions Édition Nationale 2027',
+    'national_registration_countdown' => 'Compte à rebours — Inscriptions Édition Nationale 2026',
     'days' => 'Jours',
     'hours' => 'Heures',
     'minutes' => 'Minutes',
@@ -40,7 +40,7 @@ return [
     'view_all_videos' => 'Voir toutes les vidéos',
 
     // Registration Wizard
-    'reg_title' => 'Inscription d\'un Candidat aux Olympiades 2027',
+    'reg_title' => 'Inscription d\'un Candidat aux Olympiades 2026',
     'reg_subtitle' => 'Enregistrez vos informations officielles, la taille du costume et équipements pour participer.',
     'step_1' => '01. Infos & Âge',
     'step_2' => '02. Identité (18 chiffres)',
@@ -369,4 +369,7 @@ return [
     'required' => 'Ce champ est obligatoire',
     'success' => 'Opération réussie',
     'error' => 'Une erreur est survenue. Veuillez réessayer',
+    'verify_nav' => 'Vérification & Accréditations',
+    'privacy' => 'Politique de Confidentialité',
+    'terms' => "Conditions d'Utilisation",
 ];

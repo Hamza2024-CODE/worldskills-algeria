@@ -18,7 +18,7 @@ class DelegationInvitationPrintController extends Controller
         $activeEdition = Edition::where('is_active', true)->first();
 
         $slug = strtolower($country->iso2 ?: 'af');
-        $password = "WS2027#" . strtoupper($slug) . "!";
+        $password = "WS2026#" . strtoupper($slug) . "!";
 
         $user = User::where('country_id', $country->id)
             ->whereHas('roles', fn($q) => $q->where('name', RoleEnum::COUNTRY_ADMIN->value))

@@ -1,19 +1,10 @@
 <div class="space-y-6 pb-8">
 
     {{-- HEADER --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 dark:border-slate-700 pb-5">
-        <div>
-            <div class="flex items-center gap-3 mb-1">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                    </svg>
-                </div>
-                <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100">مركز القيادة والتحكم اللوجستي</h1>
-            </div>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">نظام إدارة التجهيزات، السكن، وخطة النقل والمواصلات لمسابقة مهارات الجزائر</p>
-        </div>
-    </div>
+    <x-dashboard.page-header
+        title="مركز القيادة والتحكم اللوجستي"
+        subtitle="نظام إدارة التجهيزات، السكن، وخطة النقل والمواصلات لمسابقة مهارات الجزائر"
+    />
 
     {{-- MODULE CARDS GRID --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

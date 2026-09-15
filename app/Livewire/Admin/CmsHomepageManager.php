@@ -50,6 +50,18 @@ class CmsHomepageManager extends Component
     public bool $registration_accreditation_enabled = true;
     public bool $page_partners_enabled = true;
 
+    // Breaking News Ticker Controls (شريط الأخبار والإعلانات التفاعلي)
+    public bool $news_ticker_enabled = true;
+    public $news_ticker_badge_ar;
+    public $news_ticker_badge_fr;
+    public $news_ticker_badge_en;
+    public $news_ticker_text_ar;
+    public $news_ticker_text_fr;
+    public $news_ticker_text_en;
+    public $news_ticker_url;
+    public $news_ticker_theme = 'royal_gradient';
+    public $news_ticker_speed = 'normal';
+
     public $activeTab = 'registration_switches';
     public $savedMessage = '';
 
@@ -106,6 +118,28 @@ class CmsHomepageManager extends Component
         $this->registration_supporters_enabled  = (bool) $settings->get('registration_supporters_enabled', true);
         $this->registration_accreditation_enabled = (bool) $settings->get('registration_accreditation_enabled', true);
         $this->page_partners_enabled              = (bool) $settings->get('page_partners_enabled', true);
+
+        // Load News Ticker Settings
+        $this->news_ticker_enabled   = (bool) $settings->get('news_ticker_enabled', true);
+        $this->news_ticker_badge_ar  = $settings->get('news_ticker_badge_ar', 'إعلان رسمي | منتدى 2026');
+        $this->news_ticker_badge_fr  = $settings->get('news_ticker_badge_fr', 'Annonce Officielle | Forum 2026');
+        $this->news_ticker_badge_en  = $settings->get('news_ticker_badge_en', 'Official Announcement | Forum 2026');
+
+        $this->news_ticker_text_ar   = $settings->get('news_ticker_text_ar', 'انعقاد منتدى السياسات الإفريقية للمهارات 2026 بالتزامن مع أولمبياد المهن الجزائرية — مركز المؤتمرات محمد بن أحمد وهران');
+        $this->news_ticker_text_fr   = $settings->get('news_ticker_text_fr', 'Tenue du Forum sur les Politiques Africaines des Compétences 2026 en marge des Olympiades des Métiers — Centre des Conventions Oran');
+        $this->news_ticker_text_en   = $settings->get('news_ticker_text_en', 'The African Skills Policy Forum 2026 to be held concurrently with WorldSkills Algeria 2026 — Oran Convention Center');
+
+        $this->news_ticker_url       = $settings->get('news_ticker_url', 'https://africaskills-policyforum.worldskills.dz/');
+        $this->news_ticker_theme     = $settings->get('news_ticker_theme', 'royal_gradient');
+        $this->news_ticker_speed     = $settings->get('news_ticker_speed', 'normal');
+    }
+
+    public function toggleNewsTicker(SettingsEngine $settings)
+    {
+        $this->news_ticker_enabled = !$this->news_ticker_enabled;
+        $settings->set('news_ticker_enabled', $this->news_ticker_enabled);
+        $status = $this->news_ticker_enabled ? 'مفعل ويظهر في الصفحة الرئيسية' : 'معطل ومخفي';
+        $this->savedMessage = "تم تعديل حالة شريط الأخبار إلى: {$status}";
     }
 
     public function toggleRegistration(string $type, SettingsEngine $settings)
@@ -128,6 +162,18 @@ class CmsHomepageManager extends Component
         } elseif ($type === 'partners') {
             $this->page_partners_enabled = !$this->page_partners_enabled;
             $settings->set('page_partners_enabled', $this->page_partners_enabled);
+
+        // Save News Ticker Settings
+        $settings->set('news_ticker_enabled', $this->news_ticker_enabled);
+        $settings->set('news_ticker_badge_ar', $this->news_ticker_badge_ar);
+        $settings->set('news_ticker_badge_fr', $this->news_ticker_badge_fr);
+        $settings->set('news_ticker_badge_en', $this->news_ticker_badge_en);
+        $settings->set('news_ticker_text_ar', $this->news_ticker_text_ar);
+        $settings->set('news_ticker_text_fr', $this->news_ticker_text_fr);
+        $settings->set('news_ticker_text_en', $this->news_ticker_text_en);
+        $settings->set('news_ticker_url', $this->news_ticker_url);
+        $settings->set('news_ticker_theme', $this->news_ticker_theme);
+        $settings->set('news_ticker_speed', $this->news_ticker_speed);
             $status = $this->page_partners_enabled ? 'مفعلة ومتاحة' : 'معطلة ومخفية';
             $this->savedMessage = "تم تعديل حالة صفحة وقسم الشركاء والرعاة إلى: {$status}";
         }
@@ -177,6 +223,18 @@ class CmsHomepageManager extends Component
         $settings->set('registration_supporters_enabled', $this->registration_supporters_enabled);
         $settings->set('registration_accreditation_enabled', $this->registration_accreditation_enabled);
         $settings->set('page_partners_enabled', $this->page_partners_enabled);
+
+        // Save News Ticker Settings
+        $settings->set('news_ticker_enabled', $this->news_ticker_enabled);
+        $settings->set('news_ticker_badge_ar', $this->news_ticker_badge_ar);
+        $settings->set('news_ticker_badge_fr', $this->news_ticker_badge_fr);
+        $settings->set('news_ticker_badge_en', $this->news_ticker_badge_en);
+        $settings->set('news_ticker_text_ar', $this->news_ticker_text_ar);
+        $settings->set('news_ticker_text_fr', $this->news_ticker_text_fr);
+        $settings->set('news_ticker_text_en', $this->news_ticker_text_en);
+        $settings->set('news_ticker_url', $this->news_ticker_url);
+        $settings->set('news_ticker_theme', $this->news_ticker_theme);
+        $settings->set('news_ticker_speed', $this->news_ticker_speed);
 
         $this->savedMessage = 'تم حفظ كافة إعدادات المنصة ومفاتيح فتح/غلق التسجيل والصفحات بنجاح وتطبيقها مباشرة.';
     }

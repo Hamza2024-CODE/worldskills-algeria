@@ -30,7 +30,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                     <svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <span>{{ $flashMessage }}</span>
                 </div>
-                <button wire:click="$set('flashMessage', '')" class="text-emerald-700 dark:text-emerald-400 font-black text-xs hover:opacity-75">✕</button>
+                <button wire:click="$set('flashMessage', '')" class="text-emerald-700 dark:text-emerald-400 font-black text-xs hover:opacity-75"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
             </div>
         @endif
 
@@ -430,7 +430,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                             <p class="text-xs text-slate-500 dark:text-slate-400 font-bold mt-0.5">{{ $t('تحديد الأطراف، القاعة، والتوقيت الزمني الدقيق.', 'Spécifiez les officiels, le salon VIP et le créneau horaire.', 'Specify officials, lounge room, and exact time slot.') }}</p>
                         </div>
                     </div>
-                    <button wire:click="$set('showBookingModal', false)" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-black text-lg">✕</button>
+                    <button wire:click="$set('showBookingModal', false)" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-black text-lg"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 @if($errorMessage)
@@ -534,7 +534,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                     <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white">
                         {{ $t('إضافة وزير أو مسؤول حكومي رفيع المستوى', 'Ajouter un Ministre ou Officiel', 'Add Minister or High Government Official') }}
                     </h3>
-                    <button wire:click="$set('showAddMinisterModal', false)" class="p-2 text-slate-400 hover:text-slate-600 font-black text-lg">✕</button>
+                    <button wire:click="$set('showAddMinisterModal', false)" class="p-2 text-slate-400 hover:text-slate-600 font-black text-lg"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <div class="space-y-4">
@@ -589,7 +589,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                     <span class="text-[10px] font-mono font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest">
                         VIP DIPLOMATIC PASS
                     </span>
-                    <button wire:click="closeModal" class="text-slate-400 hover:text-slate-600 font-black text-lg">✕</button>
+                    <button wire:click="closeModal" class="text-slate-400 hover:text-slate-600 font-black text-lg"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 {{-- VIP Pass Badge Layout --}}

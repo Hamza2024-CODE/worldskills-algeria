@@ -1,30 +1,37 @@
-<div class="py-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 font-sans">
+<div class="py-8 sm:py-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 font-sans">
     
     <!-- HEADER -->
     <div class="text-center space-y-3">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 border border-brand-200 text-brand-600 font-black text-xs">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            <span>{{ app()->getLocale() === 'fr' ? 'Portail de Sécurité Crypté' : (app()->getLocale() === 'en' ? 'Encrypted Security Portal' : 'بوابة التوثيق المشفرة — Encrypted Security Portal') }}</span>
-        </div>
-        <h1 class="text-3xl font-black text-[#06205C]">{{ app()->getLocale() === 'fr' ? 'Vérification & Cryptage des Badges d\'Accréditation' : (app()->getLocale() === 'en' ? 'Accreditation Badge Verification System' : 'نظام التثبت والتشفير الإلكتروني لشارات الاعتماد') }}</h1>
-        <p class="text-xs text-slate-500 font-medium max-w-lg mx-auto">
+        
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-ws-navy tracking-tight">{{ app()->getLocale() === "fr" ? "Vérification & Cryptage des Badges d'Accréditation" : (app()->getLocale() === 'en' ? 'Accreditation Badge Verification System' : 'نظام التثبت والتشفير الإلكتروني لشارات الاعتماد') }}</h1>
+        <p class="text-xs sm:text-sm text-slate-500 font-medium max-w-lg mx-auto leading-relaxed">
             {{ app()->getLocale() === 'fr' ? 'Cryptage haute sécurité Zero-Trust garantissant la protection contre la falsification.' : (app()->getLocale() === 'en' ? 'High-security Zero-Trust encryption ensuring anti-counterfeiting.' : 'تشفير عالي الأمان بنظام Zero-Trust يضمن منع التزوير وحصر تفكيك بيانات الشارات لإدارة المنصة والأدمن فقط.') }}
         </p>
     </div>
 
     <!-- SEARCH BAR -->
-    <div class="bg-white rounded-3xl p-6 shadow-xl border border-slate-200/80">
+    <div class="bg-white rounded-ws-md p-4 sm:p-6 shadow-md border border-ws-border">
         <form wire:submit.prevent="verify" class="flex flex-col sm:flex-row items-center gap-3">
             <div class="w-full relative">
-                <input type="text" wire:model="query" placeholder="{{ app()->getLocale() === 'fr' ? 'Entrez le code badge crypté...' : (app()->getLocale() === 'en' ? 'Enter encrypted badge code...' : 'أدخل رمز الشارة المشفر أو رقم التوثيق...') }}" class="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-mono font-bold text-[#06205C] focus:ring-2 focus:ring-brand-500">
-                <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                <input 
+                    type="text" 
+                    wire:model="query" 
+                    placeholder="{{ app()->getLocale() === 'fr' ? 'Entrez le code badge crypté...' : (app()->getLocale() === 'en' ? 'Enter encrypted badge code...' : 'أدخل رمز الشارة المشفر أو رقم التوثيق...') }}" 
+                    class="w-full ps-11 pe-4 py-3.5 rounded-ws-sm bg-slate-50 border border-slate-200 text-xs font-mono font-bold text-ws-navy placeholder-slate-400 focus:bg-white ws-focus-ring ws-transition"
+                >
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                </div>
             </div>
-            <button type="submit" class="w-full sm:w-auto px-8 py-3 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-black text-xs shadow-md transition flex items-center justify-center gap-2 shrink-0">
+            <button 
+                type="submit" 
+                class="w-full sm:w-auto px-8 py-3.5 rounded-ws-sm bg-ws-primary hover:bg-ws-primary-hover text-white font-black text-xs shadow-md ws-transition flex items-center justify-center gap-2 shrink-0 active:scale-95 cursor-pointer"
+            >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 <span>{{ app()->getLocale() === 'fr' ? 'Vérifier Badge' : (app()->getLocale() === 'en' ? 'Verify Code' : 'فحص كود الاعتماد') }}</span>
             </button>
         </form>
     </div>
-
     <!-- VERIFICATION RESULT -->
     @if($searched)
         @if($result)
@@ -32,8 +39,8 @@
             @if(!$isAuthorizedScanner)
                 <!-- ACCESS DENIED FOR PUBLIC / EXTERNAL SCANNERS -->
                 <div class="bg-white rounded-3xl p-8 border-2 border-rose-200 shadow-2xl text-center space-y-4">
-                    <div class="w-16 h-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-2xl font-bold border border-rose-200">
-                        🚫
+                    <div class="w-16 h-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto border border-rose-200">
+                        <x-ws.icon name="x-circle" class="w-8 h-8 text-rose-600" />
                     </div>
                     
                     <div class="space-y-1">
@@ -74,7 +81,7 @@
 
                         <div class="text-right">
                             <span class="px-4 py-1.5 rounded-full font-black text-xs border bg-emerald-50 text-emerald-700 border-emerald-300 inline-block shadow-2xs">
-                                ✓ اعتماد رسمي مقبول 100% (AUTHORIZED ADMIN ACCESS)
+                                <span class="inline-flex items-center gap-1.5"><x-ws.icon name="check-circle" class="w-4 h-4 text-emerald-600" /> اعتماد رسمي مقبول 100% (AUTHORIZED ADMIN ACCESS)</span>
                             </span>
                             <span class="text-[10px] font-mono text-slate-400 block mt-1">Code: {{ $result->registration_number }}</span>
                         </div>
@@ -164,7 +171,7 @@
 
         @else
             <div class="p-8 bg-rose-50 border border-rose-200 rounded-3xl text-center space-y-2">
-                <span class="text-2xl">⚠️</span>
+                <div class="flex justify-center"><x-ws.icon name="exclamation-triangle" class="w-8 h-8 text-rose-500" /></div>
                 <h3 class="text-base font-black text-rose-800">لم يتم العثور على أي ملف معتمد بهذا الكود</h3>
                 <p class="text-xs text-rose-600">يرجى التأكد من مسح شارة رسمية معتمدة صادرة عن منصة WorldSkills Algeria.</p>
             </div>

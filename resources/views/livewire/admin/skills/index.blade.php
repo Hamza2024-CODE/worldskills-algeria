@@ -156,7 +156,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                 <h3 class="text-lg font-black text-slate-900 dark:text-slate-100">
                     {{ $isEditing ? 'تعديل بيانات التخصص والصور والـ PDF' : 'إضافة تخصص جديد' }}
                 </h3>
-                <button type="button" @click="formOpen = false" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+                <button type="button" @click="formOpen = false" class="text-slate-400 hover:text-slate-600 font-bold"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
             </div>
 
             <form wire:submit="save" class="space-y-4">
@@ -281,7 +281,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             <span>تحميل نسخة</span>
                         </a>
                     @endif
-                    <button wire:click="closePdfModal" class="p-2 text-white/70 hover:text-white font-bold text-lg">✕</button>
+                    <button wire:click="closePdfModal" class="p-2 text-white/70 hover:text-white font-bold text-lg"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
             </div>
 

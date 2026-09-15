@@ -16,7 +16,7 @@
         <div class="flex items-center gap-3 relative z-10">
             <a href="{{ route('admin.operations') }}" class="px-5 py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs transition shadow-lg flex items-center gap-2 border border-emerald-400/30">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                <span>غرفة العمليات الميدانية المباشرة 📡</span>
+                <span class="flex items-center gap-1.5"><x-ws.icon name="cpu-chip" class="w-4 h-4 text-emerald-500" /> غرفة العمليات الميدانية المباشرة</span>
             </a>
         </div>
     </div>
@@ -71,7 +71,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-bold">
             <a href="{{ route('admin.operations') }}" class="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
                 <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                    📡
+                    <x-ws.icon name="cpu-chip" class="w-5 h-5" />
                 </div>
                 <div>
                     <h4 class="font-black text-slate-900 text-sm">غرفة العمليات الميدانية</h4>
@@ -81,7 +81,7 @@
 
             <a href="{{ route('admin.schedule.index') }}" class="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
                 <div class="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                    📅
+                    <x-ws.icon name="calendar" class="w-5 h-5" />
                 </div>
                 <div>
                     <h4 class="font-black text-slate-900 text-sm">محرك الجدولة الميداني</h4>
@@ -91,7 +91,7 @@
 
             <a href="{{ route('admin.notifications.index') }}" class="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
                 <div class="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-                    🔔
+                    <x-ws.icon name="bell" class="w-5 h-5" />
                 </div>
                 <div>
                     <h4 class="font-black text-slate-900 text-sm">مركز التواصل والتنبيهات</h4>
@@ -101,7 +101,7 @@
 
             <a href="{{ route('admin.scanner') }}" class="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
                 <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-                    🔍
+                    <x-ws.icon name="magnifying-glass" class="w-5 h-5" />
                 </div>
                 <div>
                     <h4 class="font-black text-slate-900 text-sm">الماسح الموحد للشارات</h4>
@@ -111,7 +111,7 @@
 
             <a href="{{ route('admin.accreditations') }}" class="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
                 <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                    🎫
+                    <x-ws.icon name="qr-code" class="w-5 h-5" />
                 </div>
                 <div>
                     <h4 class="font-black text-slate-900 text-sm">مركز الاعتمادات والشارات</h4>
@@ -121,7 +121,7 @@
 
             <a href="{{ route('admin.restaurants') }}" class="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
                 <div class="w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
-                    🍽️
+                    <x-ws.icon name="sparkles" class="w-5 h-5" />
                 </div>
                 <div>
                     <h4 class="font-black text-slate-900 text-sm">إدارة المطاعم واللوجستيك</h4>

@@ -31,7 +31,7 @@
 
         @if($lifecycleStatus === 'REVOKED')
             <div class="p-6 rounded-3xl bg-rose-50 border-2 border-rose-300 text-rose-800 text-center space-y-2">
-                <span class="text-3xl block">🚫</span>
+                <div class="flex justify-center text-rose-600"><x-ws.icon name="x-circle" class="w-10 h-10" /></div>
                 <h3 class="text-lg font-black">شهادة ملغاة رسمياً — CERTIFICAT ANNULÉ — REVOKED</h3>
                 <p class="text-xs font-bold text-rose-600">تم إبطال وإلغاء صلاحية هذه الشهادة من طرف السلطة المنظمة.</p>
                 <p class="text-[11px] font-mono text-rose-500">سبب الإلغاء: {{ $registration->revocation_reason ?? 'إلغاء تنظيمي من السلطة المختصة' }}</p>

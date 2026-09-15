@@ -8,7 +8,7 @@
                     <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4">
                         <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
                     </div>
-                    <h1 class="text-2xl font-black leading-tight">✓ الشهادة موثقة وصالحة</h1>
+                    <h1 class="text-2xl font-black leading-tight flex items-center justify-center gap-2 text-emerald-600"><x-ws.icon name="check-circle" class="w-7 h-7 shrink-0" /> الشهادة موثقة وصالحة</h1>
                     <p class="text-emerald-100 text-sm mt-1">CERTIFICATE VERIFIED — OFFICIAL WSAP VALIDATION</p>
                 </div>
 
@@ -51,7 +51,7 @@
                     <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4">
                         <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
-                    <h1 class="text-2xl font-black">✗ الشهادة ملغاة</h1>
+                    <h1 class="text-2xl font-black flex items-center justify-center gap-2 text-rose-600"><x-ws.icon name="x-circle" class="w-7 h-7 shrink-0" /> الشهادة ملغاة</h1>
                     <p class="text-red-100 text-sm mt-1">CERTIFICATE REVOKED — INVALID</p>
                 </div>
                 <div class="px-8 py-7 text-center">
@@ -65,7 +65,7 @@
         @elseif($verifyStatus === 'EXPIRED')
             <div class="bg-white rounded-3xl border-2 border-amber-200 shadow-2xl overflow-hidden">
                 <div class="bg-gradient-to-br from-amber-500 to-amber-600 px-8 py-8 text-white text-center">
-                    <h1 class="text-2xl font-black">⚠ الشهادة منتهية الصلاحية</h1>
+                    <h1 class="text-2xl font-black flex items-center justify-center gap-2 text-amber-600"><x-ws.icon name="exclamation-triangle" class="w-7 h-7 shrink-0" /> الشهادة منتهية الصلاحية</h1>
                     <p class="text-amber-100 text-sm mt-1">CERTIFICATE EXPIRED</p>
                 </div>
             </div>
@@ -73,7 +73,7 @@
         @else
             <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-2xl overflow-hidden">
                 <div class="bg-gradient-to-br from-slate-700 to-slate-900 px-8 py-8 text-white text-center">
-                    <h1 class="text-2xl font-black">✗ الشهادة غير موجودة</h1>
+                    <h1 class="text-2xl font-black flex items-center justify-center gap-2 text-rose-600"><x-ws.icon name="x-circle" class="w-7 h-7 shrink-0" /> الشهادة غير موجودة</h1>
                     <p class="text-slate-300 text-sm mt-1">CERTIFICATE NOT FOUND — INVALID TOKEN</p>
                 </div>
                 <div class="px-8 py-7 text-center">

@@ -81,7 +81,7 @@ $dietaryOptions = [
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 <span>{{ $flashMessage }}</span>
             </div>
-            <button wire:click="$set('flashMessage', '')" class="text-emerald-700 hover:text-emerald-900 font-black text-xs">✕</button>
+            <button wire:click="$set('flashMessage', '')" class="text-emerald-700 hover:text-emerald-900 font-black text-xs"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
         </div>
     @endif
 
@@ -304,7 +304,7 @@ $dietaryOptions = [
                             <p class="text-xs text-slate-500 dark:text-slate-400 font-bold">{{ $editingMember->first_name }} {{ $editingMember->last_name }} ({{ $editingMember->member_type }})</p>
                         </div>
                     </div>
-                    <button wire:click="$set('showEditModal', false)" class="text-slate-400 hover:text-slate-600 font-black text-lg">✕</button>
+                    <button wire:click="$set('showEditModal', false)" class="text-slate-400 hover:text-slate-600 font-black text-lg"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 {{-- Checkbox Options Grid --}}

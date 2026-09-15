@@ -124,7 +124,7 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
 
                     <div class="space-y-1 text-xs font-bold text-slate-500 dark:text-slate-400">
                         <p class="flex items-center justify-center gap-2">
-                            <span>🇩🇿 {{ $countryName }}</span>
+                            <span class="inline-flex items-center gap-1.5"><x-ws.icon name="flag" class="w-4 h-4 text-emerald-500" /> {{ $countryName }}</span>
                             <span class="text-slate-300 dark:text-slate-700">•</span>
                             <span class="font-mono text-blue-600 dark:text-blue-400">{{ $user?->email }}</span>
                         </p>
@@ -158,7 +158,7 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
                     </div>
                     <div class="flex items-center justify-between text-xs font-bold">
                         <span class="text-slate-500 dark:text-slate-400">الدورة الرسمية:</span>
-                        <span class="text-amber-600 dark:text-amber-300 font-mono font-black">WorldSkills Africa 2027</span>
+                        <span class="text-amber-600 dark:text-amber-300 font-mono font-black">WorldSkills Africa 2026</span>
                     </div>
                 </div>
 
@@ -253,7 +253,7 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
 
             <div class="p-5 rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700 space-y-1">
                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{{ $t('الدولة والوفد التابع له', 'Pays & Délégation', 'Country & Delegation') }}</span>
-                <p class="text-sm font-black text-blue-600 dark:text-blue-400">🇩🇿 {{ $countryName }}</p>
+                <p class="text-sm font-black text-blue-600 dark:text-blue-400"><span class="inline-flex items-center gap-1.5"><x-ws.icon name="flag" class="w-4 h-4 text-emerald-500" /> {{ $countryName }}</span></p>
             </div>
 
             <div class="p-5 rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700 space-y-1">
@@ -276,7 +276,7 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
 
             <div class="p-5 rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700 space-y-1">
                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{{ $t('طبعة المسابقة الرسمية', 'Édition de la Compétition', 'Official Edition') }}</span>
-                <p class="text-sm font-black text-amber-600 dark:text-amber-300">WorldSkills Africa 2027</p>
+                <p class="text-sm font-black text-amber-600 dark:text-amber-300">WorldSkills Africa 2026</p>
             </div>
 
         </div>

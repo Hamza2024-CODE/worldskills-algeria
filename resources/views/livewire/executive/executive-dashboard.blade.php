@@ -164,10 +164,10 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                         </h4>
 
                         <div class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-600 dark:text-slate-400 pt-1">
-                            <span class="text-blue-700 dark:text-blue-400">👤 {{ $mtg->hostMinister?->full_name }} ({{ $mtg->hostMinister?->country?->code ?? 'DZA' }})</span>
+                            <span class="text-blue-700 dark:text-blue-400"><x-ws.icon name="user" class="w-3.5 h-3.5 inline-block me-1" /> {{ $mtg->hostMinister?->full_name }} ({{ $mtg->hostMinister?->country?->code ?? 'DZA' }})</span>
                             <span>↔</span>
-                            <span class="text-amber-700 dark:text-amber-400">👤 {{ $mtg->guestMinister?->full_name }} ({{ $mtg->guestMinister?->country?->code ?? 'DZA' }})</span>
-                            <span class="text-slate-400">| 🏛️ {{ $mtg->room?->getLocalized('name') }}</span>
+                            <span class="text-amber-700 dark:text-amber-400"><x-ws.icon name="user" class="w-3.5 h-3.5 inline-block me-1" /> {{ $mtg->guestMinister?->full_name }} ({{ $mtg->guestMinister?->country?->code ?? 'DZA' }})</span>
+                            <span class="text-slate-400">| <x-ws.icon name="building-library" class="w-3.5 h-3.5 inline-block me-1" /> {{ $mtg->room?->getLocalized('name') }}</span>
                         </div>
                     </div>
                 </div>

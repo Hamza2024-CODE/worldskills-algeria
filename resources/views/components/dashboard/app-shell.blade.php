@@ -41,12 +41,14 @@
 
     {{-- Dynamic Design Tokens from SettingsEngine --}}
     {!! app(\App\Services\SettingsEngine::class)->getDesignTokensCss() !!}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- Tailwind CSS CDN --}}
     <script>
         (function(){const w=console.warn;console.warn=function(...a){if(a[0]&&typeof a[0]==='string'&&a[0].includes('cdn.tailwindcss.com'))return;w.apply(console,a);};})();
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -70,9 +72,9 @@
 
         /* ── Light Mode Design Tokens ── */
         :root {
-            --ws-bg:         #F4F7FC;
+            --ws-bg:         #F8FAFC;
             --ws-surface:    rgba(255,255,255,0.96);
-            --ws-border:     rgba(226,232,240,0.8);
+            --ws-border:     #E2E8F0;
             --ws-text:       #020A24;
             --ws-muted:      #64748B;
             --ws-sidebar:    #FFFFFF;
@@ -151,7 +153,7 @@
     @livewireStyles
 </head>
 
-<body class="h-full antialiased font-sans flex flex-col min-h-screen"
+<body class="h-full antialiased font-sans flex flex-col min-h-screen relative selection:bg-[#0066FF] selection:text-white"
       x-data="{ mobileNavOpen: false, dark: localStorage.getItem('wsap_dark_mode') === 'true' }">
 
     {{-- Top Navigation Bar --}}
@@ -223,7 +225,7 @@
                     </template>
                     <span x-text="t.msg" class="leading-relaxed"></span>
                 </div>
-                <button @click="remove(t.id)" class="text-white/80 hover:text-white font-bold p-1 rounded-lg hover:bg-white/20 transition">✕</button>
+                <button @click="remove(t.id)" class="text-white/80 hover:text-white font-bold p-1 rounded-lg hover:bg-white/20 transition"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
             </div>
         </template>
     </div>

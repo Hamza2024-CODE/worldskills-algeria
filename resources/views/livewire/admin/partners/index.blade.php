@@ -79,7 +79,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             </td>
                             <td class="px-5 py-3.5">
                                 <button wire:click="toggleFeatured({{ $partner->id }})" class="px-3 py-1 rounded-full text-[10px] font-black transition {{ $partner->is_featured ? 'bg-amber-100 text-amber-800 border border-amber-300' : 'bg-slate-100 text-slate-500' }}">
-                                    {{ $partner->is_featured ? 'شركاء مميزون ★' : 'عادي' }}
+                                    {{ $partner->is_featured ? 'شركاء مميزون <x-ws.icon name="star" class="w-3.5 h-3.5 inline-block text-amber-500" />' : 'عادي' }}
                                 </button>
                             </td>
                             <td class="px-5 py-3.5 font-mono text-xs text-slate-500 dir-ltr text-right">
@@ -166,7 +166,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             <label class="block text-slate-700 dark:text-slate-300 font-bold mb-1">تصنيف التمييز</label>
                             <div class="flex items-center gap-2 mt-2">
                                 <input type="checkbox" wire:model="is_featured" id="is_feat" class="w-4 h-4 text-blue-600 rounded">
-                                <label for="is_feat" class="text-xs font-bold text-slate-700 dark:text-slate-300">شركاء مميزون ★</label>
+                                <label for="is_feat" class="text-xs font-bold text-slate-700 dark:text-slate-300">شركاء مميزون <x-ws.icon name="star" class="w-3.5 h-3.5 inline-block text-amber-500" /></label>
                             </div>
                         </div>
                     </div>
@@ -214,7 +214,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                 <div class="space-y-4 text-xs font-semibold flex-1">
                     <div class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-2xl space-y-2 border border-slate-100 dark:border-slate-600">
                         <div class="flex justify-between"><span class="text-slate-400">الاسم بالفرنسية:</span><span class="font-bold text-slate-900 dark:text-slate-100 font-mono">{{ $selected->name_fr ?? '—' }}</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">التصنيف المميز:</span><span class="font-bold text-amber-600">{{ $selected->is_featured ? 'شركاء مميزون ★' : 'عادي' }}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">التصنيف المميز:</span><span class="font-bold text-amber-600">{{ $selected->is_featured ? 'شركاء مميزون <x-ws.icon name="star" class="w-3.5 h-3.5 inline-block text-amber-500" />' : 'عادي' }}</span></div>
                         <div class="flex justify-between"><span class="text-slate-400">الموقع الإلكتروني:</span><span class="font-mono text-blue-600 dir-ltr">{{ $selected->website_url ?: '—' }}</span></div>
                         <div class="flex justify-between"><span class="text-slate-400">الحالة:</span><span class="font-black {{ $selected->status === 'ACTIVE' ? 'text-emerald-600' : 'text-rose-500' }}">{{ $selected->status === 'ACTIVE' ? 'نشط' : 'غير نشط' }}</span></div>
                     </div>

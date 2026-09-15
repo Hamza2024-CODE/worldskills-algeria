@@ -24,19 +24,19 @@
         <span class="text-xs font-black text-[#06205C] block uppercase tracking-wider">قوالب التنبيهات السريعة (Quick Templates)</span>
         <div class="flex flex-wrap gap-2 pt-1">
             <button wire:click="applyTemplate('MEAL')" type="button" class="px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs">
-                🍽️ <span>تنبيه وجبة مطعم</span>
+                <x-ws.icon name="sparkles" class="w-4 h-4 inline-block text-amber-500" /> <span>تنبيه وجبة مطعم</span>
             </button>
             <button wire:click="applyTemplate('TECHNICAL_MEETING')" type="button" class="px-3 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs">
-                🏛️ <span>تنبيه اجتماع تقني</span>
+                <x-ws.icon name="building-library" class="w-4 h-4 inline-block text-blue-500" /> <span>تنبيه اجتماع تقني</span>
             </button>
             <button wire:click="applyTemplate('ACCOMMODATION')" type="button" class="px-3 py-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs">
-                🏠 <span>تنبيه سكن وإقامة</span>
+                <x-ws.icon name="building-office" class="w-4 h-4 inline-block text-indigo-500" /> <span>تنبيه سكن وإقامة</span>
             </button>
             <button wire:click="applyTemplate('COMPETITION')" type="button" class="px-3 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs">
-                🏆 <span>تنبيه مسابقة وجولات</span>
+                <x-ws.icon name="trophy" class="w-4 h-4 inline-block text-amber-600" /> <span>تنبيه مسابقة وجولات</span>
             </button>
             <button wire:click="applyTemplate('URGENT')" type="button" class="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs">
-                🚨 <span>تنبيه عاجل من الإدارة</span>
+                <x-ws.icon name="exclamation-triangle" class="w-4 h-4 inline-block text-rose-600" /> <span>تنبيه عاجل من الإدارة</span>
             </button>
         </div>
     </div>
@@ -54,13 +54,13 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">نوع التنبيه (Type) *</label>
                             <select wire:model.live="type" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-bold bg-slate-50">
-                                <option value="GENERAL">📢 GENERAL (إعلان عام)</option>
-                                <option value="TECHNICAL_MEETING">🏛️ TECHNICAL_MEETING (اجتماع تقني)</option>
-                                <option value="MEAL">🍽️ MEAL (وجبة/مطعم)</option>
-                                <option value="ACCOMMODATION">🏠 ACCOMMODATION (سكن)</option>
-                                <option value="COMPETITION">🏆 COMPETITION (مسابقة)</option>
-                                <option value="SCHEDULE">⏰ SCHEDULE (تغيير البرنامج)</option>
-                                <option value="URGENT">🚨 URGENT (عاجل)</option>
+                                <option value="GENERAL">GENERAL (إعلان عام)</option>
+                                <option value="TECHNICAL_MEETING">TECHNICAL_MEETING (اجتماع تقني)</option>
+                                <option value="MEAL">MEAL (وجبة/مطعم)</option>
+                                <option value="ACCOMMODATION">ACCOMMODATION (سكن)</option>
+                                <option value="COMPETITION">COMPETITION (مسابقة)</option>
+                                <option value="SCHEDULE">SCHEDULE (تغيير البرنامج)</option>
+                                <option value="URGENT">URGENT (عاجل)</option>
                             </select>
                         </div>
 
@@ -80,7 +80,7 @@
                         <span class="text-xs font-black text-[#06205C] block">النص بالعربية (مطلوب) *</span>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 mb-1">العنوان (Title AR)</label>
-                            <input type="text" wire:model="title_ar" required placeholder="مثال: 🍽️ وجبة الغداء متاحة الآن" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-bold bg-white">
+                            <input type="text" wire:model="title_ar" required placeholder="مثال: وجبة الغداء متاحة الآن في المطعم المركزي" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-bold bg-white">
                             @error('title_ar') <span class="text-rose-500 text-[10px] font-bold">{{ $message }}</span> @enderror
                         </div>
                         <div>
@@ -123,11 +123,11 @@
                             <label class="block text-xs font-bold text-slate-700 mb-1">نوع الإجراء (Action Type)</label>
                             <select wire:model="action_type" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-bold bg-slate-50">
                                 <option value="">بدون إجراء (إشعار فقط)</option>
-                                <option value="MEAL_SLOT">🍽️ MEAL_SLOT (فتح ماسح الوجبة / المطعم)</option>
-                                <option value="ACCOMMODATION">🏠 ACCOMMODATION (عرض معلومات السكن)</option>
-                                <option value="TECHNICAL_MEETING">🏛️ TECHNICAL_MEETING (اجتماع تقني)</option>
-                                <option value="COMPETITION">🏆 COMPETITION (لوحة المنافسات)</option>
-                                <option value="ACCREDITATION">🎴 ACCREDITATION (لوحة الاعتمادات والشارات)</option>
+                                <option value="MEAL_SLOT">MEAL_SLOT (فتح ماسح الوجبة / المطعم)</option>
+                                <option value="ACCOMMODATION">ACCOMMODATION (عرض معلومات السكن)</option>
+                                <option value="TECHNICAL_MEETING">TECHNICAL_MEETING (اجتماع تقني)</option>
+                                <option value="COMPETITION">COMPETITION (لوحة المنافسات)</option>
+                                <option value="ACCREDITATION">ACCREDITATION (لوحة الاعتمادات والشارات)</option>
                             </select>
                         </div>
 

@@ -50,9 +50,9 @@
                 @endphp
                 <div class="px-5 py-3.5 flex items-start gap-4 hover:bg-slate-50 transition">
                     <div class="w-8 h-8 rounded-full {{ $colors[2] }} {{ $colors[1] }} flex items-center justify-center text-xs font-black shrink-0 mt-0.5">
-                        @if($event['color'] === 'green') ✓
-                        @elseif($event['color'] === 'red') ✗
-                        @elseif($event['color'] === 'amber') ⚖
+                        @if($event['color'] === 'green') <x-ws.icon name="check-circle" class="w-4 h-4 text-emerald-500 inline-block" />
+                        @elseif($event['color'] === 'red') <x-ws.icon name="x-circle" class="w-4 h-4 text-red-500 inline-block" />
+                        @elseif($event['color'] === 'amber') <x-ws.icon name="scale" class="w-4 h-4 text-amber-500 inline-block" />
                         @else ●
                         @endif
                     </div>

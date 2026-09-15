@@ -53,7 +53,7 @@
                 <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
                     <span class="text-xs font-black text-emerald-400 uppercase tracking-widest">
-                        ⚡ {{ app()->getLocale() === 'fr' ? 'Réseau Push PWA Direct' : (app()->getLocale() === 'en' ? 'PWA Direct Push Network' : 'شبكة التنبيهات الفورية اللحظية (PWA Push)') }}
+                        <x-ws.icon name="bolt" class="w-3.5 h-3.5 inline-block me-1 text-amber-500" /> {{ app()->getLocale() === 'fr' ? 'Réseau Push PWA Direct' : (app()->getLocale() === 'en' ? 'PWA Direct Push Network' : 'شبكة التنبيهات الفورية اللحظية (PWA Push)') }}
                     </span>
                 </div>
                 <h3 class="text-base font-black">
@@ -77,7 +77,7 @@
                 <template x-if="subscribed">
                     <span class="flex items-center gap-1.5">
                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        <span>{{ app()->getLocale() === 'fr' ? 'Push PWA Activé ✓' : (app()->getLocale() === 'en' ? 'Push PWA Active ✓' : 'التنبيهات الفورية مفعلة ✓') }}</span>
+                        <span>{{ app()->getLocale() === 'fr' ? 'Push PWA Activé' : (app()->getLocale() === 'en' ? 'Push PWA Active' : 'التنبيهات الفورية مفعلة') }}</span>
                     </span>
                 </template>
             </button>
@@ -133,7 +133,7 @@
                                 </h3>
                                 @if($n?->priority === 'URGENT')
                                 <span class="px-2 py-0.5 rounded bg-rose-500 text-white text-[9px] font-black animate-pulse">
-                                    URGENT 🚨
+                                    URGENT <x-ws.icon name="exclamation-triangle" class="w-3.5 h-3.5 text-rose-500 inline-block" />
                                 </span>
                                 @endif
                             </div>
@@ -143,9 +143,9 @@
                             </p>
 
                             <div class="flex items-center gap-4 text-[10px] text-slate-400 font-mono pt-1">
-                                <span>🕒 {{ $un->created_at->diffForHumans() }}</span>
+                                <span class="inline-flex items-center gap-1"><x-ws.icon name="clock" class="w-3 h-3 text-slate-400" /> {{ $un->created_at->diffForHumans() }}</span>
                                 @if($un->read_at)
-                                <span class="text-emerald-600 font-bold">✓ قُرئت في {{ $un->read_at->format('H:i') }}</span>
+                                <span class="text-emerald-600 font-bold inline-flex items-center gap-1"><x-ws.icon name="check" class="w-3 h-3" /> قُرئت في {{ $un->read_at->format('H:i') }}</span>
                                 @endif
                             </div>
                         </div>

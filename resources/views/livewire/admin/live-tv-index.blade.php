@@ -17,7 +17,7 @@
         <x-slot:actions>
             <a href="{{ route('live-tv') }}" target="_blank" class="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs shadow-lg transition flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-white animate-ping"></span>
-                <span>{{ $t('معاينة شاشة البث المباشر (Live TV Screen 📺)', 'Aperçu Écran Direct TV 📺', 'Preview Live TV Screen 📺') }}</span>
+                <span>{{ $t('معاينة شاشة البث المباشر (Live TV Screen)', 'Aperçu Écran Direct TV', 'Preview Live TV Screen') }}</span>
             </a>
         </x-slot:actions>
     </x-dashboard.page-header>
@@ -198,7 +198,7 @@
                             {{ $slide->is_active ? $t('معروضة', 'Active', 'Active') : $t('مخفية', 'Masquée', 'Hidden') }}
                         </span>
                         <span class="text-xs font-mono font-bold text-slate-500">
-                            ⏱️ {{ $slide->display_duration_sec }}s
+                            <span class="inline-flex items-center gap-1"><x-ws.icon name="clock" class="w-3 h-3 text-slate-400" /> {{ $slide->display_duration_sec }}s</span>
                         </span>
                     </div>
 
@@ -246,7 +246,7 @@
                     <h3 class="text-lg font-black text-[#06205C]">
                         {{ $editingAnnouncementId ? $t('تعديل الخبر المتحرك', 'Modifier l\'Annonce', 'Edit Ticker News') : $t('إضافة خبر متحرك جديد', 'Nouvelle Annonce', 'Add New Ticker News') }}
                     </h3>
-                    <button type="button" wire:click="$set('showAnnouncementModal', false)" class="text-slate-400 hover:text-slate-600">✕</button>
+                    <button type="button" wire:click="$set('showAnnouncementModal', false)" class="text-slate-400 hover:text-slate-600"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <form wire:submit.prevent="saveAnnouncement" class="space-y-4">
@@ -278,7 +278,7 @@
                     <h3 class="text-lg font-black text-[#06205C]">
                         {{ $editingSlideId ? $t('تعديل الشريحة', 'Modifier la Diapositive', 'Edit Slide') : $t('إضافة شريحة جديدة', 'Nouvelle Diapositive', 'Add New Slide') }}
                     </h3>
-                    <button type="button" wire:click="$set('showSlideModal', false)" class="text-slate-400 hover:text-slate-600">✕</button>
+                    <button type="button" wire:click="$set('showSlideModal', false)" class="text-slate-400 hover:text-slate-600"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <form wire:submit.prevent="saveSlide" class="space-y-4">

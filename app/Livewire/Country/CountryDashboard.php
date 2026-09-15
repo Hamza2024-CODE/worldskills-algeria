@@ -38,7 +38,7 @@ class CountryDashboard extends Component
     public string $filterStatus = 'ALL';
     public string $flashMessage = '';
 
-    // Active Tab for Dashboard (Roster vs Appeals vs Venue Map vs Regulations)
+    // Active Tab for Dashboard (Roster vs Appeals vs Regulations)
     public string $activeTab = 'roster';
 
     // Add / Edit Member Modal State

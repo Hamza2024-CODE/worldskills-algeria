@@ -33,10 +33,10 @@
     @if(!empty($successMessage))
         <div class="p-4 rounded-2xl bg-emerald-500 text-white font-bold text-xs flex items-center justify-between shadow-lg animate-fade-in">
             <div class="flex items-center gap-2">
-                <span>✓</span>
+                <x-ws.icon name="check-circle" class="w-4 h-4 text-white" />
                 <span>{{ $successMessage }}</span>
             </div>
-            <button type="button" wire:click="$set('successMessage', '')" class="text-white/80 hover:text-white font-black text-sm">✕</button>
+            <button type="button" wire:click="$set('successMessage', '')" class="text-white/80 hover:text-white font-black text-sm"><x-ws.icon name="x-mark" class="w-4 h-4" /></button>
         </div>
     @endif
 
@@ -58,7 +58,7 @@
                             </div>
                         @endif
                     </div>
-                    <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-[#06205C] flex items-center justify-center text-[10px] text-white shadow-xs" title="حساب موثق">✓</span>
+                    <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-[#06205C] flex items-center justify-center text-[10px] text-white shadow-xs" title="حساب موثق"><x-ws.icon name="check" class="w-3.5 h-3.5 text-white" /></span>
                 </div>
 
                 <div class="space-y-1.5">
@@ -87,10 +87,10 @@
 
                         <div class="flex items-center gap-2 sm:ps-3 border-s border-white/20">
                             <span class="px-2.5 py-0.5 rounded-lg bg-white/10 border border-white/20 text-xs font-mono font-bold text-amber-200" title="مقاس البدلة">
-                                👔 {{ $suitSize }}
+                                <x-ws.icon name="user" class="w-3.5 h-3.5 inline-block me-1 text-slate-400" /> {{ $suitSize }}
                             </span>
                             <span class="px-2.5 py-0.5 rounded-lg bg-white/10 border border-white/20 text-xs font-mono font-bold text-amber-200" title="مقاس الحذاء">
-                                👟 {{ $shoeSize }}
+                                <x-ws.icon name="sparkles" class="w-3.5 h-3.5 inline-block me-1 text-slate-400" /> {{ $shoeSize }}
                             </span>
                         </div>
                     </div>
@@ -140,7 +140,7 @@
                 <!-- Step 1 (Completed) -->
                 <div class="p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-emerald-50/40 to-white border border-emerald-300 space-y-3 transition-all duration-300 hover:shadow-md">
                     <div class="flex items-center justify-between">
-                        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white font-black text-xs flex items-center justify-center shadow-md shadow-emerald-500/20">✓</div>
+                        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white font-black text-xs flex items-center justify-center shadow-md shadow-emerald-500/20"><x-ws.icon name="check" class="w-4 h-4 text-white" /></div>
                         <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase tracking-wider">
                             {{ app()->getLocale() === 'fr' ? 'Terminé' : (app()->getLocale() === 'en' ? 'Completed' : 'مكتمل') }}
                         </span>
@@ -158,7 +158,7 @@
                 <!-- Step 2 (Completed) -->
                 <div class="p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-emerald-50/40 to-white border border-emerald-300 space-y-3 transition-all duration-300 hover:shadow-md">
                     <div class="flex items-center justify-between">
-                        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white font-black text-xs flex items-center justify-center shadow-md shadow-emerald-500/20">✓</div>
+                        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white font-black text-xs flex items-center justify-center shadow-md shadow-emerald-500/20"><x-ws.icon name="check" class="w-4 h-4 text-white" /></div>
                         <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase tracking-wider">
                             {{ app()->getLocale() === 'fr' ? 'Terminé' : (app()->getLocale() === 'en' ? 'Completed' : 'مكتمل') }}
                         </span>
@@ -268,7 +268,7 @@
                     <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
                 </div>
                 <button type="button" wire:click="$set('showSizeModal', true)" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-black transition flex items-center gap-1">
-                    ✏️ <span>{{ app()->getLocale() === 'fr' ? 'Modifier' : (app()->getLocale() === 'en' ? 'Update Sizes' : 'تعديل المقاسات') }}</span>
+                    <x-ws.icon name="pencil" class="w-3.5 h-3.5 inline-block me-1 text-brand-600" /> <span>{{ app()->getLocale() === 'fr' ? 'Modifier' : (app()->getLocale() === 'en' ? 'Update Sizes' : 'تعديل المقاسات') }}</span>
                 </button>
             </div>
 
@@ -334,7 +334,7 @@
                         {{ app()->getLocale() === 'fr' ? 'Badge Officiel d\'Accréditation' : (app()->getLocale() === 'en' ? 'Official Accreditation Pass Badge' : 'بطاقة الاعتماد الأولمبية المباشرة') }}
                     </h3>
                 </div>
-                <button @click="showBadgeModal = false" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+                <button @click="showBadgeModal = false" class="text-slate-400 hover:text-slate-600 font-bold text-sm"><x-ws.icon name="x-mark" class="w-4 h-4" /></button>
             </div>
 
             <!-- Official Badge Card Display -->
@@ -411,7 +411,7 @@
                     <h3 class="text-base font-black text-[#06205C]">
                         {{ app()->getLocale() === 'fr' ? 'Modifier mes Équipements' : (app()->getLocale() === 'en' ? 'Update Official Equipment Sizes' : 'تعديل وتأكيد مقاسات بدلة العمل والتجهيزات') }}
                     </h3>
-                    <button type="button" wire:click="$set('showSizeModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+                    <button type="button" wire:click="$set('showSizeModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm"><x-ws.icon name="x-mark" class="w-4 h-4" /></button>
                 </div>
 
                 <form wire:submit.prevent="updateSizes" class="space-y-4">
@@ -449,7 +449,7 @@
                             {{ app()->getLocale() === 'fr' ? 'Annuler' : (app()->getLocale() === 'en' ? 'Cancel' : 'إلغاء') }}
                         </button>
                         <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white font-bold text-xs shadow-md transition">
-                            {{ app()->getLocale() === 'fr' ? 'Enregistrer les المقاسات' : (app()->getLocale() === 'en' ? 'Save Equipment Sizes' : 'حفظ وتأكيد المقاسات 💾') }}
+                            {{ app()->getLocale() === 'fr' ? 'Enregistrer les المقاسات' : (app()->getLocale() === 'en' ? 'Save Equipment Sizes' : 'حفظ وتأكيد المقاسات') }}
                         </button>
                     </div>
                 </form>

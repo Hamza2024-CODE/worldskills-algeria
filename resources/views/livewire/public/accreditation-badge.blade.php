@@ -156,13 +156,13 @@
             <!-- Download Image PNG Button -->
             <button type="button" onclick="downloadBadgeAsImage()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-md transition flex items-center gap-2 border border-emerald-500">
                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                <span>{{ app()->getLocale() === 'fr' ? 'Télécharger Image (PNG)' : (app()->getLocale() === 'en' ? 'Download Image (HD)' : 'تحميل الشارة كصورة HD 🖼️') }}</span>
+                <span>{{ app()->getLocale() === 'fr' ? 'Télécharger Image (PNG)' : (app()->getLocale() === 'en' ? 'Download Image (HD)' : 'تحميل الشارة كصورة HD') }}</span>
             </button>
 
             <!-- Print PVC Button -->
             <button onclick="window.print()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#06205C] to-[#0A3580] hover:from-[#041640] hover:to-[#06205C] text-amber-300 font-black text-xs shadow-lg shadow-[#06205C]/20 transition flex items-center gap-2 border border-amber-400/40">
                 <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                <span>{{ app()->getLocale() === 'fr' ? 'Imprimer PVC' : (app()->getLocale() === 'en' ? 'Print PVC Badge' : 'طباعة الشارة الرسمية 🖨️') }}</span>
+                <span>{{ app()->getLocale() === 'fr' ? 'Imprimer PVC' : (app()->getLocale() === 'en' ? 'Print PVC Badge' : 'طباعة الشارة الرسمية') }}</span>
             </button>
         </div>
     </div>

@@ -225,9 +225,7 @@
                     </div>
                 </div>
 
-                <button type="button" @click="showPdfReader = false" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center font-bold text-sm transition">
-                    ✕
-                </button>
+                <button type="button" @click="showPdfReader = false" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center font-bold text-sm transition"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
             </div>
 
             {{-- Modal Document Content Area --}}
@@ -235,9 +233,6 @@
                 @if($currentSection)
                     <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
                         <div class="pb-6 border-b border-slate-200">
-                            <span class="px-3 py-1 rounded-full bg-blue-50 text-[#0066FF] font-mono font-black text-xs border border-blue-200 inline-block mb-2">
-                                Official WorldSkills Standards Document
-                            </span>
                             <h2 class="text-xl sm:text-2xl font-black text-[#06205C]">{{ $currentSection->getLocalizedTitle() }}</h2>
                             <p class="text-xs font-bold text-slate-500 mt-1">WorldSkills International Shanghai 2026 — Approved Guide</p>
                         </div>

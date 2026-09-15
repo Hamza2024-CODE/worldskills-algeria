@@ -6,28 +6,16 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
 <div class="space-y-5 pb-8" dir="{{ $locale === 'ar' ? 'rtl' : 'ltr' }}">
 
     {{-- HEADER --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100">
-                        {{ $t('إدارة المحكمين والتحكيم', 'Gestion des Juges & Arbitres', 'Jury & Expert Judges Management') }}
-                    </h1>
-                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
-                        {{ $t('إجمالي المحكمين: ', 'Total Juges: ', 'Total Judges: ') }}<span class="text-blue-600 dark:text-blue-400 font-bold">{{ $totalJudges }}</span> — {{ $t('التعيينات النشطة: ', 'Affectations Actives: ', 'Active Assignments: ') }}<span class="text-emerald-600 font-bold">{{ $activeAssignments }}</span>
-                    </p>
-                </div>
-            </div>
-        </div>
+    <x-dashboard.page-header
+        :title="$t('إدارة المحكمين والتحكيم', 'Gestion des Juges & Arbitres', 'Jury & Expert Judges Management')"
+        :subtitle="$t('إجمالي المحكمين: ', 'Total Juges: ', 'Total Judges: ') . $totalJudges . ' — ' . $t('التعيينات النشطة: ', 'Affectations Actives: ', 'Active Assignments: ') . $activeAssignments"
+    >
         <button wire:click="openAssign"
-            class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-black transition shadow-sm shrink-0">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-white text-[#06205C] hover:bg-blue-50 text-xs font-black transition shadow-xl shrink-0">
+            <svg class="w-4 h-4 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/></svg>
             <span>{{ $t('تعيين محكم', 'Affecter un Juge', 'Assign Judge') }}</span>
         </button>
-    </div>
+    </x-dashboard.page-header>
 
     {{-- FILTERS --}}
     <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex flex-col sm:flex-row gap-3">

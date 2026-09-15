@@ -6,6 +6,145 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Cairo', 'Outfit', system-ui, -apple-system, sans-serif;
+    --font-display: 'Readex Pro', 'Cairo', 'Outfit', sans-serif;
+
+    --color-ws-primary: #0052CC;
+    --color-ws-primary-hover: #0040A3;
+    --color-ws-primary-light: #0066FF;
+    --color-ws-cyan: #00B8FF;
+
+    /* Legacy Brand Color Aliases for Full Backward Compatibility */
+    --color-brand-50: #EFF6FF;
+    --color-brand-100: #DBEAFE;
+    --color-brand-200: #BFDBFE;
+    --color-brand-300: #93C5FD;
+    --color-brand-400: #60A5FA;
+    --color-brand-500: #0052CC;
+    --color-brand-600: #0040A3;
+    --color-brand-700: #003080;
+    --color-brand-800: #041E42;
+    --color-brand-900: #041235;
+
+    --color-ws-navy: #041235;
+    --color-ws-slate: #0B1F3A;
+    --color-ws-dark-surface: #0F172A;
+
+    --color-ws-gold: #F59E0B;
+    --color-ws-amber: #D97706;
+    --color-ws-emerald: #10B981;
+    --color-ws-rose: #F43F5E;
+
+    --color-ws-bg: #F8FAFC;
+    --color-ws-surface: #FFFFFF;
+    --color-ws-border: #E2E8F0;
+    --color-ws-border-subtle: #F1F5F9;
+
+    --radius-ws-xs: 6px;
+    --radius-ws-sm: 10px;
+    --radius-ws-md: 16px;
+    --radius-ws-lg: 24px;
+    --radius-ws-xl: 32px;
+}
+
+:root {
+    /* Brand & Identity */
+    --ws-primary: #0052CC;
+    --ws-primary-hover: #0040A3;
+    --ws-primary-light: #0066FF;
+    --ws-cyan: #00B8FF;
+    --ws-cyan-glow: rgba(0, 184, 255, 0.25);
+
+    /* National & Deep Charcoal Navy */
+    --ws-navy: #041235;
+    --ws-slate: #0B1F3A;
+    --ws-dark-surface: #0F172A;
+
+    /* Accents & States */
+    --ws-gold: #F59E0B;
+    --ws-amber: #D97706;
+    --ws-emerald: #10B981;
+    --ws-rose: #F43F5E;
+
+    /* Crisp Solid Surfaces */
+    --ws-bg-base: #F8FAFC;
+    --ws-surface: #FFFFFF;
+    --ws-surface-elevated: #FFFFFF;
+    --ws-border: #E2E8F0;
+    --ws-border-subtle: #F1F5F9;
+
+    /* Typography Scale */
+    --ws-font-sans: 'Cairo', 'Outfit', system-ui, -apple-system, sans-serif;
+    --ws-font-display: 'Readex Pro', 'Cairo', 'Outfit', sans-serif;
+
+    /* Radii */
+    --ws-radius-xs: 6px;
+    --ws-radius-sm: 10px;
+    --ws-radius-md: 16px;
+    --ws-radius-lg: 24px;
+    --ws-radius-xl: 32px;
+
+    /* Precise Shadows (Elevations) */
+    --ws-shadow-sm: 0 1px 3px rgba(4, 18, 53, 0.04);
+    --ws-shadow-md: 0 4px 16px -2px rgba(4, 18, 53, 0.06);
+    --ws-shadow-lg: 0 12px 32px -4px rgba(4, 18, 53, 0.08);
+    --ws-shadow-glow: 0 0 24px -2px rgba(0, 184, 255, 0.28);
+}
+
+/* ══════════════════════════════════════════════════════════
+   MOTION & TRANSITION TOKENS (Strictly targeted properties)
+   ══════════════════════════════════════════════════════════ */
+.ws-transition {
+    transition-property: transform, box-shadow, border-color, background-color, opacity, color;
+    transition-duration: 220ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ws-transition-fast {
+    transition-property: transform, box-shadow, border-color, background-color, opacity, color;
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Accent Glass Layer (Navbar, Hero Accents, Modal Backdrop) */
+.ws-glass-accent {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.ws-glass-dark-accent {
+    background: rgba(11, 31, 58, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Interactive Card Elevation */
+.ws-card-interactive {
+    transition-property: transform, box-shadow, border-color;
+    transition-duration: 220ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ws-card-interactive:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 36px -6px rgba(4, 18, 53, 0.10);
+    border-color: rgba(0, 102, 255, 0.35);
+}
+
+/* Focus Rings (WCAG AA Compliance) */
+.ws-focus-ring:focus-visible {
+    outline: 2px solid var(--ws-primary-light);
+    outline-offset: 2px;
+}
+
+/* Accessibility: Prefers Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }

@@ -5,9 +5,6 @@
         <div class="bg-gradient-to-r from-[#020A24] via-[#06205C] to-[#0052CC] text-white rounded-3xl p-8 sm:p-12 shadow-xl relative overflow-hidden">
             <div class="absolute top-0 right-0 w-64 h-64 bg-brand-sky/15 rounded-full blur-3xl pointer-events-none"></div>
             <div class="relative z-10 space-y-3">
-                <span class="px-3.5 py-1 rounded-full bg-white/10 text-amber-300 text-xs font-black border border-white/20 inline-block">
-                    🇩🇿 {{ app()->getLocale() === 'fr' ? 'Conformité Légale Officielle' : (app()->getLocale() === 'en' ? 'Official Legal Compliance' : 'التنظيم القانوني الرسمي') }}
-                </span>
                 <h1 class="text-3xl sm:text-4xl font-black text-white">
                     {{ app()->getLocale() === 'fr' ? 'Politique de Confidentialité et Protection des Données' : (app()->getLocale() === 'en' ? 'Privacy Policy & Personal Data Protection' : 'سياسة الخصوصية وحماية المعطيات ذات الطابع الشخصي') }}
                 </h1>

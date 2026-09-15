@@ -14,10 +14,10 @@
     </div>
 
     @if(session('success'))
-        <div class="p-3 bg-emerald-50 text-emerald-700 text-sm font-bold rounded-xl border border-emerald-200">✓ {{ session('success') }}</div>
+        <div class="p-3 bg-emerald-50 text-emerald-700 text-sm font-bold rounded-xl border border-emerald-200"><x-ws.icon name="check-circle" class="w-4 h-4 inline-block me-1 text-emerald-600" /> {{ session('success') }}</div>
     @endif
     @if(session('error'))
-        <div class="p-3 bg-red-50 text-red-700 text-sm font-bold rounded-xl border border-red-200">✗ {{ session('error') }}</div>
+        <div class="p-3 bg-red-50 text-red-700 text-sm font-bold rounded-xl border border-red-200"><x-ws.icon name="x-circle" class="w-4 h-4 inline-block me-1 text-red-600" /> {{ session('error') }}</div>
     @endif
 
     {{-- APPEALS TABLE --}}
@@ -150,7 +150,7 @@
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
             <div class="bg-white rounded-2xl p-6 max-w-md w-full space-y-4 border border-slate-200 shadow-xl">
                 <h3 class="text-lg font-black text-slate-900">إصدار القرار النهائي</h3>
-                <p class="text-sm text-red-600 font-bold">⚠️ القرار ثابت ولا يمكن تعديله أو حذفه بعد الإصدار.</p>
+                <p class="text-sm text-red-600 font-bold"><span class="inline-flex items-center gap-1.5"><x-ws.icon name="exclamation-triangle" class="w-4 h-4 text-red-600 shrink-0" /> القرار ثابت ولا يمكن تعديله أو حذفه بعد الإصدار.</span></p>
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1">القرار *</label>
                     <select wire:model="decisionValue" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 bg-slate-50">

@@ -98,7 +98,7 @@
                                     default => $p->partner_type
                                 };
                             @endphp
-                            <span class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 font-mono text-[10px]">★ {{ $typeLabel }}</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 font-mono text-[10px]"><x-ws.icon name="star" class="w-3 h-3 text-amber-600 inline-block me-1" /> {{ $typeLabel }}</span>
                             @if($p->website_url)
                                 <a href="{{ $p->website_url }}" target="_blank" class="text-blue-600 hover:underline font-mono text-[10px]">
                                     {{ app()->getLocale() === 'fr' ? 'Visiter le site →' : (app()->getLocale() === 'en' ? 'Visit Website →' : 'زيارة الموقع ←') }}

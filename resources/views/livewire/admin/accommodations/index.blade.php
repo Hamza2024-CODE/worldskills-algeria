@@ -301,7 +301,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             <p class="text-xs text-slate-500 dark:text-slate-400 font-bold mt-0.5">إدخال البيانات الأساسية لمقر الإقامة المعتمد للوفود والمشاركين.</p>
                         </div>
                     </div>
-                    <button wire:click="$set('formOpen', false)" class="p-2 text-slate-400 hover:text-slate-600 font-black text-lg">✕</button>
+                    <button wire:click="$set('formOpen', false)" class="p-2 text-slate-400 hover:text-slate-600 font-black text-lg"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <div class="space-y-4">
@@ -365,7 +365,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             <p class="text-xs text-slate-500 dark:text-slate-400 font-bold mt-0.5">تصفية وااختيار المشارك والغرفة المخصصة له في السكن.</p>
                         </div>
                     </div>
-                    <button wire:click="$set('allocateModalOpen', false)" class="p-2 text-slate-400 hover:text-slate-600 font-black text-lg">✕</button>
+                    <button wire:click="$set('allocateModalOpen', false)" class="p-2 text-slate-400 hover:text-slate-600 font-black text-lg"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <div class="space-y-5">
@@ -491,7 +491,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                         </h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold mt-0.5">إضافة وتعديل غرف الفندق المخصص للوفود.</p>
                     </div>
-                    <button wire:click="$set('roomsFormOpen', false)" class="p-2 text-slate-400 hover:text-slate-600 font-black text-lg">✕</button>
+                    <button wire:click="$set('roomsFormOpen', false)" class="p-2 text-slate-400 hover:text-slate-600 font-black text-lg"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 {{-- Add Room Mini-Form --}}

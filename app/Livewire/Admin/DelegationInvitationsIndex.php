@@ -37,7 +37,7 @@ class DelegationInvitationsIndex extends Component
         // Attach delegation user and password info to each country
         $delegationsData = $countries->map(function ($c) use ($activeEdition) {
             $slug = strtolower($c->iso2 ?: 'af');
-            $password = "WS2027#" . strtoupper($slug) . "!";
+            $password = "WS2026#" . strtoupper($slug) . "!";
 
             $user = User::where('country_id', $c->id)
                 ->whereHas('roles', fn($q) => $q->where('name', RoleEnum::COUNTRY_ADMIN->value))

@@ -45,7 +45,7 @@
 
         {{-- Active Edition --}}
         <div class="text-right hidden sm:block">
-            <div class="text-sm font-black text-[#06205C]">{{ $edition?->getLocalized('name') ?? 'WorldSkills Algeria 2026 / 2027' }}</div>
+            <div class="text-sm font-black text-[#06205C]">{{ $edition?->getLocalized('name') ?? 'WorldSkills Algeria 2026 / 2026' }}</div>
             <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">OFFICIAL LIVE STREAM STAGE</div>
         </div>
     </div>
@@ -94,7 +94,7 @@
                      class="absolute inset-0 flex flex-col items-center justify-center p-8 sm:p-16 text-center space-y-6 max-w-5xl mx-auto">
                     
                     <span class="text-xs font-black text-[#0066FF] uppercase tracking-widest px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 inline-block shadow-xs">
-                        ✦ {{ $slide->slide_type }}
+                        <x-ws.icon name="sparkles" class="w-3.5 h-3.5 text-amber-400 inline-block me-1" /> {{ $slide->slide_type }}
                     </span>
                     
                     <h2 class="text-4xl sm:text-6xl font-black text-[#06205C] leading-tight drop-shadow-xs max-w-4xl">

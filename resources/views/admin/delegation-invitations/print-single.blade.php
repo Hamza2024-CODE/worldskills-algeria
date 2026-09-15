@@ -89,7 +89,7 @@ $qrUrl = \App\Services\QrCodeService::generateDataUri($invitation['login_url'], 
                 
                 <div class="text-center space-y-1">
                     <p class="text-xs font-black uppercase text-[#06205C] tracking-wider">الجمهورية الجزائرية الديمقراطية الشعبية — وزارة التكوين والتعليم المهنيين</p>
-                    <h1 class="text-2xl font-black text-[#06205C] tracking-tight">WORLDSKILLS AFRICA 2027 ALGIERS</h1>
+                    <h1 class="text-2xl font-black text-[#06205C] tracking-tight">WORLDSKILLS AFRICA 2026 ALGIERS</h1>
                     <p class="text-xs font-bold text-amber-700">المركّب الأولمبي والقرية الإفريقية للمهن — الجزائر العاصمة</p>
                 </div>
 
@@ -108,7 +108,7 @@ $qrUrl = \App\Services\QrCodeService::generateDataUri($invitation['login_url'], 
                 </h2>
 
                 <p class="text-sm text-slate-700 leading-relaxed max-w-xl mx-auto font-medium">
-                    تتشرف الخلية الوطنية المنظمة لأولمبياد المهن الإفريقية 2027 بالجمهورية الجزائرية بدعوة وفد دولتكم الموقرة للمشاركة والتسجيل رسمياً عبر البوابة الموحدة لإدارة الوفود.
+                    تتشرف الخلية الوطنية المنظمة لأولمبياد المهن الإفريقية 2026 بالجمهورية الجزائرية بدعوة وفد دولتكم الموقرة للمشاركة والتسجيل رسمياً عبر البوابة الموحدة لإدارة الوفود.
                 </p>
             </div>
         </div>
@@ -150,7 +150,7 @@ $qrUrl = \App\Services\QrCodeService::generateDataUri($invitation['login_url'], 
 
         <!-- Footer Verification Stamp -->
         <div class="flex items-center justify-between text-xs font-bold text-slate-500 pt-4 border-t-2 border-amber-400">
-            <span>الرمز السيادي لتأكيد الدعوة: WSAP-INV-{{ $c->iso2 ?: 'AF' }}-2027</span>
+            <span>الرمز السيادي لتأكيد الدعوة: WSAP-INV-{{ $c->iso2 ?: 'AF' }}-2026</span>
             <span>معتمدة رسمياً من قبل اللجنة التنفيذية لأولمبياد المهن الإفريقية</span>
         </div>
 

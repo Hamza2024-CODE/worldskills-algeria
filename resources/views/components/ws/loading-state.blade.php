@@ -11,7 +11,7 @@
         </div>
         <p class="text-xs font-bold text-slate-400">{{ $message ?? __('جارٍ التحميل...') }}</p>
     @else
-        <div class="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-2xl">⚠️</div>
+        <div class="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-500"><x-ws.icon name="exclamation-triangle" class="w-6 h-6" /></div>
         <p class="text-xs font-bold text-rose-600">{{ $message ?? __('حدث خطأ غير متوقع.') }}</p>
         {{ $slot }}
     @endif

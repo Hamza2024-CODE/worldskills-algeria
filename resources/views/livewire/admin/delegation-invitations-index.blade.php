@@ -202,7 +202,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                             <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                             <span>{{ $t('فتح النافذة المخصصة للطباعة (A4) ↗', 'Imprimer A4 ↗', 'Print A4 Sovereign Certificate ↗') }}</span>
                         </a>
-                        <button wire:click="$set('showPrintModal', false)" class="px-3 py-2 text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+                        <button wire:click="$set('showPrintModal', false)" class="px-3 py-2 text-slate-400 hover:text-slate-600 font-bold text-sm"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                     </div>
                 </div>
 
@@ -215,7 +215,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                         
                         <div class="text-center space-y-1">
                             <p class="text-[10px] font-black uppercase text-[#06205C] tracking-wider">الجمهورية الجزائرية الديمقراطية الشعبية — وزارة التكوين والتعليم المهنيين</p>
-                            <h2 class="text-xl font-black text-[#06205C] tracking-tight">WORLDSKILLS AFRICA 2027 ALGIERS</h2>
+                            <h2 class="text-xl font-black text-[#06205C] tracking-tight">WORLDSKILLS AFRICA 2026 ALGIERS</h2>
                             <p class="text-xs font-bold text-amber-700">المركّب الأولمبي والقرية الإفريقية للمهن — الجزائر العاصمة</p>
                         </div>
 
@@ -233,7 +233,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                         </h3>
 
                         <p class="text-xs text-slate-700 leading-relaxed max-w-xl mx-auto font-medium">
-                            تتشرف الخلية الوطنية المنظمة لأولمبياد المهن الإفريقية 2027 بالجمهورية الجزائرية بدعوة وفد دولتكم الموقرة للمشاركة والتسجيل رسمياً عبر البوابة الموحدة لإدارة الوفود.
+                            تتشرف الخلية الوطنية المنظمة لأولمبياد المهن الإفريقية 2026 بالجمهورية الجزائرية بدعوة وفد دولتكم الموقرة للمشاركة والتسجيل رسمياً عبر البوابة الموحدة لإدارة الوفود.
                         </p>
                     </div>
 
@@ -272,7 +272,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
 
                     <!-- Footer Verification Stamp -->
                     <div class="flex items-center justify-between text-[10px] font-bold text-slate-500 pt-2 border-t border-slate-200">
-                        <span>الرمز السيادي لتأكيد الدعوة: WSAP-INV-{{ $invC->iso2 ?: 'AF' }}-2027</span>
+                        <span>الرمز السيادي لتأكيد الدعوة: WSAP-INV-{{ $invC->iso2 ?: 'AF' }}-2026</span>
                         <span>معتمدة رسمياً من قبل اللجنة التنفيذية لأولمبياد المهن الإفريقية</span>
                     </div>
 

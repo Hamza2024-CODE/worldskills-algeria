@@ -83,9 +83,6 @@
         
         <!-- Header -->
         <div class="text-center mb-10 space-y-3">
-            <span class="text-xs font-bold text-brand-500 uppercase tracking-widest bg-brand-50 px-4 py-1.5 rounded-full border border-brand-200 shadow-sm inline-block">
-                {{ __('messages.register') }} — WorldSkills Algeria 2026
-            </span>
             <h1 class="text-3xl sm:text-4xl font-black text-[#06205C]">{{ __('messages.reg_title') }}</h1>
             <p class="text-xs text-slate-500 font-medium max-w-xl mx-auto">{{ __('messages.reg_subtitle') }}</p>
         </div>
@@ -115,8 +112,8 @@
         @elseif($isSubmitted)
             <!-- Success & Printable Certificate Screen -->
             <div class="bg-white rounded-3xl p-8 sm:p-12 text-center space-y-8 shadow-2xl border border-slate-200/80 animate-in fade-in zoom-in duration-300">
-                <div class="w-20 h-20 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border-2 border-emerald-200 text-3xl font-bold shadow-lg">
-                    ✓
+                <div class="w-20 h-20 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border-2 border-emerald-200 shadow-lg">
+                    <x-ws.icon name="check-circle" class="w-12 h-12 text-emerald-600" />
                 </div>
                 
                 <div class="space-y-2">
@@ -198,7 +195,7 @@
                                 </span>
                             </div>
 
-                            <!-- 🌍 Prominent Country / Delegation Selector at top of Step 1 -->
+                            <!-- Prominent Country / Delegation Selector at top of Step 1 -->
                             <div class="p-5 rounded-2xl bg-gradient-to-r {{ $isAlgeria ? 'from-blue-50 to-emerald-50 border-blue-200' : 'from-amber-50 to-orange-50 border-amber-200' }} border shadow-xs space-y-3">
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                     <label class="block text-xs font-black text-[#06205C] flex items-center gap-1.5">
@@ -310,7 +307,7 @@
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <h4 class="text-sm font-black text-[#06205C] flex items-center gap-2">
-                                            <span>📷 {{ __('messages.official_photo_title') }}</span>
+                                            <span class="inline-flex items-center gap-1.5"><x-ws.icon name="camera" class="w-4 h-4 text-brand-600" /> {{ __('messages.official_photo_title') }}</span>
                                         </h4>
                                         <p class="text-xs text-slate-500 font-medium mt-0.5">{{ __('messages.official_photo_desc') }}</p>
                                     </div>
@@ -325,7 +322,7 @@
                                             <div class="w-20 h-24 rounded-xl bg-slate-100 border-2 border-dashed border-emerald-400 p-1 flex flex-col items-center justify-center relative overflow-hidden shrink-0 shadow-xs">
                                                 <div class="w-10 h-10 rounded-full bg-slate-300 mb-1"></div>
                                                 <div class="w-14 h-8 bg-slate-400 rounded-t-xl"></div>
-                                                <span class="absolute top-1 right-1 text-emerald-600 font-black text-xs">✓</span>
+                                                <span class="absolute top-1 right-1 text-emerald-600 font-black text-xs"><x-ws.icon name="check" class="w-3.5 h-3.5" /></span>
                                             </div>
                                             <div class="text-[11px] text-slate-600 space-y-1 font-medium">
                                                 <p>{{ __('messages.photo_guide_1') }}</p>
@@ -641,7 +638,7 @@
                     </div>
 
                     <div class="text-center space-y-1 bg-black/70 p-2 rounded-xl backdrop-blur-xs border border-emerald-500/30">
-                        <span class="text-[11px] text-emerald-400 font-bold block">{{ app()->getLocale() === 'fr' ? '✓ Système de vérification biométrique actif (100% Vérifié)' : (app()->getLocale() === 'en' ? '✓ Biometric verification system active (100% Verified)' : '✓ نظام كشف صحة وأصالة الوثائق البيومترية نشط (100% Verified)') }}</span>
+                        <span class="text-[11px] text-emerald-400 font-bold block">{{ app()->getLocale() === 'fr' ? 'Système de vérification biométrique actif (100% Vérifié)' : (app()->getLocale() === 'en' ? 'Biometric verification system active (100% Verified)' : 'نظام كشف صحة وأصالة الوثائق البيومترية نشط (100% Verified)') }}</span>
                         <span class="text-[9px] text-slate-300 block">{{ app()->getLocale() === 'fr' ? 'Vérification automatique des codes, NIN et caractéristiques du document.' : (app()->getLocale() === 'en' ? 'Automatic verification of encoded numbers, NIN code, and document specs.' : 'يتحقق النظام آلياً من الأرقام المشفرة، كود NIN، ومقاييس البطاقة/الجواز الأصلي.') }}</span>
                     </div>
                 </div>

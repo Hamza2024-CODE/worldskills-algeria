@@ -39,12 +39,6 @@ $getSkillImageUrl = function($skill) {
 
             {{-- Header Content --}}
             <div class="relative z-10 text-center max-w-3xl mx-auto space-y-5">
-                <div class="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 text-white text-xs font-black uppercase tracking-wider shadow-lg">
-                    <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.6 15.12a2 2 0 00-1.11.258l-1.012.607a2 2 0 00-.77 2.12l.74 2.96a2 2 0 001.94 1.515h13.224a2 2 0 001.94-1.515l.74-2.96a2 2 0 00-.77-2.12l-1.012-.607z"/>
-                    </svg>
-                    <span>{{ $t('دليل التخصصات والمهارات الرسمية', 'Guide des Métiers Officiels', 'Official Trade Skills & Occupations') }}</span>
-                </div>
 
                 <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight drop-shadow-2xl">
                     {{ $t('تخصصات أولمبياد المهن', 'Métiers & Compétences Olympiques', 'Olympic Trade Skills & Occupations') }}
@@ -204,9 +198,7 @@ $getSkillImageUrl = function($skill) {
                             <h2 class="text-xl sm:text-2xl font-black text-white drop-shadow">{{ $selectedSkill->getLocalized('name') }}</h2>
                         </div>
 
-                        <button type="button" wire:click="closeSkillDetails" aria-label="Close Modal" class="absolute top-4 end-4 w-9 h-9 rounded-full bg-black/60 hover:bg-black text-white flex items-center justify-center font-bold transition">
-                            ✕
-                        </button>
+                        <button type="button" wire:click="closeSkillDetails" aria-label="Close Modal" class="absolute top-4 end-4 w-9 h-9 rounded-full bg-black/60 hover:bg-black text-white flex items-center justify-center font-bold transition"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                     </div>
 
                     <!-- Modal Details Grid -->
@@ -310,9 +302,7 @@ $getSkillImageUrl = function($skill) {
                         <span class="hidden sm:inline">فتح في نافذة جديدة ↗</span>
                     </a>
 
-                    <button type="button" @click="showPdfModal = false" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center font-bold text-sm transition ms-2">
-                        ✕
-                    </button>
+                    <button type="button" @click="showPdfModal = false" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center font-bold text-sm transition ms-2"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
             </div>
 

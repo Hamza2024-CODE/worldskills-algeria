@@ -63,14 +63,14 @@ class DatabaseSeeder extends Seeder
         );
         $execViewer->assignRole(RoleEnum::EXECUTIVE_VIEWER->value);
 
-        // Create Default Active Edition 2027
+        // Create Default Active Edition 2026
         $edition = Edition::updateOrCreate(
-            ['year' => 2027],
+            ['year' => 2026],
             [
                 'uuid' => (string) Str::uuid(),
-                'name_ar' => 'أولمبياد المهن الجزائر 2027',
-                'name_fr' => 'WorldSkills Algeria 2027',
-                'name_en' => 'WorldSkills Algeria 2027',
+                'name_ar' => 'أولمبياد المهن الجزائر 2026',
+                'name_fr' => 'WorldSkills Algeria 2026',
+                'name_en' => 'WorldSkills Algeria 2026',
                 'is_active' => true,
                 'status' => 'ACTIVE',
             ]

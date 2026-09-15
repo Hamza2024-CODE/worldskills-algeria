@@ -489,7 +489,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                 <h3 class="text-base font-black text-amber-700 dark:text-amber-400">
                     {{ $t('تأكيد التجاوز الطارئ من مدير النظام', 'Dérogation Exceptionnelle Super Admin', 'Confirm Super Admin Emergency Override') }}
                 </h3>
-                <button wire:click="$set('showOverrideModal', false)" class="text-slate-400 hover:text-slate-600">✕</button>
+                <button wire:click="$set('showOverrideModal', false)" class="text-slate-400 hover:text-slate-600"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
             </div>
 
             <div class="space-y-3 text-xs">

@@ -14,7 +14,7 @@
     {{-- FLASH MESSAGE --}}
     @if($flashMessage ?? null)
     <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-xs font-bold shadow-sm">
-        ✓ {{ $flashMessage }}
+        <x-ws.icon name="check-circle" class="w-4 h-4 inline-block me-1 text-emerald-600" /> {{ $flashMessage }}
     </div>
     @endif
 
@@ -22,16 +22,16 @@
     <div class="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
         <div class="flex items-center gap-2">
             <button wire:click="$set('viewMode', 'operations')" class="px-4 py-2 rounded-xl text-xs font-black transition {{ ($viewMode ?? 'operations') === 'operations' ? 'bg-[#06205C] dark:bg-blue-600 text-white shadow-sm' : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100' }}">
-                🗺️ العمليات المباشرة (Operations)
+                <x-ws.icon name="cpu-chip" class="w-4 h-4 inline-block me-1" /> العمليات المباشرة (Operations)
             </button>
             <button wire:click="$set('viewMode', 'agenda')" class="px-4 py-2 rounded-xl text-xs font-black transition {{ ($viewMode ?? 'operations') === 'agenda' ? 'bg-[#06205C] dark:bg-blue-600 text-white shadow-sm' : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100' }}">
-                📋 جدول الأعمال (Agenda)
+                <x-ws.icon name="clipboard-document-list" class="w-4 h-4 inline-block me-1" /> جدول الأعمال (Agenda)
             </button>
             <button wire:click="$set('viewMode', 'calendar')" class="px-4 py-2 rounded-xl text-xs font-black transition {{ ($viewMode ?? 'operations') === 'calendar' ? 'bg-[#06205C] dark:bg-blue-600 text-white shadow-sm' : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100' }}">
-                📅 التقويم (Calendar)
+                <x-ws.icon name="calendar" class="w-4 h-4 inline-block me-1" /> التقويم (Calendar)
             </button>
             <button wire:click="$set('viewMode', 'timeline')" class="px-4 py-2 rounded-xl text-xs font-black transition {{ ($viewMode ?? 'operations') === 'timeline' ? 'bg-[#06205C] dark:bg-blue-600 text-white shadow-sm' : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100' }}">
-                📊 المخطط الزمني (Timeline)
+                <x-ws.icon name="chart-bar" class="w-4 h-4 inline-block me-1" /> المخطط الزمني (Timeline)
             </button>
         </div>
 
@@ -40,12 +40,12 @@
             
             <select wire:model.live="filterType" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-white">
                 <option value="">جميع أنواع الأحداث</option>
-                <option value="TECHNICAL_MEETING">🏛️ اجتماع تقني</option>
-                <option value="COMPETITION_ROUND">🏆 جولة مسابقة</option>
-                <option value="MEAL_SLOT">🍽️ وجبة مطعم</option>
-                <option value="TRANSPORT">🚌 رحلة نقل</option>
-                <option value="ACCOMMODATION">🏠 سكن وإقامة</option>
-                <option value="CEREMONY">🎤 مراسم افتتاح/اختتام</option>
+                <option value="TECHNICAL_MEETING">اجتماع تقني</option>
+                <option value="COMPETITION_ROUND">جولة مسابقة</option>
+                <option value="MEAL_SLOT">وجبة مطعم</option>
+                <option value="TRANSPORT">رحلة نقل</option>
+                <option value="ACCOMMODATION">سكن وإقامة</option>
+                <option value="CEREMONY">مراسم افتتاح/اختتام</option>
             </select>
         </div>
     </div>
@@ -129,17 +129,17 @@
                             <td class="px-5 py-4">
                                 <span class="font-bold text-slate-800 block">{{ $e->location_name ?: '—' }}</span>
                                 @if($e->zone)
-                                <span class="text-[10px] font-mono text-brand-600 font-bold block">📍 {{ $e->zone->code }} — {{ $e->zone->name_ar }}</span>
+                                <span class="text-[10px] font-mono text-brand-600 font-bold block"><x-ws.icon name="map-pin" class="w-3 h-3 inline-block me-1 text-brand-600" /> {{ $e->zone->code }} — {{ $e->zone->name_ar }}</span>
                                 @endif
                             </td>
 
                             <td class="px-5 py-4">
                                 <div class="space-y-0.5 text-[11px]">
                                     @if($e->skill)
-                                    <span class="font-bold text-indigo-700 block">🏆 {{ $e->skill->name_ar }}</span>
+                                    <span class="font-bold text-indigo-700 block"><x-ws.icon name="trophy" class="w-3.5 h-3.5 inline-block me-1 text-indigo-700" /> {{ $e->skill->name_ar }}</span>
                                     @endif
                                     @if($e->country)
-                                    <span class="font-bold text-emerald-700 block">🌍 {{ $e->country->name_ar }}</span>
+                                    <span class="font-bold text-emerald-700 block"><x-ws.icon name="flag" class="w-3.5 h-3.5 inline-block me-1 text-emerald-700" /> {{ $e->country->name_ar }}</span>
                                     @endif
                                     @if(!$e->skill && !$e->country)
                                     <span class="text-slate-400 font-bold">—</span>
@@ -164,13 +164,13 @@
                                 <div class="flex items-center justify-end gap-1.5">
                                     @if($e->status === 'SCHEDULED')
                                     <button wire:click="transitionStatus({{ $e->id }}, 'OPEN')" class="px-2.5 py-1 rounded-xl bg-emerald-600 text-white font-black text-[10px]">
-                                        فتح الحدث 🚀
+                                        فتح الحدث
                                     </button>
                                     @endif
 
                                     @if(in_array($e->status, ['SCHEDULED', 'OPEN']))
                                     <button wire:click="transitionStatus({{ $e->id }}, 'CANCELLED')" wire:confirm="هل أنت تأكد من إلغاء هذا الحدث وإرسال تنبيه إلغاء للمستهدفين؟" class="px-2.5 py-1 rounded-xl bg-rose-100 text-rose-700 font-black text-[10px]">
-                                        إلغاء 🚨
+                                        إلغاء
                                     </button>
                                     @endif
 
@@ -201,19 +201,19 @@
         <div class="bg-white rounded-3xl max-w-xl w-full p-6 space-y-4 shadow-2xl border border-slate-200">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 class="text-base font-black text-[#06205C]">إضافة حدث مجدول جديد للمنصة</h3>
-                <button wire:click="$set('showCreateModal', false)" class="text-slate-400 hover:text-slate-600">✕</button>
+                <button wire:click="$set('showCreateModal', false)" class="text-slate-400 hover:text-slate-600"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
             </div>
 
             <div class="space-y-3 text-xs">
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">نوع الحدث *</label>
                     <select wire:model="event_type" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-bold bg-slate-50">
-                        <option value="TECHNICAL_MEETING">🏛️ اجتماع تقني (Technical Meeting)</option>
-                        <option value="COMPETITION_ROUND">🏆 جولة مسابقة (Competition Round)</option>
-                        <option value="MEAL_SLOT">🍽️ وجبة مطعم (Meal Slot)</option>
-                        <option value="TRANSPORT">🚌 رحلة نقل (Transport Transfer)</option>
-                        <option value="ACCOMMODATION">🏠 سكن وإقامة (Accommodation)</option>
-                        <option value="CEREMONY">🎤 مراسم افتتاح/اختتام (Ceremony)</option>
+                        <option value="TECHNICAL_MEETING">اجتماع تقني (Technical Meeting)</option>
+                        <option value="COMPETITION_ROUND">جولة مسابقة (Competition Round)</option>
+                        <option value="MEAL_SLOT">وجبة مطعم (Meal Slot)</option>
+                        <option value="TRANSPORT">رحلة نقل (Transport Transfer)</option>
+                        <option value="ACCOMMODATION">سكن وإقامة (Accommodation)</option>
+                        <option value="CEREMONY">مراسم افتتاح/اختتام (Ceremony)</option>
                     </select>
                 </div>
 
@@ -263,7 +263,7 @@
 
             <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
                 <button wire:click="$set('showCreateModal', false)" type="button" class="px-4 py-2 rounded-xl bg-slate-100 font-bold text-xs">إلغاء</button>
-                <button wire:click="createEvent" type="button" class="px-5 py-2 rounded-xl bg-emerald-600 text-white font-black text-xs shadow-md">حفظ وإضافة للجدول 🚀</button>
+                <button wire:click="createEvent" type="button" class="px-5 py-2 rounded-xl bg-emerald-600 text-white font-black text-xs shadow-md">حفظ وإضافة للجدول</button>
             </div>
         </div>
     </div>

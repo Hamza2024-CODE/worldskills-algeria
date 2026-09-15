@@ -1,25 +1,20 @@
 @props(['categorizedNav' => [], 'items' => []])
 
 @php
-$navService     = app(\App\Services\DashboardNavigationService::class);
-$user           = auth()->user();
-$categorizedNav = !empty($categorizedNav) ? $categorizedNav : ($user ? $navService->getCategorizedNavigation($user) : []);
-$locale         = app()->getLocale();
+$locale = app()->getLocale();
+$user   = auth()->user();
 
-/** Map icon name → Clean Heroicons SVG path (Outline) */
 $iconPaths = [
     'home'            => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>',
     'users'           => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/>',
-    'globe-alt'       => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/>',
-    'trophy'          => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0"/>',
-    'calendar'        => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>',
-    'archive-box'     => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/>',
-    'newspaper'       => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z"/>',
-    'paint-brush'     => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"/>',
-    'document-text'   => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>',
-    'shield-check'    => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>',
+    'cog'             => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>',
     'chart-bar'       => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/>',
-    'flag'            => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5"/>',
+    'shield-check'    => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>',
+    'trophy'          => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0A17.926 17.926 0 0012 12a17.926 17.926 0 00-2.5 2.25m5.004 0c-.806.561-1.748.875-2.754.875s-1.948-.314-2.75-.875m7.5-10.875A3.375 3.375 0 0018 7.5c0 .408-.073.799-.207 1.16m-11.586 0A3.375 3.375 0 016 7.5c0-1.864 1.511-3.375 3.375-3.375h5.25z"/>',
+    'flag'            => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 00-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5"/>',
+    'globe-alt'       => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-.778.099-1.533.284-2.253"/>',
+    'calendar'        => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5"/>',
+    'newspaper'       => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z"/>',
     'check-circle'    => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
     'building-office' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/>',
     'academic-cap'    => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"/>',
@@ -54,43 +49,39 @@ $iconPaths = [
      class="fixed inset-0 z-50 lg:hidden flex" x-cloak>
 
     <!-- Overlay Backdrop -->
-    <div @click="mobileNavOpen = false" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm"></div>
+    <div @click="mobileNavOpen = false" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm"></div>
 
-    <!-- Mobile Drawer Body Container -->
+    <!-- Mobile Drawer Body Container (Frosted Glass) -->
     <div x-data="{ mobileSearch: '' }"
-         class="relative w-5/6 max-w-sm bg-white dark:bg-[#0F172A] h-full shadow-2xl p-5 flex flex-col justify-between z-10 overflow-y-auto border-e border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
+         class="relative w-5/6 max-w-sm bg-white/90 dark:bg-[#0F172A]/95 backdrop-blur-2xl h-full shadow-2xl p-5 flex flex-col justify-between z-10 overflow-y-auto border-e border-white/60 dark:border-slate-800 text-slate-900 dark:text-white">
         
         <div class="space-y-4">
             
-            {{-- Branded Mobile Header with Both Logos --}}
-            <div class="flex items-center justify-between pb-3 border-b border-slate-200/80 dark:border-slate-800">
-                <div class="flex items-center gap-2">
+            {{-- Branded Mobile Header with Both Logos in Frosted Glass Capsule --}}
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200/60 dark:border-slate-800">
+                <div class="bg-white/80 dark:bg-slate-800/80 px-3 py-1.5 rounded-full flex items-center gap-2 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs">
                     {{-- 1. Official Ministry Logo FIRST --}}
-                    <div class="h-9 w-auto flex items-center justify-center p-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs">
-                        <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-7 w-auto object-contain">
-                    </div>
+                    <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-6 w-auto object-contain">
 
-                    <div class="h-5 w-px bg-slate-200 dark:bg-slate-700 shrink-0"></div>
+                    <div class="h-4 w-px bg-slate-200 dark:bg-slate-700 shrink-0"></div>
 
                     {{-- 2. WorldSkills Logo SECOND --}}
-                    <div class="h-9 w-auto flex items-center justify-center p-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs">
-                        <img src="/logo.svg" alt="WorldSkills Algeria" class="h-7 w-auto object-contain">
-                    </div>
+                    <img src="/logo.svg" alt="WorldSkills Algeria" class="h-6 w-auto object-contain">
                 </div>
 
-                {{-- Close Drawer Button --}}
-                <button @click="mobileNavOpen = false" type="button" class="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition touch-target">
+                {{-- Close Drawer Button Capsule --}}
+                <button @click="mobileNavOpen = false" type="button" class="w-9 h-9 rounded-full bg-slate-100/80 dark:bg-slate-800/80 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/80 transition touch-target">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
-            {{-- Quick Filter Search Input --}}
+            {{-- Quick Filter Search Input Capsule --}}
             <div class="relative">
                 <input type="text"
                        x-model="mobileSearch"
                        placeholder="{{ $locale === 'fr' ? 'Rechercher une rubrique...' : ($locale === 'en' ? 'Search menu...' : 'بحث سريع في القائمة...') }}"
-                       class="w-full pl-8 pr-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition">
-                <svg class="w-4 h-4 text-slate-400 absolute {{ $locale === 'ar' ? 'left-2.5' : 'right-2.5' }} top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="w-full pl-8 pr-3 py-2 rounded-full text-xs bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition shadow-2xs">
+                <svg class="w-4 h-4 text-slate-400 absolute {{ $locale === 'ar' ? 'left-3' : 'right-3' }} top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
             </div>
@@ -109,14 +100,14 @@ $iconPaths = [
                          class="space-y-1.5">
 
                         {{-- Section Title Pill Header --}}
-                        <div class="flex items-center gap-2 px-1">
-                            <span class="w-2 h-2 rounded-full bg-brand-500"></span>
-                            <span class="text-[11px] font-black text-brand-600 dark:text-brand-sky uppercase tracking-wider">
+                        <div class="flex items-center gap-2 px-2 py-1">
+                            <span class="w-2 h-2 rounded-full bg-[#0066FF]"></span>
+                            <span class="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                                 {{ $catName }}
                             </span>
                         </div>
 
-                        {{-- Section Navigation Links --}}
+                        {{-- Section Navigation Links (Pills) --}}
                         <div class="space-y-1">
                             @foreach($groupItems as $item)
                                 @php
@@ -134,7 +125,7 @@ $iconPaths = [
                                 <a href="{{ $href }}"
                                    @click="mobileNavOpen = false"
                                    x-show="mobileSearch === '' || '{{ strtolower($item['label']) }}'.includes(mobileSearch.toLowerCase())"
-                                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 touch-target {{ $isActive ? 'bg-brand-500 text-white shadow-md shadow-brand-500/20 font-black' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80' }}">
+                                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-full text-xs font-bold transition-all duration-200 touch-target {{ $isActive ? 'bg-gradient-to-r from-[#0052CC] to-[#0088FF] text-white shadow-md shadow-blue-500/25 font-black' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-slate-800/80' }}">
                                     
                                     {{-- Clean Vector SVG Icon --}}
                                     <div class="w-5 h-5 flex items-center justify-center shrink-0">
@@ -147,7 +138,7 @@ $iconPaths = [
                                     <span class="truncate leading-snug">{{ $item['label'] }}</span>
 
                                     @if($isActive)
-                                        <span class="w-2 h-2 rounded-full bg-white animate-ping ml-auto"></span>
+                                        <span class="w-2 h-2 rounded-full bg-white animate-pulse ml-auto"></span>
                                     @endif
                                 </a>
                             @endforeach
@@ -159,10 +150,10 @@ $iconPaths = [
         </div>
 
         {{-- Mobile Drawer User Profile & Logout Bottom Section --}}
-        <div class="pt-4 border-t border-slate-200 dark:border-slate-800 mt-6 space-y-3 pb-32">
-            <div class="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700">
-                <div class="flex items-center gap-2.5 overflow-hidden">
-                    <div class="w-9 h-9 rounded-xl bg-[#06205C] overflow-hidden shrink-0 border border-slate-300 dark:border-slate-600">
+        <div class="pt-4 border-t border-slate-200/60 dark:border-slate-800 mt-6 space-y-3 pb-24">
+            <div class="flex items-center justify-between p-2 rounded-full bg-slate-100/70 dark:bg-slate-800/70 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
+                <div class="flex items-center gap-2.5 overflow-hidden ps-1">
+                    <div class="w-8 h-8 rounded-full bg-[#06205C] overflow-hidden shrink-0 border border-slate-300 dark:border-slate-600">
                         <img src="{{ $user?->avatar_url }}" alt="{{ $user?->name }}" class="w-full h-full object-cover">
                     </div>
                     <div class="flex flex-col truncate">
@@ -174,12 +165,16 @@ $iconPaths = [
 
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="w-full py-3 rounded-2xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-bold text-xs hover:bg-rose-100 dark:hover:bg-rose-900 transition touch-target flex items-center justify-center gap-2 shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                    <span>{{ app()->getLocale() === 'fr' ? 'Déconnexion' : (app()->getLocale() === 'en' ? 'Sign Out' : 'تسجيل الخروج') }}</span>
+                <button type="submit"
+                        class="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-xs font-black text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition touch-target">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/>
+                    </svg>
+                    <span>{{ $locale === 'fr' ? 'Déconnexion' : ($locale === 'en' ? 'Sign Out' : 'تسجيل الخروج') }}</span>
                 </button>
             </form>
         </div>
 
     </div>
+
 </div>

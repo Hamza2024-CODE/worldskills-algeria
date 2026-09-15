@@ -47,76 +47,55 @@ $dashboardRoute = match($rawRole) {
         }
     }"
     x-init="document.documentElement.classList.toggle('dark', dark)"
-    class="sticky top-0 z-40 h-16 flex items-center justify-between px-3 sm:px-6 border-b shadow-xs select-none"
-    :style="dark
-        ? 'background:rgba(15,23,42,0.97);border-color:#1E293B;backdrop-filter:blur(12px);'
-        : 'background:rgba(255,255,255,0.97);border-color:rgba(226,232,240,0.8);backdrop-filter:blur(12px);'"
+    class="sticky top-0 z-40 h-16 w-full flex items-center justify-between px-3 sm:px-6 bg-white/85 dark:bg-[#0B1120]/90 backdrop-blur-2xl border-b border-slate-200/80 dark:border-slate-800/80 shadow-xs select-none transition-colors"
 >
-    {{-- ════ START / LEFT ════ --}}
+    {{-- ════ START / LEFT (Logos & Identity) ════ --}}
     <div class="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
 
         {{-- Mobile hamburger --}}
         <button type="button"
                 @click="mobileNavOpen = true"
-                class="lg:hidden p-2 rounded-xl transition touch-target shrink-0"
-                :style="dark ? 'color:#94A3B8;' : 'color:#64748B;'"
+                class="lg:hidden w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 transition shadow-2xs touch-target shrink-0"
                 aria-label="{{ __('القائمة') }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
         </button>
 
-        {{-- Official WorldSkills Algeria Brand Logo & Title --}}
-        <a href="{{ $dashboardRoute }}" class="flex items-center gap-2 sm:gap-3 group shrink-0" aria-label="أولمبياد المهن الجزائرية">
+        {{-- Official WorldSkills Algeria Brand Logo & Title Capsule --}}
+        <a href="{{ $dashboardRoute }}" class="bg-slate-50/90 dark:bg-slate-800/90 px-3.5 sm:px-4 py-1.5 rounded-full flex items-center gap-2 sm:gap-3 shrink-0 shadow-2xs border border-slate-200/80 dark:border-slate-700 group hover:shadow-xs transition" aria-label="أولمبياد المهن الجزائرية">
             {{-- Official Ministry Logo (FIRST) --}}
-            <div class="h-9 sm:h-11 shrink-0 flex items-center justify-center px-2 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 shadow-sm group-hover:scale-105 transition-transform">
-                <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-full w-auto object-contain max-h-8">
-            </div>
+            <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-6 sm:h-7 w-auto object-contain transition-transform group-hover:scale-105">
 
-            <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 shrink-0"></div>
+            <div class="h-4 sm:h-5 w-px bg-slate-200 dark:bg-slate-700 shrink-0"></div>
 
             {{-- WorldSkills Logo (SECOND) --}}
-            <div class="h-9 sm:h-11 shrink-0 flex items-center justify-center px-2 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 shadow-sm group-hover:scale-105 transition-transform">
-                <img src="/logo.svg" alt="WorldSkills Algeria" class="h-full w-auto object-contain max-h-8">
-            </div>
+            <img src="/logo.svg" alt="WorldSkills Algeria" class="h-6 sm:h-7 w-auto object-contain transition-transform group-hover:scale-105">
 
             {{-- Brand text --}}
-            <div class="hidden sm:flex flex-col">
-                <span class="text-xs sm:text-sm font-black tracking-tight leading-snug whitespace-nowrap"
-                      :style="dark ? 'color:#F8FAFC;' : 'color:#06205C;'">
+            <div class="hidden sm:flex flex-col ms-0.5">
+                <span class="text-xs sm:text-[13px] font-black tracking-tight leading-none text-[#041235] dark:text-white whitespace-nowrap">
                     {{ app()->getLocale() === 'fr' ? 'WorldSkills Algeria' : (app()->getLocale() === 'en' ? 'WorldSkills Algeria' : 'أولمبياد المهن الجزائرية') }}
                 </span>
-                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap leading-tight mt-0.5">
                     {{ $wsapLabel }}
                 </span>
             </div>
-
-            @if(\App\Models\GlobalSetting::getByKey('coming_soon_mode', '0') === '1')
-                <a href="{{ route('admin.appearance') }}" class="hidden md:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-600 dark:text-amber-400 text-xs font-black animate-pulse shadow-sm ms-2" title="{{ __('انقر لضبط أو إلغاء تفعيل وضع الترقب') }}">
-                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-                    <span>وضع الترقب (Coming Soon) مفعّل</span>
-                </a>
-            @endif
         </a>
-
-        {{-- Active Event Pill --}}
-        @if(!empty($activeEvent))
-            <div class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-bold whitespace-nowrap max-w-[220px] truncate shrink-0"
-                 :style="dark ? 'background:rgba(30,58,138,0.3);border-color:#1D4ED8;color:#93C5FD;' : 'background:#EFF6FF;border-color:#BFDBFE;color:#1D4ED8;'">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
-                <span class="truncate">{{ $activeEvent->getLocalized('title') }}</span>
-            </div>
-        @endif
     </div>
 
-    {{-- ════ END / RIGHT ════ --}}
+    {{-- ════ END / RIGHT (Controls, Lang, Mode, User) ════ --}}
     <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+
+        {{-- Return to Public Platform Button --}}
+        <a href="{{ route('home') }}" class="hidden md:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 text-xs font-bold transition shadow-2xs" title="{{ __('messages.home') ?? 'الرئيسية' }}">
+            <svg class="w-3.5 h-3.5 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            <span>{{ __('messages.home') ?? 'الرئيسية' }}</span>
+        </a>
 
         {{-- Dark Mode Switcher Button --}}
         <button type="button" @click="toggleDark()"
-                class="p-2 rounded-xl transition border shrink-0 flex items-center justify-center"
-                :class="dark ? 'bg-slate-800 border-slate-700 text-amber-300 hover:bg-slate-700' : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'"
+                class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-amber-300 border border-slate-200/80 dark:border-slate-700 flex items-center justify-center transition shadow-2xs"
                 title="{{ $locale === 'fr' ? 'Basculer Mode Sombre/Clair' : ($locale === 'en' ? 'Toggle Dark/Light Mode' : 'تبديل الوضع الليلي / النهار') }}">
             <template x-if="dark">
                 <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
@@ -126,12 +105,11 @@ $dashboardRoute = match($rawRole) {
             </template>
         </button>
 
-        {{-- Language Switcher --}}
-        <div class="flex items-center p-0.5 sm:p-1 rounded-xl text-xs font-bold shrink-0"
-             :style="dark ? 'background:#1E293B;' : 'background:#F1F5F9;'">
+        {{-- Language Switcher Pill Capsule (Active is Vibrant Royal Blue with White text) --}}
+        <div class="flex items-center p-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs text-xs font-bold shrink-0">
             @foreach(['ar' => 'عربي', 'fr' => 'FR', 'en' => 'EN'] as $lang => $langLabel)
                 <a href="{{ route('lang.switch', $lang) }}" data-navigate-ignore rel="external"
-                   class="px-2 sm:px-2.5 py-1 rounded-lg transition text-[11px] sm:text-xs whitespace-nowrap {{ $locale === $lang ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs' : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200' }}"
+                   class="px-2.5 py-1 rounded-full transition text-[11px] font-black whitespace-nowrap {{ $locale === $lang ? 'bg-[#0052CC] text-white shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200' }}"
                 >{{ $langLabel }}</a>
             @endforeach
         </div>
@@ -143,75 +121,69 @@ $dashboardRoute = match($rawRole) {
                 ->count() : 0;
         @endphp
         <a href="{{ route('user.notifications') }}"
-           class="relative p-2 rounded-xl transition touch-target shrink-0 flex items-center justify-center"
-           :style="dark ? 'color:#64748B;' : 'color:#94A3B8;'"
+           class="relative w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 flex items-center justify-center transition shadow-2xs shrink-0"
            aria-label="{{ $locale === 'fr' ? 'Notifications' : ($locale === 'en' ? 'Notifications' : 'الإشعارات') }}"
         >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
                       d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
             </svg>
             @if($unreadBellCount > 0)
-            <span class="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white rounded-full text-[9px] font-black flex items-center justify-center animate-pulse shadow-sm">
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white rounded-full text-[9px] font-black flex items-center justify-center animate-pulse shadow-sm">
                 {{ $unreadBellCount > 9 ? '9+' : $unreadBellCount }}
             </span>
             @endif
         </a>
 
-
-
-        {{-- Profile Dropdown --}}
+        {{-- Profile Dropdown Capsule --}}
         <div class="relative shrink-0">
             <button @click="dropdownOpen = !dropdownOpen" type="button"
-                    class="flex items-center gap-2 p-1 rounded-xl transition touch-target"
+                    class="flex items-center gap-2 p-1 pe-3 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs hover:shadow-sm transition"
                     aria-label="{{ $locale === 'ar' ? 'الحساب' : ($locale === 'fr' ? 'Compte' : 'Account') }}">
                 {{-- Avatar --}}
-                <div class="w-8 h-8 rounded-xl bg-[#06205C] overflow-hidden shadow-sm shrink-0 border border-slate-200">
+                <div class="w-7 h-7 rounded-full bg-[#06205C] overflow-hidden shadow-2xs shrink-0 border border-slate-200 dark:border-slate-700">
                     <img src="{{ $user?->avatar_url }}" alt="{{ $user?->name }}" class="w-full h-full object-cover">
                 </div>
                 {{-- Name --}}
-                <span class="hidden md:block text-xs font-bold max-w-[120px] truncate whitespace-nowrap"
-                      :style="dark ? 'color:#CBD5E1;' : 'color:#334155;'">
+                <span class="hidden md:block text-xs font-black max-w-[120px] truncate whitespace-nowrap text-slate-800 dark:text-slate-100">
                     {{ $user?->name ?? '' }}
                 </span>
                 {{-- Chevron --}}
-                <svg class="w-3.5 h-3.5 hidden md:block transition-transform duration-200 shrink-0"
+                <svg class="w-3.5 h-3.5 hidden md:block transition-transform duration-200 shrink-0 text-slate-500 dark:text-slate-400"
                      :class="dropdownOpen ? 'rotate-180' : ''"
-                     :style="dark ? 'color:#475569;' : 'color:#94A3B8;'"
                      fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
                 </svg>
             </button>
 
-            {{-- Dropdown --}}
+            {{-- Frosted Glass Dropdown Menu --}}
             <div x-show="dropdownOpen"
                  @click.away="dropdownOpen = false"
                  x-transition:enter="transition ease-out duration-150"
-                 x-transition:enter-start="opacity-0 translate-y-1"
-                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:enter-start="opacity-0 translate-y-1 scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
                  x-transition:leave="transition ease-in duration-100"
-                 x-transition:leave-start="opacity-100"
-                 x-transition:leave-end="opacity-0"
-                 class="absolute {{ $locale === 'ar' ? 'start-0' : 'end-0' }} mt-2 w-56 rounded-2xl shadow-xl border py-1 z-50"
-                 :style="dark ? 'background:#0F172A;border-color:#1E293B;' : 'background:white;border-color:#E2E8F0;'"
+                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-1 scale-95"
+                 class="absolute {{ $locale === 'ar' ? 'start-0' : 'end-0' }} mt-2 w-60 rounded-3xl bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-2xl border border-white/80 dark:border-slate-800 shadow-2xl p-2 z-50 text-start"
                  x-cloak>
 
                 {{-- User info --}}
-                <div class="px-4 py-3 border-b" :style="dark ? 'border-color:#1E293B;' : 'border-color:#F1F5F9;'">
-                    <p class="text-xs font-black truncate" :style="dark ? 'color:#E2E8F0;' : 'color:#1E293B;'">
+                <div class="px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 mb-1 border border-slate-100 dark:border-slate-700/60">
+                    <p class="text-xs font-black truncate text-slate-900 dark:text-white">
                         {{ $user?->name ?? '' }}
                     </p>
-                    <p class="text-[11px] font-medium truncate mt-0.5" :style="dark ? 'color:#475569;' : 'color:#94A3B8;'">
+                    <p class="text-[11px] font-medium truncate mt-0.5 text-slate-500 dark:text-slate-400">
                         {{ $user?->email ?? '' }}
                     </p>
+                    <span class="inline-block mt-1 px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black">
+                        {{ $roleDisplay }}
+                    </span>
                 </div>
 
                 {{-- Profile --}}
                 <a href="{{ route('profile') }}"
-                   class="flex items-center gap-3 px-4 py-2.5 text-xs font-bold transition"
-                   :style="dark ? 'color:#94A3B8;' : 'color:#475569;'"
-                   @mouseenter="$el.style.background = dark ? '#1E293B' : '#F8FAFC'; $el.style.color = dark ? '#E2E8F0' : '#1E293B';"
-                   @mouseleave="$el.style.background = 'transparent'; $el.style.color = dark ? '#94A3B8' : '#475569';"
+                   class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
@@ -221,15 +193,13 @@ $dashboardRoute = match($rawRole) {
                 </a>
 
                 {{-- Divider --}}
-                <div class="my-1 border-t" :style="dark ? 'border-color:#1E293B;' : 'border-color:#F1F5F9;'"></div>
+                <div class="my-1 border-t border-slate-100 dark:border-slate-800"></div>
 
                 {{-- Logout --}}
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit"
-                            class="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-rose-500 transition"
-                            @mouseenter="$el.style.background = dark ? 'rgba(244,63,94,0.1)' : '#FFF1F2';"
-                            @mouseleave="$el.style.background = 'transparent';"
+                            class="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition"
                     >
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"

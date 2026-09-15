@@ -143,7 +143,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
             <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border border-slate-200 text-center space-y-4">
                 <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-xl font-bold">
-                    🗑️
+                    <x-ws.icon name="trash" class="w-6 h-6 text-rose-600" />
                 </div>
                 <h3 class="text-lg font-black text-slate-900">تأكيد حذف طلب التسجيل نهائياً</h3>
                 <p class="text-xs text-slate-500 font-medium">هل أنت تأكد من رغبتك في حذف طلب التسجيل هذا نهائياً؟ هذا الإجراء لا يمكن التراجع عنه.</p>

@@ -1,5 +1,5 @@
 <style>
-/* 🛡️ Platform Media & Content Protection System (Anti-Copy & Anti-Download) */
+/*  Platform Media & Content Protection System (Anti-Copy & Anti-Download) */
 img, video, canvas, picture, [data-protected-media] {
     -webkit-user-drag: none !important;
     -khtml-user-drag: none !important;

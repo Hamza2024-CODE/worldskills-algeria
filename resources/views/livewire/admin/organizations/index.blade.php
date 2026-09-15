@@ -147,7 +147,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
             <div class="bg-white rounded-3xl p-6 max-w-lg w-full space-y-4 border border-slate-200 shadow-2xl">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                     <h3 class="text-base font-black text-slate-900">{{ $isEditing ? 'تعديل بيانات المؤسسة' : 'إضافة مؤسسة جديدة' }}</h3>
-                    <button wire:click="$set('formOpen', false)" class="text-slate-400 hover:text-slate-600">✕</button>
+                    <button wire:click="$set('formOpen', false)" class="text-slate-400 hover:text-slate-600"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
                 <form wire:submit.prevent="save" class="space-y-3">
                     <div>
@@ -213,7 +213,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                         <span class="text-[10px] font-mono font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full uppercase border border-brand-200">{{ $selected->code }}</span>
                         <h3 class="text-base font-black text-slate-900 mt-2">{{ $selected->name_ar }}</h3>
                     </div>
-                    <button wire:click="$set('drawerOpen', false)" class="text-slate-400 hover:text-slate-600">✕</button>
+                    <button wire:click="$set('drawerOpen', false)" class="text-slate-400 hover:text-slate-600"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <div class="space-y-4 text-xs">

@@ -18,19 +18,19 @@
     {{-- STATS CARDS --}}
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div class="bg-gradient-to-br from-amber-500 to-amber-600 text-white rounded-2xl p-4 shadow-sm">
-            <span class="text-xs font-bold block">🥇 الميداليات الذهبية</span>
+            <span class="text-xs font-bold flex items-center gap-1.5"><x-ws.icon name="trophy" class="w-4 h-4 text-amber-200" /> الميداليات الذهبية</span>
             <span class="text-2xl font-black font-mono block mt-1">{{ $goldCount }}</span>
         </div>
         <div class="bg-gradient-to-br from-slate-400 to-slate-500 text-white rounded-2xl p-4 shadow-sm">
-            <span class="text-xs font-bold block">🥈 الميداليات الفضية</span>
+            <span class="text-xs font-bold flex items-center gap-1.5"><x-ws.icon name="medal" class="w-4 h-4 text-slate-200" /> الميداليات الفضية</span>
             <span class="text-2xl font-black font-mono block mt-1">{{ $silverCount }}</span>
         </div>
         <div class="bg-gradient-to-br from-amber-700 to-amber-800 text-white rounded-2xl p-4 shadow-sm">
-            <span class="text-xs font-bold block">🥉 الميداليات البرونزية</span>
+            <span class="text-xs font-bold flex items-center gap-1.5"><x-ws.icon name="medal" class="w-4 h-4 text-amber-300" /> الميداليات البرونزية</span>
             <span class="text-2xl font-black font-mono block mt-1">{{ $bronzeCount }}</span>
         </div>
         <div class="bg-gradient-to-br from-brand-600 to-brand-700 text-white rounded-2xl p-4 shadow-sm">
-            <span class="text-xs font-bold block">📜 مجموع الشهادات الصادرة</span>
+            <span class="text-xs font-bold flex items-center gap-1.5"><x-ws.icon name="document-check" class="w-4 h-4 text-blue-200" /> مجموع الشهادات الصادرة</span>
             <span class="text-2xl font-black font-mono block mt-1">{{ $totalCerts }}</span>
         </div>
     </div>
@@ -46,14 +46,14 @@
             <span class="text-xs font-bold text-slate-500 whitespace-nowrap">تصفية نوع الشهادة:</span>
             <select wire:model.live="filterType" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-black text-[#06205C] bg-white">
                 <option value="">جميع فئات الشهادات (All Certificates)</option>
-                <option value="WINNER_GOLD">🥇 الميدالية الذهبية (Gold Medal - 1st Place)</option>
-                <option value="WINNER_SILVER">🥈 الميدالية الفضية (Silver Medal - 2nd Place)</option>
-                <option value="WINNER_BRONZE">🥉 الميدالية البرونزية (Bronze Medal - 3rd Place)</option>
-                <option value="PARTICIPATION">📜 شهادة المشاركة (Participation)</option>
-                <option value="EXPERT_JUDGE">🎖️ شهادة تقدير للحكام والخبراء (Expert Judge)</option>
-                <option value="ORGANIZER">🎗️ شهادة تقدير للمنظمين (Organizer)</option>
-                <option value="VOLUNTEER">🤝 شهادة تقدير للمتطوعين (Volunteer)</option>
-                <option value="MEDIA">📰 شهادة تقدير للإعلاميين والصحافة (Media)</option>
+                <option value="WINNER_GOLD">الميدالية الذهبية (Gold Medal - 1st Place)</option>
+                <option value="WINNER_SILVER">الميدالية الفضية (Silver Medal - 2nd Place)</option>
+                <option value="WINNER_BRONZE">الميدالية البرونزية (Bronze Medal - 3rd Place)</option>
+                <option value="PARTICIPATION">شهادة المشاركة (Participation)</option>
+                <option value="EXPERT_JUDGE">شهادة تقدير للحكام والخبراء (Expert Judge)</option>
+                <option value="ORGANIZER">شهادة تقدير للمنظمين (Organizer)</option>
+                <option value="VOLUNTEER">شهادة تقدير للمتطوعين (Volunteer)</option>
+                <option value="MEDIA">شهادة تقدير للإعلاميين والصحافة (Media)</option>
             </select>
         </div>
     </div>
@@ -98,35 +98,35 @@
                                 <div class="flex items-center justify-center gap-1.5 flex-wrap">
                                     <!-- Gold Winner -->
                                     <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'WINNER_GOLD']) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-[11px] transition shadow-2xs" title="شهادة الميدالية الذهبية (المركز الأول)">
-                                        🥇 ذهبية
+                                        <x-ws.icon name="trophy" class="w-3.5 h-3.5 inline-block me-1" /> ذهبية
                                     </a>
                                     <!-- Silver Winner -->
                                     <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'WINNER_SILVER']) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-400 hover:bg-slate-500 text-white font-extrabold text-[11px] transition shadow-2xs" title="شهادة الميدالية الفضية (المركز الثاني)">
-                                        🥈 فضية
+                                        <x-ws.icon name="medal" class="w-3.5 h-3.5 inline-block me-1" /> فضية
                                     </a>
                                     <!-- Bronze Winner -->
                                     <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'WINNER_BRONZE']) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-extrabold text-[11px] transition shadow-2xs" title="شهادة الميدالية البرونزية (المركز الثالث)">
-                                        🥉 برونزية
+                                        <x-ws.icon name="medal" class="w-3.5 h-3.5 inline-block me-1" /> برونزية
                                     </a>
                                     <!-- Participation -->
                                     <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'PARTICIPATION']) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-brand-500 hover:bg-brand-600 text-white font-extrabold text-[11px] transition shadow-2xs" title="شهادة مشاركة وتأهل">
-                                        📜 مشاركة
+                                        <x-ws.icon name="document-check" class="w-3.5 h-3.5 inline-block me-1" /> مشاركة
                                     </a>
                                     <!-- Expert Judge Appreciation -->
                                     <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'EXPERT_JUDGE']) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-[11px] transition shadow-2xs" title="شهادة تقدير حكم خبير">
-                                        🎖️ حكم
+                                        <x-ws.icon name="scale" class="w-3.5 h-3.5 inline-block me-1" /> حكم
                                     </a>
                                     <!-- Organizer Appreciation -->
                                     <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'ORGANIZER']) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-700 hover:bg-slate-800 text-white font-extrabold text-[11px] transition shadow-2xs" title="شهادة تقدير لمنظم">
-                                        🎗️ منظم
+                                        <x-ws.icon name="building-office-2" class="w-3.5 h-3.5 inline-block me-1" /> منظم
                                     </a>
                                     <!-- Volunteer Appreciation -->
                                     <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'VOLUNTEER']) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-extrabold text-[11px] transition shadow-2xs" title="شهادة تقدير لمتطوع">
-                                        🤝 متطوع
+                                        <x-ws.icon name="hand-raised" class="w-3.5 h-3.5 inline-block me-1" /> متطوع
                                     </a>
                                     <!-- Media Appreciation -->
                                     <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'MEDIA']) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-[11px] transition shadow-2xs" title="شهادة تقدير صحفي إعلامي">
-                                        📰 صحفي
+                                        <x-ws.icon name="newspaper" class="w-3.5 h-3.5 inline-block me-1" /> صحفي
                                     </a>
                                 </div>
                             </td>

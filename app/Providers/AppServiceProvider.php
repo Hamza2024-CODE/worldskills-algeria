@@ -24,13 +24,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         try {
-            if (request()->header('X-Forwarded-Proto') === 'https' || request()->secure() || env('APP_ENV') !== 'local') {
+            if (!app()->environment('local') && (request()->header('X-Forwarded-Proto') === 'https' || request()->secure() || request()->getHost() === 'worldskills.dz')) {
                 \Illuminate\Support\Facades\URL::forceScheme('https');
             }
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
+            // No-op
         }
-
         Gate::policy(Country::class, CountryPolicy::class);
         Gate::policy(CountryDelegation::class, DelegationPolicy::class);
         Gate::policy(Registration::class, ParticipantPolicy::class);

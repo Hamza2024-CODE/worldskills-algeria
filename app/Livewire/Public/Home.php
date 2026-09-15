@@ -42,6 +42,18 @@ class Home extends Component
     public bool   $countdownFlipAnimation;
     public bool   $countdownEnabled;
 
+    // Breaking News Ticker Controls from Admin Settings
+    public bool   $newsTickerEnabled = true;
+    public string $newsTickerBadgeAr = 'إعلان رسمي | منتدى 2026';
+    public string $newsTickerBadgeFr = 'Annonce Officielle | Forum 2026';
+    public string $newsTickerBadgeEn = 'Official Announcement | Forum 2026';
+    public string $newsTickerTextAr  = 'انعقاد منتدى السياسات الإفريقية للمهارات 2026 بالتزامن مع أولمبياد المهن الجزائرية — مركز المؤتمرات محمد بن أحمد وهران';
+    public string $newsTickerTextFr  = 'Tenue du Forum sur les Politiques Africaines des Compétences 2026 en marge des Olympiades des Métiers — Centre des Conventions Oran';
+    public string $newsTickerTextEn  = 'The African Skills Policy Forum 2026 to be held concurrently with WorldSkills Algeria 2026 — Oran Convention Center';
+    public string $newsTickerUrl     = 'https://africaskills-policyforum.worldskills.dz/';
+    public string $newsTickerTheme   = 'royal_gradient';
+    public string $newsTickerSpeed   = 'normal';
+
     public function mount(
         DateEngine $dateEngine, 
         SettingsEngine $settings, 

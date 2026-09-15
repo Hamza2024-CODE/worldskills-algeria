@@ -18,7 +18,7 @@
     {{-- FLASH MESSAGES --}}
     @if(session('success'))
     <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-sm flex items-center justify-between">
-        <span>✓ {{ session('success') }}</span>
+        <span class="flex items-center gap-1"><x-ws.icon name="check-circle" class="w-4 h-4 text-emerald-600" /> {{ session('success') }}</span>
     </div>
     @endif
 
@@ -162,7 +162,7 @@
                             </td>
                             <td class="px-5 py-4">
                                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                    مفعل معتمد ✓
+                                    مفعل معتمد <x-ws.icon name="check" class="w-3.5 h-3.5 text-emerald-600 inline-block me-1" />
                                 </span>
                             </td>
                             <td class="px-5 py-4 text-end">

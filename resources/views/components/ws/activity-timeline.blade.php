@@ -30,6 +30,6 @@
             @endif
         </div>
     @empty
-        <x-ws.empty-state icon="📋" :message="__('لا توجد نشاطات مسجلة بعد.')" />
+        <x-ws.empty-state icon="clipboard-document-list" :message="__('لا توجد نشاطات مسجلة بعد.')" />
     @endforelse
 </div>

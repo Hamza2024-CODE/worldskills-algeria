@@ -218,13 +218,13 @@
                 
                 <div class="flex items-center justify-between gap-2">
                     <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                        <span>👁️</span>
+                        <x-ws.icon name="eye" class="w-4 h-4 text-slate-400 inline-block" />
                         <span>{{ app()->getLocale() === 'fr' ? 'Aperçu en Direct' : (app()->getLocale() === 'en' ? 'Live Preview' : 'المعاينة الحية') }}</span>
                     </h3>
                     <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-[10px] font-black">
-                        <button wire:click="setPreviewDevice('desktop')" class="px-2 py-0.5 rounded-lg transition {{ $previewDevice === 'desktop' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">🖥️ Desktop</button>
-                        <button wire:click="setPreviewDevice('tablet')" class="px-2 py-0.5 rounded-lg transition {{ $previewDevice === 'tablet' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">📱 Tablet</button>
-                        <button wire:click="setPreviewDevice('mobile')" class="px-2 py-0.5 rounded-lg transition {{ $previewDevice === 'mobile' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">📲 Mobile</button>
+                        <button wire:click="setPreviewDevice('desktop')" class="px-2 py-0.5 rounded-lg transition {{ $previewDevice === 'desktop' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}"><x-ws.icon name="computer-desktop" class="w-4 h-4 inline-block me-1" /> Desktop</button>
+                        <button wire:click="setPreviewDevice('tablet')" class="px-2 py-0.5 rounded-lg transition {{ $previewDevice === 'tablet' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}"><x-ws.icon name="device-tablet" class="w-4 h-4 inline-block me-1" /> Tablet</button>
+                        <button wire:click="setPreviewDevice('mobile')" class="px-2 py-0.5 rounded-lg transition {{ $previewDevice === 'mobile' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}"><x-ws.icon name="device-phone-mobile" class="w-4 h-4 inline-block me-1" /> Mobile</button>
                     </div>
                 </div>
 

@@ -25,7 +25,7 @@
     {{-- FLASH MESSAGE --}}
     @if($flashMessage || session('success'))
     <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-sm">
-        ✓ {{ $flashMessage ?: session('success') }}
+        <x-ws.icon name="check-circle" class="w-4 h-4 inline-block me-1 text-emerald-600" /> {{ $flashMessage ?: session("success") }}
     </div>
     @endif
 
@@ -82,13 +82,13 @@
         <div class="flex items-center gap-3">
             <select wire:model.live="filterType" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-black text-[#06205C] bg-white">
                 <option value="">جميع أنواع التنبيهات</option>
-                <option value="GENERAL">📢 GENERAL (عام)</option>
-                <option value="TECHNICAL_MEETING">🏛️ TECHNICAL_MEETING (اجتماع تقني)</option>
-                <option value="MEAL">🍽️ MEAL (وجبة/مطعم)</option>
-                <option value="ACCOMMODATION">🏠 ACCOMMODATION (سكن)</option>
-                <option value="COMPETITION">🏆 COMPETITION (مسابقة)</option>
-                <option value="SCHEDULE">⏰ SCHEDULE (برنامج)</option>
-                <option value="URGENT">🚨 URGENT (عاجل)</option>
+                <option value="GENERAL">GENERAL (عام)</option>
+                <option value="TECHNICAL_MEETING">TECHNICAL_MEETING (اجتماع تقني)</option>
+                <option value="MEAL">MEAL (وجبة/مطعم)</option>
+                <option value="ACCOMMODATION">ACCOMMODATION (سكن)</option>
+                <option value="COMPETITION">COMPETITION (مسابقة)</option>
+                <option value="SCHEDULE">SCHEDULE (برنامج)</option>
+                <option value="URGENT">URGENT (عاجل)</option>
             </select>
 
             <select wire:model.live="filterStatus" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-black text-[#06205C] bg-white">
@@ -155,7 +155,7 @@
                                     </span>
                                     @if($n->action_type)
                                     <span class="block text-[10px] font-mono text-brand-600 font-bold">
-                                        🔗 {{ $n->action_type }}
+                                        <x-ws.icon name="link" class="w-3.5 h-3.5 inline-block me-1 text-slate-400" /> {{ $n->action_type }}
                                     </span>
                                     @endif
                                 </div>
@@ -202,7 +202,7 @@
                                 <div class="flex items-center justify-end gap-2">
                                     @if($n->status === 'DRAFT' || $n->status === 'SCHEDULED')
                                     <button wire:click="dispatchNow({{ $n->id }})" class="px-3 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] transition shadow-xs">
-                                        إرسال الآن 🚀
+                                        <x-ws.icon name="arrow-up-tray" class="w-4 h-4 inline-block me-1" /> إرسال الآن
                                     </button>
                                     @endif
 

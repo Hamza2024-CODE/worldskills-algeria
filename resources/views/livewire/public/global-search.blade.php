@@ -3,15 +3,6 @@
         
         <!-- Header Title Banner -->
         <div class="text-center space-y-3 relative group">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/80 shadow-xs">
-                <span class="relative flex h-2.5 w-2.5">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0066FF] opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#0066FF]"></span>
-                </span>
-                <span class="text-xs font-black text-[#0066FF] tracking-wider uppercase">
-                    ✦ {{ app()->getLocale() === 'fr' ? 'Moteur de Recherche Global' : (app()->getLocale() === 'en' ? 'Global Search Engine' : 'محرك البحث الشامل والمعالجة') }}
-                </span>
-            </div>
             
             <h1 class="text-3xl sm:text-5xl font-black text-[#06205C] tracking-tight">
                 {{ app()->getLocale() === 'fr' ? 'Rechercher dans la Plateforme' : (app()->getLocale() === 'en' ? 'Search Platform Content & Archive' : 'البحث المباشر في قاعدة بيانات المنصة') }}
@@ -37,9 +28,7 @@
                        class="w-full ps-14 pe-14 py-4 sm:py-5 rounded-3xl bg-white border-2 border-slate-200/90 text-sm sm:text-base font-bold shadow-2xl focus:outline-none focus:border-[#0066FF] transition-all text-[#06205C] placeholder:text-slate-400">
 
                 @if(strlen($query) > 0)
-                    <button wire:click="$set('query', '')" class="absolute inset-y-0 end-0 pe-5 flex items-center text-slate-400 hover:text-red-500 font-bold transition">
-                        ✕
-                    </button>
+                    <button wire:click="$set('query', '')" class="absolute inset-y-0 end-0 pe-5 flex items-center text-slate-400 hover:text-red-500 font-bold transition"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 @endif
             </div>
 
@@ -187,7 +176,7 @@
                                             {{ $ev->getLocalized('title') }}
                                         </h4>
                                         <span class="text-[11px] text-slate-400 block">
-                                            📍 {{ $ev->venue ?: 'الجزائر العاصمة' }}
+                                            <x-ws.icon name="map-pin" class="w-3.5 h-3.5 inline-block me-1 text-slate-400" /> {{ $ev->venue ?: 'الجزائر العاصمة' }}
                                         </span>
                                     </div>
                                 </a>

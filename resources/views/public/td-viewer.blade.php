@@ -127,7 +127,7 @@
         @if($skill && $skill->assessmentModules->count() > 0)
             <div class="pt-6 border-t border-slate-200 space-y-4">
                 <h3 class="text-lg font-black text-[#06205C] flex items-center gap-2">
-                    <span>📊 معايير التقييم والأوزان النسبية (WSOS Assessment Breakdown)</span>
+                    <span class="flex items-center gap-1.5"><x-ws.icon name="chart-bar" class="w-5 h-5 text-brand-600" /> معايير التقييم والأوزان النسبية (WSOS Assessment Breakdown)</span>
                 </h3>
                 
                 <div class="overflow-x-auto">

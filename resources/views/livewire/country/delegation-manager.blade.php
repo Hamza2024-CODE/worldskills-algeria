@@ -34,7 +34,7 @@
                 <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 <span>{{ $flashMessage }}</span>
             </div>
-            <button wire:click="$set('flashMessage', '')" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 font-bold text-xs">✕</button>
+            <button wire:click="$set('flashMessage', '')" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 font-bold text-xs"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
         </div>
     @endif
 
@@ -220,7 +220,7 @@
             <div class="bg-white rounded-3xl max-w-2xl w-full p-6 space-y-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <h3 class="text-base font-black text-[#06205C]">{{ app()->getLocale() === 'fr' ? 'Ajouter Membre à la Délégation' : (app()->getLocale() === 'en' ? 'Add Member to Delegation' : 'إضافة عضو جديد للوفد الوطني') }}</h3>
-                    <button wire:click="$set('showAddModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+                    <button wire:click="$set('showAddModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <form wire:submit.prevent="addMember" class="space-y-4">
@@ -318,7 +318,7 @@
             <div class="bg-white rounded-3xl max-w-2xl w-full p-6 space-y-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <h3 class="text-base font-black text-[#06205C]">{{ app()->getLocale() === 'fr' ? 'Modifier Membre' : (app()->getLocale() === 'en' ? 'Edit Member' : 'تعديل بيانات عضو الوفد') }}</h3>
-                    <button wire:click="$set('showEditModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+                    <button wire:click="$set('showEditModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <form wire:submit.prevent="updateMember" class="space-y-4">
@@ -404,7 +404,7 @@
             <div class="bg-white rounded-3xl max-w-xl w-full p-6 space-y-6 shadow-2xl border border-slate-200">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <h3 class="text-base font-black text-[#06205C]">{{ app()->getLocale() === 'fr' ? 'Dossier Membre' : (app()->getLocale() === 'en' ? 'Member Dossier' : 'الملف الموحد لعضو الوفد') }}</h3>
-                    <button wire:click="$set('showViewModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+                    <button wire:click="$set('showViewModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <div class="space-y-4 text-xs">

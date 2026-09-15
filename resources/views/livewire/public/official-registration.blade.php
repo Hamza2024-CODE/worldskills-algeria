@@ -75,7 +75,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
 
                 @if(session('error'))
                     <div class="p-3.5 bg-rose-50 text-rose-700 text-xs font-bold rounded-xl border border-rose-200">
-                        ⚠️ {{ session('error') }}
+                        <x-ws.icon name="exclamation-triangle" class="w-4 h-4 inline-block me-1 text-rose-500" /> {{ session('error') }}
                     </div>
                 @endif
 
@@ -209,10 +209,10 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
 
                             <div class="flex items-center gap-1.5 bg-slate-200/70 p-1 rounded-xl">
                                 <button type="button" @click="mode = 'upload'; stopCamera();" class="px-3 py-1 rounded-lg text-[11px] font-black transition" :class="mode === 'upload' ? 'bg-white text-indigo-900 shadow-xs' : 'text-slate-600'">
-                                    📁 {{ $t('رفع صورة', 'Fichier', 'Upload') }}
+                                    <x-ws.icon name="folder" class="w-4 h-4 inline-block me-1" /> {{ $t('رفع صورة', 'Fichier', 'Upload') }}
                                 </button>
                                 <button type="button" @click="startCamera()" class="px-3 py-1 rounded-lg text-[11px] font-black transition" :class="mode === 'camera' || mode === 'captured' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600'">
-                                    📷 {{ $t('التقاط مباشر بالكاميرا', 'Caméra', 'Live Capture') }}
+                                    <x-ws.icon name="camera" class="w-4 h-4 inline-block me-1" /> {{ $t('التقاط مباشر بالكاميرا', 'Caméra', 'Live Capture') }}
                                 </button>
                             </div>
                         </div>
@@ -256,7 +256,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
 
                                 @if($captured_photo_data)
                                     <div class="text-xs font-extrabold text-emerald-700 flex items-center gap-1.5">
-                                        ✓ {{ $t('تم التقاط الصورة بنجاح بواسطة الكاميرا المباشرة', 'Photo capturée par caméra', 'Photo captured cleanly via Live Camera') }}
+                                        <x-ws.icon name="check-circle" class="w-4 h-4 inline-block me-1 text-emerald-600" /> {{ $t('تم التقاط الصورة بنجاح بواسطة الكاميرا المباشرة', 'Photo capturée par caméra', 'Photo captured cleanly via Live Camera') }}
                                     </div>
                                 @else
                                     <input type="file" wire:model="photo" class="text-xs text-slate-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer">
@@ -386,10 +386,10 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                 </label>
                                 <div class="flex items-center gap-1 bg-amber-200/60 p-1 rounded-xl">
                                     <button type="button" @click="mode = 'upload'; stopCamera();" class="px-2.5 py-1 rounded-lg text-[10px] font-black transition" :class="mode === 'upload' ? 'bg-white text-amber-950 shadow-xs' : 'text-amber-800'">
-                                        📁 {{ $t('ملف', 'Fichier', 'File') }}
+                                        <x-ws.icon name="folder" class="w-4 h-4 inline-block me-1" /> {{ $t('ملف', 'Fichier', 'File') }}
                                     </button>
                                     <button type="button" @click="startCamera()" class="px-2.5 py-1 rounded-lg text-[10px] font-black transition" :class="mode === 'camera' || mode === 'captured' ? 'bg-amber-600 text-white shadow-xs' : 'text-amber-800'">
-                                        📷 {{ $t('تصوير مباشر', 'Caméra', 'Camera') }}
+                                        <x-ws.icon name="camera" class="w-4 h-4 inline-block me-1" /> {{ $t('تصوير مباشر', 'Caméra', 'Camera') }}
                                     </button>
                                 </div>
                             </div>
@@ -403,7 +403,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                     </div>
                                 </div>
                                 <button type="button" @click="capture()" class="px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-xs shadow-md transition flex items-center gap-1.5">
-                                    <span>📸 {{ $t('التقاط بطاقة الصحافة الآن', 'Capturer la carte', 'Capture Press Badge') }}</span>
+                                    <span class="inline-flex items-center gap-1.5"><x-ws.icon name="camera" class="w-4 h-4" /> {{ $t('التقاط بطاقة الصحافة الآن', 'Capturer la carte', 'Capture Press Badge') }}</span>
                                 </button>
                             </div>
 
@@ -412,7 +412,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                     <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-amber-300">
                                         <img src="{{ $captured_id_card_data }}" class="w-24 h-16 rounded-lg object-cover border border-amber-400">
                                         <div class="text-xs font-bold text-amber-900">
-                                            ✓ {{ $t('تم تصوير بطاقة الصحافة بنجاح عبر الكاميرا المباشرة', 'Carte de presse capturée', 'Press badge captured via camera') }}
+                                            <x-ws.icon name="check-circle" class="w-4 h-4 inline-block me-1 text-emerald-600" /> {{ $t('تم تصوير بطاقة الصحافة بنجاح عبر الكاميرا المباشرة', 'Carte de presse capturée', 'Press badge captured via camera') }}
                                         </div>
                                     </div>
                                 @else
@@ -463,10 +463,10 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                 </label>
                                 <div class="flex items-center gap-1 bg-blue-200/60 p-1 rounded-xl">
                                     <button type="button" @click="mode = 'upload'; stopCamera();" class="px-2.5 py-1 rounded-lg text-[10px] font-black transition" :class="mode === 'upload' ? 'bg-white text-blue-950 shadow-xs' : 'text-blue-800'">
-                                        📁 {{ $t('ملف', 'Fichier', 'File') }}
+                                        <x-ws.icon name="folder" class="w-4 h-4 inline-block me-1" /> {{ $t('ملف', 'Fichier', 'File') }}
                                     </button>
                                     <button type="button" @click="startCamera()" class="px-2.5 py-1 rounded-lg text-[10px] font-black transition" :class="mode === 'camera' || mode === 'captured' ? 'bg-blue-600 text-white shadow-xs' : 'text-blue-800'">
-                                        📷 {{ $t('تصوير مباشر', 'Caméra', 'Camera') }}
+                                        <x-ws.icon name="camera" class="w-4 h-4 inline-block me-1" /> {{ $t('تصوير مباشر', 'Caméra', 'Camera') }}
                                     </button>
                                 </div>
                             </div>
@@ -480,7 +480,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                     </div>
                                 </div>
                                 <button type="button" @click="capture()" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md transition flex items-center gap-1.5">
-                                    <span>📸 {{ $t('التقاط صورة الوثيقة الآن', 'Capturer le document', 'Capture ID / Passport Document') }}</span>
+                                    <span class="inline-flex items-center gap-1.5"><x-ws.icon name="camera" class="w-4 h-4" /> {{ $t('التقاط صورة الوثيقة الآن', 'Capturer le document', 'Capture ID / Passport Document') }}</span>
                                 </button>
                             </div>iv>
 
@@ -493,7 +493,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                     </div>
                                 </div>
                                 <button type="button" @click="capture()" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md transition flex items-center gap-1.5">
-                                    <span>📸 {{ $t('التقاط صورة الوثيقة الآن', 'Capturer le document', 'Capture ID / Passport Document') }}</span>
+                                    <span class="inline-flex items-center gap-1.5"><x-ws.icon name="camera" class="w-4 h-4" /> {{ $t('التقاط صورة الوثيقة الآن', 'Capturer le document', 'Capture ID / Passport Document') }}</span>
                                 </button>
                             </div>
 
@@ -502,7 +502,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                     <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-blue-300">
                                         <img src="{{ $captured_id_card_data }}" class="w-24 h-16 rounded-lg object-cover border border-blue-400">
                                         <div class="text-xs font-bold text-blue-900">
-                                            ✓ {{ $t('تم تصوير الوثيقة بنجاح بواسطة الكاميرا المباشرة', 'Document identité capturé', 'ID document captured cleanly via Live Camera') }}
+                                            <x-ws.icon name="check-circle" class="w-4 h-4 inline-block me-1 text-emerald-600" /> {{ $t('تم تصوير الوثيقة بنجاح بواسطة الكاميرا المباشرة', 'Document identité capturé', 'ID document captured cleanly via Live Camera') }}
                                         </div>
                                     </div>
                                 @else

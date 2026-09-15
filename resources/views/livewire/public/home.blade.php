@@ -1,10 +1,8 @@
 
-<div class="pb-16 relative overflow-hidden bg-[#FAFBFD]" x-data="{ showVideoModal: false }">
+<div class="pb-16 relative overflow-hidden bg-[#FAFBFD] min-h-screen" x-data="{ showVideoModal: false }">
 
-    <!-- Dynamic Aurora Ambient Glass Orbs Background -->
-    <div class="absolute top-10 right-1/4 w-[32rem] h-[32rem] bg-brand-500/10 rounded-full blur-[100px] pointer-events-none animate-orb-float-1"></div>
-    <div class="absolute top-96 left-10 w-[36rem] h-[36rem] bg-sky-400/10 rounded-full blur-[120px] pointer-events-none animate-orb-float-2"></div>
-    <div class="absolute bottom-40 right-10 w-[28rem] h-[28rem] bg-amber-400/10 rounded-full blur-[90px] pointer-events-none animate-orb-float-3"></div>
+    <!-- The Hybrid Dynamic Background Experience (الشبكة الهندسية الدقيقة + الهالات المتنفسة + توهج الفأرة) -->
+    <x-ui.dynamic-aurora-mesh />
 
 @php
     $activeEvent = $activeEvent ?? null;
@@ -81,53 +79,133 @@
     </style>
 
     <!-- 1. Hero Section with Full-Bleed High-Definition Video Background -->
-    <section class="relative bg-[#020A24] text-white min-h-[70vh] sm:min-h-[78vh] py-20 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden rounded-b-[3rem] border-b border-brand-500/20 shadow-2xl flex items-center">
+    @php
+        $rotatingPhrases = match(app()->getLocale()) {
+            'fr' => [
+                "L'Excellence Métiers & Compétences",
+                "Les Talents & Savoir-Faire de Demain",
+                "Innovation Technologique & Artisanat",
+                "Leadership Professionnel Africain"
+            ],
+            'en' => [
+                "Vocational Excellence & Skills",
+                "Tomorrow's National Talents",
+                "Industrial & Technological Innovation",
+                "African Vocational Leadership"
+            ],
+            default => [
+                "التميز المهني والحرفي",
+                "طاقات وكفاءات الغد",
+                "الابتكار الصناعي والتقني",
+                "ريادة المهارات الجزائرية والأفريقية"
+            ]
+        };
+    @endphp
+
+    <section class="relative bg-[#020A24] text-white min-h-[92vh] lg:min-h-screen w-full overflow-hidden flex items-center justify-center pt-32 sm:pt-40 pb-20 px-4 sm:px-6 lg:px-8">
         
-        <!-- Full-Bleed 100% Seamless Cover Video Background Layer (Expands to cover full space) -->
-        <div class="absolute inset-0 z-0 overflow-hidden opacity-90 pointer-events-none">
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200vw] h-[200vh] min-w-[177.77vh] min-h-[56.25vw]">
-                <iframe class="w-full h-full pointer-events-none object-cover" 
-                        src="https://www.youtube-nocookie.com/embed/nzy4f7GBSVw?autoplay=1&mute=1&controls=0&loop=1&playlist=nzy4f7GBSVw&playsinline=1&rel=0&modestbranding=1&enablejsapi=1&iv_load_policy=3&disablekb=1&showinfo=0&vq=hd1080" 
-                        title="WorldSkills Background Video HD" 
-                        frameborder="0" 
-                        allow="autoplay; encrypted-media"></iframe>
-            </div>
-            <!-- Elegant Light Cinematic Gradient Overlay for Maximum Text Legibility & Video Clarity -->
-            <div class="absolute inset-0 bg-gradient-to-t from-[#020A24] via-[#020A24]/40 to-black/20"></div>
+        <!-- Full-Bleed 100% Seamless Cover Video Background Layer -->
+        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none w-full h-full">
+            <iframe 
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" 
+                style="width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.78vh; object-fit: cover;"
+                src="https://www.youtube-nocookie.com/embed/nzy4f7GBSVw?autoplay=1&mute=1&controls=0&loop=1&playlist=nzy4f7GBSVw&playsinline=1&rel=0&modestbranding=1&enablejsapi=1&iv_load_policy=3&disablekb=1&showinfo=0&vq=hd1080" 
+                title="WorldSkills Background Video HD" 
+                frameborder="0" 
+                allow="autoplay; encrypted-media"></iframe>
+            <!-- Subtle Dark Cinematic Gradient Overlay for Maximum Text Legibility -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#020A24] via-[#020A24]/45 to-black/35"></div>
         </div>
 
-        <!-- Dynamic Animated Ambient Glow Particles -->
-        <div class="absolute -top-24 -left-24 w-[32rem] h-[32rem] bg-brand-sky/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
-        <div class="absolute -bottom-24 -right-24 w-[32rem] h-[32rem] bg-brand-500/25 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+        <!-- Ambient Glow Particles -->
+        <div class="absolute -top-24 -left-24 w-[32rem] h-[32rem] bg-sky-400/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+        <div class="absolute -bottom-24 -right-24 w-[32rem] h-[32rem] bg-blue-600/25 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
 
-        <div class="max-w-7xl mx-auto w-full relative z-10 text-right space-y-6">
+        <div class="max-w-7xl mx-auto w-full relative z-10 text-start space-y-6">
 
-            <!-- Animated Interactive Typography Section -->
-            <div class="hero-text-block space-y-4 max-w-4xl cursor-pointer">
+            <!-- Animated Dynamic Typography Section with Typewriter Effect -->
+            <div class="space-y-4 max-w-4xl" x-data="{
+                phrases: {{ json_encode($rotatingPhrases) }},
+                currentPhraseIndex: 0,
+                currentText: '',
+                isDeleting: false,
+                init() {
+                    this.type();
+                },
+                type() {
+                    let fullText = this.phrases[this.currentPhraseIndex];
+                    if (this.isDeleting) {
+                        this.currentText = fullText.substring(0, this.currentText.length - 1);
+                    } else {
+                        this.currentText = fullText.substring(0, this.currentText.length + 1);
+                    }
+
+                    let delta = this.isDeleting ? 35 : 85;
+
+                    if (!this.isDeleting && this.currentText === fullText) {
+                        delta = 2400;
+                        this.isDeleting = true;
+                    } else if (this.isDeleting && this.currentText === '') {
+                        this.isDeleting = false;
+                        this.currentPhraseIndex = (this.currentPhraseIndex + 1) % this.phrases.length;
+                        delta = 350;
+                    }
+
+                    setTimeout(() => this.type(), delta);
+                }
+            }">
                 
-                <!-- Main Title: Smooth Entrance + Pulse Glow + Hover Golden Glow -->
-                <h1 class="animate-hero-title text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.25] text-white">
+                <!-- Pill Badge -->
+
+
+                <!-- Main Title: Smooth Entrance + Pulse Glow -->
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.2] text-white">
                     {{ $activeEvent ? $activeEvent->getLocalized('title') : __('messages.hero_title') }}
                 </h1>
 
-                <!-- Subtitle: Staggered Fade Up + Hover White Highlight -->
-                <p class="animate-hero-sub text-sm sm:text-lg text-slate-100 font-semibold leading-relaxed drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)] max-w-3xl">
+                <!-- Dynamic Animated Moving Text Line -->
+                <div class="flex items-center gap-2 text-lg sm:text-2xl font-black text-white/95">
+                    <span class="text-slate-300 font-bold text-sm sm:text-lg">{{ app()->getLocale() === 'fr' ? 'Vers:' : (app()->getLocale() === 'en' ? 'Towards:' : 'نحو:') }}</span>
+                    <span class="text-[#00B8FF] font-black border-e-2 border-[#00B8FF] pe-1.5 min-h-[1.5em] inline-block" x-text="currentText"></span>
+                </div>
+
+                <!-- Subtitle -->
+                <p class="text-sm sm:text-base lg:text-lg text-slate-200 font-medium leading-relaxed max-w-3xl drop-shadow-md">
                     {{ $activeEvent ? $activeEvent->getLocalized('summary') : __('messages.hero_subtitle') }}
                 </p>
 
             </div>
 
-            <!-- Action Buttons Grid: Animated Entrance -->
-            <div class="animate-hero-btns flex flex-wrap items-center gap-4 pt-4">
-                <a href="{{ route('guide') }}" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-black text-sm shadow-xl shadow-brand-500/30 transition-all transform mac-dock-hover relative overflow-hidden  hover:scale-[1.02] active:scale-95">
-                    {{ __('messages.explore_more') }}
+            <!-- Action Buttons Grid: Solid & Glowing Modern Buttons -->
+            <div class="flex flex-wrap items-center gap-4 pt-4">
+                <!-- 1. Explore More (Cyan / Primary Gradient Button) -->
+                <a href="{{ route('guide') }}" class="px-8 py-3.5 rounded-full bg-gradient-to-r from-[#0052CC] via-[#0066FF] to-[#00B8FF] hover:from-[#0040A3] hover:to-[#00A3E0] text-white font-black text-xs sm:text-sm shadow-xl shadow-blue-500/25 ws-transition hover:scale-105 active:scale-95 flex items-center gap-2.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>{{ __('messages.explore_more') }}</span>
                 </a>
 
-                <a href="{{ route('registration') }}" class="px-8 py-4 rounded-2xl bg-white hover:bg-slate-100 text-[#06205C] font-black text-sm shadow-xl transition-all flex items-center gap-2 transform mac-dock-hover relative overflow-hidden  hover:scale-[1.02] active:scale-95">
-                    <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                <!-- 2. Register Now (High-Contrast Solid White Button) -->
+                <a href="{{ route('registration') }}" class="px-8 py-3.5 rounded-full bg-white hover:bg-slate-100 text-[#041235] font-black text-xs sm:text-sm shadow-xl ws-transition hover:scale-105 active:scale-95 flex items-center gap-2 border border-white/90">
+                    <svg class="w-4 h-4 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                     <span>{{ __('messages.register_now') }}</span>
                 </a>
             </div>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════════════════
+             ORGANIC WAVE & FOGGY MIST TRANSITION (Seamless Hero Blend)
+             ═════════════════════════════════════════════════════════════════ -->
+        <!-- Soft Foggy Mist Gradient Layer -->
+        <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#FAFBFD] via-[#FAFBFD]/70 to-transparent pointer-events-none z-10"></div>
+
+        <!-- Organic Fluid Wave Divider -->
+        <div class="absolute inset-x-0 bottom-0 pointer-events-none z-20 overflow-hidden leading-none">
+            <svg class="relative block w-full h-16 sm:h-24 lg:h-32 text-[#FAFBFD]" viewBox="0 0 1440 120" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Subtle Secondary Ambient Layer -->
+                <path opacity="0.4" d="M0,35 C320,85 460,10 720,50 C980,90 1180,20 1440,60 L1440,120 L0,120 Z" fill="currentColor"/>
+                <!-- Main Smooth Foreground Wave -->
+                <path d="M0,65 C260,110 520,25 780,70 C1040,115 1260,35 1440,75 L1440,120 L0,120 Z" fill="currentColor"/>
+            </svg>
         </div>
     </section>
 
@@ -236,7 +314,7 @@
                     @endif
                 </h3>
                 <div class="flex items-center justify-center gap-2 text-xs font-bold text-slate-600">
-                    <span class="text-amber-500">★</span>
+                    <x-ws.icon name="star" class="w-3.5 h-3.5 text-amber-500 inline-block" />
                     <span>
                         @if(app()->getLocale() === 'fr')
                             {{ $countdownSubtitleFr }}
@@ -246,7 +324,7 @@
                             {{ $countdownSubtitleAr }}
                         @endif
                     </span>
-                    <span class="text-amber-500">★</span>
+                    <x-ws.icon name="star" class="w-3.5 h-3.5 text-amber-500 inline-block" />
                 </div>
             </div>
 
@@ -386,7 +464,8 @@
     </section>
     @endif
 
-    <!-- 3. Dynamic Real DB Statistics Grid with Image Logos, Text & Animated Counters -->
+    <!-- 3. Dynamic Real DB Statistics Grid -->
+    <div id="stats-section"></div>
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             <x-animated-counter :target="!empty($stats['partners']) ? $stats['partners'] : 10" :label="app()->getLocale() === 'fr' ? 'Partenaires Officiels' : (app()->getLocale() === 'en' ? 'Official Partners' : 'الشركاء والرعاة')" :description="app()->getLocale() === 'fr' ? 'Soutien industriel & institutionnel' : (app()->getLocale() === 'en' ? 'Industrial & Institutional Support' : 'الدعم الصناعي والمؤسساتي')" image="/logo.svg" color="text-brand-500" />
@@ -398,45 +477,36 @@
         </div>
     </section>
 
+    <!-- 3.5 Breaking News / Forum Ticker (شريط الأخبار والإعلانات التفاعلي) -->
+    @include('partials.news-ticker')
+
     <!-- 4. Featured Skills Showcase -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 mb-16 sm:mb-20">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b-2 border-slate-100/80 relative group/head cursor-default">
-            {{-- Dynamic Ambient Light Glow with Hover Shimmer --}}
-            <div class="absolute -top-12 start-0 w-64 h-24 bg-gradient-to-r from-blue-600/10 via-cyan-500/15 to-indigo-600/10 rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-blue-600/25 group-hover/head:to-cyan-400/25 transition-all duration-700"></div>
+        <div class="p-6 sm:p-8 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_10px_35px_rgba(0,82,204,0.06)] hover:shadow-[0_20px_45px_rgba(0,82,204,0.12)] hover:-translate-y-1.5 transition-all duration-500 relative group/head cursor-default overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+            {{-- Ambient Decorative Glass Glow (Transforms from Blue to Cyan on Hover) --}}
+            <div class="absolute -top-16 -start-16 w-60 h-60 bg-gradient-to-br from-blue-500/15 via-cyan-400/10 to-transparent rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-cyan-500/25 group-hover/head:via-blue-600/20 transition-all duration-700"></div>
 
-            <div class="space-y-2 relative z-10">
-                {{-- Luxury Pill Badge with SVG Icon instead of emoji --}}
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-blue-50 via-indigo-50/80 to-cyan-50 border border-blue-200/80 shadow-xs group-hover/head:border-blue-400 group-hover/head:shadow-md transition-all duration-300">
-                    <span class="relative flex h-2.5 w-2.5">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0066FF] opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#0066FF]"></span>
-                    </span>
-                    <svg class="w-3.5 h-3.5 text-[#0066FF] group-hover/head:rotate-45 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                    <span class="text-[11px] font-black text-[#0066FF] tracking-wider uppercase">
-                        {{ app()->getLocale() === 'fr' ? 'Compétences Olympiques' : (app()->getLocale() === 'en' ? 'Olympic Skills' : 'الأولمبياد الوطني للمهارات') }}
-                    </span>
-                </div>
+            <div class="space-y-3 relative z-10">
 
-                {{-- Luxury Dynamic Title with Interactive Color Shift --}}
-                <h2 class="text-3xl sm:text-4xl font-black tracking-tight flex items-center gap-3">
-                    <span class="p-3 rounded-2xl bg-gradient-to-tr from-[#06205C] via-[#0066FF] to-[#00A3FF] text-white shadow-lg shadow-blue-500/20 transform group-hover/head:rotate-6 group-hover/head:scale-110 transition-all duration-300">
+
+                {{-- Luxury Dynamic Title with Color Shift --}}
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight flex items-center gap-3">
+                    <span class="p-3 rounded-2xl bg-gradient-to-tr from-[#06205C] via-[#0052CC] to-[#00A3FF] group-hover/head:from-[#0052CC] group-hover/head:to-cyan-400 text-white shadow-lg shadow-blue-500/25 group-hover/head:scale-110 group-hover/head:rotate-3 transition-all duration-500">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.6 15.12a2 2 0 01-1.187-2.19l.732-4.393A2 2 0 017.11 6.814l3.176.635a6 6 0 003.86-.517l.318-.158a6 6 0 013.86-.517l2.387.477a2 2 0 011.642 1.964v6.22a2 2 0 01-.927 1.69z"/></svg>
                     </span>
-                    <span class="bg-gradient-to-r from-[#06205C] via-[#0038A8] to-[#0066FF] group-hover/head:from-[#0066FF] group-hover/head:via-[#00A3FF] group-hover/head:to-[#06205C] bg-clip-text text-transparent transition-all duration-500">
+                    <span class="bg-gradient-to-r from-[#041235] via-[#0052CC] to-[#00B8FF] group-hover/head:from-[#0052CC] group-hover/head:via-cyan-500 group-hover/head:to-[#041235] bg-clip-text text-transparent transition-all duration-500">
                         {{ app()->getLocale() === 'fr' ? 'Disciplines & Métiers Certifiés' : (app()->getLocale() === 'en' ? 'Certified Trade Categories' : 'التخصصات والمهن المعتمدة') }}
                     </span>
                 </h2>
 
                 <p class="text-xs sm:text-sm text-slate-500 font-bold max-w-xl group-hover/head:text-slate-700 transition-colors">
-                    {{ app()->getLocale() === 'fr' ? 'Découvrez les compétences officielles engagées dans les Olympiades' : (app()->getLocale() === 'en' ? 'Explore official competition skills & occupations' : 'استكشف المهارات التنافسية والمهن التخصصية المشاركة في أولمبياد المهن') }}
+                    {{ app()->getLocale() === 'fr' ? 'Explorez les compétences officielles en compétition nationale et africaine' : (app()->getLocale() === 'en' ? 'Explore official skills and occupations competing in the Olympiad' : 'استكشف المهارات التنافسية والمهن التخصصية المشاركة في أولمبياد المهن') }}
                 </p>
             </div>
 
-            <a href="{{ route('skills') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-[#06205C] to-[#0066FF] hover:from-[#0066FF] hover:to-[#00A3FF] text-white text-xs font-black shadow-lg shadow-blue-900/20 hover:shadow-blue-500/40 mac-dock-hover relative overflow-hidden  transition-all duration-300 group/btn self-start md:self-auto border border-white/20">
+            <a href="{{ route('skills') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-[#06205C] to-[#0052CC] hover:from-[#0052CC] hover:to-[#00B8FF] text-white text-xs font-black shadow-lg shadow-blue-900/20 hover:shadow-blue-500/40 transition-all duration-300 group/btn self-start md:self-auto border border-white/20 relative z-10 shrink-0 hover:scale-105 active:scale-95">
                 <span>{{ __('messages.view_all_skills') }}</span>
-                <svg class="w-4 h-4 text-white group-hover/btn:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                <svg class="w-4 h-4 text-white group-hover/btn:translate-x-1.5 rtl:group-hover/btn:-translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
         </div>
 
@@ -496,31 +566,19 @@
 
     <!-- 5. Media & Event Highlights Grid -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 mb-16 sm:mb-20">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b-2 border-slate-100/80 relative group/head cursor-default">
-            {{-- Dynamic Ambient Light Glow with Hover Shimmer --}}
-            <div class="absolute -top-12 start-0 w-64 h-24 bg-gradient-to-r from-amber-500/10 via-orange-500/15 to-rose-500/10 rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-amber-500/25 group-hover/head:to-orange-400/25 transition-all duration-700"></div>
+        <div class="p-6 sm:p-8 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_10px_35px_rgba(245,158,11,0.06)] hover:shadow-[0_20px_45px_rgba(245,158,11,0.15)] hover:-translate-y-1.5 transition-all duration-500 relative group/head cursor-default overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+            {{-- Ambient Decorative Glass Glow (Transforms from Amber to Orange on Hover) --}}
+            <div class="absolute -top-16 -start-16 w-60 h-60 bg-gradient-to-br from-amber-500/15 via-orange-400/10 to-transparent rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-orange-500/25 group-hover/head:via-amber-600/20 transition-all duration-700"></div>
 
-            <div class="space-y-2 relative z-10">
-                {{-- Luxury Pill Badge with SVG Icon instead of emoji --}}
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-50 via-orange-50/80 to-amber-100/60 border border-amber-200/80 shadow-xs group-hover/head:border-amber-400 group-hover/head:shadow-md transition-all duration-300">
-                    <span class="relative flex h-2.5 w-2.5">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
-                    </span>
-                    <svg class="w-3.5 h-3.5 text-amber-600 group-hover/head:rotate-12 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                    </svg>
-                    <span class="text-[11px] font-black text-amber-800 tracking-wider uppercase">
-                        {{ app()->getLocale() === 'fr' ? 'Espace Média & Presse' : (app()->getLocale() === 'en' ? 'Media & Newsroom' : 'المركز الإعلامي الرسمي') }}
-                    </span>
-                </div>
+            <div class="space-y-3 relative z-10">
 
-                {{-- Luxury Dynamic Title with Interactive Color Shift --}}
-                <h2 class="text-3xl sm:text-4xl font-black tracking-tight flex items-center gap-3">
-                    <span class="p-3 rounded-2xl bg-gradient-to-tr from-amber-600 via-orange-500 to-amber-400 text-white shadow-lg shadow-amber-500/20 transform group-hover/head:-rotate-6 group-hover/head:scale-110 transition-all duration-300">
+
+                {{-- Luxury Dynamic Title with Color Shift --}}
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight flex items-center gap-3">
+                    <span class="p-3 rounded-2xl bg-gradient-to-tr from-amber-600 via-orange-500 to-amber-400 group-hover/head:from-orange-500 group-hover/head:to-amber-300 text-white shadow-lg shadow-amber-500/25 group-hover/head:scale-110 group-hover/head:-rotate-3 transition-all duration-500">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
                     </span>
-                    <span class="bg-gradient-to-r from-[#06205C] via-amber-900 to-orange-600 group-hover/head:from-orange-600 group-hover/head:via-amber-500 group-hover/head:to-[#06205C] bg-clip-text text-transparent transition-all duration-500">
+                    <span class="bg-gradient-to-r from-[#041235] via-amber-900 to-orange-600 group-hover/head:from-orange-600 group-hover/head:via-amber-500 group-hover/head:to-[#041235] bg-clip-text text-transparent transition-all duration-500">
                         {{ app()->getLocale() === 'fr' ? 'Centre Média & Presse' : (app()->getLocale() === 'en' ? 'Media & Press Center' : 'المركز الإعلامي والتغطيات') }}
                     </span>
                 </h2>
@@ -627,7 +685,7 @@
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
                                 </div>
                                 <div>
-                                    <h4 class="text-xs font-bold text-[#06205C] leading-snug line-clamp-1">WorldSkills Algeria 2027</h4>
+                                    <h4 class="text-xs font-bold text-[#06205C] leading-snug line-clamp-1">WorldSkills Algeria 2026</h4>
                                     <span class="text-[10px] text-slate-400">2026-08-04</span>
                                 </div>
                             </div>
@@ -674,99 +732,214 @@
 
     <!-- 6. Featured Partners & Sponsors Banner Grid -->
     @if(true)
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 mb-16 sm:mb-20">
-        <div class="flex flex-col items-center text-center space-y-2 relative pb-4 group/head cursor-default">
-            {{-- Dynamic Ambient Light Glow with Hover Shimmer --}}
-            <div class="absolute -top-12 inset-x-0 mx-auto w-72 h-24 bg-gradient-to-r from-blue-600/10 via-indigo-500/15 to-purple-600/10 rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-blue-600/25 group-hover/head:to-purple-500/25 transition-all duration-700"></div>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 mb-16 sm:mb-20 overflow-hidden">
+        <div class="p-6 sm:p-8 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_10px_35px_rgba(0,82,204,0.06)] hover:shadow-[0_20px_45px_rgba(0,82,204,0.12)] hover:-translate-y-1.5 transition-all duration-500 relative group/head cursor-default overflow-hidden flex flex-col items-center text-center space-y-3">
+            {{-- Ambient Decorative Glass Glow (Transforms from Navy/Blue to Cyan on Hover) --}}
+            <div class="absolute -top-16 inset-x-0 mx-auto w-72 h-48 bg-gradient-to-b from-blue-500/15 via-cyan-400/10 to-transparent rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-cyan-500/25 group-hover/head:via-blue-600/20 transition-all duration-700"></div>
 
-            {{-- Luxury Pill Badge with SVG Icon instead of emoji --}}
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border border-blue-200/80 shadow-xs group-hover/head:border-indigo-400 group-hover/head:shadow-md transition-all duration-300">
-                <span class="relative flex h-2.5 w-2.5">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0066FF] opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#0066FF]"></span>
-                </span>
-                <svg class="w-3.5 h-3.5 text-[#0066FF] group-hover/head:scale-125 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                </svg>
-                <span class="text-[11px] font-black text-[#0066FF] tracking-wider uppercase">
-                    {{ app()->getLocale() === 'fr' ? 'Confiance & Excellence' : (app()->getLocale() === 'en' ? 'Trust & Excellence' : 'الشراكات الاستراتيجية والتميز') }}
-                </span>
-            </div>
 
-            {{-- Luxury Dynamic Title with Interactive Color Shift --}}
-            <h3 class="text-2xl sm:text-3xl font-black tracking-tight flex items-center justify-center gap-3">
-                <span class="p-2.5 rounded-2xl bg-gradient-to-tr from-[#06205C] via-[#0066FF] to-indigo-600 text-white shadow-md transform group-hover/head:rotate-6 group-hover/head:scale-110 transition-all duration-300">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+
+            {{-- Luxury Dynamic Title with Color Shift --}}
+            <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight flex items-center justify-center gap-3 relative z-10">
+                <span class="p-3 rounded-2xl bg-gradient-to-tr from-[#041235] to-[#0052CC] group-hover/head:from-[#0052CC] group-hover/head:to-cyan-400 text-white shadow-lg shadow-blue-500/25 group-hover/head:scale-110 group-hover/head:rotate-3 transition-all duration-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </span>
-                <span class="bg-gradient-to-r from-[#06205C] via-[#0038A8] to-[#0066FF] group-hover/head:from-[#0066FF] group-hover/head:via-purple-600 group-hover/head:to-[#06205C] bg-clip-text text-transparent transition-all duration-500">
+                <span class="bg-gradient-to-r from-[#041235] via-[#0052CC] to-[#00B8FF] group-hover/head:from-[#0052CC] group-hover/head:via-cyan-500 group-hover/head:to-[#041235] bg-clip-text text-transparent transition-all duration-500">
                     {{ app()->getLocale() === 'fr' ? 'Partenaires & Sponsors Officiels' : (app()->getLocale() === 'en' ? 'Official Partners & Sponsors' : 'الشركاء والرعاة المميزون') }}
                 </span>
             </h3>
 
-            <p class="text-xs sm:text-sm text-slate-500 font-bold max-w-lg group-hover/head:text-slate-700 transition-colors">
+            <p class="text-xs sm:text-sm text-slate-500 font-bold max-w-lg mx-auto group-hover/head:text-slate-700 transition-colors relative z-10">
                 {{ app()->getLocale() === 'fr' ? 'Soutien industriel et institutionnel' : (app()->getLocale() === 'en' ? 'Supporting Industrial & Institutional Partners' : 'المؤسسات الرائدة والهيئات الصناعية الداعمة لأولمبياد المهن 2026') }}
             </p>
         </div>
 
-        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200/80 flex items-center justify-center flex-wrap gap-8 sm:gap-12">
-            @forelse($partners as $p)
-                @php $logoUrl = $p->logo_path ? asset($p->logo_path) : null; @endphp
-                <div class="flex flex-col items-center justify-center gap-2 group transition transform mac-dock-hover relative overflow-hidden  py-2 px-3">
-                    <div class="h-10 sm:h-12 w-auto flex items-center justify-center">
-                        @if($logoUrl)
-                            <img src="{{ $logoUrl }}" alt="{{ $p->getLocalized('name') }}" class="h-10 sm:h-12 w-auto object-contain filter grayscale group-hover:grayscale-0 transition duration-300">
-                        @else
-                            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 font-black text-sm flex items-center justify-center border border-blue-100">
-                                {{ mb_substr($p->getLocalized('name'), 0, 1) }}
+        <!-- Continuous Rotating Carousel Chain (حاويات الشركاء كسلسلة تدور بدون أي فراغ) -->
+        <div class="relative w-full overflow-hidden py-3 ws-marquee-wrapper" dir="ltr">
+            <style>
+                @keyframes wsInfiniteTrackScroll {
+                    0% {
+                        transform: translate3d(0, 0, 0);
+                    }
+                    100% {
+                        transform: translate3d(-50%, 0, 0);
+                    }
+                }
+                .ws-marquee-wrapper {
+                    direction: ltr !important;
+                    text-align: left !important;
+                }
+                .ws-marquee-track {
+                    display: flex;
+                    align-items: center;
+                    width: max-content;
+                    user-select: none;
+                    animation: wsInfiniteTrackScroll 40s linear infinite;
+                    will-change: transform;
+                    direction: ltr !important;
+                }
+                .ws-marquee-track:hover {
+                    animation-play-state: paused;
+                }
+                @media (prefers-reduced-motion: reduce) {
+                    .ws-marquee-track {
+                        animation: none !important;
+                    }
+                }
+            </style>
+
+            <!-- Edge Gradient Masks -->
+            <div class="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-28 bg-gradient-to-r from-[#F8FAFC] to-transparent z-10"></div>
+            <div class="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-28 bg-gradient-to-l from-[#F8FAFC] to-transparent z-10"></div>
+
+            <!-- The Unified Gapless Infinite Marquee Track (Repeated 4x for 100% Full Seamless Chain) -->
+            <div class="ws-marquee-track py-2" dir="ltr">
+                @for ($streamLoop = 0; $streamLoop < 4; $streamLoop++)
+                    <div class="flex items-center gap-6 pr-6 shrink-0" aria-hidden="{{ $streamLoop > 0 ? 'true' : 'false' }}">
+                        @foreach($partners as $p)
+                            @php 
+                                $logoUrl = $p->logo_path ? asset($p->logo_path) : null; 
+                            @endphp
+                            <!-- Partner Container / Capsule (حاوية الشريك) -->
+                            <div 
+                                class="w-48 sm:w-56 h-28 sm:h-32 px-4 py-3 rounded-2xl bg-white/95 border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-[#00B8FF] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center gap-2 group shrink-0 cursor-pointer"
+                                dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}"
+                                title="{{ $p->getLocalized('name') }}"
+                            >
+                                <div class="h-12 sm:h-14 w-full flex items-center justify-center overflow-hidden">
+                                    @if($logoUrl)
+                                        <img 
+                                            src="{{ $logoUrl }}" 
+                                            alt="{{ $p->getLocalized('name') }}" 
+                                            class="max-h-full max-w-[85%] object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300 group-hover:scale-105"
+                                            loading="lazy"
+                                        >
+                                    @else
+                                        <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#0052CC] font-black text-sm flex items-center justify-center border border-blue-100">
+                                            {{ mb_substr($p->getLocalized('name'), 0, 1) }}
+                                        </div>
+                                    @endif
+                                </div>
+                                <span class="text-xs font-black text-[#041235] group-hover:text-[#0052CC] transition tracking-tight text-center truncate max-w-full block">
+                                    {{ $p->getLocalized('name') }}
+                                </span>
                             </div>
-                        @endif
+                        @endforeach
                     </div>
-                    <span class="text-xs font-black text-[#06205C] group-hover:text-blue-600 transition tracking-tight text-center block">
-                        {{ $p->getLocalized('name') }}
-                    </span>
-                </div>
-            @empty
-                <div class="text-xs text-slate-400 font-bold">
-                    {{ app()->getLocale() === 'fr' ? 'Aucun partenaire disponible' : (app()->getLocale() === 'en' ? 'No featured partners yet' : 'لا يوجد شركاء مميزون حالياً.') }}
-                </div>
-            @endforelse
-        </div>
-    </section>
+                @endfor
+            </div>
+        </div></section>
     @endif
 
-    
-    <!-- 6.5 Africa Skills Policy Forum 2026 Showcase Section -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20">
-        <div class="rounded-3xl bg-white/80 backdrop-blur-2xl text-slate-900 p-8 lg:p-12 shadow-2xl border-2 border-amber-300/60 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 group hover:border-amber-500 wsap-card-animated wsap-shine-effect">
+    <!-- 6.5 Africa Skills Policy Forum 2026 Showcase Section (متناسق مع مظهر المنصة الفاتح الفاخر) -->
+    <section id="african-skills-policy-forum" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20">
+        <div class="relative rounded-3xl sm:rounded-[36px] overflow-hidden bg-gradient-to-br from-white via-[#F4F9FF] to-[#EBF5FE] border-2 border-sky-100 shadow-[0_20px_60px_-15px_rgba(2,132,199,0.12)] p-8 sm:p-10 lg:p-12 group/forum">
             
-            {{-- Ambient Gold & Emerald Glow --}}
-            <div class="absolute -top-20 -right-20 w-80 h-80 bg-amber-500/20 rounded-full blur-3xl pointer-events-none group-mac-dock-hover relative overflow-hidden  transition-transform duration-700"></div>
-            <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            {{-- Ambient Cyan & Sky Aurora Glows --}}
+            <div class="absolute -top-28 -right-28 w-96 h-96 bg-[#00C4CC]/10 rounded-full blur-3xl pointer-events-none group-hover/forum:scale-125 transition-transform duration-1000"></div>
+            <div class="absolute -bottom-28 -left-28 w-96 h-96 bg-[#0052CC]/10 rounded-full blur-3xl pointer-events-none group-hover/forum:scale-125 transition-transform duration-1000"></div>
 
-            <div class="space-y-4 max-w-3xl text-center {{ app()->getLocale() === 'ar' ? 'lg:text-right' : 'lg:text-left' }} relative z-10">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100/90 border border-amber-300 text-amber-900 text-[11px] font-black uppercase tracking-wider backdrop-blur-md">
-                    <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                    <span>{{ app()->getLocale() === 'fr' ? "Forum Politique d'Excellence 2026" : (app()->getLocale() === 'en' ? 'High-Level Political Forum 2026' : 'منتدى السياسات الأفريقية للمهارات 2026') }}</span>
+            <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-10">
+                
+                {{-- 1. Official Logo Pod (حاوية الشعار الرسمي) --}}
+                <div class="flex flex-col items-center shrink-0">
+                    <div class="relative p-6 rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-sky-200/70 shadow-lg shadow-sky-950/5 flex items-center justify-center group-hover/forum:border-cyan-400 group-hover/forum:shadow-cyan-500/20 transition-all duration-500 w-48 sm:w-56 h-48 sm:h-56">
+                        {{-- Electric Cyan Aura --}}
+                        <div class="absolute -inset-1 rounded-[28px] bg-gradient-to-tr from-[#00C4CC]/25 via-[#00A3FF]/15 to-transparent blur-md -z-10 opacity-70 group-hover/forum:opacity-100 transition-opacity"></div>
+                        
+                        <img 
+                            src="{{ asset('images/african_skills_policy_forum_logo.png') }}" 
+                            alt="African Skills Policy Forum Logo" 
+                            class="max-h-full max-w-full object-contain filter drop-shadow-sm group-hover/forum:scale-105 transition-transform duration-500"
+                        >
+                    </div>
+                    <span class="mt-3 text-[11px] font-black tracking-widest uppercase text-[#0052CC] text-center drop-shadow-xs">
+                        {{ app()->getLocale() === 'fr' ? 'Forum Politique Officiel 2026' : (app()->getLocale() === 'en' ? 'Official Political Forum 2026' : 'المنتدى القاري الرسمي 2026') }}
+                    </span>
                 </div>
 
-                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black leading-tight text-slate-900">
-                    {{ app()->getLocale() === 'fr' ? 'Forum sur les Politiques Africaines des Compétences 2026' : (app()->getLocale() === 'en' ? 'Africa Skills Policy Forum 2026' : 'منتدى السياسات الأفريقية للمهارات 2026') }}
-                </h2>
+                {{-- 2. Center Content Area (نصوص واضحة بألوان المنصة) --}}
+                <div class="space-y-5 max-w-xl text-center {{ app()->getLocale() === 'ar' ? 'lg:text-right' : 'lg:text-left' }} flex-1">
+                    
+                    {{-- Title --}}
+                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-[#041235] tracking-tight leading-snug">
+                        {{ app()->getLocale() === 'fr' ? 'Forum sur les Politiques Africaines des Compétences' : (app()->getLocale() === 'en' ? 'Africa Skills Policy Forum' : 'منتدى السياسات الإفريقية للمهارات') }}
+                        <span class="bg-gradient-to-r from-[#0052CC] via-[#00A3FF] to-[#00C4CC] bg-clip-text text-transparent">2026</span>
+                    </h2>
 
-                <p class="text-xs sm:text-sm font-extrabold text-amber-700 tracking-wide">
-                    {{ app()->getLocale() === 'fr' ? "« Façonner l'avenir des compétences, autonomiser la jeunesse africaine »" : (app()->getLocale() === 'en' ? '“Shaping the Future of Skills, Empowering African Youth”' : '« صياغة مستقبل المهارات، تمكين الشباب الأفريقي »') }}
-                </p>
+                    {{-- Executive Quote Box --}}
+                    <div class="{{ app()->getLocale() === 'ar' ? 'border-r-4 pr-4 text-right' : 'border-l-4 pl-4 text-left' }} border-[#00C4CC] py-2.5 px-4 bg-sky-500/10 rounded-2xl">
+                        <p class="text-sm sm:text-base font-extrabold text-[#007A87] tracking-wide leading-relaxed">
+                            {{ app()->getLocale() === 'fr' ? "« Façonner l'avenir des compétences, autonomiser la jeunesse africaine »" : (app()->getLocale() === 'en' ? '“Shaping the Future of Skills, Empowering African Youth”' : '« صياغة مستقبل المهارات، تمكين الشباب الإفريقي »') }}
+                        </p>
+                    </div>
 
-                <p class="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
-                    {{ app()->getLocale() === 'fr' ? "L'événement politique majeur de haut niveau réunissant ministres africains, experts techniques et partenaires institutionnels et internationaux, concrétisant un principe fondamental : l'avenir des compétences en Afrique doit être façonné par les Africains eux-mêmes." : (app()->getLocale() === 'en' ? "The flagship high-level political event bringing together African ministers, technical experts, institutional and international partners, embodying a core principle: Africa's skills future must be shaped by Africans themselves." : 'الحدث السياسي الرفيع المستوى الرئيسي الذي يجمع الوزراء الأفارقة والخبراء التقنيين والشركاء المؤسساتيين والدوليين، تجسيدًا لمبدأ أساسي: مستقبل المهارات في إفريقيا يجب أن يُصاغ من قِبل الأفارقة أنفسهم.') }}
-                </p>
-            </div>
+                    {{-- Description --}}
+                    <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+                        {{ app()->getLocale() === 'fr' ? "L'événement politique majeur de haut niveau réunissant ministres africains, experts techniques et partenaires institutionnels et internationaux, concrétisant un principe fondamental : l'avenir des compétences en Afrique doit être façonné par les Africains eux-mêmes." : (app()->getLocale() === 'en' ? "The flagship high-level political event bringing together African ministers, technical experts, institutional and international partners, embodying a core principle: Africa's skills future must be shaped by Africans themselves." : 'الحدث السياسي الرفيع المستوى الرئيسي الذي يجمع الوزراء الأفارقة والخبراء التقنيين والشركاء المؤسساتيين والدوليين، تجسيداً لمبدأ أساسي: مستقبل المهارات في إفريقيا يجب أن يُصاغ من قبل الأفارقة أنفسهم.') }}
+                    </p>
 
-            <div class="flex flex-col sm:flex-row items-center gap-3 shrink-0 relative z-10 w-full lg:w-auto">
-                <a href="https://africaskills-policyforum.worldskills.dz/" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#06205C] font-black text-xs shadow-xl shadow-amber-500/30 transition transform mac-dock-hover relative overflow-hidden  flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                    <span>{{ app()->getLocale() === 'fr' ? 'Visiter le Portail Officiel du Forum' : (app()->getLocale() === 'en' ? 'Visit Official Forum Portal' : 'زيارة المنصة الرسمية للمنتدى') }}</span>
-                </a>
+                    {{-- Key Pillars / Highlights in Clean Soft Chips --}}
+                    <div class="flex flex-wrap items-center justify-center {{ app()->getLocale() === 'ar' ? 'lg:justify-start' : 'lg:justify-start' }} gap-2.5 pt-1">
+                        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200/90 text-slate-700 text-xs font-bold shadow-xs hover:border-sky-300 transition">
+                            <span class="w-2 h-2 rounded-full bg-[#00C4CC]"></span>
+                            <span>{{ app()->getLocale() === 'fr' ? 'Représentation Ministérielle' : (app()->getLocale() === 'en' ? 'Ministerial Delegations' : 'وفود وزارية قارية') }}</span>
+                        </div>
+                        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200/90 text-slate-700 text-xs font-bold shadow-xs hover:border-sky-300 transition">
+                            <span class="w-2 h-2 rounded-full bg-[#0052CC]"></span>
+                            <span>{{ app()->getLocale() === 'fr' ? 'Partenariats Stratégiques' : (app()->getLocale() === 'en' ? 'Strategic Partnerships' : 'شراكات استراتيجية دولية') }}</span>
+                        </div>
+                        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200/90 text-slate-700 text-xs font-bold shadow-xs hover:border-sky-300 transition">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span>{{ app()->getLocale() === 'fr' ? 'Emploi & Avenir des Jeunes' : (app()->getLocale() === 'en' ? 'Youth Skills & Employment' : 'تمكين وتشغيل الشباب') }}</span>
+                        </div>
+                    </div>
+
+                    {{-- Action Button --}}
+                    <div class="pt-2 flex justify-center {{ app()->getLocale() === 'ar' ? 'lg:justify-start' : 'lg:justify-start' }}">
+                        <a 
+                            href="https://africaskills-policyforum.worldskills.dz/" 
+                            target="_blank" 
+                            class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-[#0052CC] via-[#0088FF] to-[#00C4CC] hover:from-[#0041A8] hover:to-[#00A3FF] text-white font-black text-xs sm:text-sm shadow-xl shadow-blue-600/20 hover:shadow-cyan-500/30 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3 group/btn"
+                        >
+                            <span>{{ app()->getLocale() === 'fr' ? 'Visiter le Portail Officiel du Forum' : (app()->getLocale() === 'en' ? 'Visit Official Forum Portal' : 'زيارة المنصة الرسمية للمنتدى') }}</span>
+                            <svg class="w-4 h-4 {{ app()->getLocale() === 'ar' ? 'rotate-180 group-hover/btn:-translate-x-1' : 'group-hover/btn:translate-x-1' }} transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                {{-- 3. Dedicated Interactive Africa Map Pod (شعار القارة الرسمي مع تدرج أزرق فاتح عند التحويم وحركة الارتفاع) --}}
+                <div class="flex flex-col items-center shrink-0 group/map cursor-pointer">
+                    <div class="relative p-6 rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-sky-200/70 shadow-lg shadow-sky-950/5 w-56 sm:w-64 h-64 sm:h-72 flex flex-col items-center justify-center overflow-hidden transition-all duration-500 group-hover/map:border-cyan-400 group-hover/map:shadow-[0_20px_50px_rgba(0,196,204,0.25)]">
+                        
+                        {{-- Soft Ambient Base Backlight --}}
+                        <div class="absolute inset-0 rounded-3xl bg-gradient-to-tr from-sky-50 via-cyan-50/50 to-transparent pointer-events-none"></div>
+
+                        {{-- Vibrant Light Blue Gradient on Hover (خلفية تدرج أزرق فاتح ناصع عند تحريك الفأرة) --}}
+                        <div class="absolute inset-0 rounded-3xl bg-gradient-to-tr from-[#bae6fd]/60 via-[#e0f2fe]/75 to-[#ccfbf1]/60 opacity-0 group-hover/map:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                        {{-- Ambient Upward Glow Beacon (هالة ضوئية متصاعدة تدفع القارة لأعلى) --}}
+                        <div class="absolute bottom-0 inset-x-0 mx-auto w-44 h-16 bg-[#38bdf8]/20 rounded-full blur-2xl group-hover/map:bg-[#00E5FF]/40 group-hover/map:scale-150 transition-all duration-500 pointer-events-none"></div>
+
+                        {{-- The Floating Africa Continent Symbol with Upward Hover Animation --}}
+                        <div class="relative z-10 w-full h-full flex items-center justify-center transition-all duration-500 ease-out transform group-hover/map:-translate-y-6 group-hover/map:scale-105 filter drop-shadow-[0_10px_20px_rgba(2,132,199,0.2)] group-hover/map:drop-shadow-[0_16px_28px_rgba(0,196,204,0.35)]">
+                            <img 
+                                src="{{ asset('images/africa_continent_symbol.png') }}" 
+                                alt="African Skills Policy Forum — Africa Continent" 
+                                class="max-h-[90%] max-w-[90%] object-contain transition-transform duration-500"
+                            >
+                        </div>
+                    </div>
+
+                    {{-- Map Subtitle / Location Pin --}}
+                    <div class="mt-3 flex items-center gap-2 text-[11px] font-black text-slate-700 group-hover/map:text-[#0052CC] transition-colors drop-shadow-xs">
+                        <span class="w-2 h-2 rounded-full bg-[#00C4CC] animate-ping"></span>
+                        <span>{{ app()->getLocale() === 'fr' ? 'Oran, Algérie 2026' : (app()->getLocale() === 'en' ? 'Oran, Algeria 2026' : 'وهران، الجزائر 2026') }}</span>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>

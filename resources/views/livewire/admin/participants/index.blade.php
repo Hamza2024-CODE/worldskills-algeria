@@ -283,7 +283,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                                 <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                                                 <div>
                                                     <span class="font-bold text-slate-800 block">{{ $doc->document_type }} — {{ $doc->original_name ?? 'وثيقة مرفقة' }}</span>
-                                                    <span class="text-[9px] text-emerald-600 font-mono font-bold">✓ تم التحقق الفوري من الكود والمقاييس البيومترية 100%</span>
+                                                    <span class="text-[9px] text-emerald-600 font-mono font-bold"><x-ws.icon name="check" class="w-3 h-3 inline-block me-0.5" /> تم التحقق الفوري من الكود والمقاييس البيومترية 100%</span>
                                                 </div>
                                             </div>
                                             <button type="button" @click="previewUrl = '{{ $assetUrl }}'; previewTitle = '{{ $doc->document_type }} — {{ $doc->original_name }}'; docModalOpen = true;" class="px-3 py-1.5 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold text-xs transition flex items-center gap-1 shrink-0">
@@ -349,7 +349,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
             <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border border-slate-200 text-center space-y-4">
                 <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-xl font-bold">
-                    🗑️
+                    <x-ws.icon name="trash" class="w-6 h-6 text-rose-600" />
                 </div>
                 <h3 class="text-lg font-black text-slate-900">تأكيد حذف المشارك نهائياً</h3>
                 <p class="text-xs text-slate-500 font-medium">هل أنت تأكد من رغبتك في حذف هذا المشارك نهائياً من النظام وقاعدة البيانات؟ هذا الإجراء لا يمكن التراجع عنه.</p>
@@ -371,7 +371,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
             <div class="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border border-slate-200">
                 <div class="p-4 bg-[#06205C] text-white flex items-center justify-between">
                     <span class="font-bold text-xs" x-text="previewTitle"></span>
-                    <button type="button" @click="docModalOpen = false" class="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-xl text-xs font-bold transition">✕ إغلاق المعاينة</button>
+                    <button type="button" @click="docModalOpen = false" class="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-xl text-xs font-bold transition"><x-ws.icon name="x-mark" class="w-4 h-4 inline-block me-1" /> إغلاق المعاينة</button>
                 </div>
                 <div class="p-4 flex-1 overflow-auto flex items-center justify-center bg-slate-100 min-h-[500px]">
                     <template x-if="previewUrl.endsWith('.pdf')">

@@ -17,7 +17,7 @@
                 <div class="bg-white rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 border border-slate-200/80 shadow-md hover:shadow-lg transition">
                     <div class="space-y-2">
                         <span class="px-3 py-1 rounded-xl bg-brand-50 text-brand-500 font-extrabold text-[11px] border border-brand-200 inline-block">
-                            {{ $event->start_at ? $event->start_at->format('Y-m-d H:i') : '2026 / 2027' }}
+                            {{ $event->start_at ? $event->start_at->format('Y-m-d H:i') : '2026 / 2026' }}
                         </span>
                         <h3 class="text-xl font-black text-[#06205C]">{{ $event->getLocalized('title') }}</h3>
                         <p class="text-xs text-slate-500 leading-relaxed font-medium">{{ $event->getLocalized('summary') }}</p>

@@ -17,7 +17,7 @@ $confirmedShuttles = $uploaded_tickets->where('status', 'APPROVED')->count();
                 <div class="space-y-2">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-black">
                         <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-                        <span>WORLDSKILLS AFRICA 2027 LOGISTICS SUITE</span>
+                        <span>WORLDSKILLS AFRICA 2026 LOGISTICS SUITE</span>
                     </div>
                     <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
                         {{ $t('إدارة وصول الوفود الإفريقية وتذاكر الطيران الرسمية', 'Gestion des Arrivées & Billets d\'Avion Officiels', 'African Delegations Arrival & Official Flight Tickets Portal') }}
@@ -292,7 +292,7 @@ $confirmedShuttles = $uploaded_tickets->where('status', 'APPROVED')->count();
                         <svg class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <span>{{ $t('يتم مراجعة وتأكيد تذاكر الطيران تلقائياً من قبل الخلية اللوجستية بمطار الهواري بومدين الدولي.', 'Validation automatique des billets par la cellule logistique de l\'aéroport.', 'Flight tickets automatically validated by airport logistics cell.') }}</span>
                     </span>
-                    <span class="font-bold text-blue-800 dark:text-amber-300 shrink-0">LOGISTICS 2027</span>
+                    <span class="font-bold text-blue-800 dark:text-amber-300 shrink-0">LOGISTICS 2026</span>
                 </div>
             </div>
 

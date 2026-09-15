@@ -25,7 +25,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
     </x-dashboard.page-header>
 
     @if(session('success'))
-        <div class="p-3 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-xl border border-emerald-200">✓ {{ session('success') }}</div>
+        <div class="p-3 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-xl border border-emerald-200"><x-ws.icon name="check-circle" class="w-4 h-4 inline-block me-1 text-emerald-600" /> {{ session('success') }}</div>
     @endif
 
     {{-- FILTERS BAR WITH SKILL SELECTOR --}}
@@ -42,7 +42,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
             </div>
             <div>
                 <select wire:model.live="filterSkill" class="w-full px-3 py-2 text-xs rounded-xl border border-indigo-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold text-indigo-900 dark:text-sky-300">
-                    <option value="">🎯 اختر التخصص المهني لعرض معداته</option>
+                    <option value="">اختر التخصص المهني لعرض معداته</option>
                     @foreach($skills as $s)
                         <option value="{{ $s->id }}">{{ $s->name_ar }} ({{ $s->code }})</option>
                     @endforeach
@@ -110,7 +110,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             </td>
                             <td class="px-5 py-3.5">
                                 @if($item->safety_level === 'HIGH_HAZARD' || $item->safety_level === 'STRICT_PPE_REQUIRED')
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">⚠️ سلامة وحماية خاصة</span>
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300"><span class="inline-flex items-center gap-1"><x-ws.icon name="exclamation-triangle" class="w-3.5 h-3.5" /> سلامة وحماية خاصة</span></span>
                                 @else
                                     <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">معياري (Standard)</span>
                                 @endif

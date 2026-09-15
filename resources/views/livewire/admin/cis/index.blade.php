@@ -1,22 +1,48 @@
 <div class="space-y-6 pb-8 font-sans">
 
-    {{-- HEADER & COMMAND CENTER METRICS --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-5">
-        <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-md">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-            </div>
-            <div>
-                <h1 class="text-2xl font-black text-slate-900 tracking-tight">مركز القيادة والتقييم الدولي (CIS Command Center)</h1>
-                <p class="text-xs text-slate-500 font-medium mt-0.5">الوحدات المعتمدة: <span class="text-blue-600 font-bold">{{ $totalModules }}</span> — نتائج معتمدة للنشر: <span class="text-emerald-600 font-bold">{{ $publishedResults }}</span> — نتائج بانتظار الاعتماد: <span class="font-bold text-amber-600">{{ $pendingResults }}</span></p>
-            </div>
-        </div>
+    {{-- HEADER & COMMAND CENTER METRICS IN SIGNATURE HERO CONTAINER --}}
+    <div class="bg-gradient-to-r from-[#020A24] via-[#06205C] to-[#0052CC] text-white rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden border border-white/10 mb-6">
+        {{-- Ambient background light aura --}}
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-sky-400/20 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div class="flex items-center gap-3">
-            <button wire:click="openCreate" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition shadow-sm shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                <span>إضافة وحدة تقييم جديدة</span>
-            </button>
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div class="flex items-start sm:items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shrink-0 shadow-lg">
+                    <svg class="w-7 h-7 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                </div>
+                <div class="space-y-2.5">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">
+                            مركز القيادة والتقييم الدولي (CIS Command Center)
+                        </h1>
+                        <span class="px-2.5 py-0.5 rounded-full bg-blue-500/30 text-blue-200 border border-blue-400/40 text-[10px] font-mono font-black uppercase tracking-wider">CIS Core V8.2</span>
+                    </div>
+
+                    {{-- Metrics Enclosed in Containers --}}
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <div class="px-3.5 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-white text-xs font-bold flex items-center gap-2 shadow-xs">
+                            <span class="text-blue-200 text-[11px]">الوحدات المعتمدة:</span>
+                            <span class="font-mono font-black text-white text-sm">{{ $totalModules }}</span>
+                        </div>
+                        <div class="px-3.5 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-white text-xs font-bold flex items-center gap-2 shadow-xs">
+                            <span class="text-emerald-200 text-[11px]">نتائج معتمدة للنشر:</span>
+                            <span class="font-mono font-black text-emerald-300 text-sm">{{ $publishedResults }}</span>
+                        </div>
+                        <div class="px-3.5 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-white text-xs font-bold flex items-center gap-2 shadow-xs">
+                            <span class="text-amber-200 text-[11px]">نتائج بانتظار الاعتماد:</span>
+                            <span class="font-mono font-black text-amber-300 text-sm">{{ $pendingResults }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 shrink-0">
+                <button wire:click="openCreate" class="flex items-center gap-2 px-5 py-3 rounded-2xl bg-white text-[#06205C] hover:bg-blue-50 text-xs font-black transition shadow-xl shrink-0 transform active:scale-95">
+                    <svg class="w-4 h-4 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                    <span>إضافة وحدة تقييم جديدة</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -38,28 +64,32 @@
     </div>
 
     @if(session('success'))
-        <div class="p-3 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-xl border border-emerald-200">✓ {{ session('success') }}</div>
+        <div class="p-3 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-xl border border-emerald-200"><x-ws.icon name="check-circle" class="w-4 h-4 inline-block me-1 text-emerald-600" /> {{ session('success') }}</div>
     @endif
     @if(session('error'))
-        <div class="p-3 bg-red-50 text-red-700 text-xs font-bold rounded-xl border border-red-200">✗ {{ session('error') }}</div>
+        <div class="p-3 bg-red-50 text-red-700 text-xs font-bold rounded-xl border border-red-200"><x-ws.icon name="x-circle" class="w-4 h-4 inline-block me-1 text-red-600" /> {{ session('error') }}</div>
     @endif
 
-    <!-- UNIFIED COMMAND TABS -->
-    <div class="flex items-center gap-2 border-b border-slate-200 overflow-x-auto pb-1 text-xs font-bold">
-        <button wire:click="setTab('modules')" class="px-4 py-2 rounded-xl transition flex items-center gap-1.5 {{ $activeTab === 'modules' ? 'bg-blue-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-            <span>📋 وحدات ومعايير التقييم</span>
+    <!-- UNIFIED COMMAND TABS CONTAINER -->
+    <div class="bg-white dark:bg-slate-800 p-3 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center gap-2 overflow-x-auto">
+        <button wire:click="setTab('modules')" class="px-4 py-2.5 rounded-2xl transition flex items-center gap-2 text-xs font-black {{ $activeTab === 'modules' ? 'bg-[#06205C] dark:bg-blue-600 text-white shadow-sm' : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100' }}">
+            <x-ws.icon name="clipboard-document-list" class="w-4 h-4" />
+            <span>وحدات ومعايير التقييم</span>
         </button>
-        <button wire:click="setTab('skills')" class="px-4 py-2 rounded-xl transition flex items-center gap-1.5 {{ $activeTab === 'skills' ? 'bg-blue-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-            <span>🏆 التخصصات المعتمدة (WSOS)</span>
+        <button wire:click="setTab('skills')" class="px-4 py-2.5 rounded-2xl transition flex items-center gap-2 text-xs font-black {{ $activeTab === 'skills' ? 'bg-[#06205C] dark:bg-blue-600 text-white shadow-sm' : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100' }}">
+            <x-ws.icon name="trophy" class="w-4 h-4" />
+            <span>التخصصات المعتمدة (WSOS)</span>
         </button>
-        <button wire:click="setTab('discrepancies')" class="px-4 py-2 rounded-xl transition flex items-center gap-1.5 {{ $activeTab === 'discrepancies' ? 'bg-blue-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-            <span>⚠️ مراقبة التباين بين الحكام</span>
+        <button wire:click="setTab('discrepancies')" class="px-4 py-2.5 rounded-2xl transition flex items-center gap-2 text-xs font-black {{ $activeTab === 'discrepancies' ? 'bg-[#06205C] dark:bg-blue-600 text-white shadow-sm' : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100' }}">
+            <x-ws.icon name="exclamation-triangle" class="w-4 h-4 {{ $activeTab === 'discrepancies' ? 'text-amber-300' : 'text-amber-500' }}" />
+            <span>مراقبة التباين بين الحكام</span>
             @if(count($discrepancies) > 0)
-                <span class="px-1.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[10px]">{{ count($discrepancies) }}</span>
+                <span class="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[10px]">{{ count($discrepancies) }}</span>
             @endif
         </button>
-        <button wire:click="setTab('results')" class="px-4 py-2 rounded-xl transition flex items-center gap-1.5 {{ $activeTab === 'results' ? 'bg-blue-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-            <span>🏅 النتائج والميداليات الاعتمادية</span>
+        <button wire:click="setTab('results')" class="px-4 py-2.5 rounded-2xl transition flex items-center gap-2 text-xs font-black {{ $activeTab === 'results' ? 'bg-[#06205C] dark:bg-blue-600 text-white shadow-sm' : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100' }}">
+            <x-ws.icon name="medal" class="w-4 h-4 {{ $activeTab === 'results' ? 'text-amber-300' : 'text-amber-600' }}" />
+            <span>النتائج والميداليات الاعتمادية</span>
         </button>
     </div>
 
@@ -117,7 +147,7 @@
                 <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
                     <div class="flex items-center justify-between">
                         <span class="font-mono text-[10px] font-black px-2 py-0.5 rounded bg-blue-100 text-blue-700">{{ $skill->code }}</span>
-                        <span class="text-[10px] font-bold text-emerald-600">✓ نشط</span>
+                        <span class="text-[10px] font-bold text-emerald-600"><x-ws.icon name="check" class="w-3 h-3 inline-block me-0.5 text-emerald-600" /> نشط</span>
                     </div>
                     <h3 class="font-black text-slate-900 text-sm">{{ $skill->name_ar }}</h3>
                     <p class="text-[11px] text-slate-500 font-mono">{{ $skill->name_en }}</p>
@@ -136,7 +166,7 @@
     <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 space-y-4">
         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
             <h2 class="font-black text-slate-900 text-sm flex items-center gap-2">
-                <span class="text-amber-500">⚠️</span>
+                <x-ws.icon name="exclamation-triangle" class="w-4 h-4 text-amber-500 inline-block" />
                 <span>كشف التباين بين الحكام (Judgement Discrepancies > 1.0)</span>
             </h2>
             <span class="text-xs text-slate-400">فحص تلقائي مستمر</span>
@@ -156,7 +186,7 @@
             </div>
         @else
             <div class="py-12 text-center text-slate-400 space-y-2">
-                <div class="text-3xl">✓</div>
+                <div class="flex justify-center text-emerald-500"><x-ws.icon name="check-circle" class="w-10 h-10" /></div>
                 <p class="text-xs font-bold text-slate-600">لا توجد حالات تباين تتجاوز 1.0 بين الحكام حالياً.</p>
             </div>
         @endif
@@ -186,10 +216,10 @@
                     @forelse($results as $result)
                         @php
                             $awardBadge = match($result->award) {
-                                'GOLD'   => ['bg-amber-50 text-amber-700 border-amber-200', '🥇 ذهبية (Gold)'],
-                                'SILVER' => ['bg-slate-100 text-slate-700 border-slate-300', '🥈 فضية (Silver)'],
-                                'BRONZE' => ['bg-orange-50 text-orange-700 border-orange-200', '🥉 برونزية (Bronze)'],
-                                'MEDALLION_FOR_EXCELLENCE' => ['bg-purple-50 text-purple-700 border-purple-200', '🏅 شهادة تميز'],
+                                'GOLD'   => ['bg-amber-50 text-amber-700 border-amber-200', 'ذهبية (Gold)'],
+                                'SILVER' => ['bg-slate-100 text-slate-700 border-slate-300', 'فضية (Silver)'],
+                                'BRONZE' => ['bg-orange-50 text-orange-700 border-orange-200', 'برونزية (Bronze)'],
+                                'MEDALLION_FOR_EXCELLENCE' => ['bg-purple-50 text-purple-700 border-purple-200', 'شهادة تميز (Excellence)'],
                                 default  => ['bg-slate-50 text-slate-400 border-slate-200', '—'],
                             };
                         @endphp

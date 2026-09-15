@@ -179,22 +179,22 @@
                         class="absolute top-full {{ app()->getLocale() === 'ar' ? 'left-0' : 'right-0' }} mt-1.5 w-32 rounded-xl bg-white shadow-xl border border-slate-100 py-1 z-50">
                         <a href="{{ route('lang.switch', 'ar') }}" data-navigate-ignore rel="external"
                             class="flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-slate-50 {{ app()->getLocale() === 'ar' ? 'text-brand-500 bg-brand-50' : 'text-[#06205C]' }}">
-                            <span class="text-base leading-none">🇩🇿</span> العربية
+                            <span class="w-5 h-3.5 rounded-xs bg-emerald-600 text-[9px] text-white font-black flex items-center justify-center">DZ</span> العربية
                         </a>
                         <a href="{{ route('lang.switch', 'fr') }}" data-navigate-ignore rel="external"
                             class="flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-slate-50 {{ app()->getLocale() === 'fr' ? 'text-brand-500 bg-brand-50' : 'text-[#06205C]' }}">
-                            <span class="text-base leading-none">🇫🇷</span> Français
+                            <span class="w-5 h-3.5 rounded-xs bg-blue-600 text-[9px] text-white font-black flex items-center justify-center">FR</span> Français
                         </a>
                         <a href="{{ route('lang.switch', 'en') }}" data-navigate-ignore rel="external"
                             class="flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-slate-50 {{ app()->getLocale() === 'en' ? 'text-brand-500 bg-brand-50' : 'text-[#06205C]' }}">
-                            <span class="text-base leading-none">🇬🇧</span> English
+                            <span class="w-5 h-3.5 rounded-xs bg-rose-600 text-[9px] text-white font-black flex items-center justify-center">EN</span> English
                         </a>
                     </div>
                 </div>
 
                 <div class="hidden sm:flex items-center gap-2 bg-brand-50 border border-brand-100 px-3 py-1.5 rounded-xl text-xs font-bold text-brand-700">
                     <svg class="w-4 h-4 text-brand-sky" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    {{ app()->getLocale() === 'fr' ? 'Session 2027' : (app()->getLocale() === 'en' ? 'Edition 2027' : 'دورة 2027 النشطة') }}
+                    {{ app()->getLocale() === 'fr' ? 'Session 2026' : (app()->getLocale() === 'en' ? 'Edition 2026' : 'دورة 2026 النشطة') }}
                 </div>
 
                 <div class="flex items-center gap-3 {{ app()->getLocale() === 'ar' ? 'border-r' : 'border-l' }} border-brand-100 {{ app()->getLocale() === 'ar' ? 'pr-4' : 'pl-4' }}">

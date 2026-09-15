@@ -11,7 +11,7 @@
                     <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-tr from-amber-400 via-indigo-400 to-white p-1 shadow-xl overflow-hidden">
                         <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="w-full h-full rounded-[14px] object-cover border border-white/20">
                     </div>
-                    <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-[#0F172A] flex items-center justify-center text-[10px] text-white shadow-xs" title="حكم أولمبي معتمد">✓</span>
+                    <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-[#0F172A] flex items-center justify-center text-[10px] text-white shadow-xs" title="حكم أولمبي معتمد"><x-ws.icon name="check" class="w-3.5 h-3.5 text-white" /></span>
                 </div>
 
                 <div class="space-y-1.5">
@@ -56,7 +56,7 @@
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 <span>{{ $evalSuccessMessage }}</span>
             </div>
-            <button type="button" wire:click="$set('evalSuccessMessage', '')" class="text-emerald-600 hover:text-emerald-900 font-black text-xs">✕</button>
+            <button type="button" wire:click="$set('evalSuccessMessage', '')" class="text-emerald-600 hover:text-emerald-900 font-black text-xs"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
         </div>
     @endif
 
@@ -263,7 +263,7 @@
                             {{ app()->getLocale() === 'fr' ? 'Fiche d\'Information du Candidat / Mètrebess' : (app()->getLocale() === 'en' ? 'Candidate Information Sheet' : 'معلومات ملف المتربص التوصيفية') }}
                         </h3>
                     </div>
-                    <button wire:click="closeCandidateInfo" type="button" class="text-slate-400 hover:text-slate-700 font-bold text-sm">✕</button>
+                    <button wire:click="closeCandidateInfo" type="button" class="text-slate-400 hover:text-slate-700 font-bold text-sm"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <!-- Candidate Profile Header Card -->
@@ -344,7 +344,7 @@
                             {{ app()->getLocale() === 'fr' ? 'Grille d\'Évaluation CIS WorldSkills V9.0' : (app()->getLocale() === 'en' ? 'CIS WorldSkills V9.0 Assessment Matrix' : 'مصفوفة تقييم المتنافس (نظام CIS WorldSkills V9.0)') }}
                         </h3>
                     </div>
-                    <button wire:click="closeEvaluation" type="button" class="text-slate-400 hover:text-slate-700 font-bold text-sm">✕</button>
+                    <button wire:click="closeEvaluation" type="button" class="text-slate-400 hover:text-slate-700 font-bold text-sm"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <!-- Competitor Mini Header -->

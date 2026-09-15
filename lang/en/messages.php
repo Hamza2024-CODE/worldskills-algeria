@@ -28,7 +28,7 @@ return [
     'explore_more' => 'Explore More',
     'register_now' => 'Register Now',
     'african_event_countdown' => 'Countdown — Opening of African Skills Competition 2026',
-    'national_registration_countdown' => 'Countdown — National 2027 Registration',
+    'national_registration_countdown' => 'Countdown — National 2026 Registration',
     'days' => 'Days',
     'hours' => 'Hours',
     'minutes' => 'Mins',
@@ -40,7 +40,7 @@ return [
     'view_all_videos' => 'View All Videos',
 
     // Registration Wizard
-    'reg_title' => 'Candidate Registration — Skills Competition 2027',
+    'reg_title' => 'Candidate Registration — Skills Competition 2026',
     'reg_subtitle' => 'Register official details, suit sizing, and equipment for national and African events.',
     'step_1' => '01. Personal & Age',
     'step_2' => '02. Identity (18 digits)',
@@ -369,4 +369,7 @@ return [
     'required' => 'This field is required',
     'success' => 'Operation completed successfully',
     'error' => 'An error occurred. Please try again',
+    'verify_nav' => 'Verification & Accreditations',
+    'privacy' => 'Privacy Policy',
+    'terms' => 'Terms of Service',
 ];

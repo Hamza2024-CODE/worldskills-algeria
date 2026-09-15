@@ -11,7 +11,7 @@
                     {{ $country?->getLocalized('name') ?? (app()->getLocale() === 'fr' ? 'Délégation Nationale' : (app()->getLocale() === 'en' ? 'National Delegation' : 'الوفد الوطني')) }} — {{ app()->getLocale() === 'fr' ? 'Centre de la Délégation Officielle' : (app()->getLocale() === 'en' ? 'Official Delegation Center' : 'مركز إدارة ومتابعة الوفد الرسمي') }}
                 </h1>
                 <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5">
-                    {{ app()->getLocale() === 'fr' ? 'Gestion complète: juges, presse, encadrants, VIP, recours techniques et carte du village.' : (app()->getLocale() === 'en' ? 'Complete management: judges, press, supervisors, VIPs, technical appeals & venue maps.' : 'إدارة شاملة لجميع فئات الوفد: الحكام، الصحافيون، المؤطرون، الشخصيات المرموقة، الطعون الفنية والخرائط.') }}
+                    {{ app()->getLocale() === 'fr' ? 'Gestion complète: juges, presse, encadrants, VIP, recours techniques et carte du village.' : (app()->getLocale() === 'en' ? 'Complete management: judges, press, supervisors, VIPs, technical appeals & venue maps.' : 'إدارة شاملة لجميع فئات الوفد: الحكام، الصحافيون، المؤطرون، الشخصيات المرموقة، والطعون الفنية.') }}
                 </p>
             </div>
         </div>
@@ -26,7 +26,7 @@
                 <span>{{ app()->getLocale() === 'fr' ? 'Déposer un Recours Technique' : (app()->getLocale() === 'en' ? 'Submit Technical Appeal' : 'تقديم طعن فني') }}</span>
             </button>
             <a href="{{ route('country.dietary') }}" class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5">
-                <span>🥗</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                 <span>{{ app()->getLocale() === 'fr' ? 'Allergies & Restauration' : (app()->getLocale() === 'en' ? 'Dietary & Allergies' : 'حساسية الطعام والإطعام') }}</span>
             </a>
             <a href="{{ route('country.skills') }}" class="px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5">
@@ -43,7 +43,7 @@
                 <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 <span>{{ $flashMessage }}</span>
             </div>
-            <button wire:click="$set('flashMessage', '')" class="text-emerald-600 dark:text-emerald-400 font-bold text-xs">✕</button>
+            <button wire:click="$set('flashMessage', '')" class="text-emerald-600 dark:text-emerald-400 font-bold text-xs"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
         </div>
     @endif
 
@@ -99,7 +99,7 @@
         </div>
     </div>
 
-    <!-- Navigation Tabs (Roster | Appeals | Venue Map | Regulations) -->
+    <!-- Navigation Tabs (Roster | Appeals | Regulations) -->
     <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
         <button wire:click="$set('activeTab', 'roster')" class="px-5 py-2.5 rounded-2xl font-black text-xs transition border-b-2 flex items-center gap-2 {{ ($activeTab ?? 'roster') === 'roster' ? 'bg-white dark:bg-slate-800 text-[#0066FF] dark:text-sky-400 border-[#0066FF] dark:border-sky-400 shadow-xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -297,7 +297,7 @@
                         <!-- STAGE TRACKER STEPPER -->
                         <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{{ app()->getLocale() === 'fr' ? 'Étapes du Recours (Stage Tracker)' : (app()->getLocale() === 'en' ? 'Appeal Stage Tracker' : 'مراحل دراسة الطعن (Stage Tracker)') }}</p>
-                            <div class="grid grid-cols-4 gap-2 text-center text-xs">
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
                                 <div class="p-2 rounded-xl {{ in_array($app->status, ['SUBMITTED', 'UNDER_REVIEW', 'INVESTIGATING', 'APPROVED', 'REJECTED']) ? 'bg-blue-50 text-blue-700 border border-blue-200 font-bold' : 'text-slate-400' }}">
                                     1. {{ app()->getLocale() === 'fr' ? 'Dépôt' : (app()->getLocale() === 'en' ? 'Submitted' : 'تقديم الطعن') }}
                                 </div>
@@ -385,7 +385,7 @@
             <div class="bg-white rounded-3xl max-w-2xl w-full p-6 space-y-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <h3 class="text-base font-black text-[#06205C]">{{ app()->getLocale() === 'fr' ? 'Ajouter un Membre à la Délégation' : (app()->getLocale() === 'en' ? 'Add Member to Delegation' : 'إضافة عضو جديد للوفد الرسمي') }}</h3>
-                    <button wire:click="$set('showAddModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+                    <button wire:click="$set('showAddModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <form wire:submit.prevent="addMember" class="space-y-4">
@@ -469,7 +469,7 @@
             <div class="bg-white rounded-3xl max-w-2xl w-full p-6 space-y-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <h3 class="text-base font-black text-[#06205C]">{{ app()->getLocale() === 'fr' ? 'Modifier Membre de la Délégation' : (app()->getLocale() === 'en' ? 'Edit Delegation Member' : 'تعديل بيانات عضو الوفد الرسمي') }}</h3>
-                    <button wire:click="$set('showEditModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+                    <button wire:click="$set('showEditModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <form wire:submit.prevent="updateMember" class="space-y-4">
@@ -556,7 +556,7 @@
             <div class="bg-white rounded-3xl max-w-lg w-full p-6 space-y-6 shadow-2xl border border-slate-200">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <h3 class="text-base font-black text-[#06205C]">{{ app()->getLocale() === 'fr' ? 'Déposer un Nouveau Recours' : (app()->getLocale() === 'en' ? 'Submit New Technical Appeal' : 'تقديم طعن فني جديد') }}</h3>
-                    <button wire:click="$set('showAppealModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+                    <button wire:click="$set('showAppealModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <form wire:submit.prevent="submitTechnicalAppeal" class="space-y-4">
@@ -605,7 +605,7 @@
             <div class="bg-white rounded-3xl max-w-xl w-full p-6 space-y-6 shadow-2xl border border-slate-200">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <h3 class="text-base font-black text-[#06205C]">{{ app()->getLocale() === 'fr' ? 'Dossier Unifié du Membre' : (app()->getLocale() === 'en' ? 'Unified Member Dossier' : 'الملف التوصيفي الموحد للعضو') }}</h3>
-                    <button wire:click="$set('showViewModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+                    <button wire:click="$set('showViewModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-sm"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
                 <div class="space-y-4 text-xs">

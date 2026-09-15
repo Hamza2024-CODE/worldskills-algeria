@@ -1,309 +1,391 @@
-<header class="sticky top-0 z-50 wsap-glass bg-white/95 border-b border-slate-200/80 shadow-sm" x-data="{ mobileMenuOpen: false, activeMenu: null }" style="padding-top: env(safe-area-inset-top, 0px);">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16 sm:h-20 gap-2">
-            
-            <!-- Official Brand Logos (Ministry Logo FIRST, WorldSkills Algeria SECOND) -->
-            @php
-                $siteLogo = app(\App\Services\SettingsEngine::class)->get('site_logo', '/logo.svg');
-                $logoUrl = str_starts_with($siteLogo, 'http') ? $siteLogo : asset($siteLogo);
-            @endphp
-            <a href="{{ route('home') }}" class="flex items-center gap-1.5 sm:gap-3.5 group shrink-0 py-1 max-w-[55%] sm:max-w-none" title="الجمهورية الجزائرية الديمقراطية الشعبية — وزارة التكوين والتعليم المهنيين — أولمبياد المهن 2026">
-                <!-- 1. Official Ministry Logo FIRST -->
-                <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-7 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
-                
-                <!-- Separator Line -->
-                <div class="h-5 sm:h-9 w-px bg-slate-200/90 shrink-0"></div>
+@php
+    $siteLogo = app(\App\Services\SettingsEngine::class)->get('site_logo', '/logo.svg');
+    $logoUrl = str_starts_with($siteLogo, 'http') ? $siteLogo : asset($siteLogo);
+    $locale = app()->getLocale();
+@endphp
 
-                <!-- 2. WorldSkills Algeria Logo SECOND -->
-                <img src="{{ $logoUrl }}" alt="WorldSkills Algeria Logo" class="h-7 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+<header class="sticky top-3 sm:top-4 z-50 w-full px-3 sm:px-6 lg:px-8 pointer-events-none {{ request()->routeIs('home') ? '-mb-20 sm:-mb-24' : 'mb-6 sm:mb-10' }}" x-data="{ mobileMenuOpen: false, activeDropdown: null }">
+    <div class="max-w-[1360px] mx-auto rounded-full bg-white/75 dark:bg-white/85 backdrop-blur-2xl border border-white/80 shadow-[0_10px_35px_rgba(0,0,0,0.08)] p-1.5 sm:p-2 flex items-center justify-between gap-2 pointer-events-auto">
+
+        <!-- ═════════════════════════════════════════════════════════════════
+             1. RIGHT: OFFICIAL LOGO CAPSULE (Translucent White Glass Pill)
+             ═════════════════════════════════════════════════════════════════ -->
+        <a href="{{ route('home') }}" class="bg-white/95 px-3 sm:px-4 py-1.5 rounded-full flex items-center gap-2 sm:gap-3 shrink-0 shadow-2xs border border-slate-200/60 group ws-transition hover:shadow-xs" title="الجمهورية الجزائرية الديمقراطية الشعبية — وزارة التكوين والتعليم المهنيين — أولمبياد المهن 2026">
+            <!-- 1. Ministry Logo FIRST -->
+            <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-6 sm:h-8 w-auto object-contain ws-transition group-hover:scale-105">
+
+            <!-- Separator -->
+            <div class="h-4 sm:h-6 w-px bg-slate-200 shrink-0"></div>
+
+            <!-- 2. WorldSkills Algeria Logo SECOND -->
+            <img src="{{ $logoUrl }}" alt="WorldSkills Algeria Logo" class="h-6 sm:h-8 w-auto object-contain ws-transition group-hover:scale-105">
+        </a>
+
+        <!-- ═════════════════════════════════════════════════════════════════
+             2. CENTER: NAVIGATION CAPSULE MENU (Frosted Glass Pill)
+             ═════════════════════════════════════════════════════════════════ -->
+        <nav class="hidden xl:flex items-center gap-1 bg-slate-100/80 p-1 rounded-full border border-slate-200/60 shadow-2xs">
+            <!-- Home (Active Pill) -->
+            <a href="{{ route('home') }}" class="px-4 py-1.5 rounded-full font-black text-xs sm:text-sm ws-transition {{ request()->routeIs('home') ? 'bg-[#0F172A] text-white shadow-xs' : 'text-slate-800 hover:text-ws-primary hover:bg-white/80' }}">
+                {{ __('messages.home') }}
             </a>
 
-            <!-- Desktop Menu Navigation -->
-            <nav class="hidden lg:flex items-center gap-4 xl:gap-5">
-                <a href="{{ route('home') }}" class="px-3.5 py-1.5 rounded-full {{ request()->routeIs('home') ? 'bg-brand-500 text-white shadow-sm' : 'text-[#06205C] hover:text-brand-500' }} font-bold text-xs transition">{{ __('messages.home') }}</a>
-                <a href="{{ route('guide') }}" class="text-xs font-bold text-[#06205C] hover:text-brand-500 transition">{{ __('messages.about') }}</a>
-
-                <!-- Competition Dropdown -->
-                <div class="relative" @click.outside="if (activeMenu === 'comp') activeMenu = null">
-                    <button @click="activeMenu = (activeMenu === 'comp' ? null : 'comp')" class="flex items-center gap-1 text-xs font-bold text-[#06205C] hover:text-brand-500 transition py-2">
-                        <span>{{ __('messages.competition') }}</span>
-                        <svg class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200" :class="activeMenu === 'comp' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-                    <div x-show="activeMenu === 'comp'" x-cloak x-transition class="absolute top-full ltr:left-0 rtl:right-0 mt-2 w-52 rounded-2xl bg-white shadow-xl border border-slate-100 py-2 z-50">
-                        <a href="{{ route('skills') }}" class="block px-4 py-2 text-xs font-bold text-[#06205C] hover:bg-slate-50 hover:text-brand-500">{{ __('messages.skills') }}</a>
-                        <a href="{{ route('regulations') }}" class="block px-4 py-2 text-xs font-bold text-[#06205C] hover:bg-slate-50 hover:text-brand-500">{{ __('messages.regulations') }}</a>
-                        <a href="{{ route('schedule') }}" class="block px-4 py-2 text-xs font-bold text-[#06205C] hover:bg-slate-50 hover:text-brand-500">{{ __('messages.schedule') }}</a>
-                        <a href="{{ route('guide.regulations') }}" class="block px-4 py-2 text-xs font-bold text-[#06205C] hover:bg-slate-50 hover:text-brand-500 border-t border-slate-100 mt-1 pt-2 flex items-center gap-1.5">
-                            <svg class="w-3.5 h-3.5 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                            {{ __('messages.guide_regulations_nav') }}
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Media Dropdown -->
-                <div class="relative" @click.outside="if (activeMenu === 'media') activeMenu = null">
-                    <button @click="activeMenu = (activeMenu === 'media' ? null : 'media')" class="flex items-center gap-1 text-xs font-bold text-[#06205C] hover:text-brand-500 transition py-2">
-                        <span>{{ __('messages.media') }}</span>
-                        <svg class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200" :class="activeMenu === 'media' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-                    <div x-show="activeMenu === 'media'" x-cloak x-transition class="absolute top-full ltr:left-0 rtl:right-0 mt-2 w-52 rounded-2xl bg-white shadow-xl border border-slate-100 py-2 z-50">
-                        <a href="{{ route('news') }}" class="block px-4 py-2 text-xs font-bold text-[#06205C] hover:bg-slate-50 hover:text-brand-500">{{ __('messages.news') }}</a>
-                        <a href="{{ route('events') }}" class="block px-4 py-2 text-xs font-bold text-[#06205C] hover:bg-slate-50 hover:text-brand-500">{{ __('messages.events') }}</a>
-                        <a href="{{ route('gallery') }}" class="block px-4 py-2 text-xs font-bold text-[#06205C] hover:bg-slate-50 hover:text-brand-500">{{ __('messages.gallery') }}</a>
-                        <a href="{{ route('videos') }}" class="block px-4 py-2 text-xs font-bold text-[#06205C] hover:bg-slate-50 hover:text-brand-500">{{ __('messages.videos') }}</a>
-                        <a href="{{ route('live-tv') }}" target="_blank" class="block px-4 py-2 text-xs font-black text-rose-600 hover:bg-rose-50 border-t border-slate-100 mt-1 pt-2 flex items-center justify-between">
-                            <span>{{ app()->getLocale() === 'fr' ? 'Direct TV (Écrans)' : (app()->getLocale() === 'en' ? 'Live TV Broadcast' : 'شاشة البث المباشر (Live TV)') }}</span>
-                            <span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
-                        </a>
-                    </div>
-                </div>
-
-                <a href="{{ route('results') }}" class="text-xs font-bold text-[#06205C] hover:text-brand-500 transition">{{ __('messages.results') }}</a>
-
-                @if(app(\App\Services\SettingsEngine::class)->get('page_partners_enabled', true))
-                    <a href="{{ route('partners') }}" class="text-xs font-bold text-[#06205C] hover:text-brand-500 transition">{{ __('messages.partners') }}</a>
-                @endif
-                <a href="{{ route('contact') }}" class="text-xs font-bold text-[#06205C] hover:text-brand-500 transition">{{ __('messages.contact') }}</a>
-            </nav>
-
-            <!-- Actions Right Area (Responsive Mobile Friendly) -->
-            <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-                
-                <!-- PWA Install Trigger Button -->
-                <button type="button" @click="window.dispatchEvent(new CustomEvent('open-pwa-installer'))" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-50 hover:bg-brand-100 flex items-center justify-center text-brand-600 transition shrink-0 shadow-xs" title="{{ app()->getLocale() === 'fr' ? 'Installer l\'application PWA' : (app()->getLocale() === 'en' ? 'Install PWA App' : 'تثبيت تطبيق المنصة 📱') }}">
-                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <!-- Skills / Trades Dropdown -->
+            <div class="relative" @click.outside="if (activeDropdown === 'skills') activeDropdown = null">
+                <button
+                    @click="activeDropdown = (activeDropdown === 'skills' ? null : 'skills')"
+                    class="px-3.5 py-1.5 rounded-full font-bold text-xs sm:text-sm flex items-center gap-1 ws-transition {{ request()->routeIs('skills*') ? 'bg-[#0F172A] text-white shadow-xs' : 'text-slate-800 hover:text-ws-primary hover:bg-white/80' }}"
+                >
+                    <span>{{ __('messages.skills') }}</span>
+                    <svg class="w-3.5 h-3.5 text-slate-500 ws-transition" :class="activeDropdown === 'skills' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                 </button>
 
-                <!-- Search Button -->
-                <a href="{{ route('search') }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition shrink-0" title="Search">
-                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <div
+                    x-show="activeDropdown === 'skills'"
+                    x-cloak
+                    x-transition:enter="ease-out duration-150"
+                    x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="ease-in duration-100"
+                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-2 scale-95"
+                    class="absolute top-full mt-2 ltr:left-0 rtl:right-0 w-56 rounded-ws-md bg-white text-ws-slate shadow-2xl border border-ws-border py-2 z-50 text-start"
+                >
+                    <a href="{{ route('skills') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                        {{ __('messages.skills') }}
+                    </a>
+                    <a href="{{ route('guide.regulations') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                        {{ __('messages.guide_regulations_nav') }}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Participation Guide (دليل المشاركة في أولمبياد المهن) -->
+            <a href="{{ route('guide') }}" class="px-3.5 py-1.5 rounded-full font-bold text-xs sm:text-sm ws-transition {{ request()->routeIs('guide') ? 'bg-[#0F172A] text-white shadow-xs' : 'text-slate-800 hover:text-ws-primary hover:bg-white/80' }}">
+                {{ app()->getLocale() === 'fr' ? 'Guide de Participation' : (app()->getLocale() === 'en' ? 'Participation Guide' : 'دليل المشاركة') }}
+            </a>
+
+            <!-- About / Regulations Dropdown -->
+            <div class="relative" @click.outside="if (activeDropdown === 'about') activeDropdown = null">
+                <button
+                    @click="activeDropdown = (activeDropdown === 'about' ? null : 'about')"
+                    class="px-3.5 py-1.5 rounded-full font-bold text-xs sm:text-sm flex items-center gap-1 ws-transition {{ request()->routeIs('regulations*') || request()->routeIs('schedule*') ? 'bg-[#0F172A] text-white shadow-xs' : 'text-slate-800 hover:text-ws-primary hover:bg-white/80' }}"
+                >
+                    <span>{{ $locale === 'fr' ? 'À Propos' : ($locale === 'en' ? 'About Olympiad' : 'عن الأولمبياد') }}</span>
+                    <svg class="w-3.5 h-3.5 text-slate-500 ws-transition" :class="activeDropdown === 'about' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+
+                <div
+                    x-show="activeDropdown === 'about'"
+                    x-cloak
+                    x-transition:enter="ease-out duration-150"
+                    x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="ease-in duration-100"
+                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-2 scale-95"
+                    class="absolute top-full mt-2 ltr:left-0 rtl:right-0 w-56 rounded-ws-md bg-white text-ws-slate shadow-2xl border border-ws-border py-2 z-50 text-start"
+                >
+                    <a href="{{ route('regulations') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                        {{ __('messages.regulations') }}
+                    </a>
+                    <a href="{{ route('schedule') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                        {{ __('messages.schedule') }}
+                    </a>
+                    <a href="{{ route('results') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                        {{ __('messages.results') }}
+                    </a>
+                    <a href="{{ route('partners') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition border-t border-slate-100 mt-1 pt-2">
+                        {{ __('messages.partners') }}
+                    </a>
+                    <a href="{{ route('verify') }}" class="block px-4 py-2 text-xs font-bold text-emerald-600 hover:bg-emerald-50 ws-transition">
+                        {{ __('messages.verify_nav') }}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Media Dropdown -->
+            <div class="relative" @click.outside="if (activeDropdown === 'media') activeDropdown = null">
+                <button
+                    @click="activeDropdown = (activeDropdown === 'media' ? null : 'media')"
+                    class="px-3.5 py-1.5 rounded-full font-bold text-xs sm:text-sm flex items-center gap-1 ws-transition {{ request()->routeIs('news*') || request()->routeIs('events*') || request()->routeIs('gallery*') || request()->routeIs('videos*') ? 'bg-[#0F172A] text-white shadow-xs' : 'text-slate-800 hover:text-ws-primary hover:bg-white/80' }}"
+                >
+                    <span>{{ __('messages.media') }}</span>
+                    <svg class="w-3.5 h-3.5 text-slate-500 ws-transition" :class="activeDropdown === 'media' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+
+                <div
+                    x-show="activeDropdown === 'media'"
+                    x-cloak
+                    x-transition:enter="ease-out duration-150"
+                    x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="ease-in duration-100"
+                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-2 scale-95"
+                    class="absolute top-full mt-2 ltr:left-0 rtl:right-0 w-56 rounded-ws-md bg-white text-ws-slate shadow-2xl border border-ws-border py-2 z-50 text-start"
+                >
+                    <a href="{{ route('news') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                        {{ __('messages.news') }}
+                    </a>
+                    <a href="{{ route('events') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                        {{ __('messages.events') }}
+                    </a>
+                    <a href="{{ route('gallery') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                        {{ __('messages.gallery') }}
+                    </a>
+                    <a href="{{ route('videos') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                        {{ __('messages.videos') }}
+                    </a>
+                    <a href="{{ route('live-tv') }}" target="_blank" class="block px-4 py-2 text-xs font-black text-rose-600 hover:bg-rose-50 border-t border-slate-100 mt-1 pt-2 flex items-center justify-between ws-transition">
+                        <span>{{ $locale === 'fr' ? 'Direct TV (Écrans)' : ($locale === 'en' ? 'Live TV Broadcast' : 'شاشة البث المباشر (Live TV)') }}</span>
+                        <span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ═════════════════════════════════════════════════════════════════
+             3. BADGES & TOOLS: STATUS PILL, LANG, MOON TOGGLE
+             ═════════════════════════════════════════════════════════════════ -->
+        <div class="hidden lg:flex items-center gap-2 shrink-0">
+            <!-- Registrations Open Live Pulse Badge -->
+            <a href="{{ route('registration') }}" class="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/90 text-xs font-black flex items-center gap-2 ws-transition hover:bg-emerald-100 shadow-2xs" title="انطلاق التسجيلات الرسمية للأولمبياد">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                <span>{{ $locale === 'fr' ? 'Inscriptions Ouvertes' : ($locale === 'en' ? 'Registrations Open' : 'التسجيلات مفتوحة') }}</span>
+            </a>
+
+            <!-- Language Switcher Pill -->
+            <div class="relative" x-data="{ langOpen: false }">
+                <button
+                    @click="langOpen = !langOpen"
+                    @click.outside="langOpen = false"
+                    type="button"
+                    class="px-2.5 py-1.5 rounded-full bg-slate-100/90 text-slate-800 hover:bg-slate-200/80 border border-slate-200/80 text-xs font-bold flex items-center gap-1.5 ws-transition shadow-2xs"
+                    aria-label="تغيير اللغة"
+                >
+                    <svg class="w-3.5 h-3.5 text-ws-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                    <span class="uppercase font-mono text-[11px] font-black">{{ $locale }}</span>
+                </button>
+
+                <div
+                    x-show="langOpen"
+                    x-cloak
+                    x-transition
+                    class="absolute top-full mt-2 ltr:right-0 rtl:left-0 w-36 rounded-ws-md bg-white text-ws-slate shadow-2xl border border-ws-border py-1.5 z-50 text-start"
+                >
+                    <a href="{{ route('lang.switch', 'ar') }}" class="flex items-center justify-between px-3 py-1.5 text-xs font-bold hover:bg-slate-50 {{ $locale === 'ar' ? 'text-ws-primary font-black' : '' }}">
+                        <span>العربية</span>
+                        <span class="font-mono text-[10px] text-slate-400">AR</span>
+                    </a>
+                    <a href="{{ route('lang.switch', 'fr') }}" class="flex items-center justify-between px-3 py-1.5 text-xs font-bold hover:bg-slate-50 {{ $locale === 'fr' ? 'text-ws-primary font-black' : '' }}">
+                        <span>Français</span>
+                        <span class="font-mono text-[10px] text-slate-400">FR</span>
+                    </a>
+                    <a href="{{ route('lang.switch', 'en') }}" class="flex items-center justify-between px-3 py-1.5 text-xs font-bold hover:bg-slate-50 {{ $locale === 'en' ? 'text-ws-primary font-black' : '' }}">
+                        <span>English</span>
+                        <span class="font-mono text-[10px] text-slate-400">EN</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Dark Mode Moon Icon Button -->
+            <button
+                type="button"
+                class="w-8 h-8 rounded-full bg-slate-100/90 hover:bg-slate-200/80 text-slate-700 border border-slate-200/80 flex items-center justify-center ws-transition shadow-2xs"
+                title="الوضع المظلم / الفاتح"
+            >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            </button>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════════════════
+             4. LEFT: CTA BUTTONS (+ تسجيل جديد & تسجيل الدخول)
+             ═════════════════════════════════════════════════════════════════ -->
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            @auth
+                <a
+                    href="{{ auth()->user()->hasRole('SUPER_ADMIN') ? route('admin.dashboard') : (auth()->user()->hasRole('COUNTRY_ADMIN') ? route('country.dashboard') : route('profile')) }}"
+                    class="bg-white text-ws-slate hover:bg-slate-50 font-black px-4 py-2 rounded-full text-xs sm:text-sm flex items-center gap-1.5 shadow-sm border border-slate-200/80 ws-transition"
+                >
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                    <span>{{ __('messages.my_space') ?? 'مساحتي' }}</span>
                 </a>
+            @else
+                <!-- + تسجيل جديد (Cyan Button with Dropdown Choice) -->
+                <div class="relative" @click.outside="if (activeDropdown === 'register') activeDropdown = null">
+                    <button
+                        type="button"
+                        @click="activeDropdown = (activeDropdown === 'register' ? null : 'register')"
+                        class="bg-[#00B8FF] hover:bg-[#38C6FF] text-[#041235] font-black px-3.5 sm:px-4 py-2 rounded-full text-xs sm:text-sm flex items-center gap-1.5 shadow-sm ws-transition active:translate-y-[1px] cursor-pointer"
+                        aria-expanded="false"
+                        :aria-expanded="activeDropdown === 'register'"
+                    >
+                        <span class="text-base leading-none font-bold">+</span>
+                        <span>{{ $locale === 'fr' ? 'Inscription' : ($locale === 'en' ? 'Register' : 'تسجيل جديد') }}</span>
+                        <svg class="w-3.5 h-3.5 text-[#041235] ws-transition shrink-0" :class="activeDropdown === 'register' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
 
-                <!-- Language Switcher Component -->
-                <div class="shrink-0">
-                    <x-language-switcher />
+                    <!-- Dropdown Options Menu -->
+                    <div
+                        x-show="activeDropdown === 'register'"
+                        x-cloak
+                        x-transition:enter="ease-out duration-150"
+                        x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                        x-transition:leave="ease-in duration-100"
+                        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                        x-transition:leave-end="opacity-0 translate-y-2 scale-95"
+                        class="absolute top-full mt-2 rtl:left-0 ltr:right-0 w-72 sm:w-80 rounded-ws-md bg-white/95 backdrop-blur-xl text-ws-slate shadow-[0_20px_50px_rgba(0,0,0,0.18)] border border-slate-200/90 p-2 z-50 text-start space-y-1.5"
+                    >
+                        <!-- Header inside Dropdown -->
+                        <div class="px-3 py-1.5 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                            <span>{{ $locale === 'fr' ? 'Choisir le type d inscription' : ($locale === 'en' ? 'Choose Registration Type' : 'اختر نوع التسجيل في الأولمبياد') }}</span>
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        </div>
+
+                        <!-- 1. Competitor Registration Option -->
+                        <a
+                            href="{{ route('registration') }}"
+                            class="group flex items-start gap-3 p-2.5 sm:p-3 rounded-ws-sm hover:bg-sky-50/80 border border-transparent hover:border-sky-200 ws-transition"
+                        >
+                            <div class="w-9 h-9 rounded-full bg-sky-100 text-[#0052CC] flex items-center justify-center shrink-0 group-hover:scale-105 ws-transition shadow-2xs">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between gap-1">
+                                    <span class="text-xs font-black text-slate-900 group-hover:text-ws-primary ws-transition">
+                                        {{ $locale === 'fr' ? 'Inscription Compétiteur' : ($locale === 'en' ? 'Competitor Registration' : 'تسجيل متنافس / مترشح') }}
+                                    </span>
+                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-sky-100 text-sky-800">
+                                        {{ $locale === 'fr' ? 'Métiers' : ($locale === 'en' ? 'Skills' : 'مهن') }}
+                                    </span>
+                                </div>
+                                <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                                    {{ $locale === 'fr' ? 'Pour les candidats aux épreuves et métiers WorldSkills.' : ($locale === 'en' ? 'For contestants competing in skills and trades.' : 'خاص بالمترشحين المتنافسين في مختلف تخصصات ومسابقات المهارات.') }}
+                                </p>
+                            </div>
+                        </a>
+
+                        <!-- 2. Official Delegation Option -->
+                        <a
+                            href="{{ route('official.registration') }}"
+                            class="group flex items-start gap-3 p-2.5 sm:p-3 rounded-ws-sm hover:bg-amber-50/80 border border-transparent hover:border-amber-200 ws-transition"
+                        >
+                            <div class="w-9 h-9 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 group-hover:scale-105 ws-transition shadow-2xs">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between gap-1">
+                                    <span class="text-xs font-black text-slate-900 group-hover:text-amber-700 ws-transition">
+                                        {{ $locale === 'fr' ? 'Délégations Officielles' : ($locale === 'en' ? 'Official Delegation' : 'تسجيل الوفود الرسمية') }}
+                                    </span>
+                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">
+                                        {{ $locale === 'fr' ? 'Officiel' : ($locale === 'en' ? 'Official' : 'رسمي') }}
+                                    </span>
+                                </div>
+                                <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                                    {{ $locale === 'fr' ? 'Chefs de délégations, experts, jurys et invités officiels.' : ($locale === 'en' ? 'Delegation heads, experts, technical jury and VIPs.' : 'لرؤساء الوفود، الخبراء التقنيين، الحكام والمؤطرين والضيوف الرسميين.') }}
+                                </p>
+                            </div>
+                        </a>
+                    </div>
                 </div>
 
-                @auth
-                    @php
-                        $user = auth()->user();
-                        $dashboardRoute = match (true) {
-                            $user->hasRole(\App\Enums\RoleEnum::SUPER_ADMIN->value) => route('admin.dashboard'),
-                            $user->hasRole(\App\Enums\RoleEnum::MEDIA_MANAGER->value) => route('admin.media.dashboard'),
-                            $user->hasRole(\App\Enums\RoleEnum::EXECUTIVE_VIEWER->value) => route('executive.dashboard'),
-                            $user->hasRole(\App\Enums\RoleEnum::COUNTRY_ADMIN->value) => route('country.dashboard'),
-                            $user->hasRole(\App\Enums\RoleEnum::ORGANIZATION_ADMIN->value) => route('organization.dashboard'),
-                            $user->hasRole(\App\Enums\RoleEnum::JUDGE->value) => route('judge.dashboard'),
-                            default => route('participant.dashboard'),
-                        };
-                    @endphp
-                    <a href="{{ $dashboardRoute }}" class="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-brand-50 text-brand-500 hover:bg-brand-100 font-bold text-xs transition whitespace-nowrap">
-                        {{ __('messages.dashboard') }}
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="hidden sm:inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-slate-300 hover:border-brand-400 text-[#06205C] hover:text-brand-600 hover:bg-blue-50 font-bold text-xs transition whitespace-nowrap">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
-                        {{ __('messages.login') }}
-                    </a>
-                    
-                    @php
-                        $settingsEngine = app(\App\Services\SettingsEngine::class);
-                        $regCompetitors = (bool) $settingsEngine->get('registration_competitors_enabled', true);
-                        $regSupporters  = (bool) $settingsEngine->get('registration_supporters_enabled', true);
-                        $regAccreditation = (bool) $settingsEngine->get('registration_accreditation_enabled', true);
-                    @endphp
-                    <div class="relative shrink-0 hidden sm:block" @click.outside="if (activeMenu === 'reg') activeMenu = null">
-                        <button @click="activeMenu = (activeMenu === 'reg' ? null : 'reg')" type="button" class="px-3 sm:px-4 py-1.5 sm:py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all flex items-center gap-1.5 whitespace-nowrap">
-                            <span>{{ __('messages.register') }}</span>
-                            <svg class="w-3.5 h-3.5 text-white/80 transition-transform duration-200" :class="activeMenu === 'reg' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </button>
-                        <div x-show="activeMenu === 'reg'" x-cloak x-transition class="absolute top-full ltr:right-0 rtl:left-0 mt-2 w-72 rounded-2xl bg-white shadow-xl border border-slate-100 py-2 z-50 text-start">
-                            <a href="{{ route('registration') }}" class="block px-4 py-2.5 text-xs font-bold text-[#06205C] hover:bg-slate-50 hover:text-brand-600 border-b border-slate-100">
-                                <div class="font-extrabold text-slate-900 flex items-center justify-between gap-1.5">
-                                    <div class="flex items-center gap-1.5">
-                                        <svg class="w-4 h-4 text-brand-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
-                                        <span>{{ app()->getLocale() === 'fr' ? 'Inscription Compétiteurs & Jeunes' : (app()->getLocale() === 'en' ? 'Competitors & Youth Registration' : 'تسجيل المتنافسين والشباب') }}</span>
-                                    </div>
-                                    <span class="text-[9px] px-2 py-0.5 rounded-full font-black shrink-0 {{ $regCompetitors ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800' }}">
-                                        {{ $regCompetitors ? 'مفتوح' : 'مغلق' }}
-                                    </span>
-                                </div>
-                                <div class="text-[10px] text-slate-400 font-medium mt-0.5">
-                                    {{ app()->getLocale() === 'fr' ? 'Inscription des candidats et participants aux métiers' : (app()->getLocale() === 'en' ? 'Registration of candidates and skill participants' : 'تسجيل المترشحين والمشاركين في التخصصات') }}
-                                </div>
-                            </a>
+                <!-- تسجيل الدخول (White Pill with Green Door Icon) -->
+                <a
+                    href="{{ route('login') }}"
+                    class="bg-white text-slate-900 hover:bg-slate-50 font-black px-3.5 sm:px-4 py-2 rounded-full text-xs sm:text-sm flex items-center gap-1.5 shadow-sm border border-slate-200/90 ws-transition active:translate-y-[1px]"
+                >
+                    <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                        <svg class="w-3 h-3 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+                    </span>
+                    <span>{{ __('messages.login') }}</span>
+                </a>
+            @endauth
 
-                            <a href="{{ route('official.registration') }}" class="block px-4 py-2.5 text-xs font-bold text-[#06205C] hover:bg-slate-50 hover:text-brand-600 border-b border-slate-100">
-                                <div class="font-extrabold text-indigo-900 flex items-center justify-between gap-1.5">
-                                    <div class="flex items-center gap-1.5">
-                                        <svg class="w-4 h-4 text-indigo-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                                        <span>{{ app()->getLocale() === 'fr' ? 'Inscription Supporteurs Officiels & Visiteurs' : (app()->getLocale() === 'en' ? 'Official Supporters Registration' : 'تسجيل التشجيع الرسمي والزوار') }}</span>
-                                    </div>
-                                    <span class="text-[9px] px-2 py-0.5 rounded-full font-black shrink-0 {{ $regSupporters ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800' }}">
-                                        {{ $regSupporters ? 'مفتوح' : 'مغلق' }}
-                                    </span>
-                                </div>
-                            </a>
+            <!-- Mobile Drawer Toggle Button -->
+            <button
+                type="button"
+                @click="mobileMenuOpen = !mobileMenuOpen"
+                class="xl:hidden w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center ws-transition border border-slate-200"
+                aria-label="القائمة"
+            >
+                <svg class="w-5 h-5" x-show="!mobileMenuOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                <svg class="w-5 h-5" x-show="mobileMenuOpen" x-cloak fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
 
-                            <a href="{{ route('official.registration') }}" class="block px-4 py-2.5 text-xs font-bold text-[#06205C] hover:bg-slate-50 hover:text-brand-600">
-                                <div class="font-extrabold text-indigo-900 flex items-center justify-between gap-1.5">
-                                    <div class="flex items-center gap-1.5">
-                                        <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5 5 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5 5 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
-                                        <span>{{ app()->getLocale() === 'fr' ? 'Accréditation Officielle' : (app()->getLocale() === 'en' ? 'Official Accreditation' : 'تسجيل الاعتماد الشارات والحكام') }}</span>
-                                    </div>
-                                    <span class="text-[9px] px-2 py-0.5 rounded-full font-black shrink-0 {{ $regAccreditation ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800' }}">
-                                        {{ $regAccreditation ? 'مفتوح' : 'مغلق' }}
-                                    </span>
-                                </div>
-                            </a>
+    </div>
+
+    <!-- Mobile Drawer Off-Canvas Menu -->
+    <div
+        x-show="mobileMenuOpen"
+        x-cloak
+        x-transition:enter="ease-out duration-200"
+        x-transition:enter-start="opacity-0 -translate-y-4"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-4"
+        class="xl:hidden mt-2 max-w-[1360px] mx-auto rounded-3xl bg-white/95 backdrop-blur-2xl border border-white/80 p-5 shadow-2xl text-start pointer-events-auto space-y-3"
+    >
+        @guest
+            <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-start">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{{ $locale === 'fr' ? 'Portail d inscription' : ($locale === 'en' ? 'Registration Portal' : 'بوابات التسجيل في الأولمبياد') }}</span>
+                <div class="grid grid-cols-1 gap-2">
+                    <a href="{{ route('registration') }}" class="p-2.5 rounded-ws-sm bg-sky-50 hover:bg-sky-100 text-sky-900 border border-sky-200 flex items-center gap-2.5 font-bold text-xs ws-transition">
+                        <span class="w-6 h-6 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs shrink-0 font-bold">+</span>
+                        <div class="flex flex-col">
+                            <span>{{ $locale === 'fr' ? 'Inscription Compétiteur' : ($locale === 'en' ? 'Competitor Registration' : 'تسجيل متنافس / مترشح') }}</span>
+                            <span class="text-[10px] text-sky-700 font-normal">{{ $locale === 'fr' ? 'Pour les candidats aux métiers' : 'خاص بالمترشحين المتنافسين' }}</span>
                         </div>
-                    </div>
-                @endauth
+                    </a>
+                    <a href="{{ route('official.registration') }}" class="p-2.5 rounded-ws-sm bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 flex items-center gap-2.5 font-bold text-xs ws-transition">
+                        <span class="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs shrink-0 font-bold"><x-ws.icon name="star" class="w-3.5 h-3.5" /></span>
+                        <div class="flex flex-col">
+                            <span>{{ $locale === 'fr' ? 'Délégations Officielles' : ($locale === 'en' ? 'Official Delegation' : 'تسجيل الوفود الرسمية') }}</span>
+                            <span class="text-[10px] text-amber-700 font-normal">{{ $locale === 'fr' ? 'Chefs, experts et invités' : 'لرؤساء الوفود والمؤطرين والخبراء' }}</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        @endguest
 
-                <!-- Mobile Hamburger Button -->
-                <button @click="mobileMenuOpen = !mobileMenuOpen; window.dispatchEvent(new CustomEvent('mobile-menu-toggled', { detail: mobileMenuOpen }))" type="button" class="lg:hidden w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-[#06205C] transition shrink-0 ml-1" aria-label="Toggle Navigation Menu">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
+        <div class="grid grid-cols-2 gap-2 text-slate-800 font-bold text-xs">
+            <a href="{{ route('home') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('home') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+                {{ __('messages.home') }}
+            </a>
+            <a href="{{ route('skills') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('skills') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+                {{ __('messages.skills') }}
+            </a>
+            <a href="{{ route('guide') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('guide') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+                {{ app()->getLocale() === 'fr' ? 'Guide de Participation' : (app()->getLocale() === 'en' ? 'Participation Guide' : 'دليل المشاركة') }}
+            </a>
+            <a href="{{ route('regulations') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('regulations') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+                {{ __('messages.regulations') }}
+            </a>
+            <a href="{{ route('schedule') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('schedule') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+                {{ __('messages.schedule') }}
+            </a>
+            <a href="{{ route('results') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('results') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+                {{ __('messages.results') }}
+            </a>
+            <a href="{{ route('news') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('news') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+                {{ __('messages.news') }}
+            </a>
+            <a href="{{ route('verify') }}" class="p-2.5 rounded-ws-sm bg-emerald-50 text-emerald-700 border border-emerald-200">
+                {{ __('messages.verify_nav') }}
+            </a>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-800">
+            <span class="font-bold">اللغة / Langue:</span>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('lang.switch', 'ar') }}" class="px-2.5 py-1 rounded-full {{ $locale === 'ar' ? 'bg-ws-primary text-white font-black' : 'bg-slate-100' }}">AR</a>
+                <a href="{{ route('lang.switch', 'fr') }}" class="px-2.5 py-1 rounded-full {{ $locale === 'fr' ? 'bg-ws-primary text-white font-black' : 'bg-slate-100' }}">FR</a>
+                <a href="{{ route('lang.switch', 'en') }}" class="px-2.5 py-1 rounded-full {{ $locale === 'en' ? 'bg-ws-primary text-white font-black' : 'bg-slate-100' }}">EN</a>
             </div>
         </div>
     </div>
-    <template x-teleport="body">
-        <div x-show="mobileMenuOpen" x-cloak class="fixed inset-0 z-50 lg:hidden pointer-events-auto">
-            
-            <!-- Dark Backdrop Overlay -->
-            <div x-show="mobileMenuOpen"
-                 x-transition:enter="transition ease-out duration-300"
-                 x-transition:enter-start="opacity-0"
-                 x-transition:enter-end="opacity-100"
-                 x-transition:leave="transition ease-in duration-200"
-                 x-transition:leave-start="opacity-100"
-                 x-transition:leave-end="opacity-0"
-                 @click="mobileMenuOpen = false; window.dispatchEvent(new CustomEvent('mobile-menu-toggled', { detail: false }))"
-                 class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40"></div>
-
-            <!-- Slide-Over Drawer Body -->
-            <div x-show="mobileMenuOpen"
-                 x-transition:enter="transition ease-out duration-300 transform"
-                 x-transition:enter-start="{{ app()->getLocale() === 'ar' ? '-translate-x-full' : 'translate-x-full' }}"
-                 x-transition:enter-end="translate-x-0"
-                 x-transition:leave="transition ease-in duration-200 transform"
-                 x-transition:leave-start="translate-x-0"
-                 x-transition:leave-end="{{ app()->getLocale() === 'ar' ? '-translate-x-full' : 'translate-x-full' }}"
-                 class="fixed top-0 bottom-0 ltr:right-0 rtl:left-0 w-80 sm:w-96 max-w-[85vw] bg-white shadow-2xl z-50 flex flex-col justify-between overflow-y-auto p-5 sm:p-6 text-start border-s border-slate-200">
-                
-                <!-- Drawer Top Bar -->
-                <div class="space-y-5">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                        @php
-                            $siteLogo = app(\App\Services\SettingsEngine::class)->get('site_logo', '/logo.svg');
-                            $logoUrl = str_starts_with($siteLogo, 'http') ? $siteLogo : asset($siteLogo);
-                        @endphp
-                        <div class="flex items-center gap-2">
-                            <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-8.5 w-auto object-contain">
-                            <div class="h-6 w-px bg-slate-200 shrink-0"></div>
-                            <img src="{{ $logoUrl }}" alt="WorldSkills Logo" class="h-8.5 w-auto object-contain">
-                        </div>
-                        
-                        <button @click="mobileMenuOpen = false; window.dispatchEvent(new CustomEvent('mobile-menu-toggled', { detail: false }))" type="button" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center transition" aria-label="Close">
-                            ✕
-                        </button>
-                    </div>
-
-                    <!-- Menu Nav Links -->
-                    <nav class="space-y-1.5">
-                        <a href="{{ route('home') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-black {{ request()->routeIs('home') ? 'bg-[#0066FF] text-white shadow-md' : 'text-[#06205C] hover:bg-slate-50' }} transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                            <span>{{ __('messages.home') }}</span>
-                        </a>
-
-                        <a href="{{ route('guide') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-black text-[#06205C] hover:bg-slate-50 transition">
-                            <svg class="w-4 h-4 text-brand-sky" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span>{{ __('messages.about') }}</span>
-                        </a>
-
-                        <a href="{{ route('skills') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-black text-[#06205C] hover:bg-slate-50 transition">
-                            <svg class="w-4 h-4 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.6 15.12a2 2 0 01-1.187-2.19l.732-4.393A2 2 0 017.11 6.814l3.176.635a6 6 0 003.86-.517l.318-.158a6 6 0 013.86-.517l2.387.477a2 2 0 011.642 1.964v6.22a2 2 0 01-.927 1.69z"/></svg>
-                            <span>{{ __('messages.skills') }}</span>
-                        </a>
-
-                        <a href="{{ route('registration') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-black text-brand-600 bg-brand-50 hover:bg-brand-100 border border-brand-200 transition">
-                            <svg class="w-4 h-4 text-brand-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
-                            <span>{{ app()->getLocale() === 'fr' ? 'Inscription Compétiteurs & Jeunes' : (app()->getLocale() === 'en' ? 'Competitors Registration' : 'تسجيل المتنافسين والشباب') }}</span>
-                        </a>
-
-                        <a href="{{ route('official.registration') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-black text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition">
-                            <svg class="w-4 h-4 text-indigo-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5 5 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5 5 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
-                            <span>{{ app()->getLocale() === 'fr' ? 'Accréditation & Inscription Officielle' : (app()->getLocale() === 'en' ? 'Official Registration & Accreditation' : 'التسجيل الرسمي والاعتماد (حكام / صحافة / وفود)') }}</span>
-                        </a>
-
-                        <a href="{{ route('regulations') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-black text-[#06205C] hover:bg-slate-50 transition">
-                            <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span>{{ __('messages.regulations') }}</span>
-                        </a>
-
-                        <a href="{{ route('schedule') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-black text-[#06205C] hover:bg-slate-50 transition">
-                            <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            <span>{{ __('messages.schedule') }}</span>
-                        </a>
-
-                        <a href="{{ route('guide.regulations') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-black text-[#0066FF] bg-blue-50 hover:bg-blue-100 transition border border-blue-100">
-                            <svg class="w-4 h-4 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                            <span>{{ __('messages.guide_regulations_title') }}</span>
-                        </a>
-
-                        <a href="{{ route('news') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-black text-[#06205C] hover:bg-slate-50 transition">
-                            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                            <span>{{ __('messages.news') }}</span>
-                        </a>
-
-                        <a href="{{ route('results') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-black text-[#06205C] hover:bg-slate-50 transition">
-                            <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 00-2 2h2a2 2 0 00-2-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                            <span>{{ __('messages.results') }}</span>
-                        </a>
-
-                        <a href="{{ route('live-tv') }}" target="_blank" class="flex items-center justify-between px-4 py-3 rounded-2xl text-xs font-black text-rose-600 bg-rose-50 border border-rose-200 transition">
-                            <div class="flex items-center gap-3">
-                                <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                                <span>{{ app()->getLocale() === 'fr' ? 'Direct TV (Écrans)' : (app()->getLocale() === 'en' ? 'Live TV Broadcast' : 'شاشة البث المباشر (Live TV)') }}</span>
-                            </div>
-                            <span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
-                        </a>
-                    </nav>
-                </div>
-
-                <!-- Bottom Quick Action Buttons -->
-                <div class="pt-6 border-t border-slate-100 space-y-3">
-                    @auth
-                        @php
-                            $user = auth()->user();
-                            $dashboardRoute = match (true) {
-                                $user->hasRole(\App\Enums\RoleEnum::SUPER_ADMIN->value) => route('admin.dashboard'),
-                                $user->hasRole(\App\Enums\RoleEnum::MEDIA_MANAGER->value) => route('admin.media.dashboard'),
-                                $user->hasRole(\App\Enums\RoleEnum::EXECUTIVE_VIEWER->value) => route('executive.dashboard'),
-                                $user->hasRole(\App\Enums\RoleEnum::COUNTRY_ADMIN->value) => route('country.dashboard'),
-                                $user->hasRole(\App\Enums\RoleEnum::ORGANIZATION_ADMIN->value) => route('organization.dashboard'),
-                                $user->hasRole(\App\Enums\RoleEnum::JUDGE->value) => route('judge.dashboard'),
-                                default => route('participant.dashboard'),
-                            };
-                        @endphp
-                        <a href="{{ $dashboardRoute }}" class="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-center font-black text-xs shadow-md transition flex items-center justify-center gap-2">
-                            <span>{{ __('messages.dashboard') }}</span>
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="w-full py-3 rounded-xl border-2 border-slate-200 text-center font-black text-xs text-[#06205C] hover:bg-slate-50 transition flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
-                            <span>{{ __('messages.login') }}</span>
-                        </a>
-                        <a href="{{ route('registration') }}" class="w-full py-3 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-center font-black text-xs shadow-lg shadow-blue-500/20 transition flex items-center justify-center gap-2">
-                            <span>{{ __('messages.register') }}</span>
-                        </a>
-                    @endguest
-                </div>
-
-            </div>
-        </div>
-    </template>
 </header>

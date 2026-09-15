@@ -12,6 +12,8 @@ enum ParticipantStatus: string
     case APPROVED = 'APPROVED';
     case REJECTED = 'REJECTED';
     case QUALIFIED = 'QUALIFIED';
+    case QUALIFIED_REGIONAL = 'QUALIFIED_REGIONAL';
+    case QUALIFIED_NATIONAL = 'QUALIFIED_NATIONAL';
     case DISQUALIFIED = 'DISQUALIFIED';
     case WITHDRAWN = 'WITHDRAWN';
     case COMPLETED = 'COMPLETED';
@@ -27,6 +29,8 @@ enum ParticipantStatus: string
             self::APPROVED => 'مقبول',
             self::REJECTED => 'مرفوض',
             self::QUALIFIED => 'متأهل',
+            self::QUALIFIED_REGIONAL => 'مؤهل للبطولة الجهوية',
+            self::QUALIFIED_NATIONAL => 'مؤهل للبطولة الوطنية',
             self::DISQUALIFIED => 'مستبعد',
             self::WITHDRAWN => 'منسحب',
             self::COMPLETED => 'مكتمل',

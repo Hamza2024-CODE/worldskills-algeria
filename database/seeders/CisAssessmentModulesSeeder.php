@@ -13,7 +13,7 @@ class CisAssessmentModulesSeeder extends Seeder
     public function run(): void
     {
         $edition = Edition::where('is_active', true)->first() 
-            ?? Edition::firstOrCreate(['year' => 2027], ['name_ar' => 'أولمبياد المهن 2027', 'name_fr' => 'WorldSkills Algeria 2027', 'name_en' => 'WorldSkills Algeria 2027', 'is_active' => true]);
+            ?? Edition::firstOrCreate(['year' => 2026], ['name_ar' => 'أولمبياد المهن 2026', 'name_fr' => 'WorldSkills Algeria 2026', 'name_en' => 'WorldSkills Algeria 2026', 'is_active' => true]);
 
         $skills = Skill::where('is_active', true)->get();
 

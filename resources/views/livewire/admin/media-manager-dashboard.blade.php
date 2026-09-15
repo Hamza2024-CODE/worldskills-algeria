@@ -1,18 +1,13 @@
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-slate-900 tracking-tight">
-                {{ app()->getLocale() === 'fr' ? 'Centre Média & Couverture Presse' : (app()->getLocale() === 'en' ? 'Media & Press Control Center' : 'لوحة إدارة الإعلام والأخبار والمحتوى الرقمي') }}
-            </h1>
-            <p class="text-xs font-bold text-slate-500 mt-1">
-                {{ app()->getLocale() === 'fr' ? 'Gestion des articles, galeries photos, vidéos et annonces officielles.' : (app()->getLocale() === 'en' ? 'Manage news articles, photo galleries, video feeds, and announcements.' : 'لوحة إدارة الإعلام والأخبار والمحتوى الرقمي — إدارة المقالات ومعارض الصور والفيديوهات.') }}
-            </p>
-        </div>
-        <a href="{{ route('admin.cms.homepage') }}" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs transition touch-target inline-flex items-center gap-2 self-start sm:self-auto">
+    <x-dashboard.page-header
+        :title="app()->getLocale() === 'fr' ? 'Centre Média & Couverture Presse' : (app()->getLocale() === 'en' ? 'Media & Press Control Center' : 'لوحة إدارة الإعلام والأخبار والمحتوى الرقمي')"
+        :subtitle="app()->getLocale() === 'fr' ? 'Gestion des articles, galeries photos, vidéos et annonces officielles.' : (app()->getLocale() === 'en' ? 'Manage news articles, photo galleries, video feeds, and announcements.' : 'لوحة إدارة الإعلام والأخبار والمحتوى الرقمي — إدارة المقالات ومعارض الصور والفيديوهات.')"
+    >
+        <a href="{{ route('admin.cms.homepage') }}" class="px-5 py-2.5 rounded-2xl bg-white text-[#06205C] hover:bg-blue-50 font-black text-xs transition shadow-xl inline-flex items-center gap-2">
             <span>{{ app()->getLocale() === 'fr' ? 'Nouveau Contenu' : (app()->getLocale() === 'en' ? 'Publish Content' : 'إضافة مقال جديد') }}</span>
         </a>
-    </div>
+    </x-dashboard.page-header>
 
     <!-- KPI Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
