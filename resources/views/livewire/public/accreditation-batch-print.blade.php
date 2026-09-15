@@ -169,23 +169,23 @@
                             </div>
                         </div>
 
-                        {{-- 3. BOTTOM SECTION: USER DETAILS + EVENT PLATFORM LOGO --}}
-                        <div class="pt-2 pb-1 flex items-center justify-between border-t border-white/20 px-1 text-right shrink-0">
-                            {{-- User Name & Email --}}
+                        {{-- 3. BOTTOM SECTION: USER DETAILS + EVENT PLATFORM LOGO (HIGH-CONTRAST BLACK & BLUE) --}}
+                        <div class="pt-2 pb-1.5 px-3 rounded-2xl bg-white/95 border border-slate-200 flex items-center justify-between text-right shrink-0 shadow-xs">
+                            {{-- User Name & Latin Name --}}
                             <div class="space-y-0.5 truncate max-w-[180px]">
-                                <h2 class="text-base font-black text-white tracking-tight truncate leading-tight">{{ $nameAr }}</h2>
-                                <p class="text-[10px] font-mono font-bold text-slate-200 truncate" dir="ltr">{{ $nameLatin }}</p>
+                                <h2 class="text-base font-black text-[#041235] tracking-tight truncate leading-tight">{{ $nameAr }}</h2>
+                                <p class="text-[10px] font-mono font-bold text-[#0052CC] truncate" dir="ltr">{{ $nameLatin }}</p>
                             </div>
 
                             {{-- Bottom Left Event Logo --}}
                             <div class="shrink-0 pl-1">
-                                <img src="/logo.svg" alt="WorldSkills Event Logo" class="h-8 w-auto object-contain brightness-0 invert opacity-95">
+                                <img src="/logo.svg" alt="WorldSkills Event Logo" class="h-7 w-auto object-contain">
                             </div>
                         </div>
 
                         {{-- 4. SOVEREIGN ROLE TITLE BANNER --}}
-                        <div class="pt-2 border-t border-white/20 shrink-0">
-                            <span class="text-[11px] font-black tracking-widest uppercase block text-center py-1 rounded-xl bg-white/10 backdrop-blur-md border border-white/20" style="color: {{ $theme['accent'] }};">
+                        <div class="pt-2 shrink-0">
+                            <span class="text-[11px] font-black tracking-widest uppercase block text-center py-1.5 rounded-xl bg-white/95 text-[#0052CC] border border-blue-200 shadow-xs">
                                 {{ $theme['badge'] }}
                             </span>
                         </div>

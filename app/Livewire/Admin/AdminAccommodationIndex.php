@@ -38,15 +38,30 @@ class AdminAccommodationIndex extends Component
     #[Validate('nullable')]       public string $status         = 'AVAILABLE';
 
     // Rooms sub-form
-    public bool   $roomsFormOpen        = false;
-    public ?int   $roomsAccommodationId = null;
+    public bool   $roomsFormOpen          = false;
+    public ?int   $roomsAccommodationId   = null;
     public string $roomsAccommodationName = '';
-    public array  $roomsList            = [];
+    public array  $roomsList              = [];
+    public string $filterRoomBuilding     = '';
 
-    // New room fields
+    // Single room fields
+    public string $new_building    = 'A';
+    public string $custom_building = '';
+    public string $new_floor       = '';
     public string $new_room_number = '';
-    public ?int   $new_capacity    = null;
-    public string $new_gender      = '';
+    public ?int   $new_capacity    = 2;
+    public string $new_gender      = 'any';
+
+    // Batch room generation
+    public bool   $batchMode              = false;
+    public string $batch_building         = 'A';
+    public string $batch_custom_building  = '';
+    public string $batch_floor            = '';
+    public int    $batch_start            = 101;
+    public int    $batch_end              = 110;
+    public int    $batch_capacity         = 2;
+    public string $batch_gender           = 'any';
+    public string $batch_prefix           = '';
 
     // Drawer & Delete
     public bool            $drawerOpen           = false;
@@ -110,49 +125,128 @@ class AdminAccommodationIndex extends Component
 
         $this->formOpen = false;
         $this->resetForm();
-        session()->flash('success', 'تم حفظ السكن بنجاح.');
+        session()->flash('success', 'تم حفظ بيانات الفندق والسكن بنجاح.');
     }
 
     /* ─── Rooms Management ─── */
     public function openRooms(int $id): void
     {
-        $accommodation = Accommodation::with('rooms')->findOrFail($id);
+        $accommodation = Accommodation::with(['rooms' => function ($q) {
+            $q->orderBy('building')->orderBy('room_number');
+        }])->findOrFail($id);
+
         $this->roomsAccommodationId   = $id;
         $this->roomsAccommodationName = $accommodation->name_ar;
         $this->roomsList              = $accommodation->rooms->toArray();
+        $this->new_building           = 'A';
+        $this->custom_building        = '';
+        $this->new_room_number        = '';
+        $this->new_capacity           = 2;
+        $this->new_gender             = 'any';
+        $this->batchMode              = false;
+        $this->filterRoomBuilding     = '';
         $this->roomsFormOpen          = true;
     }
 
     public function addRoom(): void
     {
-        if (!$this->new_room_number) return;
+        $this->validate([
+            'new_room_number' => 'required|string|max:50',
+            'new_capacity'    => 'required|integer|min:1|max:20',
+        ], [
+            'new_room_number.required' => 'يرجى إدخال رقم الغرفة.',
+            'new_capacity.required'    => 'يرجى تحديد سعة الغرفة بالأسرة.',
+        ]);
+
+        $resolvedBuilding = $this->new_building === 'custom'
+            ? trim($this->custom_building ?: 'A')
+            : trim($this->new_building ?: 'A');
+
         AccommodationRoom::create([
             'accommodation_id' => $this->roomsAccommodationId,
-            'room_number'      => $this->new_room_number,
-            'capacity'         => $this->new_capacity ?? 1,
-            'gender'           => $this->new_gender ?: null,
+            'building'         => $resolvedBuilding,
+            'floor'            => $this->new_floor ?: null,
+            'room_number'      => trim($this->new_room_number),
+            'capacity'         => $this->new_capacity ?? 2,
+            'gender'           => $this->new_gender ?: 'any',
             'status'           => 'AVAILABLE',
         ]);
+
         $this->new_room_number = '';
-        $this->new_capacity    = null;
-        $this->new_gender      = '';
-        $accommodation = Accommodation::with('rooms')->findOrFail($this->roomsAccommodationId);
-        $this->roomsList = $accommodation->rooms->toArray();
-        session()->flash('success', 'تمت إضافة الغرفة بنجاح.');
+        $this->refreshRoomsList();
+        session()->flash('room_success', "تمت إضافة الغرفة بنجاح في العمارة/البلوك ({$resolvedBuilding}).");
+    }
+
+    public function addBatchRooms(): void
+    {
+        $this->validate([
+            'batch_start'    => 'required|integer|min:1',
+            'batch_end'      => 'required|integer|gte:batch_start',
+            'batch_capacity' => 'required|integer|min:1|max:20',
+        ], [
+            'batch_start.required' => 'يرجى إدخال بداية ترقيم الغرف.',
+            'batch_end.gte'        => 'نهاية الترقيم يجب أن تكون أكبر من أو تساوي البداية.',
+        ]);
+
+        $resolvedBuilding = $this->batch_building === 'custom'
+            ? trim($this->batch_custom_building ?: 'A')
+            : trim($this->batch_building ?: 'A');
+
+        $count = 0;
+        for ($i = $this->batch_start; $i <= $this->batch_end; $i++) {
+            $roomNum = ($this->batch_prefix ? trim($this->batch_prefix) : '') . $i;
+
+            AccommodationRoom::firstOrCreate(
+                [
+                    'accommodation_id' => $this->roomsAccommodationId,
+                    'room_number'      => $roomNum,
+                    'building'         => $resolvedBuilding,
+                ],
+                [
+                    'floor'    => $this->batch_floor ?: null,
+                    'capacity' => $this->batch_capacity ?: 2,
+                    'gender'   => $this->batch_gender ?: 'any',
+                    'status'   => 'AVAILABLE',
+                ]
+            );
+            $count++;
+        }
+
+        $this->refreshRoomsList();
+        $this->batchMode = false;
+        session()->flash('room_success', "تم توليد {$count} غرف بنجاح في العمارة/البلوك ({$resolvedBuilding}) من الغرفة {$this->batch_start} إلى {$this->batch_end}.");
     }
 
     public function deleteRoom(int $roomId): void
     {
-        AccommodationRoom::findOrFail($roomId)->delete();
-        $accommodation = Accommodation::with('rooms')->findOrFail($this->roomsAccommodationId);
+        AccommodationRoom::where('id', $roomId)
+            ->where('accommodation_id', $this->roomsAccommodationId)
+            ->delete();
+
+        $this->refreshRoomsList();
+        session()->flash('room_success', 'تم حذف الغرفة بنجاح.');
+    }
+
+    private function refreshRoomsList(): void
+    {
+        if (!$this->roomsAccommodationId) return;
+
+        $accommodation = Accommodation::with(['rooms' => function ($q) {
+            $q->orderBy('building')->orderBy('room_number');
+        }])->findOrFail($this->roomsAccommodationId);
+
         $this->roomsList = $accommodation->rooms->toArray();
     }
 
     /* ─── Drawer & Delete Handlers ─── */
     public function openDrawer(int $id): void
     {
-        $this->selectedAccommodation = Accommodation::withCount('rooms')->with('rooms')->find($id);
-        $this->drawerOpen            = true;
+        $this->selectedAccommodation = Accommodation::withCount('rooms')
+            ->with(['rooms' => function ($q) {
+                $q->orderBy('building')->orderBy('room_number');
+            }])
+            ->find($id);
+        $this->drawerOpen = true;
     }
 
     public function confirmDelete(int $id): void
@@ -223,6 +317,7 @@ class AdminAccommodationIndex extends Component
             'الدولة / الوفد',
             'التخصص المهني',
             'مقر الإقامة / الفندق',
+            'العمارة / البلوك',
             'رقم الغرفة',
             'حالة الوصول والتسكين',
             'تاريخ ووقت التسكين'
@@ -234,6 +329,7 @@ class AdminAccommodationIndex extends Component
             $country = $reg?->country?->name_ar ?? '—';
             $skill = $reg?->skill?->name_ar ?? '—';
             $accommodation = $alloc->room?->accommodation?->name_ar ?? '—';
+            $building = $alloc->room?->building ? ('بلوك ' . $alloc->room->building) : '—';
             $room = $alloc->room?->room_number ?? '—';
 
             $csvData[] = [
@@ -243,6 +339,7 @@ class AdminAccommodationIndex extends Component
                 $country,
                 $skill,
                 $accommodation,
+                $building,
                 $room,
                 $alloc->status === 'ACTIVE' ? 'تم الوصول والتسكين' : 'قيد الانتظار',
                 $alloc->check_in_at ? $alloc->check_in_at->format('Y-m-d H:i') : '—',

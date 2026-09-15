@@ -337,55 +337,57 @@
                 <button @click="showBadgeModal = false" class="text-slate-400 hover:text-slate-600 font-bold text-sm"><x-ws.icon name="x-mark" class="w-4 h-4" /></button>
             </div>
 
-            <!-- Official Badge Card Display -->
-            <div class="bg-gradient-to-b from-[#06205C] to-[#020A24] rounded-3xl p-6 text-white space-y-4 shadow-xl border border-white/20 relative">
+            <!-- Official Badge Card Display (High-Contrast Black & Blue) -->
+            <div class="bg-white rounded-3xl p-6 text-[#041235] space-y-4 shadow-xl border-2 border-slate-200 relative">
                 
-                <div class="flex items-center justify-between">
-                    <span class="px-3 py-1 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black tracking-widest uppercase">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <span class="px-3.5 py-1 rounded-full bg-[#0052CC] text-white text-[10px] font-black tracking-widest uppercase shadow-xs">
                         WORLDSKILLS ALGERIA
                     </span>
-                    <span class="text-xs font-mono font-bold text-blue-200">
+                    <span class="text-xs font-mono font-black text-[#041235]">
                         {{ $reg?->registration_number ?? 'WSAP-2026-DZ' }}
                     </span>
                 </div>
 
                 <!-- Competitor Photo & Name -->
                 <div class="flex flex-col items-center space-y-2">
-                    <div class="w-24 h-24 rounded-2xl border-2 border-amber-400 overflow-hidden shadow-md bg-slate-800">
+                    <div class="w-24 h-24 rounded-2xl border-2 border-[#0052CC] overflow-hidden shadow-md bg-slate-100">
                         @if($photoUrl)
                             <img src="{{ $photoUrl }}" alt="{{ $candidateName }}" class="w-full h-full object-cover">
                         @else
-                            <div class="w-full h-full flex items-center justify-center text-white font-black text-3xl bg-[#06205C]">
+                            <div class="w-full h-full flex items-center justify-center text-white font-black text-3xl bg-[#041235]">
                                 {{ mb_substr($candidateName ?? 'م', 0, 1) }}
                             </div>
                         @endif
                     </div>
-                    <h4 class="text-lg font-black text-white">{{ $candidateName }}</h4>
-                    <span class="text-xs text-amber-300 font-bold">{{ $reg?->skill?->getLocalized('name') ?? 'التخصص التنافسي الموحد' }}</span>
+                    <h4 class="text-xl font-black text-[#041235]">{{ $candidateName }}</h4>
+                    <span class="text-xs text-[#0052CC] font-black bg-blue-50 px-3 py-1 rounded-lg border border-blue-200">
+                        {{ $reg?->skill?->getLocalized('name') ?? 'التخصص التنافسي الموحد' }}
+                    </span>
                 </div>
 
                 <!-- QR Code Representation -->
-                <div class="bg-white p-3 rounded-2xl w-36 h-36 mx-auto flex items-center justify-center border-2 border-amber-400/50 shadow-inner">
+                <div class="bg-white p-3 rounded-2xl w-40 h-40 mx-auto flex items-center justify-center border-2 border-[#0052CC]/40 shadow-sm">
                     @php
                         $qrTargetUrl = $reg 
-                            ? route('official.certificate', ['identifier' => $reg->registration_number])
+                            ? route('verify', ['token' => $reg->verification_token ?? $reg->registration_number])
                             : route('home');
                     @endphp
-                    <img src="{{ \App\Services\QrCodeService::generateDataUri($qrTargetUrl, 180) }}" alt="QR Accreditation Pass Code" class="w-full h-full object-contain">
+                    <img src="{{ \App\Services\QrCodeService::generateDataUri($qrTargetUrl, 200) }}" alt="QR Accreditation Pass Code" class="w-full h-full object-contain">
                 </div>
 
-                <div class="space-y-1 text-center">
-                    <p class="text-xs text-amber-200 font-bold">
+                <div class="space-y-1.5 text-center">
+                    <p class="text-xs text-[#0052CC] font-black">
                         {{ app()->getLocale() === 'fr' ? 'Pass QR d\'Accréditation Officiel' : (app()->getLocale() === 'en' ? 'Official Accreditation QR Pass' : 'شفرة التوثيق والاعتماد الأولمبي الرقمي') }}
                     </p>
-                    <p class="text-[10px] text-slate-300 font-medium max-w-xs mx-auto leading-snug">
+                    <p class="text-[11px] text-[#041235] font-bold max-w-xs mx-auto leading-relaxed">
                         {{ app()->getLocale() === 'fr' 
                             ? 'Scannez ce code QR avec un smartphone pour vérifier l\'homologation du candidat en temps réel.' 
                             : (app()->getLocale() === 'en' 
                                 ? 'Scan this QR code with any smartphone to verify candidate accreditation in real time.' 
-                                : 'رمز التوثيق والاعتماد الأولمبي المشفر — يتيح للجان المنظمة والاستقبال المسح الفوري بالهاتف للتأكد من هوية المتنافس وتأهله.') }}
+                                : 'رمز التوثيق والاعتماد الأولمبي المعتمد — يتيح للجان المنظمة والاستقبال المسح الفوري بالهاتف للتأكد من هوية المتنافس وتأهله.') }}
                     </p>
-                    <p class="text-[10px] text-amber-300/80 font-mono pt-1">
+                    <p class="text-xs text-[#041235] font-mono font-black pt-1">
                         Ref: {{ $reg?->registration_number ?? 'WSAP-2026-DZ' }}
                     </p>
                 </div>

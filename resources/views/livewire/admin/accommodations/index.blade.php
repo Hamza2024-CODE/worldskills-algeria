@@ -265,6 +265,10 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             </td>
                             <td class="px-5 py-4 text-end">
                                 <div class="flex items-center justify-end gap-2">
+                                    <button wire:click="openRooms({{ $acc->id }})" title="إدارة غرف وعمارات الفندق" class="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs flex items-center gap-1.5 shadow-sm transition cursor-pointer">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                        <span>إدارة الغرف</span>
+                                    </button>
                                     <button wire:click="openEdit({{ $acc->id }})" title="تعديل بيانات الفندق" class="p-2 text-slate-500 hover:text-blue-600 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     </button>
@@ -479,63 +483,281 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
         </div>
     @endif
 
-    {{-- ── 8. MODAL 3: ROOMS SUB-FORM MODAL ── --}}
+    {{-- ── 8. MODAL 3: ROOMS & BLOCKS SUB-FORM MODAL ── --}}
     @if($roomsFormOpen)
-        <div class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-            <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto my-auto animate-scale-up">
+        <div class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[92vh] overflow-y-auto my-auto animate-scale-up">
                 
+                {{-- Header --}}
                 <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/80 pb-4">
-                    <div>
-                        <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white">
-                            إدارة غرف {{ $roomsAccommodationName }}
-                        </h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold mt-0.5">إضافة وتعديل غرف الفندق المخصص للوفود.</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center border border-blue-200 dark:border-blue-800">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                                إدارة غرف وعمارات: {{ $roomsAccommodationName }}
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold mt-0.5">
+                                إضافة وتصنيف الغرف حسب البلوك / العمارة (A, B, C, D...) المخصصة للوفود.
+                            </p>
+                        </div>
                     </div>
                     <button wire:click="$set('roomsFormOpen', false)" class="p-2 text-slate-400 hover:text-slate-600 font-black text-lg"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
                 </div>
 
-                {{-- Add Room Mini-Form --}}
-                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 space-y-3">
-                    <span class="text-xs font-black text-slate-700 dark:text-slate-300 block">إضافة غرفة جديدة:</span>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <input type="text" wire:model="new_room_number" placeholder="رقم الغرفة (101)" class="px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-800 dark:text-white">
-                        <input type="number" wire:model="new_capacity" placeholder="السعة (عدد الأسرة)" class="px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-800 dark:text-white">
-                        <button wire:click="addRoom" type="button" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md transition">
-                            إضافة الغرفة
-                        </button>
+                {{-- Alert Messages --}}
+                @if(session()->has('room_success'))
+                    <div class="p-3 bg-emerald-50 border border-emerald-300 rounded-2xl text-emerald-800 text-xs font-black flex items-center gap-2 animate-fade-in">
+                        <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>{{ session('room_success') }}</span>
                     </div>
+                @endif
+
+                @error('new_room_number') <span class="text-xs font-bold text-rose-500 block">{{ $message }}</span> @enderror
+                @error('new_capacity') <span class="text-xs font-bold text-rose-500 block">{{ $message }}</span> @enderror
+                @error('batch_start') <span class="text-xs font-bold text-rose-500 block">{{ $message }}</span> @enderror
+                @error('batch_end') <span class="text-xs font-bold text-rose-500 block">{{ $message }}</span> @enderror
+
+                {{-- Mode Switch Tabs --}}
+                <div class="flex items-center gap-2 p-1 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700">
+                    <button type="button" wire:click="$set('batchMode', false)" class="flex-1 py-2 px-4 rounded-xl text-xs font-black transition {{ !$batchMode ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900' }}">
+                        إضافة غرفة فردية
+                    </button>
+                    <button type="button" wire:click="$set('batchMode', true)" class="flex-1 py-2 px-4 rounded-xl text-xs font-black transition {{ $batchMode ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900' }}">
+                        ⚡ توليد دفعة غرف سريعة (Batch)
+                    </button>
                 </div>
 
-                {{-- Existing Rooms Table --}}
-                <div class="space-y-2">
-                    <span class="text-xs font-black text-slate-700 dark:text-slate-300 block">الغرف المسجلة في هذا السكن:</span>
-                    <div class="max-h-60 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-700 border border-slate-200 dark:border-slate-700 rounded-2xl">
+                {{-- MODE 1: SINGLE ROOM CREATION --}}
+                @if(!$batchMode)
+                    <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 space-y-4">
+                        
+                        {{-- 1. Building / Block Selection --}}
+                        <div class="space-y-2">
+                            <label class="block text-xs font-black text-slate-800 dark:text-slate-200">
+                                🏢 العمارة أو البلوك (Building / Block):
+                            </label>
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                @foreach(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'] as $blk)
+                                    <button 
+                                        type="button" 
+                                        wire:click="$set('new_building', '{{ $blk }}')" 
+                                        class="px-3.5 py-1.5 rounded-xl text-xs font-black transition cursor-pointer {{ $new_building === $blk ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-400' : 'bg-white dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700' }}"
+                                    >
+                                        بلوك {{ $blk }}
+                                    </button>
+                                @endforeach
+                                <button 
+                                    type="button" 
+                                    wire:click="$set('new_building', 'custom')" 
+                                    class="px-3.5 py-1.5 rounded-xl text-xs font-black transition cursor-pointer {{ $new_building === 'custom' ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-400' : 'bg-white dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700' }}"
+                                >
+                                    + كتابة حرف/اسم آخر
+                                </button>
+                            </div>
+
+                            @if($new_building === 'custom')
+                                <input 
+                                    type="text" 
+                                    wire:model="custom_building" 
+                                    placeholder="اكتب اسم العمارة أو الرمز (مثال: Bloc VIP، الجناح الرئاسي، عمارة 1)" 
+                                    class="w-full px-3.5 py-2 rounded-xl border border-blue-300 dark:border-blue-700 text-xs font-bold bg-white dark:bg-slate-800 text-slate-900 dark:text-white mt-1"
+                                >
+                            @endif
+                        </div>
+
+                        {{-- 2. Room Details Grid --}}
+                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+                            <div class="sm:col-span-1">
+                                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">رقم الغرفة *</label>
+                                <input 
+                                    type="text" 
+                                    wire:model="new_room_number" 
+                                    placeholder="مثال: 101 أو 204" 
+                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                                >
+                            </div>
+                            <div class="sm:col-span-1">
+                                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">الطابق (اختياري)</label>
+                                <input 
+                                    type="text" 
+                                    wire:model="new_floor" 
+                                    placeholder="الطابق 1" 
+                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                                >
+                            </div>
+                            <div class="sm:col-span-1">
+                                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">السعة (عدد الأسرة) *</label>
+                                <input 
+                                    type="number" 
+                                    wire:model="new_capacity" 
+                                    min="1" 
+                                    max="20" 
+                                    placeholder="2" 
+                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                                >
+                            </div>
+                            <div class="sm:col-span-1">
+                                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">تخصيص الجنس</label>
+                                <select 
+                                    wire:model="new_gender" 
+                                    class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                                >
+                                    <option value="any">عام / مختلط</option>
+                                    <option value="male">ذكور فقط</option>
+                                    <option value="female">إناث فقط</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end pt-1">
+                            <button 
+                                wire:click="addRoom" 
+                                type="button" 
+                                class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md transition cursor-pointer flex items-center justify-center gap-2"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <span>حفظ وإضافة الغرفة في العمارة</span>
+                            </button>
+                        </div>
+                    </div>
+                @else
+                    {{-- MODE 2: BATCH GENERATOR --}}
+                    <div class="p-5 rounded-2xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/80 space-y-4">
+                        <div class="flex items-center gap-2 border-b border-blue-200 dark:border-blue-800/80 pb-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                            <h4 class="text-xs font-black text-[#06205C] dark:text-blue-300">توليد مجموعة غرف دفعة واحدة في عمارة محددة</h4>
+                        </div>
+
+                        {{-- Batch Building Selection --}}
+                        <div class="space-y-2">
+                            <label class="block text-xs font-black text-slate-800 dark:text-slate-200">
+                                اختر العمارة / البلوك المستهدف:
+                            </label>
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                @foreach(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'] as $blk)
+                                    <button 
+                                        type="button" 
+                                        wire:click="$set('batch_building', '{{ $blk }}')" 
+                                        class="px-3.5 py-1.5 rounded-xl text-xs font-black transition cursor-pointer {{ $batch_building === $blk ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-400' : 'bg-white dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700' }}"
+                                    >
+                                        بلوك {{ $blk }}
+                                    </button>
+                                @endforeach
+                                <button 
+                                    type="button" 
+                                    wire:click="$set('batch_building', 'custom')" 
+                                    class="px-3.5 py-1.5 rounded-xl text-xs font-black transition cursor-pointer {{ $batch_building === 'custom' ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-400' : 'bg-white dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700' }}"
+                                >
+                                    + كتابة اسم آخر
+                                </button>
+                            </div>
+
+                            @if($batch_building === 'custom')
+                                <input 
+                                    type="text" 
+                                    wire:model="batch_custom_building" 
+                                    placeholder="اكتب اسم العمارة" 
+                                    class="w-full px-3.5 py-2 rounded-xl border border-blue-300 text-xs font-bold bg-white text-slate-900 mt-1"
+                                >
+                            @endif
+                        </div>
+
+                        {{-- Batch Range --}}
+                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">من غرفة رقم *</label>
+                                <input type="number" wire:model="batch_start" class="w-full px-3 py-2 rounded-xl border border-blue-200 text-xs font-bold bg-white text-slate-900">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">إلى غرفة رقم *</label>
+                                <input type="number" wire:model="batch_end" class="w-full px-3 py-2 rounded-xl border border-blue-200 text-xs font-bold bg-white text-slate-900">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">السعة لكل غرفة *</label>
+                                <input type="number" wire:model="batch_capacity" min="1" max="20" class="w-full px-3 py-2 rounded-xl border border-blue-200 text-xs font-bold bg-white text-slate-900">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">الجنس</label>
+                                <select wire:model="batch_gender" class="w-full px-3 py-2 rounded-xl border border-blue-200 text-xs font-bold bg-white text-slate-900">
+                                    <option value="any">عام / مختلط</option>
+                                    <option value="male">ذكور فقط</option>
+                                    <option value="female">إناث فقط</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end pt-1">
+                            <button 
+                                wire:click="addBatchRooms" 
+                                type="button" 
+                                class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md transition cursor-pointer flex items-center justify-center gap-2"
+                            >
+                                <span>⚡ توليد وحفظ كافة الغرف في العمارة</span>
+                            </button>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Existing Rooms List Grouped by Building --}}
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black text-slate-900 dark:text-white flex items-center gap-2">
+                            <span>الغرف المسجلة في هذا السكن:</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-[11px] border border-blue-200 dark:border-blue-800">
+                                {{ count($roomsList) }} غرفة
+                            </span>
+                        </span>
+                    </div>
+
+                    <div class="max-h-64 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-700 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-900/40">
                         @forelse($roomsList as $rmItem)
-                            <div class="p-3 flex items-center justify-between text-xs font-bold">
-                                <div>
-                                    <span class="font-mono font-black text-blue-600 dark:text-blue-400">غرفة {{ $rmItem['room_number'] }}</span>
-                                    <span class="text-slate-400 mx-2">•</span>
-                                    <span class="text-slate-600 dark:text-slate-300">{{ $rmItem['capacity'] }} أسرة</span>
+                            <div class="p-3.5 flex items-center justify-between hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="px-2.5 py-1 rounded-lg text-xs font-black bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800 font-mono">
+                                        {{ !empty($rmItem['building']) ? 'عمارة / بلوك ' . $rmItem['building'] : 'بلوك عام' }}
+                                    </span>
+                                    <span class="font-mono font-black text-slate-900 dark:text-white text-xs">
+                                        غرفة {{ $rmItem['room_number'] }}
+                                    </span>
+                                    <span class="text-slate-400">•</span>
+                                    <span class="text-slate-600 dark:text-slate-300 text-xs font-bold">
+                                        {{ $rmItem['capacity'] }} أسرة
+                                    </span>
+                                    @if(!empty($rmItem['floor']))
+                                        <span class="text-slate-400">•</span>
+                                        <span class="text-slate-500 text-[11px]">الطابق {{ $rmItem['floor'] }}</span>
+                                    @endif
                                 </div>
-                                <button wire:click="deleteRoom({{ $rmItem['id'] }})" class="text-rose-500 hover:text-rose-700 text-xs font-bold">حذف</button>
+                                <button 
+                                    wire:click="deleteRoom({{ $rmItem['id'] }})" 
+                                    wire:confirm="هل تريد بالتأكيد حذف هذه الغرفة؟"
+                                    class="px-2.5 py-1 text-rose-600 hover:text-rose-800 hover:bg-rose-50 dark:hover:bg-rose-950 rounded-lg text-xs font-black transition cursor-pointer"
+                                >
+                                    حذف
+                                </button>
                             </div>
                         @empty
-                            <div class="p-6 text-center text-slate-400 font-bold text-xs">لا توجد غرف مسجلة حتى الآن</div>
+                            <div class="p-8 text-center text-slate-400 font-bold text-xs">
+                                لا توجد غرف مسجلة في هذا السكن حتى الآن. استخدم النموذج أعلاه لإضافة غرف وعمارات.
+                            </div>
                         @endforelse
                     </div>
                 </div>
 
+                {{-- Footer --}}
                 <div class="flex items-center justify-end pt-3 border-t border-slate-100 dark:border-slate-700">
-                    <button wire:click="$set('roomsFormOpen', false)" type="button" class="px-5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs">
-                        إغلاق Window
+                    <button wire:click="$set('roomsFormOpen', false)" type="button" class="px-6 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs transition cursor-pointer">
+                        إغلاق النافذة
                     </button>
                 </div>
 
             </div>
         </div>
     @endif
-
-    {{-- ── 9. MODAL 4: CONFIRM DELETE MODAL ── --}}
+    
+{{-- ── 9. MODAL 4: CONFIRM DELETE MODAL ── --}}
     @if($deleteConfirmOpen)
         <div class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl border border-slate-200 dark:border-slate-700 animate-scale-up">

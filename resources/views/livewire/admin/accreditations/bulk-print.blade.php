@@ -156,18 +156,18 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between w-full px-2 mt-1 gap-2">
+                    <div class="flex items-center justify-between w-full px-3 py-2 rounded-2xl bg-white/95 text-slate-900 border border-slate-200 mt-1 gap-2 shadow-xs">
                         <div class="text-right flex-1 min-w-0">
-                            <h2 class="text-white text-sm font-extrabold truncate">{{ $item['nameAr'] }}</h2>
-                            <div class="text-xs font-mono font-bold text-slate-300 truncate" dir="ltr">{{ $item['nameLatin'] }}</div>
+                            <h2 class="text-[#041235] text-sm font-black truncate">{{ $item['nameAr'] }}</h2>
+                            <div class="text-xs font-mono font-bold text-[#0052CC] truncate" dir="ltr">{{ $item['nameLatin'] }}</div>
                         </div>
                         <div class="shrink-0" dir="ltr">
-                            <img src="/logo.svg" alt="WorldSkills" class="h-8 w-auto filter brightness-0 invert">
+                            <img src="/logo.svg" alt="WorldSkills" class="h-7 w-auto">
                         </div>
                     </div>
 
                     <div class="w-full text-center mt-2 mb-1">
-                        <h3 class="text-white text-xs font-black tracking-wide uppercase truncate" dir="ltr">{{ $theme['badge'] }}</h3>
+                        <h3 class="text-[#0052CC] text-xs font-black tracking-wide uppercase truncate py-1.5 px-3 bg-white/95 rounded-xl border border-blue-200 shadow-xs" dir="ltr">{{ $theme['badge'] }}</h3>
                     </div>
                 </div>
             </div>
