@@ -5,8 +5,10 @@ namespace App\Livewire\Admin;
 use App\Models\Badge;
 use App\Models\BadgeZonePermission;
 use App\Models\DelegationMember;
+use App\Models\Registration;
 use App\Models\RoomAllocation;
 use App\Models\User;
+use App\Models\Zone;
 use App\Services\Rules\WsapAccessRulesEngine;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -18,17 +20,25 @@ class AdminQrScanner extends Component
     public ?User             $scannedUser        = null;
     public ?Badge            $scannedBadge       = null;
     public ?DelegationMember $delegationMember   = null;
+    public ?Registration     $registration       = null;
     public ?RoomAllocation   $roomAllocation     = null;
     public array             $zonePermissions    = [];
+    public array             $allZones           = [];
     public array             $accessDecision     = [];
     public bool              $showOverrideModal  = false;
     public string            $overrideReasonAr   = '';
+
+    public function mount(): void
+    {
+        $this->allZones = Zone::where('is_active', true)->get()->toArray();
+    }
 
     public function scan(WsapAccessRulesEngine $rulesEngine): void
     {
         $this->scannedUser      = null;
         $this->scannedBadge     = null;
         $this->delegationMember = null;
+        $this->registration     = null;
         $this->roomAllocation   = null;
         $this->zonePermissions  = [];
         $this->accessDecision   = [];
@@ -45,15 +55,46 @@ class AdminQrScanner extends Component
         $this->scannedUser     = $this->accessDecision['user'] ?? null;
 
         if (!$this->scannedUser) {
-            // Fallback user lookup by email, uuid, or ID
-            $this->scannedUser = User::with(['roles', 'country', 'wilaya', 'organization', 'participant.registrations'])
-                ->where('email', $clean)
-                ->orWhere('uuid', $clean)
-                ->orWhere('id', $clean)
-                ->first();
+            // Smart fallback user lookup
+            $this->scannedUser = User::with([
+                'roles',
+                'country',
+                'wilaya',
+                'organization',
+                'participant.registrations.skill',
+                'participant.registrations.country',
+            ])
+            ->where('email', $clean)
+            ->orWhere('uuid', $clean)
+            ->orWhere('id', $clean)
+            ->orWhereHas('participant.registrations', function($q) use ($clean) {
+                $q->where('registration_number', $clean);
+            })
+            ->first();
         } else {
-            // Ensure full relations loaded
-            $this->scannedUser->loadMissing(['roles', 'country', 'wilaya', 'organization', 'participant.registrations']);
+            $this->scannedUser->loadMissing([
+                'roles',
+                'country',
+                'wilaya',
+                'organization',
+                'participant.registrations.skill',
+                'participant.registrations.country',
+            ]);
+        }
+
+        if (!$this->scannedUser && str_contains($clean, '_')) {
+            $parts = explode('_', $clean);
+            $possibleEmail = end($parts);
+            if (filter_var($possibleEmail, FILTER_VALIDATE_EMAIL)) {
+                $this->scannedUser = User::with([
+                    'roles',
+                    'country',
+                    'wilaya',
+                    'organization',
+                    'participant.registrations.skill',
+                    'participant.registrations.country',
+                ])->where('email', $possibleEmail)->first();
+            }
         }
 
         if ($this->scannedUser) {
@@ -63,7 +104,15 @@ class AdminQrScanner extends Component
                 ->orWhere('email', $this->scannedUser->email)
                 ->first();
 
-            // Load room allocation & hotel details
+            // Load latest registration
+            if ($this->scannedUser->participant) {
+                $this->registration = Registration::with(['skill', 'country'])
+                    ->where('participant_id', $this->scannedUser->participant->id)
+                    ->latest()
+                    ->first();
+            }
+
+            // Load room allocation & accommodation
             $this->roomAllocation = RoomAllocation::with(['room.accommodation'])
                 ->where('user_id', $this->scannedUser->id)
                 ->first();
@@ -75,24 +124,43 @@ class AdminQrScanner extends Component
             }
         }
 
+        if (!$this->scannedBadge && $this->scannedUser) {
+            $this->scannedBadge = Badge::where('user_id', $this->scannedUser->id)->first();
+        }
+
         if ($this->scannedBadge) {
             $this->zonePermissions = BadgeZonePermission::with('zone')
                 ->where('badge_id', $this->scannedBadge->id)
                 ->get()
                 ->toArray();
+        }
 
-            if (empty($this->zonePermissions)) {
-                $allowedIds = $this->scannedBadge->allowed_zone_ids ?? [1, 2, 3, 4, 5];
-                $zones = \App\Models\Zone::whereIn('id', $allowedIds)->get();
-                foreach ($zones as $z) {
-                    $this->zonePermissions[] = [
-                        'zone_id'    => $z->id,
-                        'permission' => 'ALLOW',
-                        'zone'       => $z->toArray(),
-                    ];
-                }
+        // Build composite zone permissions list against all active zones
+        $zones = !empty($this->allZones) ? $this->allZones : Zone::all()->toArray();
+        $allowedIds = $this->scannedBadge?->allowed_zone_ids ?? [1, 2, 3, 4, 5];
+
+        $permissionMap = [];
+        foreach ($this->zonePermissions as $zp) {
+            if (isset($zp['zone_id'])) {
+                $permissionMap[$zp['zone_id']] = $zp['permission'] ?? 'ALLOW';
             }
         }
+
+        $compositePermissions = [];
+        foreach ($zones as $z) {
+            $zId = $z['id'];
+            $isExplicitAllowed = isset($permissionMap[$zId]) && $permissionMap[$zId] === 'ALLOW';
+            $isInAllowedArray = in_array($zId, $allowedIds);
+            
+            $permission = ($isExplicitAllowed || $isInAllowedArray) ? 'ALLOW' : 'DENY';
+            $compositePermissions[] = [
+                'zone_id'    => $zId,
+                'permission' => $permission,
+                'zone'       => $z,
+            ];
+        }
+
+        $this->zonePermissions = $compositePermissions;
     }
 
     public function executeOverride(WsapAccessRulesEngine $rulesEngine): void

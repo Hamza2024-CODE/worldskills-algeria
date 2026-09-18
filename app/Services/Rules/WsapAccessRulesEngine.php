@@ -65,7 +65,52 @@ class WsapAccessRulesEngine
 
         $user = $badge->user;
         if (!$user || !$user->is_active) {
-            return $this->deny('USER_INACTIVE', 'حساب المستخدم المعني غير نشط', 'User account is inactive', $badge, $zoneId, $serviceType, $serviceId, $scannerUserId);
+            return $this->deny('USER_INACTIVE', 'حساب المستخدم المعني غير نشط أو تم تجميده', 'User account is inactive', $badge, $zoneId, $serviceType, $serviceId, $scannerUserId);
+        }
+
+        // 3b. Delegation Member Status Check
+        $member = \App\Models\DelegationMember::where('user_id', $user->id)
+            ->orWhere('email', $user->email)
+            ->first();
+
+        if ($member) {
+            $mStatus = is_object($member->status) ? $member->status->value : (string) $member->status;
+            $mStatusUpper = strtoupper(trim($mStatus));
+            if (in_array($mStatusUpper, ['REJECTED', 'DISQUALIFIED', 'CANCELLED', 'SUSPENDED', 'REFUSED'])) {
+                $reason = !empty($member->rejection_reason) ? ' — السبب: ' . trim($member->rejection_reason) : '';
+                return $this->deny(
+                    'MEMBER_REJECTED',
+                    "اعتماد هذا العضو مرفوض في المنظومة ومحظور من الدخول{$reason}",
+                    "Member accreditation is REJECTED - Access prohibited{$reason}",
+                    $badge,
+                    $zoneId,
+                    $serviceType,
+                    $serviceId,
+                    $scannerUserId
+                );
+            }
+        }
+
+        // 3c. Participant Registration Status Check
+        if ($user->participant) {
+            $registration = \App\Models\Registration::where('participant_id', $user->participant->id)->latest()->first();
+            if ($registration) {
+                $rStatus = is_object($registration->status) ? $registration->status->value : (string) $registration->status;
+                $rStatusUpper = strtoupper(trim($rStatus));
+                if (in_array($rStatusUpper, ['REJECTED', 'DISQUALIFIED', 'CANCELLED', 'SUSPENDED', 'REFUSED'])) {
+                    $reason = !empty($registration->rejection_reason) ? ' — السبب: ' . trim($registration->rejection_reason) : (!empty($registration->notes) ? ' — السبب: ' . trim($registration->notes) : '');
+                    return $this->deny(
+                        'REGISTRATION_REJECTED',
+                        "ملف التسجيل مرفوض في المنظومة ومحظور من الدخول{$reason}",
+                        "Participant registration is REJECTED - Access prohibited{$reason}",
+                        $badge,
+                        $zoneId,
+                        $serviceType,
+                        $serviceId,
+                        $scannerUserId
+                    );
+                }
+            }
         }
 
         // 4. Anti-Passback Check
