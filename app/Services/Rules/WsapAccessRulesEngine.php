@@ -329,7 +329,7 @@ class WsapAccessRulesEngine
      */
     protected function resolveBadge(string $cleanBadge, string $rawBadge): ?Badge
     {
-        // Direct search on Badge
+        // 1. Direct search on Badge by access_token, badge_uuid, or id
         $badge = Badge::with(['user.roles', 'user.country', 'user.participant.registrations'])
             ->where('access_token', $cleanBadge)
             ->orWhere('badge_uuid', $cleanBadge)
@@ -347,7 +347,7 @@ class WsapAccessRulesEngine
             return $badge;
         }
 
-        // Search User
+        // 2. Search User directly
         $user = User::with(['roles', 'country', 'wilaya', 'organization', 'participant.registrations'])
             ->where('email', $cleanBadge)
             ->orWhere('email', $rawBadge)
@@ -355,33 +355,86 @@ class WsapAccessRulesEngine
             ->orWhere('id', $cleanBadge)
             ->first();
 
+        // 3. Search DelegationMember by uuid, id, email, passport, nin, or phone
+        $member = null;
         if (!$user) {
-            $member = \App\Models\DelegationMember::where('email', $cleanBadge)
+            $member = \App\Models\DelegationMember::with(['delegation.country', 'skill', 'user'])
+                ->where('uuid', $cleanBadge)
+                ->orWhere('id', $cleanBadge)
+                ->orWhere('email', $cleanBadge)
                 ->orWhere('email', $rawBadge)
                 ->orWhere('passport_number', $cleanBadge)
                 ->orWhere('nin_number', $cleanBadge)
                 ->first();
 
-            if ($member && $member->user_id) {
-                $user = User::with(['roles', 'country', 'wilaya', 'organization', 'participant.registrations'])->find($member->user_id);
+            if ($member) {
+                if ($member->user_id) {
+                    $user = User::with(['roles', 'country', 'wilaya', 'organization', 'participant.registrations'])->find($member->user_id);
+                } elseif (!empty($member->email)) {
+                    $user = User::with(['roles', 'country', 'wilaya', 'organization', 'participant.registrations'])->where('email', $member->email)->first();
+                }
             }
         }
 
+        // 4. Search Registration by registration_number or email
         if (!$user) {
-            $registration = \App\Models\Registration::where('registration_number', $cleanBadge)->first();
+            $registration = \App\Models\Registration::where('registration_number', $cleanBadge)
+                ->orWhere('email', $cleanBadge)
+                ->first();
             if ($registration && $registration->participant?->user_id) {
                 $user = User::with(['roles', 'country', 'wilaya', 'organization', 'participant.registrations'])->find($registration->participant->user_id);
             }
+        }
+
+        // 5. Auto-bind User for DelegationMember if missing
+        if (!$user && $member) {
+            $userEmail = !empty($member->email) ? $member->email : ('member_' . $member->id . '@worldskills.dz');
+            $user = User::where('email', $userEmail)->first();
+            if (!$user) {
+                $user = User::create([
+                    'name'       => trim($member->first_name . ' ' . $member->last_name) ?: 'عضو وفد',
+                    'email'      => $userEmail,
+                    'password'   => bcrypt(\Illuminate\Support\Str::random(16)),
+                    'uuid'       => $member->uuid ?: (string) \Illuminate\Support\Str::uuid(),
+                    'country_id' => $member->delegation?->country_id,
+                    'is_active'  => true,
+                ]);
+            }
+            $member->update(['user_id' => $user->id]);
         }
 
         if (!$user) {
             return null;
         }
 
+        // Find or auto-issue Badge for resolved user
         $badge = Badge::where('user_id', $user->id)->first();
 
         if (!$badge) {
-            $roleTitle = $user->roles->first()?->name ?: 'MEMBER';
+            $roleTitle = 'COMPETITOR';
+            if ($member) {
+                $roleKey = strtoupper($member->member_type ?? 'PARTICIPANT');
+                $roleTitle = match ($roleKey) {
+                    'MINISTERIAL_OBSERVER', 'MINISTERIAL OBSERVER', 'EXECUTIVE_VIEWER', 'MINISTER' => 'MINISTERIAL EXECUTIVE OBSERVER',
+                    'DELEGATION_HEAD', 'DELEGATION HEAD', 'DELEGATION_LEADER', 'HEAD', 'CHEF_DE_DELEGATION', 'DELEGATE', 'COUNTRY_ADMIN', 'ORGANIZER' => 'DELEGATION HEAD',
+                    'EXPERT', 'JUDGE'            => 'EXPERT JUDGE',
+                    'VIP', 'OFFICIAL'            => 'VIP DIPLOMATIC',
+                    'PRESS', 'MEDIA'             => 'MEDIA',
+                    'SUPERVISOR', 'TEAM_LEADER'  => 'SUPERVISOR',
+                    default                      => 'COMPETITOR',
+                };
+            } else {
+                $userRole = $user->roles->first()?->name;
+                $roleTitle = match ($userRole) {
+                    'EXECUTIVE_VIEWER'                  => 'MINISTERIAL EXECUTIVE OBSERVER',
+                    'COUNTRY_ADMIN'                     => 'DELEGATION HEAD',
+                    'MEDIA_MANAGER'                     => 'MEDIA',
+                    'JUDGE', 'EXPERT'                   => 'EXPERT JUDGE',
+                    'ORGANIZATION_ADMIN', 'SUPER_ADMIN' => 'ORGANIZER',
+                    default                             => 'COMPETITOR',
+                };
+            }
+
             $badge = Badge::create([
                 'user_id'          => $user->id,
                 'badge_uuid'       => $user->uuid ?: (string) \Illuminate\Support\Str::uuid(),

@@ -49,13 +49,39 @@ class AdminQrScanner extends Component
             return;
         }
 
-        // Evaluate access rules via central engine
+        // 1. Evaluate access rules via central rules engine
         $this->accessDecision = $rulesEngine->evaluateAccess($clean);
-        $this->scannedBadge    = $this->accessDecision['badge'] ?? null;
-        $this->scannedUser     = $this->accessDecision['user'] ?? null;
+        $this->scannedBadge   = $this->accessDecision['badge'] ?? null;
+        $this->scannedUser    = $this->accessDecision['user'] ?? null;
 
+        // 2. Resolve DelegationMember
+        if ($this->scannedUser) {
+            $this->delegationMember = DelegationMember::with(['skill', 'delegation.country', 'user'])
+                ->where('user_id', $this->scannedUser->id)
+                ->orWhere('email', $this->scannedUser->email)
+                ->first();
+        }
+
+        if (!$this->delegationMember) {
+            $this->delegationMember = DelegationMember::with(['skill', 'delegation.country', 'user'])
+                ->where('uuid', $clean)
+                ->orWhere('id', $clean)
+                ->orWhere('email', $clean)
+                ->orWhere('passport_number', $clean)
+                ->orWhere('nin_number', $clean)
+                ->first();
+
+            if ($this->delegationMember && !$this->scannedUser) {
+                if ($this->delegationMember->user) {
+                    $this->scannedUser = $this->delegationMember->user;
+                } elseif (!empty($this->delegationMember->email)) {
+                    $this->scannedUser = User::where('email', $this->delegationMember->email)->first();
+                }
+            }
+        }
+
+        // 3. Fallback User resolution if still null
         if (!$this->scannedUser) {
-            // Smart fallback user lookup
             $this->scannedUser = User::with([
                 'roles',
                 'country',
@@ -71,7 +97,9 @@ class AdminQrScanner extends Component
                 $q->where('registration_number', $clean);
             })
             ->first();
-        } else {
+        }
+
+        if ($this->scannedUser) {
             $this->scannedUser->loadMissing([
                 'roles',
                 'country',
@@ -82,37 +110,26 @@ class AdminQrScanner extends Component
             ]);
         }
 
-        if (!$this->scannedUser && str_contains($clean, '_')) {
-            $parts = explode('_', $clean);
-            $possibleEmail = end($parts);
-            if (filter_var($possibleEmail, FILTER_VALIDATE_EMAIL)) {
-                $this->scannedUser = User::with([
-                    'roles',
-                    'country',
-                    'wilaya',
-                    'organization',
-                    'participant.registrations.skill',
-                    'participant.registrations.country',
-                ])->where('email', $possibleEmail)->first();
-            }
+        // 4. Resolve Registration
+        if ($this->scannedUser?->participant) {
+            $this->registration = Registration::with(['skill', 'country'])
+                ->where('participant_id', $this->scannedUser->participant->id)
+                ->latest()
+                ->first();
         }
 
-        if ($this->scannedUser) {
-            // Load delegation member profile
-            $this->delegationMember = DelegationMember::with(['skill', 'delegation.country'])
-                ->where('user_id', $this->scannedUser->id)
-                ->orWhere('email', $this->scannedUser->email)
-                ->first();
-
-            // Load latest registration
-            if ($this->scannedUser->participant) {
+        if (!$this->registration) {
+            $emailToSearch = $this->delegationMember?->email ?: $this->scannedUser?->email;
+            if ($emailToSearch) {
                 $this->registration = Registration::with(['skill', 'country'])
-                    ->where('participant_id', $this->scannedUser->participant->id)
+                    ->where('email', $emailToSearch)
                     ->latest()
                     ->first();
             }
+        }
 
-            // Load room allocation & accommodation
+        // 5. Resolve Room Allocation & Accommodation
+        if ($this->scannedUser) {
             $this->roomAllocation = RoomAllocation::with(['room.accommodation'])
                 ->where('user_id', $this->scannedUser->id)
                 ->first();
@@ -124,10 +141,21 @@ class AdminQrScanner extends Component
             }
         }
 
+        if (!$this->roomAllocation && $this->delegationMember?->email) {
+            $allocUser = User::where('email', $this->delegationMember->email)->first();
+            if ($allocUser) {
+                $this->roomAllocation = RoomAllocation::with(['room.accommodation'])
+                    ->where('user_id', $allocUser->id)
+                    ->first();
+            }
+        }
+
+        // 6. Resolve Badge if missing
         if (!$this->scannedBadge && $this->scannedUser) {
             $this->scannedBadge = Badge::where('user_id', $this->scannedUser->id)->first();
         }
 
+        // 7. Security Zone Permissions
         if ($this->scannedBadge) {
             $this->zonePermissions = BadgeZonePermission::with('zone')
                 ->where('badge_id', $this->scannedBadge->id)
@@ -135,7 +163,6 @@ class AdminQrScanner extends Component
                 ->toArray();
         }
 
-        // Build composite zone permissions list against all active zones
         $zones = !empty($this->allZones) ? $this->allZones : Zone::all()->toArray();
         $allowedIds = $this->scannedBadge?->allowed_zone_ids ?? [1, 2, 3, 4, 5];
 
