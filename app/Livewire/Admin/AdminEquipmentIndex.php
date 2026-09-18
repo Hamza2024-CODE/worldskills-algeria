@@ -60,21 +60,55 @@ class AdminEquipmentIndex extends Component
     /* ─── Category Handlers ─── */
     public function openCatCreate(): void
     {
-        $this->cat_name_ar  = $this->cat_name_fr = $this->cat_icon = '';
+        $this->cat_name_ar  = '';
+        $this->cat_name_fr  = '';
+        $this->cat_icon     = '';
         $this->catEditingId = null;
         $this->catEditing   = false;
         $this->catFormOpen  = true;
     }
 
+    public function openCatEdit(int $id): void
+    {
+        $cat = EquipmentCategory::findOrFail($id);
+        $this->catEditingId = $cat->id;
+        $this->cat_name_ar  = $cat->name_ar ?? '';
+        $this->cat_name_fr  = $cat->name_fr ?? '';
+        $this->cat_icon     = $cat->icon ?? '';
+        $this->catEditing   = true;
+        $this->catFormOpen  = true;
+    }
+
     public function saveCat(): void
     {
-        $this->validate(['cat_name_ar' => 'required|min:2', 'cat_name_fr' => 'required|min:2']);
-        $data = ['name_ar' => $this->cat_name_ar, 'name_fr' => $this->cat_name_fr, 'icon' => $this->cat_icon];
+        $this->validate([
+            'cat_name_ar' => 'required|min:2',
+            'cat_name_fr' => 'required|min:2'
+        ]);
+        $data = [
+            'name_ar' => $this->cat_name_ar,
+            'name_fr' => $this->cat_name_fr,
+            'name_en' => $this->cat_name_fr,
+            'icon'    => $this->cat_icon ?: 'wrench'
+        ];
+
         $this->catEditing
             ? EquipmentCategory::findOrFail($this->catEditingId)->update($data)
             : EquipmentCategory::create($data);
+
         $this->catFormOpen = false;
         session()->flash('success', 'تم حفظ فئة التجهيزات والمعدات بنجاح.');
+    }
+
+    public function deleteCat(int $id): void
+    {
+        $cat = EquipmentCategory::withCount('items')->findOrFail($id);
+        if ($cat->items_count > 0) {
+            session()->flash('error', 'لا يمكن حذف الفئة لأنها تحتوي على معدات وتجهيزات مسجلة.');
+            return;
+        }
+        $cat->delete();
+        session()->flash('success', 'تم حذف الفئة بنجاح.');
     }
 
     /* ─── Item Handlers ─── */
@@ -103,16 +137,19 @@ class AdminEquipmentIndex extends Component
 
     public function save(): void
     {
-        $this->validate(['name_ar' => 'required|min:2', 'name_fr' => 'required|min:2']);
+        $this->validate([
+            'name_ar' => 'required|min:2',
+            'name_fr' => 'required|min:2'
+        ]);
         $data = [
             'name_ar'               => $this->name_ar,
             'name_fr'               => $this->name_fr,
             'name_en'               => $this->name_en ?: $this->name_fr,
             'category_id'           => $this->category_id ?: null,
             'skill_id'              => $this->skill_id ?: null,
-            'item_type'             => $this->item_type,
+            'item_type'             => $this->item_type ?: 'workstation',
             'specification_details' => $this->specification_details,
-            'safety_level'          => $this->safety_level,
+            'safety_level'          => $this->safety_level ?: 'STANDARD',
         ];
 
         $this->isEditing
@@ -147,13 +184,25 @@ class AdminEquipmentIndex extends Component
     /* ─── Platform Excel Export ─── */
     public function exportExcel()
     {
-        $items = EquipmentItem::with(['category', 'skill'])->latest()->get();
+        $items = EquipmentItem::with(['category', 'skill'])
+            ->when($this->search, fn($q) => $q->where(function ($q) {
+                $q->where('name_ar', 'like', '%'.$this->search.'%')
+                  ->orWhere('name_fr', 'like', '%'.$this->search.'%')
+                  ->orWhere('specification_details', 'like', '%'.$this->search.'%');
+            }))
+            ->when($this->filterCategory, fn($q) => $q->where('category_id', $this->filterCategory))
+            ->when($this->filterSkill,    fn($q) => $q->where('skill_id',    $this->filterSkill))
+            ->when($this->filterType,     fn($q) => $q->where('item_type',    $this->filterType))
+            ->latest()
+            ->get();
 
         $csvData = [];
         $csvData[] = [
-            'ID الرقم',
-            'اسم المعدة والتجهيز الكامل',
+            'ID',
+            'اسم المعدة والتجهيز',
+            'الاسم بالفرنسية',
             'التخصص المهني المخصص',
+            'رمز التخصص',
             'الفئة الرئيسية',
             'نوع التجهيز',
             'المواصفات الفنية والتفاصيل',
@@ -164,9 +213,11 @@ class AdminEquipmentIndex extends Component
             $csvData[] = [
                 $item->id,
                 $item->name_ar,
+                $item->name_fr ?? '',
                 $item->skill?->name_ar ?? 'عام / كافة التخصصات',
+                $item->skill?->code ?? '—',
                 $item->category?->name_ar ?? '—',
-                $item->item_type,
+                $item->item_type ?? 'عام',
                 $item->specification_details ?? '—',
                 $item->safety_level ?? 'STANDARD',
             ];
@@ -210,10 +261,13 @@ class AdminEquipmentIndex extends Component
             ->latest();
 
         return view('livewire.admin.equipment.index', [
-            'items'      => $query->paginate(15),
-            'categories' => EquipmentCategory::withCount('items')->orderBy('name_ar')->get(),
-            'skills'     => Skill::where('is_active', true)->orderBy('name_ar')->get(),
-            'totalItems' => EquipmentItem::count(),
+            'items'               => $query->paginate(15),
+            'categories'          => EquipmentCategory::withCount('items')->orderBy('name_ar')->get(),
+            'skills'              => Skill::where('is_active', true)->orderBy('name_ar')->get(),
+            'totalItems'          => EquipmentItem::count(),
+            'assignedItemsCount'  => EquipmentItem::whereNotNull('skill_id')->count(),
+            'generalItemsCount'   => EquipmentItem::whereNull('skill_id')->count(),
+            'hazardItemsCount'    => EquipmentItem::whereIn('safety_level', ['HIGH_HAZARD', 'STRICT_PPE_REQUIRED'])->count(),
         ]);
     }
 }
