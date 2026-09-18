@@ -65,9 +65,9 @@ $dashboardRoute = match($rawRole) {
         {{-- Official WorldSkills Algeria Brand Logo & Title Capsule --}}
         <a href="{{ $dashboardRoute }}" class="bg-slate-50/90 dark:bg-slate-800/90 px-3.5 sm:px-4 py-1.5 rounded-full flex items-center gap-2 sm:gap-3 shrink-0 shadow-2xs border border-slate-200/80 dark:border-slate-700 group hover:shadow-xs transition" aria-label="أولمبياد المهن الجزائرية">
             {{-- Official Ministry Logo (FIRST) --}}
-            <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-6 sm:h-7 w-auto object-contain transition-transform group-hover:scale-105">
+            <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-6 sm:h-7 w-auto object-contain transition-transform group-hover:scale-105 hidden sm:block">
 
-            <div class="h-4 sm:h-5 w-px bg-slate-200 dark:bg-slate-700 shrink-0"></div>
+            <div class="h-4 sm:h-5 w-px bg-slate-200 dark:bg-slate-700 shrink-0 hidden sm:block"></div>
 
             {{-- WorldSkills Logo (SECOND) --}}
             <img src="/logo.svg" alt="WorldSkills Algeria" class="h-6 sm:h-7 w-auto object-contain transition-transform group-hover:scale-105">
@@ -85,7 +85,7 @@ $dashboardRoute = match($rawRole) {
     </div>
 
     {{-- ════ END / RIGHT (Controls, Lang, Mode, User) ════ --}}
-    <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+    <div class="flex items-center gap-1 sm:gap-2 shrink-0">
 
         {{-- Return to Public Platform Button --}}
         <a href="{{ route('home') }}" class="hidden md:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 text-xs font-bold transition shadow-2xs" title="{{ __('messages.home') ?? 'الرئيسية' }}">
@@ -106,10 +106,10 @@ $dashboardRoute = match($rawRole) {
         </button>
 
         {{-- Language Switcher Pill Capsule (Active is Vibrant Royal Blue with White text) --}}
-        <div class="flex items-center p-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs text-xs font-bold shrink-0">
+        <div class="flex items-center p-0.5 sm:p-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs text-xs font-bold shrink-0">
             @foreach(['ar' => 'عربي', 'fr' => 'FR', 'en' => 'EN'] as $lang => $langLabel)
                 <a href="{{ route('lang.switch', $lang) }}" data-navigate-ignore rel="external"
-                   class="px-2.5 py-1 rounded-full transition text-[11px] font-black whitespace-nowrap {{ $locale === $lang ? 'bg-[#0052CC] text-white shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200' }}"
+                   class="px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full transition text-[10px] sm:text-[11px] font-black whitespace-nowrap {{ $locale === $lang ? 'bg-[#0052CC] text-white shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200' }}"
                 >{{ $langLabel }}</a>
             @endforeach
         </div>
