@@ -1,643 +1,521 @@
-@php
-$locale = app()->getLocale();
-$t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => $ar };
-@endphp
-
-<div class="space-y-8 pb-16" dir="{{ $locale === 'ar' ? 'rtl' : 'ltr' }}">
-
-    <div class="printable-hide-on-print space-y-8">
-
-        {{-- ── 1. UNIFIED LUXURY PAGE HEADER ── --}}
-        <x-dashboard.page-header
-            :title="$t('مركز القيادة الدبلوماسية والتبادل الوزاري والثقافي', 'Centre de Commandement Diplomatique & Échanges Ministériels', 'Diplomatic Command Center & Ministerial Exchange')"
-            :subtitle="$t('منظومة حجز القاعات الدبلوماسية، الجدولة الثنائية وتتبع جاهزية الوزراء والوفود الرسمية', 'Réservation des salons VIP, entretiens bilatéraux et suivi de disponibilité ministérielle', 'VIP lounge booking, bilateral meeting scheduling, and official minister availability tracking')"
-        >
-            <button wire:click="$set('showAddMinisterModal', true)" class="px-5 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs backdrop-blur-md transition flex items-center gap-2 shadow-sm shrink-0">
-                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-                <span>{{ $t('إضافة مسؤول وزاري', 'Ajouter Ministre', 'Add Minister') }}</span>
-            </button>
-
-            <button wire:click="openBookingModal" class="px-5 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow-lg transition flex items-center gap-2 shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                <span>{{ $t('حجز لقاء ثنائي وقاعة', 'Nouveau Rendez-vous', 'New Bilateral Meeting') }}</span>
-            </button>
-        </x-dashboard.page-header>
-
-        {{-- FLASH / ERROR NOTIFICATIONS --}}
-        @if($flashMessage)
-            <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-black flex items-center justify-between shadow-xs animate-fade-in">
+<div class="space-y-6 pb-16">
+    <!-- TOP HEADER BAR -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white dark:bg-slate-800/90 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700/60 shadow-xs backdrop-blur-md">
+        <div class="flex items-center gap-3.5">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 text-white flex items-center justify-center font-black text-2xl shadow-lg shadow-amber-500/20 border border-amber-400/40">
+                🏛️
+            </div>
+            <div>
                 <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span>{{ $flashMessage }}</span>
-                </div>
-                <button wire:click="$set('flashMessage', '')" class="text-emerald-700 dark:text-emerald-400 font-black text-xs hover:opacity-75"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
-            </div>
-        @endif
-
-        {{-- ── 2. EXECUTIVE DIPLOMATIC KPI CARDS ── --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            
-            {{-- KPI 1 --}}
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm relative overflow-hidden group hover:border-blue-500/50 transition">
-                <div class="flex items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <span class="text-[11px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-wider block">
-                            {{ $t('الوزراء والمسؤولون', 'Ministres & Officiels', 'Ministers & Officials') }}
-                        </span>
-                        <p class="text-3xl font-black text-[#06205C] dark:text-white">{{ $totalMinistersCount }}</p>
-                    </div>
-                    <div class="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-black shrink-0 border border-blue-100 dark:border-blue-800 shadow-inner group-hover:scale-110 transition-transform">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    </div>
-                </div>
-                <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
-                    <span>{{ $t('وفود رسمية معتمدة', 'Délégations Homologuées', 'Accredited Delegations') }}</span>
-                    <span class="text-blue-600 dark:text-blue-400 font-mono font-black">100%</span>
-                </div>
-            </div>
-
-            {{-- KPI 2 --}}
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm relative overflow-hidden group hover:border-emerald-500/50 transition">
-                <div class="flex items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <span class="text-[11px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-wider block">
-                            {{ $t('متاحون للعمل واللقاءات', 'Disponible pour entretiens', 'Available for Meetings') }}
-                        </span>
-                        <p class="text-3xl font-black text-emerald-900 dark:text-emerald-200">{{ $availableMinistersCount }}</p>
-                    </div>
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black shrink-0 border border-emerald-100 dark:border-emerald-800 shadow-inner group-hover:scale-110 transition-transform">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                </div>
-                <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-[11px] font-bold text-emerald-700 dark:text-emerald-400">
-                    <span>{{ $t('حالة التوافر المباشرة', 'Statut en Temps Réel', 'Real-time Status') }}</span>
-                    <span class="flex items-center gap-1 font-mono font-black">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                        {{ $t('جاهز', 'Actif', 'Active') }}
+                    <h1 class="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                        المركز الدبلوماسي واللقاءات الوزارية
+                    </h1>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300/60 dark:border-amber-800/60">
+                        VIP Protocol
                     </span>
                 </div>
+                <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5">
+                    إدارة أجندة الوزراء، الوفود الشرفية، وتنسيق حجز قاعات اللقاءات الثنائية المغلقة
+                </p>
             </div>
-
-            {{-- KPI 3 --}}
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm relative overflow-hidden group hover:border-amber-500/50 transition">
-                <div class="flex items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <span class="text-[11px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-wider block">
-                            {{ $t('لقاءات ثنائية مجدولة', 'Rencontres Mainties', 'Scheduled Meetings') }}
-                        </span>
-                        <p class="text-3xl font-black text-amber-900 dark:text-amber-200">{{ $scheduledMeetingsCount }}</p>
-                    </div>
-                    <div class="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center font-black shrink-0 border border-amber-100 dark:border-amber-800 shadow-inner group-hover:scale-110 transition-transform">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    </div>
-                </div>
-                <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-[11px] font-bold text-amber-700 dark:text-amber-400">
-                    <span>{{ $t('البرنامج الحكومي الثنائي', 'Programme Ministériel', 'Ministerial Agenda') }}</span>
-                    <span class="font-mono font-black">2026</span>
-                </div>
-            </div>
-
-            {{-- KPI 4 --}}
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm relative overflow-hidden group hover:border-purple-500/50 transition">
-                <div class="flex items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <span class="text-[11px] font-black text-purple-700 dark:text-purple-400 uppercase tracking-wider block">
-                            {{ $t('قاعات اجتماعات VIP جاهزة', 'Salons VIP Prêts', 'Ready VIP Lounges') }}
-                        </span>
-                        <p class="text-3xl font-black text-purple-900 dark:text-purple-200">{{ $activeRoomsCount }}</p>
-                    </div>
-                    <div class="w-14 h-14 rounded-2xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center font-black shrink-0 border border-purple-100 dark:border-purple-800 shadow-inner group-hover:scale-110 transition-transform">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0h1m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-6 0h6"/></svg>
-                    </div>
-                </div>
-                <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-[11px] font-bold text-purple-700 dark:text-purple-400">
-                    <span>{{ $t('مستويات الأمان والبروتوكول', 'Niveau de Sécurité', 'Security & Protocol') }}</span>
-                    <span class="font-mono font-black text-emerald-500">HIGH</span>
-                </div>
-            </div>
-
         </div>
 
-        {{-- ── 3. NAVIGATION TABS BAR ── --}}
-        <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-3 flex-wrap">
-            <button wire:click="$set('activeTab', 'MEETINGS')"
-                    class="px-5 py-3 rounded-2xl font-black text-xs transition flex items-center gap-2.5 shadow-sm {{ $activeTab === 'MEETINGS' ? 'bg-[#06205C] text-white shadow-md ring-2 ring-blue-500/30' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 border border-slate-200/80 dark:border-slate-700' }}">
-                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                <span>{{ $t('جدول اللقاءات الثنائية المحجوزة', 'Rencontres Bilatérales Programmées', 'Scheduled Bilateral Meetings') }}</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-black {{ $activeTab === 'MEETINGS' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300' }}">
-                    {{ $scheduledMeetingsCount }}
-                </span>
+        <div class="flex items-center gap-2.5 flex-wrap">
+            <button wire:click="exportMeetingsExcel" class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-xs transition flex items-center gap-2 border border-slate-200/60 dark:border-slate-600/60 shadow-xs">
+                <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span>تصدير الأجندة CSV</span>
             </button>
-
-            <button wire:click="$set('activeTab', 'MINISTERS')"
-                    class="px-5 py-3 rounded-2xl font-black text-xs transition flex items-center gap-2.5 shadow-sm {{ $activeTab === 'MINISTERS' ? 'bg-[#06205C] text-white shadow-md ring-2 ring-blue-500/30' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 border border-slate-200/80 dark:border-slate-700' }}">
-                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                <span>{{ $t('حالة توافر وجاهزية الوزراء والمدراء', 'Disponibilité des Ministres & Officiels', 'Ministers Availability Status') }}</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-black {{ $activeTab === 'MINISTERS' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300' }}">
-                    {{ $totalMinistersCount }}
-                </span>
+            <button wire:click="$set('showAddMinisterModal', true)" class="px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-black text-xs transition flex items-center gap-2 shadow-lg shadow-blue-600/20">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                <span>إضافة وزير / مسؤول</span>
             </button>
-
-            <button wire:click="$set('activeTab', 'ROOMS')"
-                    class="px-5 py-3 rounded-2xl font-black text-xs transition flex items-center gap-2.5 shadow-sm {{ $activeTab === 'ROOMS' ? 'bg-[#06205C] text-white shadow-md ring-2 ring-blue-500/30' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 border border-slate-200/80 dark:border-slate-700' }}">
-                <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0h1m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-6 0h6"/></svg>
-                <span>{{ $t('دليل وتوقيتات قاعات الاجتماعات', 'Salons VIP & Planning', 'VIP Lounges & Schedule') }}</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-black {{ $activeTab === 'ROOMS' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300' }}">
-                    {{ $activeRoomsCount }}
-                </span>
+            <button wire:click="openBookingModal()" class="px-5 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-600 active:scale-98 text-white font-black text-xs transition flex items-center gap-2 shadow-lg shadow-amber-500/20">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                <span>حجز لقاء ثنائي جديدة</span>
             </button>
         </div>
+    </div>
 
-        {{-- ── TAB 1: SCHEDULED MEETINGS & ROOM RESERVATIONS ── --}}
-        @if($activeTab === 'MEETINGS')
-            <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-xl overflow-hidden">
-                
-                {{-- Table/Card Header Bar --}}
-                <div class="p-6 bg-slate-50/80 dark:bg-slate-900/60 border-b border-slate-200/80 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <div class="p-2.5 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
-                        <div>
-                            <h3 class="text-base font-black text-[#06205C] dark:text-white">
-                                {{ $t('جدول المحادثات والمواعيد الثنائية المحجوزة', 'Liste des Entretiens Bilatéraux', 'Scheduled Bilateral Sessions') }}
-                            </h3>
-                            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5">
-                                {{ $t('تتبع مواعيد قاعات VIP، أطراف المباحثات، والحالة الزمنية للجلسات', 'Suivi des créneaux VIP et des parties prenantes', 'Track VIP room slots, bilateral parties, and meeting status') }}
-                            </p>
-                        </div>
-                    </div>
+    <!-- FLASH MESSAGES -->
+    @if(!empty($flashMessage))
+        <div class="bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 p-4 rounded-2xl flex items-center justify-between text-xs font-bold text-emerald-900 dark:text-emerald-200 shadow-xs">
+            <div class="flex items-center gap-2.5">
+                <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>{{ $flashMessage }}</span>
+            </div>
+            <button wire:click="$set('flashMessage', '')" class="text-emerald-700 dark:text-emerald-400 hover:opacity-75">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+    @endif
 
-                    <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <select wire:model.live="selectedStatus" class="w-full sm:w-48 px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition shadow-xs">
-                            <option value="ALL">{{ $t('جميع الحالات', 'Tous les statuts', 'All Statuses') }}</option>
-                            <option value="SCHEDULED">{{ $t('مجدول ومثبت', 'Programmé', 'Scheduled') }}</option>
-                            <option value="IN_PROGRESS">{{ $t('جاري الآن (In Session)', 'En cours', 'In Progress') }}</option>
-                            <option value="COMPLETED">{{ $t('مكتمل', 'Terminé', 'Completed') }}</option>
-                            <option value="CANCELLED">{{ $t('ملغى', 'Annulé', 'Cancelled') }}</option>
-                        </select>
+    <!-- EXECUTIVE DIPLOMATIC KPI CARDS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- KPI 1: Total Ministers -->
+        <div class="bg-white dark:bg-slate-800/90 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700/60 shadow-xs flex items-center justify-between group hover:border-blue-500/50 transition">
+            <div>
+                <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">الوزراء والمسؤولون</p>
+                <p class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">{{ number_format($totalMinistersCount) }}</p>
+                <p class="text-[10px] font-bold text-blue-600 dark:text-blue-400 mt-1">وفود رسمية معتمدة</p>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-black shrink-0 border border-blue-500/20 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            </div>
+        </div>
+
+        <!-- KPI 2: Available Ministers -->
+        <div class="bg-white dark:bg-slate-800/90 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700/60 shadow-xs flex items-center justify-between group hover:border-emerald-500/50 transition">
+            <div>
+                <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">المتاحون للقاءات</p>
+                <p class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1 font-mono">{{ number_format($availableMinistersCount) }}</p>
+                <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span>جاهزون للحجز الفوري</span>
+                </p>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black shrink-0 border border-emerald-500/20 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+        </div>
+
+        <!-- KPI 3: Scheduled Meetings -->
+        <div class="bg-white dark:bg-slate-800/90 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700/60 shadow-xs flex items-center justify-between group hover:border-amber-500/50 transition">
+            <div>
+                <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">لقاءات ثنائية مجدولة</p>
+                <p class="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1 font-mono">{{ number_format($scheduledMeetingsCount) }}</p>
+                <p class="text-[10px] font-bold text-amber-600 dark:text-amber-400 mt-1">جدول الأجندة الحكومية</p>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-black shrink-0 border border-amber-500/20 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
+        </div>
+
+        <!-- KPI 4: VIP Lounges -->
+        <div class="bg-white dark:bg-slate-800/90 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700/60 shadow-xs flex items-center justify-between group hover:border-purple-500/50 transition">
+            <div>
+                <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">قاعات VIP الجاهزة</p>
+                <p class="text-2xl font-black text-purple-600 dark:text-purple-400 mt-1 font-mono">{{ number_format($activeRoomsCount) }}</p>
+                <p class="text-[10px] font-bold text-purple-600 dark:text-purple-400 mt-1">مستويات أمان وبروتوكول عالمية</p>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-black shrink-0 border border-purple-500/20 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0h1m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-6 0h6"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEGMENTED NAVIGATION TABS -->
+    <div class="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 max-w-xl">
+        <button wire:click="$set('activeTab', 'MEETINGS')" class="flex-1 py-2.5 px-4 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 {{ ($activeTab ?? 'MEETINGS') === 'MEETINGS' ? 'bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 shadow-sm border border-slate-200/60 dark:border-slate-600/60' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+            <span>📅 اللقاءات المجدولة</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-black {{ ($activeTab ?? 'MEETINGS') === 'MEETINGS' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300' }}">
+                {{ count($meetings) }}
+            </span>
+        </button>
+
+        <button wire:click="$set('activeTab', 'MINISTERS')" class="flex-1 py-2.5 px-4 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 {{ ($activeTab ?? 'MEETINGS') === 'MINISTERS' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/60 dark:border-slate-600/60' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+            <span>🏛️ دليل الوزراء والشرفيين</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-black {{ ($activeTab ?? 'MEETINGS') === 'MINISTERS' ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300' }}">
+                {{ count($ministers) }}
+            </span>
+        </button>
+
+        <button wire:click="$set('activeTab', 'ROOMS')" class="flex-1 py-2.5 px-4 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 {{ ($activeTab ?? 'MEETINGS') === 'ROOMS' ? 'bg-white dark:bg-slate-700 text-purple-600 dark:text-purple-400 shadow-sm border border-slate-200/60 dark:border-slate-600/60' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+            <span>🛋️ قاعات VIP</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-black {{ ($activeTab ?? 'MEETINGS') === 'ROOMS' ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300' }}">
+                {{ count($rooms) }}
+            </span>
+        </button>
+    </div>
+
+    <!-- TAB 1: SCHEDULED MEETINGS -->
+    @if(($activeTab ?? 'MEETINGS') === 'MEETINGS')
+        <div class="bg-white dark:bg-slate-800/90 rounded-3xl border border-slate-200/80 dark:border-slate-700/60 shadow-xs overflow-hidden">
+            <!-- Search & Filters -->
+            <div class="p-5 border-b border-slate-100 dark:border-slate-700/60 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+                <div class="relative w-full max-w-md">
+                    <input type="text" wire:model.live.debounce.300ms="searchQuery" placeholder="بحث بعنوان اللقاء، اسم الوزير الضيف..." class="w-full pl-9 pr-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    <div class="absolute left-3 top-3 text-slate-400 pointer-events-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </div>
                 </div>
 
-                {{-- Meetings Cards List --}}
-                <div class="divide-y divide-slate-100 dark:divide-slate-700/80">
-                    @forelse($meetings as $mtg)
-                        <div class="p-6 hover:bg-slate-50/60 dark:hover:bg-slate-700/30 transition flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                            
-                            {{-- Meeting details & Ministers --}}
-                            <div class="space-y-4 flex-1">
-                                
-                                {{-- Status & Time badges --}}
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <span class="px-3.5 py-1.5 rounded-full text-xs font-mono font-black bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60 flex items-center gap-1.5">
-                                        <svg class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        <span>{{ $mtg->start_time->format('Y-m-d') }}</span>
-                                        <span class="text-blue-300 dark:text-blue-600">|</span>
-                                        <span>{{ $mtg->start_time->format('H:i') }} — {{ $mtg->end_time->format('H:i') }}</span>
+                <div class="flex items-center gap-2">
+                    <select wire:model.live="selectedStatus" class="px-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <option value="ALL">جميع حالات اللقاءات</option>
+                        <option value="SCHEDULED">مجدولة ومثبتة</option>
+                        <option value="COMPLETED">مكتملة وناجحة</option>
+                        <option value="CANCELLED">ملغاة</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Meetings Cards / List -->
+            <div class="p-6">
+                @forelse($meetings as $meeting)
+                    <div class="mb-4 bg-slate-50 dark:bg-slate-900/60 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700/60 hover:border-amber-500/50 transition">
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                            <!-- Meeting Details -->
+                            <div class="space-y-2 flex-1">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="px-3 py-1 rounded-xl text-[10px] font-black font-mono border {{ $meeting->status === 'SCHEDULED' ? 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800' : ($meeting->status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-900 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800' : 'bg-slate-200 text-slate-700 border-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600') }}">
+                                        {{ $meeting->status === 'SCHEDULED' ? '⏳ مجدول' : ($meeting->status === 'COMPLETED' ? '✓ مكتمل' : '✕ ملغى') }}
                                     </span>
-
-                                    <span class="px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider border
-                                        {{ $mtg->status === 'SCHEDULED' ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-800' : ($mtg->status === 'IN_PROGRESS' ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-200 border-emerald-300 dark:border-emerald-800 animate-pulse' : ($mtg->status === 'COMPLETED' ? 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600' : 'bg-rose-50 dark:bg-rose-950/60 text-rose-900 dark:text-rose-200 border-rose-300 dark:border-rose-800')) }}">
-                                        {{ $mtg->status }}
+                                    <span class="px-2.5 py-1 rounded-xl bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300 border border-purple-200 dark:border-purple-800 text-[10px] font-bold">
+                                        🚪 {{ $meeting->room?->name_ar ?? 'قاعة VIP' }}
+                                    </span>
+                                    <span class="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
+                                        📅 {{ $meeting->start_time?->format('Y-m-d') }} | ⏰ {{ $meeting->start_time?->format('H:i') }} - {{ $meeting->end_time?->format('H:i') }}
                                     </span>
                                 </div>
 
-                                {{-- Title --}}
-                                <h4 class="text-lg font-black text-[#06205C] dark:text-white leading-tight">
-                                    {{ $mtg->title }}
-                                </h4>
+                                <h3 class="text-base font-black text-slate-900 dark:text-white">
+                                    {{ $meeting->title }}
+                                </h3>
 
-                                {{-- Ministers Pair Grid --}}
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-                                    
-                                    {{-- Host Minister --}}
-                                    <div class="p-4 rounded-2xl bg-gradient-to-r from-blue-50/80 to-slate-50 dark:from-blue-950/40 dark:to-slate-900/40 border border-blue-100 dark:border-blue-900/60 flex items-center gap-3.5 shadow-xs">
-                                        <div class="w-11 h-11 rounded-2xl bg-[#06205C] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-md">
-                                            {{ $mtg->hostMinister?->country?->code ?? 'DZA' }}
-                                        </div>
-                                        <div class="space-y-0.5">
-                                            <span class="text-[10px] text-blue-600 dark:text-blue-400 font-black uppercase tracking-wider block">{{ $t('الطرف المستضيف', 'Partie Hôte', 'Host Official') }}</span>
-                                            <span class="font-black text-sm text-slate-900 dark:text-slate-100 block">{{ $mtg->hostMinister?->full_name }}</span>
-                                            <span class="text-xs text-slate-500 dark:text-slate-400 font-bold block">{{ $mtg->hostMinister?->title_ar }}</span>
-                                        </div>
-                                    </div>
-
-                                    {{-- Guest Minister --}}
-                                    <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-50/80 to-slate-50 dark:from-amber-950/40 dark:to-slate-900/40 border border-amber-200/80 dark:border-amber-900/60 flex items-center gap-3.5 shadow-xs">
-                                        <div class="w-11 h-11 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 flex items-center justify-center font-black text-xs shrink-0 shadow-md">
-                                            {{ $mtg->guestMinister?->country?->code ?? 'VIP' }}
-                                        </div>
-                                        <div class="space-y-0.5">
-                                            <span class="text-[10px] text-amber-700 dark:text-amber-400 font-black uppercase tracking-wider block">{{ $t('الضيف الرسمي', 'Invité Officiel', 'Guest Official') }}</span>
-                                            <span class="font-black text-sm text-slate-900 dark:text-slate-100 block">{{ $mtg->guestMinister?->full_name }}</span>
-                                            <span class="text-xs text-slate-500 dark:text-slate-400 font-bold block">{{ $mtg->guestMinister?->title_ar }}</span>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            {{-- Reserved Room details & Actions --}}
-                            <div class="lg:w-80 shrink-0 bg-slate-50 dark:bg-slate-900/60 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700 space-y-4 shadow-xs">
-                                <div>
-                                    <span class="text-[10px] text-slate-400 dark:text-slate-400 font-black uppercase tracking-wider block">{{ $t('القاعة المحجوزة', 'Salon VIP Réservé', 'Reserved Lounge') }}</span>
-                                    <span class="font-black text-sm text-[#06205C] dark:text-white block mt-1 leading-snug">{{ $mtg->room?->getLocalized('name') }}</span>
-                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-bold block mt-0.5">{{ $mtg->room?->location_zone }}</span>
-                                </div>
-
-                                @if($mtg->status === 'SCHEDULED')
-                                    <button wire:click="cancelMeeting({{ $mtg->id }})" class="w-full py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-black text-xs transition shadow-xs">
-                                        {{ $t('إلغاء حجز الموعد', 'Annuler Rendez-vous', 'Cancel Reservation') }}
-                                    </button>
+                                @if($meeting->purpose)
+                                    <p class="text-xs text-slate-600 dark:text-slate-400">
+                                        <strong class="text-slate-900 dark:text-slate-200">موضوع اللقاء:</strong> {{ $meeting->purpose }}
+                                    </p>
                                 @endif
                             </div>
 
-                        </div>
-                    @empty
-                        <div class="p-16 text-center text-slate-400 font-bold text-xs space-y-3">
-                            <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
-                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <!-- Ministers Parties -->
+                            <div class="flex items-center gap-3 bg-white dark:bg-slate-800 p-3 px-4 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 shrink-0">
+                                <!-- Host (Algeria) -->
+                                <div class="text-right">
+                                    <div class="text-[11px] font-black text-slate-900 dark:text-white">{{ $meeting->hostMinister?->full_name ?? 'الطرف المضيف' }}</div>
+                                    <div class="text-[10px] font-bold text-amber-600 dark:text-amber-400">{{ $meeting->hostMinister?->country?->flag ?: '🇩🇿' }} {{ $meeting->hostMinister?->title_ar }}</div>
+                                </div>
+
+                                <div class="text-amber-500 font-black text-sm">⚔️</div>
+
+                                <!-- Guest -->
+                                <div class="text-left">
+                                    <div class="text-[11px] font-black text-slate-900 dark:text-white">{{ $meeting->guestMinister?->full_name ?? 'الطرف الضيف' }}</div>
+                                    <div class="text-[10px] font-bold text-blue-600 dark:text-blue-400">{{ $meeting->guestMinister?->country?->flag ?: '🌐' }} {{ $meeting->guestMinister?->country?->name_ar }}</div>
+                                </div>
                             </div>
-                            <p class="text-sm font-black text-slate-600 dark:text-slate-300">{{ $t('لا توجد لقاءات ثنائية مجدولة حالياً.', 'Aucune rencontre bilatérale programmée.', 'No bilateral meetings currently scheduled.') }}</p>
+
+                            <!-- Actions -->
+                            <div class="flex items-center gap-2 shrink-0 justify-end">
+                                @if($meeting->status === 'SCHEDULED')
+                                    <button wire:click="markMeetingCompleted({{ $meeting->id }})" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-xs">
+                                        تأكيد الاكتمال ✓
+                                    </button>
+                                    <button wire:click="cancelMeeting({{ $meeting->id }})" class="px-3 py-2 rounded-xl bg-rose-100 hover:bg-rose-200 dark:bg-rose-950 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 font-bold text-xs transition">
+                                        إلغاء الموعد ✕
+                                    </button>
+                                @endif
+                            </div>
                         </div>
-                    @endforelse
+                    </div>
+                @empty
+                    <div class="p-12 text-center text-slate-400 dark:text-slate-500 font-bold">
+                        <div class="max-w-xs mx-auto space-y-2">
+                            <div class="text-3xl">📅</div>
+                            <p class="text-sm">لا توجد لقاءات دبلوماسية مجدولة حالياً مطابقة للبحث.</p>
+                        </div>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    @endif
+
+    <!-- TAB 2: MINISTERS DIRECTORY -->
+    @if(($activeTab ?? 'MEETINGS') === 'MINISTERS')
+        <div class="bg-white dark:bg-slate-800/90 rounded-3xl border border-slate-200/80 dark:border-slate-700/60 shadow-xs overflow-hidden">
+            <!-- Search Bar & Country Filter -->
+            <div class="p-5 border-b border-slate-100 dark:border-slate-700/60 flex flex-col md:flex-row gap-3 justify-between">
+                <div class="relative w-full max-w-md">
+                    <input type="text" wire:model.live.debounce.300ms="searchQuery" placeholder="بحث باسم الوزير، الصفة الرسمية، الوزارة..." class="w-full pl-9 pr-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <div class="absolute left-3 top-3 text-slate-400 pointer-events-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <select wire:model.live="selectedCountryFilter" class="px-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">جميع الدول والوفود</option>
+                        @foreach($countries as $cnt)
+                            <option value="{{ $cnt->id }}">{{ $cnt->flag }} {{ $cnt->name_ar }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
-        @endif
 
-        {{-- ── TAB 2: MINISTERS & EXECUTIVE AVAILABILITY COMMAND ── --}}
-        @if($activeTab === 'MINISTERS')
-            <div class="space-y-6">
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="relative w-full sm:w-96">
-                        <input type="text" wire:model.live.debounce.300ms="searchQuery"
-                               placeholder="{{ $t('بحث باسم الوزير أو الوزارة...', 'Rechercher par nom ou ministère...', 'Search minister name or ministry...') }}"
-                               class="w-full ps-10 pe-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition">
-                        <svg class="w-4 h-4 text-slate-400 absolute start-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    </div>
-
-                    <div class="text-xs font-black text-slate-500 dark:text-slate-400">
-                        {{ count($ministers) }} {{ $t('مسؤول وزاري ودبلوماسي مسجل', 'officiels enregistrés', 'registered officials') }}
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    @foreach($ministers as $min)
-                        <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-lg p-6 space-y-5 flex flex-col justify-between hover:border-blue-500/40 transition">
-                            
-                            {{-- Top Header --}}
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-between gap-2">
-                                    <div class="flex items-center gap-2">
-                                        <span class="px-3 py-1 rounded-xl bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono font-black text-xs border border-blue-200 dark:border-blue-800">
-                                            {{ $min->country?->code ?? 'DZA' }}
-                                        </span>
-                                        <span class="px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 font-black text-[10px] tracking-wider uppercase border border-amber-300 shadow-xs">
-                                            VIP DIPLOMATIC
-                                        </span>
-                                    </div>
-
-                                    {{-- Availability Badge --}}
-                                    @php
-                                        $st = $min->availability_status;
-                                        $stBadge = match($st) {
-                                            'AVAILABLE'  => ['bg-emerald-50 text-emerald-900 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800', $t('متاح للعمل واللقاءات', 'Disponible', 'Available')],
-                                            'BUSY'       => ['bg-rose-50 text-rose-900 border-rose-300 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800', $t('في اجتماع / غير متاح', 'En Réunion', 'Busy')],
-                                            'IN_SESSION' => ['bg-amber-50 text-amber-900 border-amber-300 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800', $t('في الجلسة العامة', 'En Session', 'In Session')],
-                                            default      => ['bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600', $t('خارج ساعات العمل', 'Hors Service', 'Off Duty')],
-                                        };
-                                    @endphp
-                                    <span class="px-3 py-1 rounded-full text-[10px] font-black border uppercase {{ $stBadge[0] }}">
-                                        {{ $stBadge[1] }}
-                                    </span>
-                                </div>
-
-                                <div>
-                                    <h3 class="text-lg font-black text-[#06205C] dark:text-white leading-tight">
-                                        {{ $min->full_name }}
-                                    </h3>
-                                    <p class="text-xs text-amber-600 dark:text-amber-400 font-bold mt-1">
-                                        {{ $min->title_ar }}
-                                    </p>
-                                    <span class="text-xs text-slate-400 dark:text-slate-400 font-medium block mt-1 leading-snug">
-                                        {{ $min->ministry_name }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {{-- Status Toggle Buttons & Booking Action --}}
-                            <div class="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-700">
-                                <span class="text-[10px] text-slate-400 font-black uppercase tracking-wider block">{{ $t('تحديث حالة التوافر الحالية:', 'Changer statut disponible:', 'Update Availability:') }}</span>
-                                
-                                <div class="grid grid-cols-2 gap-2 text-[11px] font-black">
-                                    <button wire:click="updateMinisterStatus({{ $min->id }}, 'AVAILABLE')" class="py-2 px-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-center transition shadow-xs">
-                                        {{ $t('متاح', 'Disponible', 'Available') }}
-                                    </button>
-
-                                    <button wire:click="updateMinisterStatus({{ $min->id }}, 'BUSY')" class="py-2 px-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-center transition shadow-xs">
-                                        {{ $t('في اجتماع', 'En Réunion', 'Busy') }}
-                                    </button>
-
-                                    <button wire:click="updateMinisterStatus({{ $min->id }}, 'IN_SESSION')" class="py-2 px-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-center transition shadow-xs">
-                                        {{ $t('في الجلسة', 'En Session', 'In Session') }}
-                                    </button>
-
-                                    <button wire:click="updateMinisterStatus({{ $min->id }}, 'OFF_DUTY')" class="py-2 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 text-center transition shadow-xs">
-                                        {{ $t('غير متاح', 'Hors Service', 'Off Duty') }}
-                                    </button>
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-2 pt-1">
-                                    <button wire:click="openBookingModal({{ $min->id }})" class="py-3 rounded-2xl bg-[#06205C] hover:bg-[#041640] text-white font-black text-xs shadow-md transition flex items-center justify-center gap-1.5">
-                                        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                        <span>{{ $t('حجز موعد', 'Réserver', 'Book Talk') }}</span>
-                                    </button>
-
-                                    <button wire:click="showMinisterCredentials({{ $min->id }})" class="py-3 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700 font-black text-xs transition flex items-center justify-center gap-1.5">
-                                        <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 0121 9z"/></svg>
-                                        <span>{{ $t('بطاقة الدخول', 'Identifiants', 'Credentials') }}</span>
-                                    </button>
-                                </div>
-                            </div>
-
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endif
-
-        {{-- ── TAB 3: DIPLOMATIC ROOMS & REAL-TIME SCHEDULE ── --}}
-        @if($activeTab === 'ROOMS')
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                @foreach($rooms as $rm)
-                    <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-lg p-6 space-y-5 flex flex-col justify-between hover:border-purple-500/40 transition">
-                        <div class="space-y-4">
+            <!-- Grid Cards of Ministers -->
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                @forelse($ministers as $minister)
+                    <div class="bg-slate-50 dark:bg-slate-900/60 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700/60 hover:border-blue-500/50 transition flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
                             <div class="flex items-center justify-between">
-                                <span class="px-3.5 py-1.5 rounded-full text-xs font-black uppercase bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
-                                    {{ $rm->location_zone }}
-                                </span>
-                                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                                    {{ $rm->capacity }} {{ $t('مقعد ثنائي VIP', 'Sièges VIP', 'VIP Seats') }}
-                                </span>
-                            </div>
-
-                            <h3 class="text-lg font-black text-[#06205C] dark:text-white leading-snug">
-                                {{ $rm->getLocalized('name') }}
-                            </h3>
-
-                            {{-- Today's Schedule for this room --}}
-                            <div class="space-y-2.5 pt-2">
-                                <span class="text-[10px] text-slate-400 font-black uppercase tracking-wider block">{{ $t('مواعيد الحجز لهذا اليوم:', 'Réservations du jour:', 'Today\'s Slot Schedule:') }}</span>
-                                @forelse($rm->meetings as $rMtg)
-                                    <div class="p-3 rounded-2xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200/80 text-xs font-bold text-amber-900 dark:text-amber-200 flex items-center justify-between shadow-xs">
-                                        <span class="font-mono text-xs font-black">{{ $rMtg->start_time->format('H:i') }} - {{ $rMtg->end_time->format('H:i') }}</span>
-                                        <span class="truncate max-w-[150px] font-black">{{ $rMtg->title }}</span>
-                                    </div>
-                                @empty
-                                    <span class="text-emerald-600 dark:text-emerald-400 text-xs font-bold block bg-emerald-50/60 dark:bg-emerald-950/40 p-3 rounded-2xl border border-emerald-200 dark:border-emerald-800">
-                                        {{ $t('القاعة متاحة بالكامل للحجز اليوم', 'Salon disponible toute la journée', 'Lounge available all day') }}
+                                <div class="flex items-center gap-2">
+                                    <span class="text-2xl">{{ $minister->country?->flag ?: '🌐' }}</span>
+                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-mono">
+                                        {{ $minister->country?->name_ar ?? 'الجزائر' }}
                                     </span>
-                                @endforelse
+                                </div>
+                                
+                                <!-- Status Toggle -->
+                                <select wire:change="updateMinisterStatus({{ $minister->id }}, $event.target.value)" class="text-[10px] font-black rounded-full px-2.5 py-1 border border-slate-300 dark:border-slate-600 focus:outline-none {{ $minister->availability_status === 'AVAILABLE' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : ($minister->availability_status === 'BUSY' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300') }}">
+                                    <option value="AVAILABLE" {{ $minister->availability_status === 'AVAILABLE' ? 'selected' : '' }}>🟢 متاح للقاءات</option>
+                                    <option value="BUSY" {{ $minister->availability_status === 'BUSY' ? 'selected' : '' }}>🟡 مشغول حالياً</option>
+                                    <option value="IN_MEETING" {{ $minister->availability_status === 'IN_MEETING' ? 'selected' : '' }}>🔴 في اجتماع مغلق</option>
+                                    <option value="OFFLINE" {{ $minister->availability_status === 'OFFLINE' ? 'selected' : '' }}>⚪ غير متوفر</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <h3 class="text-sm font-black text-slate-900 dark:text-white">
+                                    {{ $minister->full_name }}
+                                </h3>
+                                <p class="text-xs font-bold text-amber-600 dark:text-amber-400 mt-0.5">
+                                    {{ $minister->title_ar }}
+                                </p>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                                    {{ $minister->ministry_name }}
+                                </p>
                             </div>
                         </div>
 
-                        <button wire:click="openBookingModal(null, {{ $rm->id }})" class="w-full py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white font-black text-xs shadow-md transition flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            <span>{{ $t('حجز هذه القاعة الآن', 'Réserver ce Salon VIP', 'Book This VIP Lounge') }}</span>
-                        </button>
+                        <div class="pt-3 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between gap-2">
+                            <button wire:click="openBookingModal({{ $minister->id }})" class="flex-1 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black text-[11px] transition shadow-xs">
+                                📅 حجز لقاء
+                            </button>
+                            <button wire:click="showMinisterCredentials({{ $minister->id }})" class="flex-1 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950 dark:hover:bg-blue-900 text-blue-700 dark:text-blue-300 font-bold text-[11px] border border-blue-200 dark:border-blue-800 transition">
+                                🪪 بطاقة SSO
+                            </button>
+                        </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="col-span-full p-12 text-center text-slate-400 dark:text-slate-500 font-bold">
+                        لا يوجد وزراء أو مسؤولون مطابقون لخيارات البحث.
+                    </div>
+                @endforelse
             </div>
-        @endif
+        </div>
+    @endif
 
-    </div> {{-- END .printable-hide-on-print --}}
+    <!-- TAB 3: VIP ROOMS -->
+    @if(($activeTab ?? 'MEETINGS') === 'ROOMS')
+        <div class="bg-white dark:bg-slate-800/90 rounded-3xl border border-slate-200/80 dark:border-slate-700/60 shadow-xs overflow-hidden p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                @forelse($rooms as $room)
+                    <div class="bg-slate-50 dark:bg-slate-900/60 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700/60 hover:border-purple-500/50 transition flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-3xl">🛋️</span>
+                                <span class="px-3 py-1 rounded-full text-[10px] font-black bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-300 dark:border-purple-800">
+                                    السعة: {{ $room->capacity }} مقعد VIP
+                                </span>
+                            </div>
 
-    {{-- ── BOOKING DIPLOMATIC MEETING MODAL ── --}}
-    @if($showBookingModal)
-        <div class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-            <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto my-auto animate-scale-up">
-                
-                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/80 pb-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-2xl bg-[#06205C] text-white flex items-center justify-center font-black shrink-0 shadow-md">
-                            <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <div>
+                                <h3 class="text-base font-black text-slate-900 dark:text-white">
+                                    {{ $room->name_ar }}
+                                </h3>
+                                <p class="text-xs font-mono text-slate-400 mt-0.5">
+                                    {{ $room->name_fr ?: $room->name_en }}
+                                </p>
+                            </div>
+
+                            <div class="flex items-center gap-2 text-[10px] font-bold text-slate-600 dark:text-slate-400 flex-wrap">
+                                <span class="px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700">🎧 ترجمة فورية</span>
+                                <span class="px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700">🔒 خط مشفر</span>
+                                <span class="px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700">🎥 بث صحفي</span>
+                            </div>
                         </div>
-                        <div>
-                            <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white">
-                                {{ $t('حجز لقاء ثنائي وقاعة اجتماعات دبلوماسية', 'Réservation d\'un Entretien Bilatéral', 'Book Bilateral Meeting & Diplomatic Lounge') }}
-                            </h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold mt-0.5">{{ $t('تحديد الأطراف، القاعة، والتوقيت الزمني الدقيق.', 'Spécifiez les officiels, le salon VIP et le créneau horaire.', 'Specify officials, lounge room, and exact time slot.') }}</p>
+
+                        <div class="pt-4 border-t border-slate-200/60 dark:border-slate-700/60">
+                            <button wire:click="openBookingModal(null, {{ $room->id }})" class="w-full py-2.5 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-black text-xs transition shadow-lg shadow-purple-600/20">
+                                حجز هذه القاعة الآن
+                            </button>
                         </div>
                     </div>
-                    <button wire:click="$set('showBookingModal', false)" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-black text-lg"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
+                @empty
+                    <div class="col-span-full p-12 text-center text-slate-400 dark:text-slate-500 font-bold">
+                        لا توجد قاعات VIP مسجلة حالياً.
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    @endif
+
+    <!-- BOOKING MODAL -->
+    @if($showBookingModal ?? false)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs transition-all">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-lg w-full p-6 space-y-5 border border-slate-200 dark:border-slate-700 shadow-2xl max-h-[90vh] overflow-y-auto">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
+                    <h3 class="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                        <span>📅 حجز لقاء ثنائي وتأكيد موعد VIP</span>
+                    </h3>
+                    <button wire:click="closeModal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-xl">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                 </div>
 
-                @if($errorMessage)
-                    <div class="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200 text-xs font-bold flex items-center gap-2">
-                        <svg class="w-5 h-5 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                        <span>{{ $errorMessage }}</span>
+                @if(!empty($errorMessage))
+                    <div class="p-3 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 rounded-xl text-xs font-bold text-rose-700 dark:text-rose-300">
+                        {{ $errorMessage }}
                     </div>
                 @endif
 
-                <div class="space-y-4">
-                    
-                    {{-- Meeting Title --}}
+                <form wire:submit.prevent="createBilateralMeeting" class="space-y-4 text-xs font-bold">
+                    <!-- Host Minister -->
                     <div>
-                        <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">
-                            {{ $t('عنوان المباحثات الثنائية *', 'Titre de la Rencontre *', 'Bilateral Session Title *') }}
-                        </label>
-                        <input type="text" wire:model="meetingTitle" placeholder="{{ $t('مثال: جلسة مباحثات الجزائر-مصر حول التكوين والمهن', 'Ex: Entretien Algérie-Égypte sur la formation', 'Ex: Algeria-Egypt Bilateral Session') }}"
-                               class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/30 transition">
-                        @error('meetingTitle') <span class="text-[10px] text-rose-500 font-bold mt-1 block">{{ $message }}</span> @enderror
-                    </div>
-
-                    {{-- Host & Guest Ministers --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">
-                                {{ $t('الوزير المستضيف (الجزائر) *', 'Ministre Hôte *', 'Host Official *') }}
-                            </label>
-                            <select wire:model="hostMinisterId" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/30 transition">
-                                <option value="">{{ $t('-- اختر الوزير المستضيف --', '-- Sélectionner --', '-- Select --') }}</option>
-                                @foreach($ministers as $mOption)
-                                    <option value="{{ $mOption->id }}">{{ $mOption->country?->code }} — {{ $mOption->full_name }} ({{ $mOption->title_ar }})</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">
-                                {{ $t('الوزير الضيف (الوفد الإفريقي) *', 'Ministre Invité *', 'Guest Official *') }}
-                            </label>
-                            <select wire:model="guestMinisterId" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/30 transition">
-                                <option value="">{{ $t('-- اختر الوزير الضيف --', '-- Sélectionner --', '-- Select --') }}</option>
-                                @foreach($ministers as $mOption)
-                                    <option value="{{ $mOption->id }}">{{ $mOption->country?->code }} — {{ $mOption->full_name }} ({{ $mOption->title_ar }})</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    {{-- Diplomatic Room --}}
-                    <div>
-                        <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">
-                            {{ $t('قاعة الاجتماعات الدبلوماسية *', 'Salon VIP d\'Accueil *', 'Diplomatic Lounge Room *') }}
-                        </label>
-                        <select wire:model="roomId" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/30 transition">
-                            <option value="">{{ $t('-- اختر قاعة الاجتماعات --', '-- Sélectionner --', '-- Select --') }}</option>
-                            @foreach($rooms as $rOption)
-                                <option value="{{ $rOption->id }}">{{ $rOption->getLocalized('name') }} ({{ $rOption->capacity }} seat)</option>
+                        <label class="block text-slate-700 dark:text-slate-300 mb-1">الطرف المضيف (الجزائر) *</label>
+                        <select wire:model="hostMinisterId" required class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="">اختر الوزير المضيف...</option>
+                            @foreach($ministers as $m)
+                                <option value="{{ $m->id }}">{{ $m->country?->flag }} {{ $m->full_name }} — {{ $m->title_ar }}</option>
                             @endforeach
                         </select>
                     </div>
 
-                    {{-- Date & Time Slots --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div>
-                            <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">{{ $t('التاريخ *', 'Date *', 'Date *') }}</label>
-                            <input type="date" wire:model="meetingDate" class="w-full px-3.5 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-900 dark:text-white">
-                        </div>
+                    <!-- Guest Minister -->
+                    <div>
+                        <label class="block text-slate-700 dark:text-slate-300 mb-1">الطرف الضيف (الوزير / المسؤول الدولي) *</label>
+                        <select wire:model="guestMinisterId" required class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="">اختر الوزير الضيف...</option>
+                            @foreach($ministers as $m)
+                                <option value="{{ $m->id }}">{{ $m->country?->flag }} {{ $m->full_name }} — {{ $m->country?->name_ar }} ({{ $m->title_ar }})</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                        <div>
-                            <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">{{ $t('من الساعة *', 'Heure début *', 'From Time *') }}</label>
-                            <input type="time" wire:model="startTime" class="w-full px-3.5 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-900 dark:text-white">
-                        </div>
+                    <!-- Room Selection -->
+                    <div>
+                        <label class="block text-slate-700 dark:text-slate-300 mb-1">قاعة اللقاء VIP *</label>
+                        <select wire:model="roomId" required class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="">اختر القاعة...</option>
+                            @foreach($rooms as $rm)
+                                <option value="{{ $rm->id }}">🚪 {{ $rm->name_ar }} (سعة: {{ $rm->capacity }} مقعد)</option>
+                            @endforeach
+                        </select>
+                    </div>
 
+                    <!-- Title & Purpose -->
+                    <div>
+                        <label class="block text-slate-700 dark:text-slate-300 mb-1">عنوان اللقاء *</label>
+                        <input type="text" wire:model="meetingTitle" required placeholder="مثال: جلسة عمل ثنائية لتطوير التكوين المهني" class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+
+                    <!-- Date & Times -->
+                    <div class="grid grid-cols-3 gap-3">
                         <div>
-                            <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">{{ $t('إلى الساعة *', 'Heure fin *', 'To Time *') }}</label>
-                            <input type="time" wire:model="endTime" class="w-full px-3.5 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-900 dark:text-white">
+                            <label class="block text-slate-700 dark:text-slate-300 mb-1">التاريخ *</label>
+                            <input type="date" wire:model="meetingDate" required class="w-full px-3 py-2 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white text-center focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-700 dark:text-slate-300 mb-1">وقت البداية *</label>
+                            <input type="time" wire:model="startTime" required class="w-full px-3 py-2 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white text-center focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-700 dark:text-slate-300 mb-1">وقت النهاية *</label>
+                            <input type="time" wire:model="endTime" required class="w-full px-3 py-2 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white text-center focus:outline-none focus:ring-2 focus:ring-amber-500">
                         </div>
                     </div>
 
-                </div>
-
-                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-700">
-                    <button wire:click="$set('showBookingModal', false)" type="button" class="px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-xs transition">
-                        {{ $t('إلغاء', 'Annuler', 'Cancel') }}
-                    </button>
-                    <button wire:click="createBilateralMeeting" type="button" class="px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow-lg transition">
-                        {{ $t('تأكيد وحجز القاعة', 'Confirmer la réservation', 'Confirm Booking') }}
-                    </button>
-                </div>
-
+                    <!-- Actions -->
+                    <div class="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-700">
+                        <button type="button" wire:click="closeModal" class="px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-2xl">إلغاء</button>
+                        <button type="submit" class="px-6 py-2.5 text-xs font-black text-white bg-amber-500 hover:bg-amber-600 rounded-2xl shadow-lg shadow-amber-500/20">تأكيد وتثبيت الموعد</button>
+                    </div>
+                </form>
             </div>
         </div>
     @endif
 
-    {{-- ── ADD NEW MINISTER MODAL ── --}}
-    @if($showAddMinisterModal)
-        <div class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-            <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto my-auto animate-scale-up">
-                
-                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/80 pb-4">
-                    <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white">
-                        {{ $t('إضافة وزير أو مسؤول حكومي رفيع المستوى', 'Ajouter un Ministre ou Officiel', 'Add Minister or High Government Official') }}
+    <!-- ADD MINISTER MODAL -->
+    @if($showAddMinisterModal ?? false)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs transition-all">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-lg w-full p-6 space-y-5 border border-slate-200 dark:border-slate-700 shadow-2xl max-h-[90vh] overflow-y-auto">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
+                    <h3 class="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                        <span>🏛️ إضافة وزير / مسؤول شرفي جديد</span>
                     </h3>
-                    <button wire:click="$set('showAddMinisterModal', false)" class="p-2 text-slate-400 hover:text-slate-600 font-black text-lg"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
+                    <button wire:click="closeModal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-xl">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                 </div>
 
-                <div class="space-y-4">
+                <form wire:submit.prevent="saveNewMinister" class="space-y-4 text-xs font-bold">
                     <div>
-                        <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">{{ $t('الدولة *', 'Pays *', 'Country *') }}</label>
-                        <select wire:model="newMinisterCountryId" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-900 dark:text-white">
-                            <option value="">{{ $t('-- اختر الدولة --', '-- Sélectionner --', '-- Select --') }}</option>
-                            @foreach($countries as $cOpt)
-                                <option value="{{ $cOpt->id }}">{{ $cOpt->code }} — {{ $cOpt->getLocalized('name') }}</option>
+                        <label class="block text-slate-700 dark:text-slate-300 mb-1">دولة / وفد الوزير *</label>
+                        <select wire:model="newMinisterCountryId" required class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">اختر الدولة...</option>
+                            @foreach($countries as $cnt)
+                                <option value="{{ $cnt->id }}">{{ $cnt->flag }} {{ $cnt->name_ar }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">{{ $t('الاسم الكامل *', 'Nom complet *', 'Full Name *') }}</label>
-                        <input type="text" wire:model="newMinisterName" placeholder="{{ $t('معالي الوزير...', 'Son Excellence...', 'His Excellency...') }}" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-900 dark:text-white">
+                        <label class="block text-slate-700 dark:text-slate-300 mb-1">الاسم الكامل للوزير/المسؤول *</label>
+                        <input type="text" wire:model="newMinisterName" required placeholder="معالي الوزير..." class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-slate-700 dark:text-slate-300 mb-1">الصفة الرسمية (عربي) *</label>
+                            <input type="text" wire:model="newMinisterTitleAr" required placeholder="وزير التكوين والتعليم المهنيين" class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-700 dark:text-slate-300 mb-1">الوزارة / الهيئة *</label>
+                            <input type="text" wire:model="newMinisterMinistry" required placeholder="وزارة التكوين المهني" class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">{{ $t('المنصب الوزاري بالعربية *', 'Titre Ministériel (Arabe) *', 'Ministerial Title (Arabic) *') }}</label>
-                        <input type="text" wire:model="newMinisterTitleAr" placeholder="{{ $t('وزير التكوين والتعليم المهنيين...', 'Ministre...', 'Minister of...') }}" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-900 dark:text-white">
+                        <label class="block text-slate-700 dark:text-slate-300 mb-1">رقم الهاتف للتواصل البروتوكولي</label>
+                        <input type="text" wire:model="newMinisterPhone" placeholder="+213..." class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500" dir="ltr">
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">{{ $t('الوزارة / الهيئة الرسمية *', 'Ministère / Organisme *', 'Ministry / Entity *') }}</label>
-                        <input type="text" wire:model="newMinisterMinistry" placeholder="{{ $t('وزارة التكوين والتعليم المهنيين', 'Ministère de la Formation', 'Ministry of Vocational Training') }}" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-900 dark:text-white">
+                    <div class="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-700">
+                        <button type="button" wire:click="closeModal" class="px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-2xl">إلغاء</button>
+                        <button type="submit" class="px-6 py-2.5 text-xs font-black text-white bg-blue-600 hover:bg-blue-700 rounded-2xl shadow-lg shadow-blue-600/20">حفظ وإنشاء حساب SSO</button>
                     </div>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-700">
-                    <button wire:click="$set('showAddMinisterModal', false)" type="button" class="px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition">
-                        {{ $t('إلغاء', 'Annuler', 'Cancel') }}
-                    </button>
-                    <button wire:click="saveMinister" type="button" class="px-6 py-3 rounded-2xl bg-[#06205C] hover:bg-[#041640] text-white font-black text-xs shadow-lg transition">
-                        {{ $t('حفظ المسؤول الوزاري', 'Enregistrer Officiel', 'Save Ministerial Official') }}
-                    </button>
-                </div>
-
+                </form>
             </div>
         </div>
     @endif
 
-    {{-- ── SHOW MINISTER CREDENTIALS PASS MODAL ── --}}
-    @if($showCredentialModal && !empty($credentialData))
-        <div class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-            <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 dark:border-slate-700 my-auto text-center relative overflow-hidden">
-                
-                {{-- Decorative Header Banner --}}
-                <div class="absolute top-0 inset-x-0 h-3 bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500"></div>
+    <!-- CREDENTIAL PASS MODAL -->
+    @if(($showCredentialModal ?? false) && !empty($credentialData))
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-xs transition-all">
+            <div class="bg-gradient-to-br from-slate-900 to-slate-950 text-white rounded-3xl max-w-md w-full p-6 space-y-6 border border-amber-500/40 shadow-2xl relative overflow-hidden">
+                <!-- Watermark -->
+                <div class="absolute -right-8 -top-8 text-8xl opacity-10 pointer-events-none">🏛️</div>
 
-                <div class="flex justify-between items-center pb-2 border-b border-slate-100 dark:border-slate-700">
-                    <span class="text-[10px] font-mono font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest">
-                        VIP DIPLOMATIC PASS
-                    </span>
-                    <button wire:click="closeModal" class="text-slate-400 hover:text-slate-600 font-black text-lg"><x-ws.icon name="x-mark" class="w-5 h-5" /></button>
-                </div>
-
-                {{-- VIP Pass Badge Layout --}}
-                <div class="p-6 rounded-3xl bg-gradient-to-b from-[#020A24] via-[#06205C] to-[#0A3580] text-white border border-amber-500/30 space-y-4 shadow-xl text-start relative overflow-hidden">
-                    <div class="flex items-center justify-between gap-2">
-                        <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 font-mono text-[10px] font-black uppercase border border-amber-500/40">
-                            {{ $credentialData['country_code'] ?? 'DZA' }} OFFICIAL PASS
-                        </span>
-                        <img src="/logo.svg" alt="WorldSkills Algeria" class="h-6 w-auto">
-                    </div>
-
-                    <div class="pt-2">
-                        <h4 class="text-lg font-black text-white leading-tight">
-                            {{ $credentialData['name'] ?? '' }}
-                        </h4>
-                        <p class="text-xs text-amber-300 font-bold mt-1">
-                            {{ $credentialData['title'] ?? '' }}
-                        </p>
-                        <p class="text-[11px] text-blue-200/80 font-medium block mt-0.5">
-                            {{ $credentialData['ministry'] ?? '' }}
-                        </p>
-                    </div>
-
-                    <div class="pt-3 border-t border-white/10 space-y-2 font-mono text-xs">
-                        <div class="flex items-center justify-between">
-                            <span class="text-blue-300/70 text-[10px] uppercase font-bold">{{ $t('اسم المستخدم (Email)', 'Identifiant', 'Username') }}:</span>
-                            <span class="font-bold text-white text-[11px]">{{ $credentialData['email'] ?? '' }}</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-blue-300/70 text-[10px] uppercase font-bold">{{ $t('كلمة المرور الرسمية', 'Mot de Passe', 'Initial Password') }}:</span>
-                            <span class="font-bold text-amber-400 text-[11px]">Ministry2026!</span>
+                <div class="flex items-center justify-between border-b border-amber-500/20 pb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🪪</span>
+                        <div>
+                            <h3 class="text-base font-black text-amber-400">بطاقة اعتماد ورسالة الدخول الموحد SSO</h3>
+                            <p class="text-[10px] text-slate-400 font-mono">WorldSkills Africa Protocol System</p>
                         </div>
                     </div>
-                </div>
-
-                <div class="flex items-center justify-center gap-3 pt-2">
-                    <button onclick="window.print()" class="px-6 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow-md transition flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                        <span>{{ $t('طباعة البطاقة الرسمية', 'Imprimer le Pass', 'Print Official Pass') }}</span>
-                    </button>
-
-                    <button wire:click="closeModal" class="px-5 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition">
-                        {{ $t('إغلاق', 'Fermer', 'Close') }}
+                    <button wire:click="closeModal" class="text-slate-400 hover:text-white p-1 rounded-xl">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
 
+                <!-- Credential Card -->
+                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700/80 space-y-3 text-xs">
+                    <div class="flex justify-between items-center"><span class="text-slate-400">الاسم واللقب:</span><span class="font-black text-amber-300 text-sm">{{ $credentialData['name'] }}</span></div>
+                    <div class="flex justify-between items-center"><span class="text-slate-400">الصفة الرسمية:</span><span class="font-bold text-slate-200">{{ $credentialData['title'] }}</span></div>
+                    <div class="flex justify-between items-center"><span class="text-slate-400">الدولة / الوفد:</span><span class="font-bold text-blue-400 font-mono">{{ $credentialData['country'] }} ({{ $credentialData['country_code'] }})</span></div>
+                    <hr class="border-slate-700/60">
+                    <div class="flex justify-between items-center"><span class="text-slate-400">البريد الإلكتروني للقرين:</span><span class="font-mono font-bold text-emerald-400 dir-ltr select-all">{{ $credentialData['email'] }}</span></div>
+                    <div class="flex justify-between items-center"><span class="text-slate-400">كلمة المرور الأولية:</span><span class="font-mono font-bold text-amber-400 dir-ltr select-all">{{ $credentialData['password'] }}</span></div>
+                </div>
+
+                <div class="flex justify-center pt-2">
+                    <button onclick="window.print()" class="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs transition shadow-lg shadow-amber-500/20">
+                        🖨️ طباعة بطاقة اعتماد الدخول الموحد
+                    </button>
+                </div>
             </div>
         </div>
     @endif
-
 </div>
