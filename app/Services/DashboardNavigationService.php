@@ -20,7 +20,7 @@ class DashboardNavigationService
                     'category_icon' => 'home',
                     'items' => [
                         ['key' => 'dash',       'label' => $this->t('لوحة التحكم القيادية', 'Tableau de Bord', 'Main Dashboard'), 'icon' => 'home', 'route' => 'admin.dashboard'],
-                        ['key' => 'operations', 'label' => $this->t('مركز العمليات والجهوزية الميدانية', 'Centre d'Opérations', 'Field Operations Center'), 'icon' => 'bolt', 'route' => 'admin.operations'],
+                        ['key' => 'operations', 'label' => $this->t('مركز العمليات والجهوزية الميدانية', 'Centre d\'Opérations', 'Field Operations Center'), 'icon' => 'bolt', 'route' => 'admin.operations'],
                         ['key' => 'readiness',  'label' => $this->t('مؤشر الجهوزية الأولمبية', 'Indicateur de Préparation', 'Readiness Index'), 'icon' => 'chart-bar', 'route' => 'admin.readiness'],
                         ['key' => 'events',     'label' => $this->t('جدول التظاهرات والفعاليات', 'Événements & Agenda', 'Events & Ceremonies'), 'icon' => 'calendar', 'route' => 'admin.events'],
                     ]
@@ -42,7 +42,7 @@ class DashboardNavigationService
                     'items' => [
                         ['key' => 'skills',        'label' => $this->t('التخصصات الأولمبية والمهن', 'Compétences Olympiques', 'Olympic Skills'), 'icon' => 'trophy', 'route' => 'admin.skills'],
                         ['key' => 'judges',        'label' => $this->t('المحكمون والخبراء ومجالس التحكيم', 'Jury & Experts', 'Judges & Experts'), 'icon' => 'scale', 'route' => 'admin.judges'],
-                        ['key' => 'cis',           'label' => $this->t('نظام التقييم الميداني (CIS)', 'Système d'Évaluation CIS', 'CIS Evaluation System'), 'icon' => 'chart-bar', 'route' => 'admin.cis'],
+                        ['key' => 'cis',           'label' => $this->t('نظام التقييم الميداني (CIS)', 'Système d\'Évaluation CIS', 'CIS Evaluation System'), 'icon' => 'chart-bar', 'route' => 'admin.cis'],
                         ['key' => 'appeals',       'label' => $this->t('الطعون الفنية والاعتراضات', 'Recours Techniques', 'Technical Appeals'), 'icon' => 'scale', 'route' => 'admin.appeals'],
                         ['key' => 'equipment',     'label' => $this->t('المعدات والتجهيزات الفنية', 'Équipements Techniques', 'Technical Equipment'), 'icon' => 'wrench-screwdriver', 'route' => 'admin.equipment'],
                     ]
@@ -65,7 +65,7 @@ class DashboardNavigationService
                     'category' => $this->t('محتوى المنصة والتواصل والإعدادات', 'CMS, Media & Système', 'CMS, Media & System'),
                     'category_icon' => 'newspaper',
                     'items' => [
-                        ['key' => 'cms_homepage',  'label' => $this->t('إدارة الواجهة والصفحة الرئيسية (CMS)', 'CMS Page d'Accueil', 'CMS Homepage Manager'), 'icon' => 'home', 'route' => 'admin.cms.homepage'],
+                        ['key' => 'cms_homepage',  'label' => $this->t('إدارة الواجهة والصفحة الرئيسية (CMS)', 'CMS Page d\'Accueil', 'CMS Homepage Manager'), 'icon' => 'home', 'route' => 'admin.cms.homepage'],
                         ['key' => 'live_tv',       'label' => $this->t('التحكم بالبث المباشر (Live TV)', 'Direct TV & Diffusion', 'Live TV Broadcast'), 'icon' => 'video-camera', 'route' => 'admin.live-tv'],
                         ['key' => 'cms_news',      'label' => $this->t('الأخبار والمقالات والتغطيات', 'Actualités & Articles', 'News & Articles'), 'icon' => 'newspaper', 'route' => 'admin.cms.news'],
                         ['key' => 'cms_videos',    'label' => $this->t('مكتبة الفيديو والتلفزيون', 'Vidéothèque', 'Video Library'), 'icon' => 'video-camera', 'route' => 'admin.cms.videos'],
