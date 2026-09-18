@@ -291,11 +291,19 @@ class WsapAccessRulesEngine
             return '';
         }
 
-        if (filter_var($clean, FILTER_VALIDATE_URL) || str_contains($clean, 'http://') || str_contains($clean, 'https://')) {
-            $parsed = parse_url($clean);
+        // Strip leading/trailing non-alphanumeric punctuation (e.g. ;, :, ?, =, quotes)
+        $clean = preg_replace('/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/', '', $clean);
+
+        // Regex check for query params like token=...
+        if (preg_match('/[?&]?(token|identifier|badge|code|id|uuid)=([a-zA-Z0-9_-]+)/i', $raw, $matches)) {
+            return trim($matches[2]);
+        }
+
+        if (filter_var($raw, FILTER_VALIDATE_URL) || str_contains($raw, 'http://') || str_contains($raw, 'https://') || str_contains($raw, 'verify')) {
+            $parsed = parse_url($raw);
             if (isset($parsed['query'])) {
                 parse_str($parsed['query'], $queryParams);
-                foreach (['identifier', 'token', 'badge', 'id', 'uuid', 'code', 'user_id', 'email', 'number'] as $key) {
+                foreach (['token', 'identifier', 'badge', 'id', 'uuid', 'code', 'user_id', 'email', 'number'] as $key) {
                     if (!empty($queryParams[$key])) {
                         return trim((string) $queryParams[$key]);
                     }
@@ -328,10 +336,10 @@ class WsapAccessRulesEngine
             ->orWhere('id', $cleanBadge)
             ->first();
 
-        if (!$badge && strlen($cleanBadge) >= 6) {
+        if (!$badge && strlen($cleanBadge) >= 4) {
             $badge = Badge::with(['user.roles', 'user.country', 'user.participant.registrations'])
-                ->where('badge_uuid', 'like', $cleanBadge . '%')
-                ->orWhere('access_token', 'like', $cleanBadge . '%')
+                ->where('badge_uuid', 'like', '%' . $cleanBadge . '%')
+                ->orWhere('access_token', 'like', '%' . $cleanBadge . '%')
                 ->first();
         }
 

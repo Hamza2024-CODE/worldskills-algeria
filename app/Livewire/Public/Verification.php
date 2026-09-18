@@ -73,8 +73,11 @@ class Verification extends Component
             return;
         }
 
-        // 1. Extract token from URL if full URL was scanned
-        if (filter_var($clean, FILTER_VALIDATE_URL) || str_contains($clean, "http://") || str_contains($clean, "https://")) {
+        // 1. Extract token from URL or raw scan string if full URL was scanned
+        $clean = preg_replace('/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/', '', $clean);
+        if (preg_match('/[?&]?(token|identifier|badge|code|id|uuid)=([a-zA-Z0-9_-]+)/i', $this->query, $matches)) {
+            $clean = trim($matches[2]);
+        } elseif (filter_var($this->query, FILTER_VALIDATE_URL) || str_contains($this->query, "http://") || str_contains($this->query, "https://")) {
             $parsed = parse_url($clean);
             if (isset($parsed["query"])) {
                 parse_str($parsed["query"], $qParams);
@@ -100,6 +103,13 @@ class Verification extends Component
             ->orWhere("badge_uuid", $clean)
             ->orWhere("id", $clean)
             ->first();
+
+        if (!$this->badge && strlen($clean) >= 4) {
+            $this->badge = Badge::with(["user.roles", "user.country", "user.wilaya", "user.organization", "user.participant.registrations.skill"])
+                ->where("access_token", "like", "%" . $clean . "%")
+                ->orWhere("badge_uuid", "like", "%" . $clean . "%")
+                ->first();
+        }
 
         if ($this->badge) {
             $this->badgeCode = $this->badge->access_token;
