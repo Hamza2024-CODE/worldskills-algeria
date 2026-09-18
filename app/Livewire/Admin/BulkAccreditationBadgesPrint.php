@@ -83,7 +83,7 @@ class BulkAccreditationBadgesPrint extends Component
             $qrCodeUrl = \App\Services\QrCodeService::generateDataUri($verifyUrl, 250);
 
             $nameAr = $reg?->participant?->first_name_ar ? ($reg->participant->first_name_ar . ' ' . $reg->participant->last_name_ar) : $user->name;
-            $nameLatin = $reg?->participant?->first_name_latin ? ($reg->participant->first_name_latin . ' ' . $reg->participant->last_name_latin) : ($user->email ?? 'Accredited Member');
+            $nameLatin = $reg?->participant?->first_name_fr ? ($reg->participant->first_name_fr . ' ' . $reg->participant->last_name_fr) : ($user->email ?? 'Accredited Member');
 
             $this->badgeItems[] = [
                 'id'         => $user->id,

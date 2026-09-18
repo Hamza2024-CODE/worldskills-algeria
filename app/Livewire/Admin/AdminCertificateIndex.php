@@ -118,7 +118,7 @@ class AdminCertificateIndex extends Component
         foreach ($regs as $reg) {
             $num       = $reg->registration_number;
             $nameAr    = $reg->participant?->first_name_ar ? ($reg->participant->first_name_ar . ' ' . $reg->participant->last_name_ar) : $reg->user?->name;
-            $nameLatin = $reg->participant?->first_name_latin ? ($reg->participant->first_name_latin . ' ' . $reg->participant->last_name_latin) : $reg->user?->email;
+            $nameLatin = $reg->participant?->first_name_fr ? ($reg->participant->first_name_fr . ' ' . $reg->participant->last_name_fr) : $reg->user?->email;
             $statusStr = is_object($reg->status) ? ($reg->status->value ?? 'APPROVED') : ($reg->status ?? 'APPROVED');
             $userRole  = $reg->user?->roles->first()?->name ?? 'PARTICIPANT';
 
@@ -198,8 +198,8 @@ class AdminCertificateIndex extends Component
                     ->orWhereHas('participant', fn($p) =>
                         $p->where('first_name_ar', 'like', $s)
                           ->orWhere('last_name_ar', 'like', $s)
-                          ->orWhere('first_name_latin', 'like', $s)
-                          ->orWhere('last_name_latin', 'like', $s)
+                          ->orWhere('first_name_fr', 'like', $s)
+                          ->orWhere('last_name_fr', 'like', $s)
                           ->orWhere('national_id', 'like', $s)
                           ->orWhere('passport_number', 'like', $s)
                     );

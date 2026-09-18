@@ -27,8 +27,8 @@ class CertificateRenderer
             ? ($registration->participant->first_name_ar . ' ' . $registration->participant->last_name_ar)
             : ($certificate?->user?->name ?? 'المترشح / المشارك المعتمد');
 
-        $nameLatin = $registration?->participant?->first_name_latin
-            ? ($registration->participant->first_name_latin . ' ' . $registration->participant->last_name_latin)
+        $nameLatin = $registration?->participant?->first_name_fr
+            ? ($registration->participant->first_name_fr . ' ' . $registration->participant->last_name_fr)
             : ($certificate?->metadata['recipient_name_latin'] ?? 'Accredited Member');
 
         // Serial Number

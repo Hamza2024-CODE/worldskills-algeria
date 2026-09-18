@@ -143,8 +143,8 @@ class AccreditationBadge extends Component
             $p = new ParticipantProfile([
                 'first_name_ar'    => $delegationMember->first_name,
                 'last_name_ar'     => $delegationMember->last_name,
-                'first_name_latin' => $delegationMember->first_name,
-                'last_name_latin'  => $delegationMember->last_name,
+                'first_name_fr' => $delegationMember->first_name,
+                'last_name_fr'  => $delegationMember->last_name,
             ]);
             $this->registration->setRelation('participant', $p);
             $this->registration->setRelation('country', $country);

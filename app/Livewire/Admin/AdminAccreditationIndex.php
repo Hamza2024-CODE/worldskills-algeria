@@ -175,7 +175,7 @@ class AdminAccreditationIndex extends Component
             $reg         = $u->participant?->registrations->first();
             $badge       = $u->badges->first();
             $nameAr      = $u->participant?->first_name_ar ? ($u->participant->first_name_ar . ' ' . $u->participant->last_name_ar) : $u->name;
-            $nameLatin   = $u->participant?->first_name_latin ? ($u->participant->first_name_latin . ' ' . $u->participant->last_name_latin) : $u->email;
+            $nameLatin   = $u->participant?->first_name_fr ? ($u->participant->first_name_fr . ' ' . $u->participant->last_name_fr) : $u->email;
             $regNumber   = $reg?->registration_number ?? ($badge?->badge_uuid ? substr($badge->badge_uuid, 0, 18) : ('USR-' . str_pad($u->id, 5, '0', STR_PAD_LEFT)));
             $countryName = $reg?->country?->name_ar ?? $u->country?->name_ar ?? 'الجزائر';
             $skillOrOrg  = $reg?->skill?->name_ar ?? $u->organization?->name_ar ?? 'المنصة الوطنية';
@@ -241,8 +241,8 @@ class AdminAccreditationIndex extends Component
                     ->orWhereHas('participant', fn($p) =>
                         $p->where('first_name_ar', 'like', $s)
                           ->orWhere('last_name_ar', 'like', $s)
-                          ->orWhere('first_name_latin', 'like', $s)
-                          ->orWhere('last_name_latin', 'like', $s)
+                          ->orWhere('first_name_fr', 'like', $s)
+                          ->orWhere('last_name_fr', 'like', $s)
                           ->orWhereHas('registrations', fn($r) => $r->where('registration_number', 'like', $s))
                     )
                     ->orWhereHas('badges', fn($b) => $b->where('badge_uuid', 'like', $s))
