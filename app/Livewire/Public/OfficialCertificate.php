@@ -25,6 +25,10 @@ class OfficialCertificate extends Component
             ?? $service->verifyByToken($identifier);
 
         if ($this->registration) {
+            $regStatus = is_object($this->registration->status) ? ($this->registration->status->value ?? 'APPROVED') : ($this->registration->status ?? 'APPROVED');
+            if (strtoupper((string)$regStatus) === 'REJECTED') {
+                abort(403, 'الشهادة الرسمية غير متاحة للملفات المرفوضة. يحق للمشاركين والمقبولين رسمياً فقط استخراج شهادة المشاركة.');
+            }
             $this->token = $this->registration->verification_token;
             
             if ($type) {

@@ -61,6 +61,7 @@ class AccreditationBadge extends Component
             $this->registration = Registration::with(['participant', 'country', 'skill', 'organization', 'wilaya'])
                 ->whereHas('participant', fn($p) => $p->where('user_id', $user->id))
                 ->first();
+            $this->checkRejectionEligibility();
             return;
         }
 
@@ -88,6 +89,7 @@ class AccreditationBadge extends Component
             $this->registration = Registration::with(['participant', 'country', 'skill', 'organization', 'wilaya'])
                 ->whereHas('participant', fn($p) => $p->where('user_id', $this->badge->user_id))
                 ->first();
+            $this->checkRejectionEligibility();
             return;
         }
 
@@ -146,6 +148,7 @@ class AccreditationBadge extends Component
             ?? $service->verifyByToken($identifier);
 
         if ($this->registration) {
+            $this->checkRejectionEligibility();
             $this->token = $this->registration->verification_token;
             $this->user  = $this->registration->user;
 
@@ -162,6 +165,17 @@ class AccreditationBadge extends Component
         }
 
         abort(404, 'بطاقة الاعتماد المطلوب الاستعلام عنها غير موجودة.');
+    }
+
+
+    protected function checkRejectionEligibility()
+    {
+        if ($this->registration) {
+            $st = is_object($this->registration->status) ? ($this->registration->status->value ?? 'APPROVED') : ($this->registration->status ?? 'APPROVED');
+            if (strtoupper((string)$st) === 'REJECTED') {
+                abort(403, 'بطاقة الاعتماد الرسمية غير متاحة للملفات المرفوضة. يقتصر إصدار الشارة وحق الدخول على المشاركين والمقبولين رسمياً.');
+            }
+        }
     }
 
     public function render()

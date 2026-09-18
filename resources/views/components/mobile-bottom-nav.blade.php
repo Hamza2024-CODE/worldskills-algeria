@@ -1,17 +1,29 @@
 <!-- Native Mobile App Bottom Tab Bar (Context & Role Dynamic) -->
 @php
-    $u = auth()->user();
-    $role = $u?->roles?->first()?->name ?? 'GUEST';
+    $user = auth()->user();
+    $role = $user?->roles?->first()?->name ?? 'GUEST';
 
     $myBadgeUrl = '#';
-    if ($u) {
-        $identifier = $u->uuid ?? (string)$u->id;
+    if ($user) {
+        $identifier = $user->uuid ?? (string)$user->id;
         $myBadgeUrl = route('accreditation.badge', ['identifier' => $identifier]);
+    }
+
+    $userReg = null;
+    $isRejectedCandidate = false;
+    if ($user && $role === \App\Enums\RoleEnum::PARTICIPANT->value) {
+        $userReg = \App\Models\Registration::whereHas('participant', fn($q) => $q->where('user_id', $user->id)->orWhere('email', $user->email))->first();
+        if ($userReg) {
+            $st = is_object($userReg->status) ? ($userReg->status->value ?? 'APPROVED') : ($userReg->status ?? 'APPROVED');
+            if (strtoupper((string)$st) === 'REJECTED') {
+                $isRejectedCandidate = true;
+            }
+        }
     }
 
     $tabs = [];
 
-    if (!$u || $role === 'GUEST') {
+    if (!$user || $role === 'GUEST') {
         $tabs = [
             [
                 'label' => __('messages.home'),
@@ -61,9 +73,10 @@
             ],
             [
                 'label' => (app()->getLocale() === 'fr' ? 'Mon Badge' : (app()->getLocale() === 'en' ? 'My Badge' : 'شارتي الرسمية')),
-                'url' => $myBadgeUrl,
+                'url' => $isRejectedCandidate ? '#' : $myBadgeUrl,
                 'active' => request()->routeIs('accreditation.badge*'),
                 'is_primary' => true,
+                'is_rejected' => $isRejectedCandidate,
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>',
             ],
             [
@@ -131,24 +144,69 @@
     }
 @endphp
 
-<div class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-2xl border-t border-slate-200/90 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] px-2 pt-2 pb-3 flex items-center justify-around print:hidden select-none" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom));">
-    @foreach($tabs as $tab)
-        @if(!empty($tab['is_primary']))
-            <a href="{{ $tab['url'] }}" class="flex flex-col items-center justify-center -mt-6 relative group">
-                <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-[#0066FF] via-[#0080FF] to-[#00B8FF] text-white flex items-center justify-center shadow-xl shadow-blue-500/40 border-4 border-white transform active:scale-90 transition duration-200">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {!! $tab['icon'] !!}
+<div x-data="{ showRejectedBadgePopup: false }">
+    <div class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-2xl border-t border-slate-200/90 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] px-2 pt-2 pb-3 flex items-center justify-around print:hidden select-none" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom));">
+        @foreach($tabs as $tab)
+            @if(!empty($tab['is_primary']))
+                @if(!empty($tab['is_rejected']))
+                    <button type="button" @click="showRejectedBadgePopup = true" class="flex flex-col items-center justify-center -mt-6 relative group cursor-pointer">
+                        <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-rose-500 via-rose-600 to-rose-700 text-white flex items-center justify-center shadow-xl shadow-rose-500/30 border-4 border-white transform active:scale-90 transition duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                {!! $tab['icon'] !!}
+                            </svg>
+                        </div>
+                        <span class="text-[9px] font-black text-rose-600 mt-1">{{ $tab['label'] }}</span>
+                    </button>
+                @else
+                    <a href="{{ $tab['url'] }}" class="flex flex-col items-center justify-center -mt-6 relative group">
+                        <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-[#0066FF] via-[#0080FF] to-[#00B8FF] text-white flex items-center justify-center shadow-xl shadow-blue-500/40 border-4 border-white transform active:scale-90 transition duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                {!! $tab['icon'] !!}
+                            </svg>
+                        </div>
+                        <span class="text-[9px] font-black text-[#0066FF] mt-1">{{ $tab['label'] }}</span>
+                    </a>
+                @endif
+            @else
+                @if(!empty($tab['is_rejected']))
+                    <button type="button" @click="showRejectedBadgePopup = true" class="flex flex-col items-center justify-center py-1 px-2 sm:px-3 rounded-2xl transition active:scale-95 text-slate-500 hover:text-slate-900 cursor-pointer">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            {!! $tab['icon'] !!}
+                        </svg>
+                        <span class="text-[10px] font-bold mt-0.5 whitespace-nowrap">{{ $tab['label'] }}</span>
+                    </button>
+                @else
+                    <a href="{{ $tab['url'] }}" class="flex flex-col items-center justify-center py-1 px-2 sm:px-3 rounded-2xl transition active:scale-95 {{ $tab['active'] ? 'text-[#0066FF] font-black' : 'text-slate-500 hover:text-slate-900' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            {!! $tab['icon'] !!}
+                        </svg>
+                        <span class="text-[10px] font-bold mt-0.5 whitespace-nowrap">{{ $tab['label'] }}</span>
+                    </a>
+                @endif
+            @endif
+        @endforeach
+    </div>
+
+    <!-- ══ REJECTED BADGE POPUP MODAL ══ -->
+    <template x-teleport="body">
+        <div x-show="showRejectedBadgePopup" x-cloak class="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+            <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl border border-slate-200" dir="rtl">
+                <div class="w-16 h-16 rounded-2xl bg-rose-100 border-2 border-rose-200 text-rose-600 flex items-center justify-center mx-auto shadow-sm">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>
                 </div>
-                <span class="text-[9px] font-black text-[#0066FF] mt-1">{{ $tab['label'] }}</span>
-            </a>
-        @else
-            <a href="{{ $tab['url'] }}" class="flex flex-col items-center justify-center py-1 px-2 sm:px-3 rounded-2xl transition active:scale-95 {{ $tab['active'] ? 'text-[#0066FF] font-black' : 'text-slate-500 hover:text-slate-900' }}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    {!! $tab['icon'] !!}
-                </svg>
-                <span class="text-[10px] font-bold mt-0.5 whitespace-nowrap">{{ $tab['label'] }}</span>
-            </a>
-        @endif
-    @endforeach
+                <div>
+                    <h3 class="text-base font-black text-slate-900">تنبيه الاعتماد</h3>
+                    <p class="text-xs font-bold text-slate-500 mt-1">بطاقة الاعتماد غير متاحة للملفات المرفوضة</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-black leading-relaxed">
+                    أنت مرفوض لا يمكنك الحصول على الشارة
+                </div>
+                <button type="button" @click="showRejectedBadgePopup = false" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition shadow-md">
+                    إغلاق
+                </button>
+            </div>
+        </div>
+    </template>
 </div>

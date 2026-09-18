@@ -110,7 +110,13 @@ Route::get('/my-badge', function () {
     if (!$user) {
         return redirect()->route('login');
     }
-    $reg = \App\Models\Registration::whereHas('participant', fn($p) => $p->where('user_id', $user->id))->first();
+    $reg = \App\Models\Registration::whereHas('participant', fn($p) => $p->where('user_id', $user->id)->orWhere('email', $user->email))->first();
+    if ($reg) {
+        $st = is_object($reg->status) ? ($reg->status->value ?? 'APPROVED') : ($reg->status ?? 'APPROVED');
+        if (strtoupper((string)$st) === 'REJECTED') {
+            return redirect()->route('participant.dashboard')->with('error', 'أنت مرفوض، لا يمكنك الحصول على الشارة');
+        }
+    }
     $id = $reg?->registration_number ?? $user->uuid;
     return redirect()->route('accreditation.badge', ['identifier' => $id]);
 })->middleware('auth')->name('my.badge');

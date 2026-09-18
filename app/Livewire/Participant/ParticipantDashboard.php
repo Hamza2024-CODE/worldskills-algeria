@@ -18,6 +18,7 @@ class ParticipantDashboard extends Component
 {
     public $registration;
     public $profile;
+    public $accommodation;
     public $countdown = [];
     public int $journeyStep = 3;
 
@@ -63,7 +64,7 @@ class ParticipantDashboard extends Component
             }
 
             if ($this->profile) {
-                $this->registration = Registration::with(['skill', 'country', 'documents', 'edition', 'wilaya', 'organization'])
+                $this->registration = Registration::with(['skill', 'country', 'documents', 'edition', 'wilaya', 'organization', 'participant.wilaya', 'participant.organization'])
                     ->where('participant_id', $this->profile->id)
                     ->latest()
                     ->first();
@@ -100,6 +101,12 @@ class ParticipantDashboard extends Component
                 ]);
                 $this->registration->load(['skill', 'country', 'documents', 'edition', 'wilaya', 'organization']);
             }
+
+            // Load accommodation allocation
+            $this->accommodation = \App\Models\RoomAllocation::with(['room.accommodation'])
+                ->where('user_id', $user->id)
+                ->orWhere('participant_profile_id', $this->profile?->id)
+                ->first();
 
             // Initialize size values
             if ($this->registration) {

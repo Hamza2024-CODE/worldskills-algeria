@@ -18,6 +18,7 @@ class Verification extends Component
 {
     public string $query = "";
     public ?Registration $result = null;
+    public ?ParticipantProfile $participant = null;
     public ?Badge $badge = null;
     public ?User $verifiedUser = null;
     public ?DelegationMember $delegationMember = null;
@@ -26,6 +27,7 @@ class Verification extends Component
     public string $roleTitle = "COMPETITOR";
     public string $nameAr = "";
     public string $nameLatin = "";
+    public string $photoUrl = "";
     public string $skillTitle = "";
     public string $countryName = "";
     public string $organizationName = "";
@@ -52,12 +54,14 @@ class Verification extends Component
     {
         $this->searched = true;
         $this->result = null;
+        $this->participant = null;
         $this->badge = null;
         $this->verifiedUser = null;
         $this->delegationMember = null;
         $this->accommodation = null;
         $this->nameAr = "";
         $this->nameLatin = "";
+        $this->photoUrl = "";
         $this->skillTitle = "";
         $this->countryName = "";
         $this->organizationName = "";
@@ -108,18 +112,22 @@ class Verification extends Component
                 $this->wilayaName = $user->wilaya?->name_ar ?? "";
                 $this->organizationName = $user->organization?->name_ar ?? "";
 
-                $reg = Registration::with(["participant", "country", "skill", "organization", "wilaya"])
+                $reg = Registration::with(["participant.wilaya", "participant.organization", "country", "skill", "organization", "wilaya"])
                     ->whereHas("participant", fn($p) => $p->where("user_id", $user->id))
                     ->latest()
                     ->first();
 
                 if ($reg) {
                     $this->result = $reg;
+                    $this->participant = $reg->participant;
                     $this->nameAr = trim(($reg->participant?->first_name_ar ?? "") . " " . ($reg->participant?->last_name_ar ?? ""));
-                    $this->nameLatin = trim(($reg->participant?->first_name_latin ?? "") . " " . ($reg->participant?->last_name_latin ?? ""));
+                    $firstLat = $reg->participant?->first_name_fr ?: ($reg->participant?->first_name_en ?: "");
+                    $lastLat = $reg->participant?->last_name_fr ?: ($reg->participant?->last_name_en ?: "");
+                    $this->nameLatin = trim($firstLat . " " . $lastLat);
+                    $this->photoUrl = $reg->photo_url;
                     $this->skillTitle = ($reg->skill?->code ? $reg->skill->code . " — " : "") . ($reg->skill?->name_ar ?? "");
-                    if (!$this->wilayaName) $this->wilayaName = $reg->wilaya?->name_ar ?? "";
-                    if (!$this->organizationName) $this->organizationName = $reg->organization?->name_ar ?? "";
+                    if (!$this->wilayaName) $this->wilayaName = $reg->wilaya?->name_ar ?? ($reg->participant?->wilaya?->name_ar ?? "");
+                    if (!$this->organizationName) $this->organizationName = $reg->organization?->name_ar ?? ($reg->participant?->organization?->name_ar ?? "");
                 } else {
                     $this->nameAr = $user->name;
                     $this->nameLatin = $user->email;
@@ -149,14 +157,18 @@ class Verification extends Component
 
         if ($reg) {
             $this->result = $reg;
+            $this->participant = $reg->participant;
             $this->badgeCode = $reg->registration_number ?: $reg->verification_token;
             $this->verifiedUser = $reg->user ?: $reg->participant?->user;
             $this->nameAr = trim(($reg->participant?->first_name_ar ?? "") . " " . ($reg->participant?->last_name_ar ?? ""));
-            $this->nameLatin = trim(($reg->participant?->first_name_latin ?? "") . " " . ($reg->participant?->last_name_latin ?? ""));
+            $firstLat = $reg->participant?->first_name_fr ?: ($reg->participant?->first_name_en ?: "");
+            $lastLat = $reg->participant?->last_name_fr ?: ($reg->participant?->last_name_en ?: "");
+            $this->nameLatin = trim($firstLat . " " . $lastLat);
+            $this->photoUrl = $reg->photo_url;
             $this->skillTitle = ($reg->skill?->code ? $reg->skill->code . " — " : "") . ($reg->skill?->name_ar ?? "");
             $this->countryName = $reg->country?->name_ar ?? "الجزائر";
-            $this->wilayaName = $reg->wilaya?->name_ar ?? "";
-            $this->organizationName = $reg->organization?->name_ar ?? "";
+            $this->wilayaName = $reg->wilaya?->name_ar ?? ($reg->participant?->wilaya?->name_ar ?? "");
+            $this->organizationName = $reg->organization?->name_ar ?? ($reg->participant?->organization?->name_ar ?? "");
             $this->roleTitle = "COMPETITOR";
 
             $this->finalizeVerification();
@@ -164,7 +176,7 @@ class Verification extends Component
         }
 
         // 4. Try resolving User by uuid, id, or email
-        $user = User::with(["roles", "country", "wilaya", "organization", "participant.registrations.skill", "badges"])
+        $user = User::with(["roles", "country", "wilaya", "organization", "participant.wilaya", "participant.organization", "participant.registrations.skill", "badges"])
             ->where("uuid", $clean)
             ->orWhere("email", $clean)
             ->orWhere("id", $clean)
@@ -183,9 +195,15 @@ class Verification extends Component
             $reg = $user->participant?->registrations?->first();
             if ($reg) {
                 $this->result = $reg;
+                $this->participant = $user->participant;
                 $this->nameAr = trim(($user->participant?->first_name_ar ?? "") . " " . ($user->participant?->last_name_ar ?? ""));
-                $this->nameLatin = trim(($user->participant?->first_name_latin ?? "") . " " . ($user->participant?->last_name_latin ?? ""));
+                $firstLat = $user->participant?->first_name_fr ?: ($user->participant?->first_name_en ?: "");
+                $lastLat = $user->participant?->last_name_fr ?: ($user->participant?->last_name_en ?: "");
+                $this->nameLatin = trim($firstLat . " " . $lastLat);
+                $this->photoUrl = $reg->photo_url;
                 $this->skillTitle = ($reg->skill?->code ? $reg->skill->code . " — " : "") . ($reg->skill?->name_ar ?? "");
+                if (!$this->wilayaName) $this->wilayaName = $user->participant?->wilaya?->name_ar ?? "";
+                if (!$this->organizationName) $this->organizationName = $user->participant?->organization?->name_ar ?? "";
             }
 
             $userRole = $user->roles->first()?->name;
@@ -238,7 +256,6 @@ class Verification extends Component
     {
         $this->lifecycleStatus = "ACTIVE";
 
-        // Set fallback names if empty
         if (empty($this->nameAr)) {
             $this->nameAr = $this->verifiedUser?->name ?? "عضو معتمد رسمياً";
         }
@@ -246,7 +263,6 @@ class Verification extends Component
             $this->nameLatin = $this->verifiedUser?->email ?? "Accredited Member";
         }
 
-        // Load room allocation
         $userId = $this->verifiedUser?->id;
         $participantId = $this->result?->participant_id ?? $this->verifiedUser?->participant?->id;
 
