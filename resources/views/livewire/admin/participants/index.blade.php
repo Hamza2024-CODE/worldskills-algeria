@@ -188,7 +188,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                         <th class="px-5 py-4 text-start">التخصص والمهارة</th>
                         <th class="px-5 py-4 text-start">الولاية / الدولة</th>
                         <th class="px-5 py-4 text-start">الاتصال ورقم NIN</th>
-                        <th class="px-5 py-4 text-center">حالة الاعتماد</th>
+                        <th class="px-5 py-4 text-center whitespace-nowrap">حالة الاعتماد</th>
                         <th class="px-5 py-4 text-end">التفاصيل والإجراءات</th>
                     </tr>
                 </thead>
@@ -268,9 +268,10 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                             </td>
 
                             {{-- Status Badge --}}
-                            <td class="px-5 py-4 text-center">
-                                <span class="px-3 py-1 rounded-xl text-[11px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                                    مقبول ومعتمد ✓
+                            <td class="px-5 py-4 text-center whitespace-nowrap">
+                                <span class="inline-flex items-center justify-center gap-1 px-3 py-1 rounded-full text-[11px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/60 whitespace-nowrap">
+                                    <span>مقبول ومعتمد</span>
+                                    <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                 </span>
                             </td>
 
