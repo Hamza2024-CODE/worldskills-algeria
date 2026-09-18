@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // 1. CIS Evaluation Tables
-        Schema::create('competition_assessment_modules', function (Blueprint $table) {
+        if (!Schema::hasTable('competition_assessment_modules')) if (!Schema::hasTable('competition_assessment_modules')) Schema::create('competition_assessment_modules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('skill_id')->constrained('skills')->cascadeOnDelete();
             $table->foreignId('edition_id')->nullable()->constrained('editions')->nullOnDelete();
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('competition_assessment_criteria', function (Blueprint $table) {
+        if (!Schema::hasTable('competition_assessment_criteria')) if (!Schema::hasTable('competition_assessment_criteria')) Schema::create('competition_assessment_criteria', function (Blueprint $table) {
             $table->id();
             $table->foreignId('module_id')->constrained('competition_assessment_modules')->cascadeOnDelete();
             $table->string('title_ar');
@@ -34,7 +34,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('participant_assessments', function (Blueprint $table) {
+        if (!Schema::hasTable('participant_assessments')) if (!Schema::hasTable('participant_assessments')) Schema::create('participant_assessments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('registration_id')->constrained('registrations')->cascadeOnDelete();
             $table->foreignId('module_id')->constrained('competition_assessment_modules')->cascadeOnDelete();
@@ -45,7 +45,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('participant_scores', function (Blueprint $table) {
+        if (!Schema::hasTable('participant_scores')) if (!Schema::hasTable('participant_scores')) Schema::create('participant_scores', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('participant_assessments')->cascadeOnDelete();
             $table->foreignId('criterion_id')->constrained('competition_assessment_criteria')->cascadeOnDelete();
@@ -55,7 +55,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('score_moderations', function (Blueprint $table) {
+        if (!Schema::hasTable('score_moderations')) Schema::create('score_moderations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('participant_assessments')->cascadeOnDelete();
             $table->foreignId('chief_expert_user_id')->constrained('users')->cascadeOnDelete();
@@ -65,7 +65,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('competition_results', function (Blueprint $table) {
+        if (!Schema::hasTable('competition_results')) Schema::create('competition_results', function (Blueprint $table) {
             $table->id();
             $table->foreignId('registration_id')->constrained('registrations')->cascadeOnDelete();
             $table->foreignId('skill_id')->constrained('skills')->cascadeOnDelete();
@@ -78,7 +78,7 @@ return new class extends Migration
         });
 
         // 2. Certificates Table
-        Schema::create('certificates', function (Blueprint $table) {
+        if (!Schema::hasTable('certificates')) Schema::create('certificates', function (Blueprint $table) {
             $table->id();
             $table->uuid('certificate_uuid')->unique();
             $table->string('verification_token_hash')->unique();
@@ -95,7 +95,7 @@ return new class extends Migration
         });
 
         // 3. Accreditation & Dynamic Zones
-        Schema::create('accreditation_zones', function (Blueprint $table) {
+        if (!Schema::hasTable('accreditation_zones')) Schema::create('accreditation_zones', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique(); // ZONE_1_WORKSHOP, ZONE_2_CATERING, ZONE_3_VIP
             $table->string('name_ar');
@@ -104,7 +104,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('badges', function (Blueprint $table) {
+        if (!Schema::hasTable('badges')) Schema::create('badges', function (Blueprint $table) {
             $table->id();
             $table->uuid('badge_uuid')->unique();
             $table->string('access_token')->unique();
@@ -117,7 +117,7 @@ return new class extends Migration
         });
 
         // 4. System Notifications Bus Table
-        Schema::create('app_notifications', function (Blueprint $table) {
+        if (!Schema::hasTable('app_notifications')) Schema::create('app_notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('type'); // SCORE_LOCKED, REGISTRATION_APPROVED, etc.
@@ -130,7 +130,7 @@ return new class extends Migration
         });
 
         // 5. Live TV Settings & Slides
-        Schema::create('live_tv_slides', function (Blueprint $table) {
+        if (!Schema::hasTable('live_tv_slides')) Schema::create('live_tv_slides', function (Blueprint $table) {
             $table->id();
             $table->string('title_ar');
             $table->string('title_fr')->nullable();
@@ -143,7 +143,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('live_tv_announcements', function (Blueprint $table) {
+        if (!Schema::hasTable('live_tv_announcements')) Schema::create('live_tv_announcements', function (Blueprint $table) {
             $table->id();
             $table->string('ticker_text_ar');
             $table->string('ticker_text_fr')->nullable();
@@ -152,7 +152,7 @@ return new class extends Migration
         });
 
         // 6. Technical Appeals Governance Tables
-        Schema::create('technical_appeals', function (Blueprint $table) {
+        if (!Schema::hasTable('technical_appeals')) if (!Schema::hasTable('technical_appeals')) Schema::create('technical_appeals', function (Blueprint $table) {
             $table->id();
             $table->uuid('appeal_uuid')->unique();
             $table->foreignId('skill_id')->constrained('skills')->cascadeOnDelete();
@@ -169,7 +169,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('technical_appeal_events', function (Blueprint $table) {
+        if (!Schema::hasTable('technical_appeal_events')) Schema::create('technical_appeal_events', function (Blueprint $table) {
             $table->id();
             $table->foreignId('appeal_id')->constrained('technical_appeals')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
@@ -178,7 +178,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('technical_appeal_decisions', function (Blueprint $table) {
+        if (!Schema::hasTable('technical_appeal_decisions')) Schema::create('technical_appeal_decisions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('appeal_id')->constrained('technical_appeals')->cascadeOnDelete();
             $table->foreignId('decided_by_user_id')->constrained('users')->cascadeOnDelete();
