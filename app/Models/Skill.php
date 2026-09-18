@@ -26,11 +26,13 @@ class Skill extends Model
         'min_age',
         'max_age',
         'is_active',
+        'show_on_homepage',
         'sort_order',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'show_on_homepage' => 'boolean',
         'min_age' => 'integer',
         'max_age' => 'integer',
     ];
