@@ -54,4 +54,15 @@ class Organization extends Model
     {
         return $this->belongsTo(Commune::class);
     }
+
+
+    public function participantProfiles()
+    {
+        return $this->hasMany(ParticipantProfile::class);
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }
