@@ -202,27 +202,27 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
 
     {{-- EQUIPMENT DATA TABLE --}}
     <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700/80 shadow-xs overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-xs text-start border-collapse">
+        <div class="overflow-x-auto w-full">
+            <table class="w-full text-xs text-start border-collapse align-middle">
                 <thead>
                     <tr class="bg-slate-50/80 dark:bg-slate-900/60 text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200/80 dark:border-slate-700/80">
-                        <th class="px-5 py-4 text-start">{{ $t('اسم المعدة والتجهيز', 'Nom de l\'Équipement', 'Equipment Name') }}</th>
-                        <th class="px-5 py-4 text-start">{{ $t('التخصص المهني المرتبط', 'Métier Associé', 'Associated Skill') }}</th>
-                        <th class="px-5 py-4 text-start">{{ $t('الفئة والتصنيف', 'Catégorie', 'Category') }}</th>
-                        <th class="px-5 py-4 text-start">{{ $t('المواصفات الفنية التفصيلية', 'Spécifications Techniques', 'Technical Specifications') }}</th>
-                        <th class="px-5 py-4 text-start">{{ $t('مستوى السلامة', 'Niveau de Sécurité', 'Safety Level') }}</th>
-                        <th class="px-5 py-4 text-end">{{ $t('إجراءات العمل', 'Actions', 'Actions') }}</th>
+                        <th class="px-5 py-4 text-start min-w-[220px]">{{ $t('اسم المعدة والتجهيز', 'Nom de l\'Équipement', 'Equipment Name') }}</th>
+                        <th class="px-5 py-4 text-start min-w-[190px] whitespace-nowrap">{{ $t('التخصص المهني المرتبط', 'Métier Associé', 'Associated Skill') }}</th>
+                        <th class="px-5 py-4 text-start min-w-[170px] whitespace-nowrap">{{ $t('الفئة والتصنيف', 'Catégorie', 'Category') }}</th>
+                        <th class="px-5 py-4 text-start min-w-[220px]">{{ $t('المواصفات الفنية التفصيلية', 'Spécifications Techniques', 'Technical Specifications') }}</th>
+                        <th class="px-5 py-4 text-start min-w-[150px] whitespace-nowrap">{{ $t('مستوى السلامة', 'Niveau de Sécurité', 'Safety Level') }}</th>
+                        <th class="px-5 py-4 text-end min-w-[140px] whitespace-nowrap">{{ $t('إجراءات العمل', 'Actions', 'Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60">
                     @forelse($items as $item)
                         <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-900/40 transition">
                             <!-- Name & French/English -->
-                            <td class="px-5 py-4 font-black text-slate-900 dark:text-white">
-                                <button wire:click="openDrawer({{ $item->id }})" class="hover:text-blue-600 dark:hover:text-blue-400 transition text-start leading-snug cursor-pointer">
-                                    <span class="block text-sm">{{ $item->name_ar }}</span>
+                            <td class="px-5 py-4 font-black text-slate-900 dark:text-white min-w-[220px]">
+                                <button wire:click="openDrawer({{ $item->id }})" class="hover:text-blue-600 dark:hover:text-blue-400 transition text-start leading-snug cursor-pointer block">
+                                    <span class="block text-sm font-black">{{ $item->name_ar }}</span>
                                     @if($item->name_fr || $item->name_en)
-                                        <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 font-semibold block mt-0.5">
+                                        <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 font-semibold block mt-0.5 whitespace-normal">
                                             {{ $item->name_fr ?: $item->name_en }}
                                         </span>
                                     @endif
@@ -230,58 +230,60 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             </td>
 
                             <!-- Skill Associated -->
-                            <td class="px-5 py-4 font-bold">
+                            <td class="px-5 py-4 font-bold min-w-[190px] whitespace-nowrap">
                                 @if($item->skill)
-                                    <span class="px-3 py-1 rounded-xl text-[11px] bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-700/60 inline-flex items-center gap-1.5">
-                                        <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.6 15.12a2 2 0 01-1.229-1.004l-1.9-3.8a2 2 0 01.371-2.434l3.193-3.193a2 2 0 012.434-.371l3.8 1.9a2 2 0 011.004 1.229l.477 2.387a6 6 0 00.517 3.86l.158.318a6 6 0 01.517 3.86l.477 2.387a2 2 0 00.547 1.022l2.387.477a2 2 0 002.434-.371l3.193-3.193a2 2 0 00.371-2.434l-1.9-3.8z"/></svg>
-                                        <span>{{ $item->skill->name_ar }}</span>
-                                        <span class="text-[10px] opacity-75 font-mono">({{ $item->skill->code }})</span>
-                                    </span>
+                                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/80 whitespace-nowrap shrink-0">
+                                        <svg class="w-3.5 h-3.5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.6 15.12a2 2 0 01-1.229-1.004l-1.9-3.8a2 2 0 01.371-2.434l3.193-3.193a2 2 0 012.434-.371l3.8 1.9a2 2 0 011.004 1.229l.477 2.387a6 6 0 00.517 3.86l.158.318a6 6 0 01.517 3.86l.477 2.387a2 2 0 00.547 1.022l2.387.477a2 2 0 002.434-.371l3.193-3.193a2 2 0 00.371-2.434l-1.9-3.8z"/></svg>
+                                        <span class="whitespace-nowrap">{{ $item->skill->name_ar }}</span>
+                                        <span class="text-[10px] font-mono opacity-80 whitespace-nowrap">(SKILL-{{ $item->skill->code }})</span>
+                                    </div>
                                 @else
-                                    <span class="px-3 py-1 rounded-xl text-[11px] bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 inline-flex items-center gap-1.5 font-bold">
-                                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0v-4a1 1 0 011-1h2a1 1 0 011 1v4m-4 0h4"/></svg>
-                                        <span>{{ $t('بنية تحتية عامة لكافة التخصصات', 'Infrastructure Générale', 'General Infrastructure') }}</span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 font-bold whitespace-nowrap">
+                                        <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0v-4a1 1 0 011-1h2a1 1 0 011 1v4m-4 0h4"/></svg>
+                                        <span class="whitespace-nowrap">{{ $t('بنية تحتية عامة لكافة التخصصات', 'Infrastructure Générale', 'General Infrastructure') }}</span>
                                     </span>
                                 @endif
                             </td>
 
                             <!-- Category -->
-                            <td class="px-5 py-4 text-slate-700 dark:text-slate-300 font-bold">
-                                <span class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700/40 text-slate-800 dark:text-slate-200">
+                            <td class="px-5 py-4 font-bold min-w-[170px] whitespace-nowrap">
+                                <span class="inline-block px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-700/60 text-slate-800 dark:text-slate-200 border border-slate-200/60 dark:border-slate-700/60 whitespace-nowrap">
                                     {{ $item->category?->name_ar ?? '—' }}
                                 </span>
                             </td>
 
                             <!-- Specification details -->
-                            <td class="px-5 py-4 text-slate-600 dark:text-slate-400 font-medium max-w-xs leading-relaxed">
-                                {{ $item->specification_details ? Str::limit($item->specification_details, 60) : '—' }}
+                            <td class="px-5 py-4 text-slate-600 dark:text-slate-300 font-medium leading-relaxed min-w-[220px]">
+                                <span class="block max-w-sm line-clamp-2 leading-snug">
+                                    {{ $item->specification_details ?: '—' }}
+                                </span>
                             </td>
 
                             <!-- Safety Level -->
-                            <td class="px-5 py-4">
+                            <td class="px-5 py-4 min-w-[150px] whitespace-nowrap">
                                 @if($item->safety_level === 'HIGH_HAZARD' || $item->safety_level === 'STRICT_PPE_REQUIRED')
-                                    <span class="px-3 py-1 rounded-xl text-[10px] font-black bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 inline-flex items-center gap-1">
-                                        <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                                        <span>{{ $t('سلامة وحماية فائقة (PPE)', 'Sécurité Renforcée', 'High Hazard PPE') }}</span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap">
+                                        <svg class="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                        <span class="whitespace-nowrap">{{ $t('سلامة وحماية فائقة (PPE)', 'Sécurité Renforcée', 'High Hazard PPE') }}</span>
                                     </span>
                                 @else
-                                    <span class="px-3 py-1 rounded-xl text-[10px] font-bold bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 inline-flex items-center gap-1">
-                                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        <span>{{ $t('معياري (Standard)', 'Standard', 'Standard') }}</span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-bold bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                                        <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <span class="whitespace-nowrap">{{ $t('معياري (Standard)', 'Standard', 'Standard') }}</span>
                                     </span>
                                 @endif
                             </td>
 
                             <!-- Actions -->
-                            <td class="px-5 py-4 text-end">
-                                <div class="flex items-center justify-end gap-1.5">
-                                    <button wire:click="openDrawer({{ $item->id }})" title="{{ $t('عرض التفاصيل', 'Détails', 'View') }}" class="p-2 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700/60 transition cursor-pointer">
+                            <td class="px-5 py-4 text-end min-w-[140px] whitespace-nowrap">
+                                <div class="inline-flex items-center justify-end gap-1.5">
+                                    <button wire:click="openDrawer({{ $item->id }})" title="{{ $t('عرض التفاصيل', 'Détails', 'View') }}" class="p-2 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl bg-slate-100 dark:bg-slate-700/80 hover:bg-blue-50 dark:hover:bg-blue-900/40 border border-slate-200/60 dark:border-slate-700/60 transition cursor-pointer">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                     </button>
-                                    <button wire:click="openEdit({{ $item->id }})" title="{{ $t('تعديل', 'Modifier', 'Edit') }}" class="p-2 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700/60 transition cursor-pointer">
+                                    <button wire:click="openEdit({{ $item->id }})" title="{{ $t('تعديل', 'Modifier', 'Edit') }}" class="p-2 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl bg-slate-100 dark:bg-slate-700/80 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 border border-slate-200/60 dark:border-slate-700/60 transition cursor-pointer">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     </button>
-                                    <button wire:click="confirmDelete({{ $item->id }})" title="{{ $t('حذف', 'Supprimer', 'Delete') }}" class="p-2 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700/60 transition cursor-pointer">
+                                    <button wire:click="confirmDelete({{ $item->id }})" title="{{ $t('حذف', 'Supprimer', 'Delete') }}" class="p-2 text-slate-600 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl bg-slate-100 dark:bg-slate-700/80 hover:bg-rose-50 dark:hover:bg-rose-900/40 border border-slate-200/60 dark:border-slate-700/60 transition cursor-pointer">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                     </button>
                                 </div>
@@ -509,7 +511,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             @if($selectedItem->skill)
                                 <div class="flex items-center gap-2">
                                     <span class="font-black text-sm text-indigo-600 dark:text-indigo-400">{{ $selectedItem->skill->name_ar }}</span>
-                                    <span class="px-2 py-0.5 rounded-lg bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-mono font-bold text-[10px]">{{ $selectedItem->skill->code }}</span>
+                                    <span class="px-2 py-0.5 rounded-lg bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-mono font-bold text-[10px]">SKILL-{{ $selectedItem->skill->code }}</span>
                                 </div>
                             @else
                                 <span class="font-bold text-slate-600 dark:text-slate-300">عامة / كافة التخصصات الأولمبية</span>
