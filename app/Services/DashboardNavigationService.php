@@ -43,7 +43,7 @@ class DashboardNavigationService
                         ['key' => 'skills',        'label' => $this->t('التخصصات الأولمبية والمهن', 'Compétences Olympiques', 'Olympic Skills'), 'icon' => 'trophy', 'route' => 'admin.skills'],
                         ['key' => 'judges',        'label' => $this->t('المحكمون والخبراء ومجالس التحكيم', 'Jury & Experts', 'Judges & Experts'), 'icon' => 'scale', 'route' => 'admin.judges'],
                         ['key' => 'cis',           'label' => $this->t('نظام التقييم الميداني (CIS)', 'Système d\'Évaluation CIS', 'CIS Evaluation System'), 'icon' => 'chart-bar', 'route' => 'admin.cis'],
-                        ['key' => 'appeals',       'label' => $this->t('الطعون الفنية والاعتراضات', 'Recours Techniques', 'Technical Appeals'), 'icon' => 'scale', 'route' => 'admin.appeals'],
+// DEACTIVATED: ['key' => 'appeals',       'label' => $this->t('الطعون الفنية والاعتراضات', 'Recours Techniques', 'Technical Appeals'), 'icon' => 'scale', 'route' => 'admin.appeals'],
                         ['key' => 'equipment',     'label' => $this->t('المعدات والتجهيزات الفنية', 'Équipements Techniques', 'Technical Equipment'), 'icon' => 'wrench-screwdriver', 'route' => 'admin.equipment'],
                     ]
                 ],
@@ -116,7 +116,7 @@ class DashboardNavigationService
                     'category' => $this->t('الخدمات واللوجستيات', 'Logistique & Services', 'Logistics & Services'),
                     'category_icon' => 'truck',
                     'items' => [
-                        ['key' => 'appeals',     'label' => $this->t('الطعون الفنية', 'Recours Techniques', 'Technical Appeals'), 'icon' => 'document-text', 'route' => 'country.appeals'],
+// DEACTIVATED: ['key' => 'appeals',     'label' => $this->t('الطعون الفنية', 'Recours Techniques', 'Technical Appeals'), 'icon' => 'document-text', 'route' => 'country.appeals'],
                         ['key' => 'dietary',     'label' => $this->t('حساسية الطعام والإطعام', 'Allergies & Restauration', 'Dietary & Food Allergies'), 'icon' => 'sparkles', 'route' => 'country.dietary'],
                         ['key' => 'arrivals',    'label' => $this->t('تذاكر الطيران وتوقيت الوصول', 'Billets d\'Avion & Arrivée', 'Flight Tickets & Arrival'), 'icon' => 'truck', 'route' => 'country.arrivals'],
                         ['key' => 'skills_sel',  'label' => $this->t('اختيار التخصصات', 'Sélection Métiers', 'Skill Selection'), 'icon' => 'check-circle', 'route' => 'country.skills'],

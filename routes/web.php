@@ -256,7 +256,7 @@ Route::prefix('hamza')->middleware(['auth', 'role:' . RoleEnum::SUPER_ADMIN->val
     Route::get('/accreditations',   AdminAccreditationIndex::class)->name('accreditations');
     Route::get('/accreditations/batch-print', \App\Livewire\Public\AccreditationBatchPrint::class)->name('accreditations.batch-print');
     Route::get('/scanner',          \App\Livewire\Admin\AdminQrScanner::class)->name('scanner');
-    Route::get('/appeals',          AdminTechnicalAppealsIndex::class)->name('appeals');
+    // DEACTIVATED: Route::get('/appeals',          AdminTechnicalAppealsIndex::class)->name('appeals');
     // DEACTIVATED: Route::get('/integrity',        AdminIntegrityAuditIndex::class)->name('integrity');
 });
 
@@ -295,7 +295,7 @@ Route::prefix('country')->middleware(['auth', 'role:' . RoleEnum::COUNTRY_ADMIN-
     Route::get('/press', DelegationManager::class)->name('press');
     Route::get('/supervisors', DelegationManager::class)->name('supervisors');
     Route::get('/vips', DelegationManager::class)->name('vips');
-    Route::get('/appeals', CountryDashboard::class)->name('appeals');
+    // DEACTIVATED: Route::get('/appeals', CountryDashboard::class)->name('appeals');
     Route::get('/skills', SkillSelectionManager::class)->name('skills');
     Route::get('/dietary', DietaryManager::class)->name('dietary');
     Route::get('/arrivals', \App\Livewire\Country\DelegationArrivals::class)->name('arrivals');
