@@ -77,17 +77,19 @@
     <!-- FILTER TOOLBAR & TABLE CARD -->
     <div class="bg-white dark:bg-slate-800/90 rounded-3xl border border-slate-200/80 dark:border-slate-700/60 shadow-xs overflow-hidden backdrop-blur-md">
         <!-- Search & Filter Controls -->
-        <div class="p-5 border-b border-slate-100 dark:border-slate-700/60 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
-            <div class="relative w-full max-w-md">
+        <div class="p-5 border-b border-slate-100 dark:border-slate-700/60 flex flex-col xl:flex-row gap-3 items-stretch xl:items-center justify-between">
+            <!-- Search Bar -->
+            <div class="relative flex-1 min-w-[240px] max-w-md">
                 <input type="text" wire:model.live.debounce.300ms="search" placeholder="بحث باسم التخصص (عربي / فرنسي) أو الكود..." class="w-full pl-9 pr-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <div class="absolute left-3 top-3 text-slate-400 pointer-events-none">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 flex-wrap">
+            <!-- Filters Grid Row -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 <!-- Category Filter -->
-                <select wire:model.live="filterCategory" class="px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select wire:model.live="filterCategory" class="px-3 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">جميع القطاعات والمهن</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}">{{ $cat->name_ar }}</option>
@@ -95,21 +97,21 @@
                 </select>
 
                 <!-- Status Filter -->
-                <select wire:model.live="filterStatus" class="px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select wire:model.live="filterStatus" class="px-3 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">جميع الحالات</option>
                     <option value="1">نشط ومفعل للتسجيل</option>
                     <option value="0">معطّل</option>
                 </select>
 
                 <!-- Homepage Filter -->
-                <select wire:model.live="filterHomepageStatus" class="px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select wire:model.live="filterHomepageStatus" class="px-3 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">عرض الصفحة الرئيسية</option>
                     <option value="1">ظاهر بالصفحة الرئيسية</option>
                     <option value="0">مخفي من الرئيسية</option>
                 </select>
 
                 <!-- PDF Filter -->
-                <select wire:model.live="filterPdfStatus" class="px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select wire:model.live="filterPdfStatus" class="px-3 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">ملفات PDF</option>
                     <option value="has_pdf">بها ملف توصيف PDF</option>
                     <option value="no_pdf">بدون ملف توصيف</option>
@@ -122,13 +124,13 @@
             <table class="w-full text-right text-xs">
                 <thead class="bg-slate-50 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400 font-bold border-b border-slate-100 dark:border-slate-700/60">
                     <tr>
-                        <th class="p-4 text-start">الصورة والتخصص</th>
-                        <th class="p-4 text-center">الكود والأعمار</th>
-                        <th class="p-4 text-center">القطاع والمهنة</th>
-                        <th class="p-4 text-center">الملف الوصفي (PDF)</th>
-                        <th class="p-4 text-center">عرض بالرئيسية</th>
-                        <th class="p-4 text-center">تفعيل التسجيل</th>
-                        <th class="p-4 text-end">الإجراءات</th>
+                        <th class="p-4 text-start whitespace-nowrap min-w-[220px]">الصورة والتخصص</th>
+                        <th class="p-4 text-center whitespace-nowrap">الكود والأعمار</th>
+                        <th class="p-4 text-center whitespace-nowrap">القطاع والمهنة</th>
+                        <th class="p-4 text-center whitespace-nowrap">الملف الوصفي (PDF)</th>
+                        <th class="p-4 text-center whitespace-nowrap">عرض بالرئيسية</th>
+                        <th class="p-4 text-center whitespace-nowrap">تفعيل التسجيل</th>
+                        <th class="p-4 text-center whitespace-nowrap min-w-[130px]">الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60 font-medium">
@@ -152,33 +154,33 @@
                             </td>
 
                             <!-- Code & Age Limit -->
-                            <td class="p-4 text-center">
+                            <td class="p-4 text-center whitespace-nowrap">
                                 <div class="flex flex-col items-center gap-1">
                                     <span class="px-2.5 py-0.5 rounded-xl font-mono font-black text-xs bg-slate-100 dark:bg-slate-900 text-blue-600 dark:text-blue-400 border border-slate-200 dark:border-slate-700">
                                         {{ $skill->code ?: ('SKILL-' . str_pad($skill->id, 2, '0', STR_PAD_LEFT)) }}
                                     </span>
-                                    <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                                    <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">
                                         {{ $skill->min_age ?? 16 }} - {{ $skill->max_age ?? 25 }} سنة
                                     </span>
                                 </div>
                             </td>
 
                             <!-- Category / Sector -->
-                            <td class="p-4 text-center">
-                                <span class="px-3 py-1 rounded-full text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-200/80 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/60">
+                            <td class="p-4 text-center whitespace-nowrap">
+                                <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-black bg-blue-50 text-blue-700 border border-blue-200/80 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/60 whitespace-nowrap">
                                     {{ $skill->category?->name_ar ?? 'عام' }}
                                 </span>
                             </td>
 
                             <!-- Technical Description PDF Action (In-Platform Viewer) -->
-                            <td class="p-4 text-center">
+                            <td class="p-4 text-center whitespace-nowrap">
                                 @if($skill->getPdfUrl())
-                                    <button wire:click="openPdfModal({{ $skill->id }})" class="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/80 dark:hover:bg-purple-900 text-purple-700 dark:text-purple-300 font-bold text-[11px] border border-purple-200 dark:border-purple-800 transition inline-flex items-center gap-1.5 shadow-xs">
-                                        <svg class="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                    <button wire:click="openPdfModal({{ $skill->id }})" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/80 dark:hover:bg-purple-900 text-purple-700 dark:text-purple-300 font-bold text-[11px] border border-purple-200 dark:border-purple-800 transition shadow-xs whitespace-nowrap">
                                         <span>معاينة PDF المباشرة</span>
+                                        <svg class="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                     </button>
                                 @else
-                                    <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500">
+                                    <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 whitespace-nowrap">
                                         غير مرفق
                                     </span>
                                 @endif
@@ -186,30 +188,30 @@
 
                             <!-- Homepage Display Toggle Switch -->
                             <td class="p-4 text-center whitespace-nowrap">
-                                <button wire:click="toggleHomepage({{ $skill->id }})" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black transition border {{ ($skill->show_on_homepage ?? true) ? 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/60 hover:bg-amber-100' : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-700 hover:bg-slate-200' }}">
-                                    <svg class="w-3 h-3 {{ ($skill->show_on_homepage ?? true) ? 'text-amber-600' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                <button wire:click="toggleHomepage({{ $skill->id }})" class="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black transition border whitespace-nowrap {{ ($skill->show_on_homepage ?? true) ? 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/60 hover:bg-amber-100' : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-700 hover:bg-slate-200' }}">
+                                    <svg class="w-3 h-3 {{ ($skill->show_on_homepage ?? true) ? 'text-amber-600' : 'text-slate-400' }} shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                     <span>{{ ($skill->show_on_homepage ?? true) ? 'ظاهر بالرئيسية' : 'مخفي' }}</span>
                                 </button>
                             </td>
 
                             <!-- Active Registration Toggle Switch -->
                             <td class="p-4 text-center whitespace-nowrap">
-                                <button wire:click="toggleActive({{ $skill->id }})" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black transition border {{ $skill->is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/60 hover:bg-emerald-100' : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-700 hover:bg-slate-200' }}">
-                                    <span class="w-1.5 h-1.5 rounded-full {{ $skill->is_active ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400' }}"></span>
+                                <button wire:click="toggleActive({{ $skill->id }})" class="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black transition border whitespace-nowrap {{ $skill->is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/60 hover:bg-emerald-100' : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-700 hover:bg-slate-200' }}">
+                                    <span class="w-1.5 h-1.5 rounded-full {{ $skill->is_active ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400' }} shrink-0"></span>
                                     <span>{{ $skill->is_active ? 'نشط ومفعل' : 'معطّلة' }}</span>
                                 </button>
                             </td>
 
-                            <!-- Actions -->
-                            <td class="p-4 text-end">
-                                <div class="flex items-center justify-end gap-1">
-                                    <button wire:click="openDrawer({{ $skill->id }})" class="p-2 rounded-xl text-slate-400 hover:text-blue-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition" title="التفاصيل كاملة">
+                            <!-- Actions Column -->
+                            <td class="p-4 text-center whitespace-nowrap">
+                                <div class="flex items-center justify-center gap-1.5">
+                                    <button wire:click="openDrawer({{ $skill->id }})" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 transition" title="عرض التفاصيل كاملة">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                     </button>
-                                    <button wire:click="openEdit({{ $skill->id }})" class="p-2 rounded-xl text-slate-400 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition" title="تعديل">
+                                    <button wire:click="openEdit({{ $skill->id }})" class="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 transition border border-amber-200 dark:border-amber-800/60" title="تعديل">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     </button>
-                                    <button wire:click="confirmDelete({{ $skill->id }})" class="p-2 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition" title="حذف">
+                                    <button wire:click="confirmDelete({{ $skill->id }})" class="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 transition border border-rose-200 dark:border-rose-800/60" title="حذف">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                     </button>
                                 </div>
