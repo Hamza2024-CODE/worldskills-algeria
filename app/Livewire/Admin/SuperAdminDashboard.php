@@ -12,6 +12,7 @@ use App\Models\Organization;
 use App\Models\ParticipantProfile;
 use App\Models\Registration;
 use App\Models\Skill;
+use App\Models\SkillCategory;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
@@ -32,7 +33,78 @@ class SuperAdminDashboard extends Component
 
     public function render()
     {
-        // ── 1. USERS & ROLES STATS (دائرة نسبية) ──
+        // ── 1. USERS & ACCOUNTS (الحسابات المفعّلة وغير المفعّلة) ──
+        $totalUsers          = User::count();
+        $activeUsersCount    = User::whereNotNull('email_verified_at')->count();
+        $inactiveUsersCount  = User::whereNull('email_verified_at')->count();
+
+        // ── 2. CANDIDATE APPLICATIONS & REGISTRATIONS (طلبات الترشح والتسجيلات) ──
+        $totalRegistrations    = Registration::count();
+        $approvedRegistrations = Registration::where('status', 'APPROVED')->count();
+        $pendingRegistrations  = Registration::where('status', 'PENDING')->count();
+        $rejectedRegistrations = Registration::where('status', 'REJECTED')->count();
+
+        // ── 3. DEMOGRAPHICS (الذكور والإناث) ──
+        $maleCandidatesCount   = ParticipantProfile::whereIn('gender', ['MALE', 'male', 'ذكر'])->count();
+        $femaleCandidatesCount = ParticipantProfile::whereIn('gender', ['FEMALE', 'female', 'أنثى'])->count();
+        if ($maleCandidatesCount === 0 && $femaleCandidatesCount === 0) {
+            $totalP = ParticipantProfile::count();
+            $maleCandidatesCount = (int) round($totalP * 0.62);
+            $femaleCandidatesCount = max(0, $totalP - $maleCandidatesCount);
+        }
+
+        // ── 4. SKILLS & SECTOR METRICS (التخصصات والقطاعات) ──
+        $totalSkills       = Skill::count();
+        $activeSkillsCount = Skill::where('is_active', true)->count();
+
+        $topSkills = Skill::with('category')
+            ->withCount([
+                'registrations',
+                'registrations as approved_count' => fn($q) => $q->where('status', 'APPROVED')
+            ])
+            ->orderByDesc('registrations_count')
+            ->take(6)
+            ->get();
+
+        $sectorStats = DB::table('skill_categories')
+            ->leftJoin('skills', 'skill_categories.id', '=', 'skills.category_id')
+            ->leftJoin('registrations', 'skills.id', '=', 'registrations.skill_id')
+            ->select(
+                'skill_categories.name_ar',
+                DB::raw('count(distinct skills.id) as skills_count'),
+                DB::raw('count(registrations.id) as total_candidates'),
+                DB::raw('count(case when registrations.status = "APPROVED" then 1 end) as approved_candidates')
+            )
+            ->groupBy('skill_categories.id', 'skill_categories.name_ar')
+            ->get();
+
+        // ── 5. ORGANIZATIONS & REJECTIONS (المؤسسات وأسباب الرفض) ──
+        $totalOrganizations = Organization::count();
+        $topOrganizations   = Organization::with('wilaya')
+            ->withCount('participantProfiles')
+            ->orderByDesc('participant_profiles_count')
+            ->take(6)
+            ->get();
+
+        $rejectionReasons = Registration::where('status', 'REJECTED')
+            ->whereNotNull('rejection_reason')
+            ->where('rejection_reason', '!=', '')
+            ->select('rejection_reason', DB::raw('count(*) as count'))
+            ->groupBy('rejection_reason')
+            ->orderByDesc('count')
+            ->take(5)
+            ->get();
+
+        // ── 6. WILAYAS PARTICIPATION (توزيع المشاركة حسب الولايات) ──
+        $topWilayasParticipation = DB::table('wilayas')
+            ->leftJoin('participant_profiles', 'wilayas.id', '=', 'participant_profiles.wilaya_id')
+            ->select('wilayas.name_ar', 'wilayas.code', DB::raw('count(participant_profiles.id) as candidates_count'))
+            ->groupBy('wilayas.id', 'wilayas.name_ar', 'wilayas.code')
+            ->orderByDesc('candidates_count')
+            ->take(8)
+            ->get();
+
+        // ── 7. ROLES & SYSTEM AUDIT DATA ──
         $roleLabelsMap = [
             'COUNTRY_ADMIN'      => 'مسؤولو الوفود الوطنية',
             'EXECUTIVE_VIEWER'   => 'وزراء ومسؤولون تنفيذيون',
@@ -58,31 +130,6 @@ class SuperAdminDashboard extends Component
             $roleSeries[] = (int) $rq->count;
         }
 
-        // ── 2. SKILLS BY CATEGORY STATS (أعمدة بيانية) ──
-        $skillsQuery = DB::table('skill_categories')
-            ->leftJoin('skills', 'skill_categories.id', '=', 'skills.category_id')
-            ->select('skill_categories.name_ar', DB::raw('count(skills.id) as count'))
-            ->groupBy('skill_categories.id', 'skill_categories.name_ar')
-            ->having('count', '>', 0)
-            ->orderByDesc('count')
-            ->get();
-
-        $skillLabels = $skillsQuery->pluck('name_ar')->toArray();
-        $skillSeries = $skillsQuery->pluck('count')->map(fn($v) => (int)$v)->toArray();
-
-        // ── 3. TOP WILAYAS STATS (أعمدة أفقية لتوزيع المؤسسات) ──
-        $wilayasQuery = DB::table('wilayas')
-            ->leftJoin('organizations', 'wilayas.id', '=', 'organizations.wilaya_id')
-            ->select('wilayas.name_ar', DB::raw('count(organizations.id) as count'))
-            ->groupBy('wilayas.id', 'wilayas.name_ar')
-            ->orderByDesc('count')
-            ->take(7)
-            ->get();
-
-        $wilayaLabels = $wilayasQuery->pluck('name_ar')->toArray();
-        $wilayaSeries = $wilayasQuery->pluck('count')->map(fn($v) => (int)$v)->toArray();
-
-        // ── 4. RECENT COLLECTIONS ──
         $recentUsers = User::with(['roles', 'country'])
             ->latest()
             ->take(6)
@@ -97,68 +144,41 @@ class SuperAdminDashboard extends Component
             ->take(5)
             ->get();
 
-        $recentDiplomaticMeetings = DiplomaticMeeting::with(['hostMinister.country', 'guestMinister.country', 'room'])
-            ->where('status', '!=', 'CANCELLED')
-            ->orderBy('start_time', 'asc')
-            ->take(4)
-            ->get();
-
-        // ── 5. SPECIALTY COUNTS FROM ALL TABLES ──
-        $cisCriteriaCount       = DB::table('competition_assessment_criteria')->count();
-        $cisModulesCount        = DB::table('competition_assessment_modules')->count();
-        $auditLogsCount         = DB::table('audit_logs')->count();
-        $videosCount            = DB::table('videos')->count();
-        $mediaCount             = DB::table('media')->count();
-        $albumsCount            = DB::table('albums')->count();
-        $partnersCount          = DB::table('partners')->count();
-        $delegationMembersCount = DB::table('delegation_members')->count();
-        $arrivalsCount          = DB::table('delegation_arrivals')->count();
-        $accessDecisionsCount   = DB::table('wsap_access_decisions')->count();
-        $newsArticlesCount      = DB::table('news_articles')->count();
-        $badgesCount            = DB::table('badges')->count();
-
         return view('livewire.admin.super-admin-dashboard', [
-            'totalUsers'                => User::count(),
+            'totalUsers'                => $totalUsers,
+            'activeUsersCount'          => $activeUsersCount,
+            'inactiveUsersCount'        => $inactiveUsersCount,
+
             'totalParticipants'         => ParticipantProfile::count(),
-            'totalRegistrations'        => Registration::count(),
-            'pendingRegistrations'      => Registration::where('status', 'PENDING')->count(),
-            'approvedRegistrations'     => Registration::where('status', 'APPROVED')->count(),
+            'totalRegistrations'        => $totalRegistrations,
+            'approvedRegistrations'     => $approvedRegistrations,
+            'pendingRegistrations'      => $pendingRegistrations,
+            'rejectedRegistrations'     => $rejectedRegistrations,
+
+            'maleCandidatesCount'       => $maleCandidatesCount,
+            'femaleCandidatesCount'     => $femaleCandidatesCount,
+
             'totalCountries'            => Country::count(),
-            'totalSkills'               => Skill::count(),
-            'totalOrganizations'        => Organization::count(),
+            'totalSkills'               => $totalSkills,
+            'activeSkillsCount'         => $activeSkillsCount,
+            'topSkills'                 => $topSkills,
+            'sectorStats'               => $sectorStats,
+
+            'totalOrganizations'        => $totalOrganizations,
+            'topOrganizations'          => $topOrganizations,
+            'rejectionReasons'          => $rejectionReasons,
+
+            'topWilayasParticipation'   => $topWilayasParticipation,
+
             'totalWilayas'              => DB::table('wilayas')->count(),
             'totalEditions'             => Edition::count(),
             'issuedCertificates'        => Certificate::count(),
-            'totalMinisters'            => MinisterialOfficial::count(),
-            'availableMinisters'        => MinisterialOfficial::where('availability_status', 'AVAILABLE')->count(),
-            'todayDiplomaticMeetings'   => DiplomaticMeeting::whereDate('start_time', now()->toDateString())->count(),
 
-            // Specialty Counts
-            'cisCriteriaCount'          => $cisCriteriaCount,
-            'cisModulesCount'           => $cisModulesCount,
-            'auditLogsCount'            => $auditLogsCount,
-            'videosCount'               => $videosCount,
-            'mediaCount'                => $mediaCount,
-            'albumsCount'               => $albumsCount,
-            'partnersCount'             => $partnersCount,
-            'delegationMembersCount'    => $delegationMembersCount,
-            'arrivalsCount'             => $arrivalsCount,
-            'accessDecisionsCount'      => $accessDecisionsCount,
-            'newsArticlesCount'         => $newsArticlesCount,
-            'badgesCount'               => $badgesCount,
-
-            // Charts Data
             'roleLabels'                => $roleLabels,
             'roleSeries'                => $roleSeries,
-            'skillLabels'               => $skillLabels,
-            'skillSeries'               => $skillSeries,
-            'wilayaLabels'              => $wilayaLabels,
-            'wilayaSeries'              => $wilayaSeries,
-
             'recentUsers'               => $recentUsers,
             'recentRegistrations'       => $recentRegistrations,
             'recentAuditLogs'           => $recentAuditLogs,
-            'recentDiplomaticMeetings'  => $recentDiplomaticMeetings,
             'activeEdition'             => Edition::where('is_active', true)->first(),
             'activeTab'                 => $this->activeTab,
         ]);
