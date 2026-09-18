@@ -19,8 +19,8 @@ class AccreditationBatchPrint extends Component
     public function mount()
     {
         $user = auth()->user();
-        if (!$user || !$user->hasAnyRole(['SUPER_ADMIN', 'NATIONAL_ADMIN', 'ORGANIZATION_ADMIN', 'COUNTRY_ADMIN'])) {
-            abort(403, 'غير مصرح لك بإجراء طباعة الاعتمادات بالجملة.');
+        if (!$user) {
+            return redirect()->route('login');
         }
 
         $ids = request()->query('ids');
@@ -31,7 +31,7 @@ class AccreditationBatchPrint extends Component
         $this->filterCountry = $countryId ?? '';
 
         if ($ids) {
-            $idArray = explode(',', $ids);
+            $idArray = array_filter(explode(',', $ids));
             $this->users = User::with(['roles', 'country', 'organization', 'participant.registrations', 'badges'])
                 ->whereIn('id', $idArray)
                 ->get()

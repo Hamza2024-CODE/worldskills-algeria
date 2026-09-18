@@ -25,7 +25,7 @@ class AccreditationBadge extends Component
     {
         $service = new CertificateService();
 
-        // 1. Try finding User directly by uuid, id, or email FIRST to guarantee system accounts (e.g. viewer@worldskills.dz, dz.admin@worldskills.dz) resolve correctly
+        // 1. Try finding User directly by uuid, id, or email FIRST to guarantee system accounts resolve correctly
         $user = User::with(['roles', 'country', 'organization', 'wilaya', 'participant'])
             ->where('uuid', $identifier)
             ->orWhere('id', $identifier)
@@ -167,10 +167,10 @@ class AccreditationBadge extends Component
         abort(404, 'بطاقة الاعتماد المطلوب الاستعلام عنها غير موجودة.');
     }
 
-
     protected function checkRejectionEligibility()
     {
-        if ($this->registration) {
+        // Only block rejected candidates for unauthenticated public guests
+        if ($this->registration && !auth()->check()) {
             $st = is_object($this->registration->status) ? ($this->registration->status->value ?? 'APPROVED') : ($this->registration->status ?? 'APPROVED');
             if (strtoupper((string)$st) === 'REJECTED') {
                 abort(403, 'بطاقة الاعتماد الرسمية غير متاحة للملفات المرفوضة. يقتصر إصدار الشارة وحق الدخول على المشاركين والمقبولين رسمياً.');
