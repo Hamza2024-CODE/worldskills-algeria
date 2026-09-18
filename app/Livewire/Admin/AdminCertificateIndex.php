@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use App\Enums\RoleEnum;
 use App\Models\Certificate;
 use App\Models\Country;
+use App\Models\Organization;
 use App\Models\Registration;
 use App\Models\Skill;
 use App\Models\User;
@@ -26,6 +27,7 @@ class AdminCertificateIndex extends Component
     public string $filterSkill   = '';
     public string $filterCountry = '';
     public string $filterWilaya  = '';
+    public string $filterCenter  = ''; // Organization / Center Filter
 
     // Checkbox multi-selection for bulk actions
     public array  $selectedRegistrations = [];
@@ -37,7 +39,7 @@ class AdminCertificateIndex extends Component
     public string $certificate_type = 'PARTICIPATION';
 
     protected $queryString = [
-        'search', 'filterRole', 'filterStatus', 'filterAward', 'filterSkill', 'filterCountry', 'filterWilaya'
+        'search', 'filterRole', 'filterStatus', 'filterAward', 'filterSkill', 'filterCountry', 'filterWilaya', 'filterCenter'
     ];
 
     public function updatingSearch(): void        { $this->resetPage(); }
@@ -47,6 +49,7 @@ class AdminCertificateIndex extends Component
     public function updatingFilterSkill(): void   { $this->resetPage(); }
     public function updatingFilterCountry(): void { $this->resetPage(); }
     public function updatingFilterWilaya(): void  { $this->resetPage(); }
+    public function updatingFilterCenter(): void  { $this->resetPage(); }
 
     public function updatedSelectAll(bool $value): void
     {
@@ -104,8 +107,9 @@ class AdminCertificateIndex extends Component
             'الدور والصفة المعتمدة',
             'حالة الاعتماد والقبول',
             'التخصص المهني',
-            'الدولة / الوفد',
+            'المركز / المؤسسة',
             'الولاية',
+            'الدولة / الوفد',
             'نقاط التقييم CIS',
             'الرتبة والنتيجة',
             'نوع الشهادة المستحقة'
@@ -128,10 +132,11 @@ class AdminCertificateIndex extends Component
                 $award === 'SILVER' || $reg->result?->rank == 2          => 'شهادة الميدالية الفضية (WINNER_SILVER)',
                 $award === 'BRONZE' || $reg->result?->rank == 3          => 'شهادة الميدالية البرونزية (WINNER_BRONZE)',
                 ($reg->result?->final_score ?? 0) >= 700                  => 'شهادة التميز (MEDALLION_EXCELLENCE)',
-                $userRole === RoleEnum::JUDGE->value                     => 'شهادة حكم خبير (EXPERT_JUDGE)',
+                $userRole === RoleEnum::JUDGE->value || $userRole === RoleEnum::EXPERT->value => 'شهادة حكم خبير (EXPERT_JUDGE)',
                 $userRole === RoleEnum::COUNTRY_ADMIN->value             => 'شهادة رئيس وفد (DELEGATION_HEAD)',
+                $userRole === RoleEnum::SPONSOR->value                   => 'شهادة متعامل اقتصادي (ECONOMIC_PARTNER)',
                 $userRole === RoleEnum::MEDIA_MANAGER->value             => 'شهادة صحفي إعلامي (MEDIA)',
-                $userRole === RoleEnum::ORGANIZATION_ADMIN->value        => 'شهادة منظم معتمد (ORGANIZER)',
+                $userRole === RoleEnum::ORGANIZATION_ADMIN->value || $userRole === RoleEnum::SUPER_ADMIN->value => 'شهادة منظم معتمد (ORGANIZER)',
                 default                                                  => 'شهادة مشاركة وتأهل (PARTICIPATION)',
             };
 
@@ -143,8 +148,9 @@ class AdminCertificateIndex extends Component
                 $userRole,
                 $statusStr,
                 $reg->skill?->name_ar ?? 'تخصص مهني',
-                $reg->country?->name_ar ?? 'الجزائر',
+                $reg->organization?->name_ar ?? '—',
                 $reg->wilaya?->name_ar ?? '—',
+                $reg->country?->name_ar ?? 'الجزائر',
                 $score,
                 $rank,
                 $suggestedCert,
@@ -176,7 +182,9 @@ class AdminCertificateIndex extends Component
             'wilaya',
             'result'
         ])
-        // Filter by Status (Default to non-rejected or filterStatus if specified)
+        // STRICT RULE: Strictly EXCLUDE REJECTED records (show only approved/active candidates by default)
+        ->whereNotIn('status', ['REJECTED', 'REJECTED_BY_ADMIN', 'REJECTED_BY_SUPER_ADMIN'])
+        // Filter by Status if specifically selected
         ->when($this->filterStatus, function ($q) {
             $q->where('status', $this->filterStatus);
         })
@@ -197,15 +205,17 @@ class AdminCertificateIndex extends Component
                     );
             });
         })
-        // Filter by Role
+        // Filter by Expanded Role
         ->when($this->filterRole, function ($q) {
             $roleMap = [
-                'COMPETITOR'      => [RoleEnum::PARTICIPANT->value],
-                'DELEGATION_HEAD' => [RoleEnum::COUNTRY_ADMIN->value],
-                'EXPERT_JUDGE'    => [RoleEnum::JUDGE->value],
-                'MEDIA'           => [RoleEnum::MEDIA_MANAGER->value],
-                'VIP'             => [RoleEnum::EXECUTIVE_VIEWER->value],
-                'ORGANIZER'       => [RoleEnum::ORGANIZATION_ADMIN->value, RoleEnum::SUPER_ADMIN->value],
+                'COMPETITOR'       => [RoleEnum::PARTICIPANT->value],
+                'EXPERT_JUDGE'     => [RoleEnum::JUDGE->value, RoleEnum::EXPERT->value],
+                'DELEGATION_HEAD'  => [RoleEnum::COUNTRY_ADMIN->value],
+                'SUPERVISOR'       => [RoleEnum::REGIONAL_ADMIN->value, RoleEnum::WILAYA_ADMIN->value],
+                'ECONOMIC_PARTNER' => [RoleEnum::SPONSOR->value],
+                'MEDIA'            => [RoleEnum::MEDIA_MANAGER->value],
+                'VIP'              => [RoleEnum::EXECUTIVE_VIEWER->value],
+                'ORGANIZER'        => [RoleEnum::ORGANIZATION_ADMIN->value, RoleEnum::SUPER_ADMIN->value],
             ];
             if (isset($roleMap[$this->filterRole])) {
                 $q->whereHas('user.roles', fn($r) => $r->whereIn('name', $roleMap[$this->filterRole]));
@@ -239,6 +249,10 @@ class AdminCertificateIndex extends Component
         // Filter by Wilaya
         ->when($this->filterWilaya, function ($q) {
             $q->whereHas('participant', fn($p) => $p->where('wilaya_id', $this->filterWilaya));
+        })
+        // Filter by Center / Organization
+        ->when($this->filterCenter, function ($q) {
+            $q->whereHas('participant', fn($p) => $p->where('organization_id', $this->filterCenter));
         });
     }
 
@@ -246,18 +260,21 @@ class AdminCertificateIndex extends Component
     {
         $registrations = $this->getFilteredRegistrationsQuery()->orderByDesc('created_at')->paginate(12);
 
+        $baseQuery = Registration::whereNotIn('status', ['REJECTED', 'REJECTED_BY_ADMIN', 'REJECTED_BY_SUPER_ADMIN']);
+
         return view('livewire.admin.certificates.index', [
             'registrations'  => $registrations,
-            'allApprovedRegs'=> Registration::where('status', 'APPROVED')->take(100)->get(),
+            'allApprovedRegs'=> (clone $baseQuery)->where('status', 'APPROVED')->take(100)->get(),
             'countries'      => Country::orderBy('name_ar')->get(),
             'skills'         => Skill::where('is_active', true)->orderBy('name_ar')->get(),
             'wilayas'        => Wilaya::orderBy('code')->get(),
-            'totalApproved'  => Registration::where('status', 'APPROVED')->count(),
-            'winnersCount'   => Registration::whereHas('result', fn($r) => $r->whereIn('rank', [1, 2, 3])->orWhereIn('award', ['GOLD', 'SILVER', 'BRONZE']))->count(),
-            'goldCount'      => Registration::whereHas('result', fn($r) => $r->where('award', 'GOLD')->orWhere('rank', 1))->count(),
-            'silverCount'    => Registration::whereHas('result', fn($r) => $r->where('award', 'SILVER')->orWhere('rank', 2))->count(),
-            'bronzeCount'    => Registration::whereHas('result', fn($r) => $r->where('award', 'BRONZE')->orWhere('rank', 3))->count(),
-            'excellenceCount'=> Registration::whereHas('result', fn($r) => $r->where('final_score', '>=', 700))->count(),
+            'organizations'  => Organization::orderBy('name_ar')->get(),
+            'totalApproved'  => (clone $baseQuery)->where('status', 'APPROVED')->count(),
+            'winnersCount'   => (clone $baseQuery)->whereHas('result', fn($r) => $r->whereIn('rank', [1, 2, 3])->orWhereIn('award', ['GOLD', 'SILVER', 'BRONZE']))->count(),
+            'goldCount'      => (clone $baseQuery)->whereHas('result', fn($r) => $r->where('award', 'GOLD')->orWhere('rank', 1))->count(),
+            'silverCount'    => (clone $baseQuery)->whereHas('result', fn($r) => $r->where('award', 'SILVER')->orWhere('rank', 2))->count(),
+            'bronzeCount'    => (clone $baseQuery)->whereHas('result', fn($r) => $r->where('award', 'BRONZE')->orWhere('rank', 3))->count(),
+            'excellenceCount'=> (clone $baseQuery)->whereHas('result', fn($r) => $r->where('final_score', '>=', 700))->count(),
         ]);
     }
 }

@@ -8,7 +8,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
     {{-- PAGE HEADER --}}
     <x-dashboard.page-header
         :title="$t('إدارة وتوثيق الشهادات الرسمية للمسابقات (Certificates Directory)', 'Gestion & Émission des Certificats Officiels', 'Official Certificates Management & Generation')"
-        :subtitle="$t('استخراج وتوثيق شهادات المشاركة، التتويج بالميداليات، التميز، والتقدير للخبراء والوفود', 'Génération et vérification des certificats officiels par rôle et résultats', 'Issue and verify official participation, winner, expert, and delegation certificates')"
+        :subtitle="$t('استخراج وتوثيق شهادات المشاركة والتتويج والتقدير للخبراء والوفود والمتعاملين المعتمدين حصراً', 'Génération et vérification des certificats officiels par rôle et résultats', 'Issue and verify official certificates for approved members and dignitaries')"
     >
         <button wire:click="exportExcel" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-black transition backdrop-blur-md shadow-xs shrink-0 cursor-pointer">
             <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +65,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
             <div class="flex items-center justify-between relative z-10">
                 <div>
                     <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 block uppercase tracking-wider">
-                        {{ $t('إجمالي المستحقين للشهادات', 'Total Certificats Éligibles', 'Total Eligible Members') }}
+                        {{ $t('إجمالي الأعضاء المعتمدين', 'Total Accrédités Éligibles', 'Total Approved Eligible Members') }}
                     </span>
                     <span class="text-3xl font-black text-slate-900 dark:text-white mt-1 block">
                         {{ number_format($totalApproved) }}
@@ -78,7 +78,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                 </div>
             </div>
             <div class="mt-3 text-[11px] font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1">
-                <span>{{ $t('أعضاء مقبولين وموثقين رسمياً', 'Membres approuvés et vérifiés', 'Verified approved members') }}</span>
+                <span>{{ $t('أعضاء مقبولين وموثقين (يستبعد المرفوضين)', 'Exclusion stricte des rejetés', 'Excludes rejected applications') }}</span>
             </div>
         </div>
 
@@ -131,7 +131,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
             <div class="flex items-center justify-between relative z-10">
                 <div>
                     <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 block uppercase tracking-wider">
-                        {{ $t('شهادات التقدير للخبراء والوفود', 'Certificats Experts & Délégations', 'Experts & Delegations Certs') }}
+                        {{ $t('شهادات الحكام، الوفود، والشركاء', 'Certificats Experts, Délégations, Partenaires', 'Experts, Delegations & Partners') }}
                     </span>
                     <span class="text-3xl font-black text-emerald-600 dark:text-emerald-400 mt-1 block">
                         {{ number_format(max(0, $totalApproved - $winnersCount)) }}
@@ -144,26 +144,26 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                 </div>
             </div>
             <div class="mt-3 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                <span>{{ $t('حكام، رؤساء وفود، منظمون، وإعلاميون', 'Experts, Chefs de délégations, Médias', 'Experts, Heads of Delegation, Media') }}</span>
+                <span>{{ $t('خبراء، رؤساء وفود، شركاء، وإعلاميون', 'Experts, Chefs de délégations, Partenaires', 'Experts, Delegation Heads, Partners') }}</span>
             </div>
         </div>
     </div>
 
-    {{-- ADVANCED 6-WAY FILTER BAR --}}
+    {{-- ADVANCED FILTER BAR WITH WILAYA & CENTER FILTERS --}}
     <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700/80 p-5 space-y-4 shadow-xs">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 pb-3">
             <h2 class="text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-2">
                 <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                 </svg>
-                <span>{{ $t('فلترة متطورة جداً لشهادات التتويج والتقدير حسب الدور والنقاط', 'Filtrage Avancé des Certificats', 'Advanced Certificate Filtering by Role & Score') }}</span>
+                <span>{{ $t('تصفية متطورة جداً حسب الدور، النقاط، الولاية، والمركز للمعتمدين فقط', 'Filtrage Avancé (Rôle, Score, Wilaya, Centre)', 'Advanced Filter (Role, Score, Wilaya, Center)') }}</span>
             </h2>
             <span class="text-[11px] text-slate-500 dark:text-slate-400 font-bold">
-                {{ $t('عرض ', 'Affichage de ', 'Displaying ') }} {{ $registrations->total() }} {{ $t(' عضو مستحق', ' membres', ' members') }}
+                {{ $t('عرض ', 'Affichage de ', 'Displaying ') }} {{ $registrations->total() }} {{ $t(' عضو معتمد مستحق', ' membres éligibles', ' eligible members') }}
             </span>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3">
             <!-- Search -->
             <div class="relative xl:col-span-2">
                 <input wire:model.live.debounce.300ms="search" type="text"
@@ -176,44 +176,56 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
 
             <!-- Role Filter -->
             <div>
-                <select wire:model.live="filterRole" class="w-full px-3.5 py-2.5 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                <select wire:model.live="filterRole" class="w-full px-3 py-2.5 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
                     <option value="">{{ $t('-- كل الأدوار والصفات --', '-- Tous les rôles --', '-- All Roles --') }}</option>
                     <option value="COMPETITOR">COMPETITOR / مشارك متنافس</option>
                     <option value="EXPERT_JUDGE">EXPERT JUDGE / حكم خبير</option>
                     <option value="DELEGATION_HEAD">DELEGATION HEAD / رئيس وفد</option>
+                    <option value="SUPERVISOR">SUPERVISOR / مؤطر وقائد فريق</option>
+                    <option value="ECONOMIC_PARTNER">ECONOMIC PARTNER / متعامل اقتصادي</option>
                     <option value="MEDIA">MEDIA / صحفي إعلامي</option>
                     <option value="VIP">VIP / ضيف شرف</option>
-                    <option value="ORGANIZER">ORGANIZER / منظم</option>
+                    <option value="ORGANIZER">ORGANIZER / منظم وإداري</option>
                 </select>
             </div>
 
             <!-- Award / CIS Score Filter -->
             <div>
-                <select wire:model.live="filterAward" class="w-full px-3.5 py-2.5 text-xs rounded-2xl border border-amber-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-amber-900 dark:text-amber-300 font-bold focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition">
-                    <option value="">{{ $t('-- كل نتائج التقييم والنقاط --', '-- Tous les résultats --', '-- All Results & Scores --') }}</option>
-                    <option value="WINNERS_ONLY">🏆 المتوجون بالميداليات فقط (Or, Argent, Bronze)</option>
-                    <option value="WINNER_GOLD">🥇 الميدالية الذهبية (المركز الأول)</option>
-                    <option value="WINNER_SILVER">🥈 الميدالية الفضية (المركز الثاني)</option>
-                    <option value="WINNER_BRONZE">🥉 الميدالية البرونزية (المركز الثالث)</option>
-                    <option value="MEDALLION_EXCELLENCE">🎖️ شهادة التميز (CIS >= 700 pts)</option>
+                <select wire:model.live="filterAward" class="w-full px-3 py-2.5 text-xs rounded-2xl border border-amber-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-amber-900 dark:text-amber-300 font-bold focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition">
+                    <option value="">{{ $t('-- نتائج التقييم والنقاط --', '-- Tous les résultats --', '-- Results & Scores --') }}</option>
+                    <option value="WINNERS_ONLY">🏆 المتوجون بالميداليات فقط</option>
+                    <option value="WINNER_GOLD">🥇 الميدالية الذهبية (المركز 1)</option>
+                    <option value="WINNER_SILVER">🥈 الميدالية الفضية (المركز 2)</option>
+                    <option value="WINNER_BRONZE">🥉 الميدالية البرونزية (المركز 3)</option>
+                    <option value="MEDALLION_EXCELLENCE">🎖️ شهادة التميز (CIS >= 700)</option>
                     <option value="PARTICIPATION">📜 شهادة مشاركة وتأهل عامة</option>
                 </select>
             </div>
 
-            <!-- Status Filter -->
+            <!-- Wilaya Filter -->
             <div>
-                <select wire:model.live="filterStatus" class="w-full px-3.5 py-2.5 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
-                    <option value="">{{ $t('-- حالة القبول والاعتماد --', '-- Statut de validation --', '-- All Approval Status --') }}</option>
-                    <option value="APPROVED">{{ $t('مقبول ومعتمد رسمياً (APPROVED)', 'Approuvé & Validé', 'Approved Only') }}</option>
-                    <option value="PENDING">{{ $t('قيد المراجعة (PENDING)', 'En Attente', 'Pending Approval') }}</option>
-                    <option value="REJECTED">{{ $t('مرفوض (REJECTED)', 'Rejeté', 'Rejected') }}</option>
+                <select wire:model.live="filterWilaya" class="w-full px-3 py-2.5 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                    <option value="">{{ $t('-- كل الولايات --', '-- Toutes les Wilayas --', '-- All Wilayas --') }}</option>
+                    @foreach($wilayas as $w)
+                        <option value="{{ $w->id }}">{{ $w->code }} - {{ $w->name_ar }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Center / Organization Filter -->
+            <div>
+                <select wire:model.live="filterCenter" class="w-full px-3 py-2.5 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                    <option value="">{{ $t('-- كل المراكز والمؤسسات --', '-- Tous les centres --', '-- All Centers --') }}</option>
+                    @foreach($organizations as $org)
+                        <option value="{{ $org->id }}">{{ Str::limit($org->name_ar, 30) }}</option>
+                    @endforeach
                 </select>
             </div>
 
             <!-- Skill Filter -->
             <div>
-                <select wire:model.live="filterSkill" class="w-full px-3.5 py-2.5 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
-                    <option value="">{{ $t('-- كل التخصصات المهنية --', '-- Tous les métiers --', '-- All Skills --') }}</option>
+                <select wire:model.live="filterSkill" class="w-full px-3 py-2.5 text-xs rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                    <option value="">{{ $t('-- كل التخصصات --', '-- Tous les métiers --', '-- All Skills --') }}</option>
                     @foreach($skills as $s)
                         <option value="{{ $s->id }}">{{ $s->name_ar }} ({{ $s->code }})</option>
                     @endforeach
@@ -231,12 +243,12 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                         <th class="px-4 py-4 text-center w-10">
                             <input type="checkbox" wire:model.live="selectAll" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
                         </th>
-                        <th class="px-5 py-4 text-start min-w-[220px]">{{ $t('المستفيد / المترشح', 'Bénéficiaire / Membre', 'Member Name') }}</th>
+                        <th class="px-5 py-4 text-start min-w-[220px]">{{ $t('المستفيد / المترشح المعتمد', 'Membre Accrédité', 'Approved Member') }}</th>
                         <th class="px-5 py-4 text-start min-w-[150px] whitespace-nowrap">{{ $t('رقم التسجيل والتوثيق', 'N° Enregistrement', 'Registration Number') }}</th>
-                        <th class="px-5 py-4 text-start min-w-[160px] whitespace-nowrap">{{ $t('الدور والقبول', 'Rôle & Statut', 'Role & Approval Status') }}</th>
-                        <th class="px-5 py-4 text-start min-w-[180px] whitespace-nowrap">{{ $t('التخصص / الوفد', 'Métier & Délégation', 'Trade & Delegation') }}</th>
+                        <th class="px-5 py-4 text-start min-w-[150px] whitespace-nowrap">{{ $t('الدور والقبول', 'Rôle & Statut', 'Role & Approval') }}</th>
+                        <th class="px-5 py-4 text-start min-w-[200px] whitespace-nowrap">{{ $t('التخصص والمركز والولاية', 'Métier & Centre', 'Trade & Institution') }}</th>
                         <th class="px-5 py-4 text-start min-w-[170px] whitespace-nowrap">{{ $t('نقاط التقييم CIS والرتبة', 'Score CIS & Rang', 'CIS Score & Rank') }}</th>
-                        <th class="px-5 py-4 text-center min-w-[320px] whitespace-nowrap">{{ $t('خيارات شهادات التتويج والتقدير الرسمية', 'Génération Certificats Officiels', 'Official Certificate Generation') }}</th>
+                        <th class="px-5 py-4 text-center min-w-[340px] whitespace-nowrap">{{ $t('خيارات شهادات التتويج والتقدير الرسمية', 'Certificats Officiels', 'Official Certificate Links') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60">
@@ -246,15 +258,15 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             $nameAr    = $reg->participant?->first_name_ar ? ($reg->participant->first_name_ar . ' ' . $reg->participant->last_name_ar) : $reg->user?->name;
                             $nameLatin = $reg->participant?->first_name_latin ? ($reg->participant->first_name_latin . ' ' . $reg->participant->last_name_latin) : $reg->user?->email;
                             $photoUrl  = $reg->photo_url;
-                            $stStr     = is_object($reg->status) ? ($reg->status->value ?? 'APPROVED') : ($reg->status ?? 'APPROVED');
                             $userRole  = $reg->user?->roles->first()?->name ?? 'PARTICIPANT';
 
                             $finalScore = $reg->result?->final_score;
                             $rank       = $reg->result?->rank;
                             $award      = $reg->result?->award;
-                            $isRejected = ($stStr === 'REJECTED');
+                            $centerName = $reg->organization?->name_ar ?? '—';
+                            $wilayaName = $reg->wilaya?->name_ar ?? '—';
                         @endphp
-                        <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-900/40 transition {{ $isRejected ? 'bg-rose-500/5 dark:bg-rose-950/20' : '' }}">
+                        <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-900/40 transition">
                             <!-- Checkbox -->
                             <td class="px-4 py-4 text-center">
                                 <input type="checkbox" wire:model.live="selectedRegistrations" value="{{ $reg->id }}" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
@@ -284,25 +296,19 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             </td>
 
                             <!-- Role & Status -->
-                            <td class="px-5 py-4 min-w-[160px] whitespace-nowrap space-y-1">
+                            <td class="px-5 py-4 min-w-[150px] whitespace-nowrap space-y-1">
                                 <span class="px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider block w-fit bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200">
                                     {{ $userRole }}
                                 </span>
-                                @if($isRejected)
-                                    <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 inline-block">
-                                        غير مقبول (REJECTED)
-                                    </span>
-                                @else
-                                    <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 inline-block">
-                                        معتمد رسمياً (APPROVED)
-                                    </span>
-                                @endif
+                                <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 inline-block">
+                                    مقبول معتمد
+                                </span>
                             </td>
 
-                            <!-- Skill & Country -->
-                            <td class="px-5 py-4 min-w-[180px] whitespace-nowrap">
+                            <!-- Skill & Institution & Wilaya -->
+                            <td class="px-5 py-4 min-w-[200px] whitespace-nowrap">
                                 <span class="block font-bold text-slate-800 dark:text-slate-200">{{ $reg->skill?->name_ar ?? 'تخصص مهني' }}</span>
-                                <span class="text-[11px] text-slate-500 dark:text-slate-400 block font-medium">{{ $reg->country?->name_ar ?? 'الجزائر' }}</span>
+                                <span class="text-[11px] text-slate-500 dark:text-slate-400 block font-medium truncate max-w-xs">{{ $centerName }} ({{ $wilayaName }})</span>
                             </td>
 
                             <!-- CIS Score & Rank -->
@@ -337,63 +343,57 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             </td>
 
                             <!-- Certificate Action Links -->
-                            <td class="px-5 py-4 text-center min-w-[320px] whitespace-nowrap">
-                                @if($isRejected)
-                                    <span class="text-[11px] font-bold text-rose-500 bg-rose-50 dark:bg-rose-950/40 px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-900">
-                                        غير متاح للملفات المرفوضة
-                                    </span>
-                                @else
-                                    <div class="inline-flex items-center justify-center gap-1.5 flex-wrap">
-                                        <!-- Gold -->
-                                        <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'WINNER_GOLD']) }}" target="_blank"
-                                            class="px-2.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة الميدالية الذهبية">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                                            <span>ذهبية</span>
-                                        </a>
+                            <td class="px-5 py-4 text-center min-w-[340px] whitespace-nowrap">
+                                <div class="inline-flex items-center justify-center gap-1.5 flex-wrap">
+                                    <!-- Gold -->
+                                    <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'WINNER_GOLD']) }}" target="_blank"
+                                        class="px-2.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة الميدالية الذهبية">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                                        <span>ذهبية</span>
+                                    </a>
 
-                                        <!-- Silver -->
-                                        <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'WINNER_SILVER']) }}" target="_blank"
-                                            class="px-2.5 py-1.5 rounded-xl bg-slate-400 hover:bg-slate-500 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة الميدالية الفضية">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                                            <span>فضية</span>
-                                        </a>
+                                    <!-- Silver -->
+                                    <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'WINNER_SILVER']) }}" target="_blank"
+                                        class="px-2.5 py-1.5 rounded-xl bg-slate-400 hover:bg-slate-500 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة الميدالية الفضية">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                                        <span>فضية</span>
+                                    </a>
 
-                                        <!-- Bronze -->
-                                        <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'WINNER_BRONZE']) }}" target="_blank"
-                                            class="px-2.5 py-1.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة الميدالية البرونزية">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                                            <span>برونزية</span>
-                                        </a>
+                                    <!-- Bronze -->
+                                    <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'WINNER_BRONZE']) }}" target="_blank"
+                                        class="px-2.5 py-1.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة الميدالية البرونزية">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                                        <span>برونزية</span>
+                                    </a>
 
-                                        <!-- Participation -->
-                                        <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'PARTICIPATION']) }}" target="_blank"
-                                            class="px-2.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة مشاركة وتأهل">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                            <span>مشاركة</span>
-                                        </a>
+                                    <!-- Participation -->
+                                    <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'PARTICIPATION']) }}" target="_blank"
+                                        class="px-2.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة مشاركة وتأهل">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <span>مشاركة</span>
+                                    </a>
 
-                                        <!-- Expert Judge -->
-                                        <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'EXPERT_JUDGE']) }}" target="_blank"
-                                            class="px-2.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة تقدير حكم خبير">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5 5 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5 5 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
-                                            <span>حكم خبير</span>
-                                        </a>
+                                    <!-- Expert Judge -->
+                                    <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'EXPERT_JUDGE']) }}" target="_blank"
+                                        class="px-2.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة تقدير حكم خبير">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5 5 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5 5 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+                                        <span>حكم خبير</span>
+                                    </a>
 
-                                        <!-- Delegation Head -->
-                                        <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'DELEGATION_HEAD']) }}" target="_blank"
-                                            class="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة مسؤول ورئيس وفد">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0v-4a1 1 0 011-1h2a1 1 0 011 1v4m-4 0h4"/></svg>
-                                            <span>رئيس وفد</span>
-                                        </a>
+                                    <!-- Delegation Head -->
+                                    <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'DELEGATION_HEAD']) }}" target="_blank"
+                                        class="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة مسؤول ورئيس وفد">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m3 0v-4a1 1 0 011-1h2a1 1 0 011 1v4m-4 0h4"/></svg>
+                                        <span>رئيس وفد</span>
+                                    </a>
 
-                                        <!-- Media -->
-                                        <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'MEDIA']) }}" target="_blank"
-                                            class="px-2.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة تقدير إعلامي">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                                            <span>صحفي</span>
-                                        </a>
-                                    </div>
-                                @endif
+                                    <!-- Economic Partner -->
+                                    <a href="{{ route('official.certificate', ['identifier' => $num, 'type' => 'ECONOMIC_PARTNER']) }}" target="_blank"
+                                        class="px-2.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-black text-[10px] transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="شهادة تقدير متعامل اقتصادي وراعي">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                        <span>متعامل</span>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -404,7 +404,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>
                                     <p class="text-xs font-bold text-slate-600 dark:text-slate-400">
-                                        {{ $t('لا توجد نتائج تطابق الفلترة الحالية للشهادات', 'Aucun certificat trouvé', 'No certificates matching current filter') }}
+                                        {{ $t('لا توجد نتائج تطابق الفلترة الحالية للشهادات المعتمدة', 'Aucun certificat trouvé', 'No certificates matching current filter') }}
                                     </p>
                                 </div>
                             </td>
@@ -447,10 +447,10 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                 <div class="space-y-4 text-xs font-semibold">
                     <div>
                         <label class="block text-slate-700 dark:text-slate-300 font-bold mb-1">
-                            {{ $t('اختر العضو المسجل *', 'Membre Inscrit *', 'Registered Member *') }}
+                            {{ $t('اختر العضو المسجل المعتمد *', 'Membre Inscrit *', 'Registered Approved Member *') }}
                         </label>
                         <select wire:model="registration_id" class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
-                            <option value="0">{{ $t('-- اختر مسجلاً / عضواً من المنصة --', '-- Choisir un membre --', '-- Select a registered member --') }}</option>
+                            <option value="0">{{ $t('-- اختر مسجلاً / عضواً معتمداً --', '-- Choisir un membre --', '-- Select an approved member --') }}</option>
                             @foreach($allApprovedRegs as $r)
                                 <option value="{{ $r->id }}">{{ $r->registration_number }} — {{ $r->participant?->first_name_ar }} {{ $r->participant?->last_name_ar }} ({{ $r->skill?->name_ar ?? 'تخصص' }})</option>
                             @endforeach
@@ -470,6 +470,7 @@ $t = fn($ar,$fr,$en) => match($locale){'fr'=>$fr,'en'=>$en,default=>$ar};
                             <option value="MEDALLION_EXCELLENCE">🎖️ شهادة التميز (MEDALLION_EXCELLENCE)</option>
                             <option value="EXPERT_JUDGE">⚖️ شهادة تقدير حكم خبير (EXPERT_JUDGE)</option>
                             <option value="DELEGATION_HEAD">🏛️ شهادة مسؤول ورئيس وفد (DELEGATION_HEAD)</option>
+                            <option value="ECONOMIC_PARTNER">🏢 شهادة تقدير متعامل اقتصادي وراعي (ECONOMIC_PARTNER)</option>
                             <option value="ORGANIZER">💼 شهادة تقدير منظم معتمد (ORGANIZER)</option>
                             <option value="VOLUNTEER">🤝 شهادة تقدير متطوع (VOLUNTEER)</option>
                             <option value="MEDIA">📰 شهادة تقدير صحفي إعلامي (MEDIA)</option>
