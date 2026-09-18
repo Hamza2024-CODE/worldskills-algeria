@@ -12,29 +12,30 @@ $femalePercent = 100 - $malePercent;
 <div class="space-y-8 pb-12">
 
     {{-- ═════════════════════════════════════════════════════════════════════
-         1. HERO HEADER (Clean Minimalist Royal Blue Glass Banner)
+         1. ROYAL DARK EXECUTIVE HEADER (Solid Dark Obsidian Banner)
     ═════════════════════════════════════════════════════════════════════ --}}
-    <div class="bg-gradient-to-r from-[#020A24] via-[#06205C] to-[#0052CC] text-white rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden border border-white/10">
+    <div class="bg-slate-950 text-white rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden border border-slate-800">
         {{-- Ambient background light aura --}}
-        <div class="absolute -top-24 -left-24 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-sky-400/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="space-y-1">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-mono font-bold text-amber-300">
-                    WORLDSKILLS ALGERIA 2026
+            <div class="space-y-1.5">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-950/80 border border-blue-800/60 text-xs font-mono font-bold text-amber-400">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                    <span>WORLDSKILLS ALGERIA 2026</span>
                 </div>
                 <h1 class="text-2xl sm:text-4xl font-black text-white tracking-tight">
                     أولمبياد المهن
                 </h1>
-                <p class="text-sm sm:text-base text-blue-100 font-bold">
-                    مرحباً بك، <span class="text-amber-300 font-black">{{ $user?->name ?? 'المسؤول المحترم' }}</span>
+                <p class="text-sm sm:text-base text-slate-300 font-bold">
+                    مرحباً بك، <span class="text-amber-400 font-black">{{ $user?->name ?? 'المسؤول المحترم' }}</span>
                 </p>
             </div>
 
             {{-- Quick Action Hub --}}
             <div class="flex items-center gap-3 shrink-0">
-                <a href="{{ route('admin.cms.homepage') }}" class="px-5 py-3 rounded-2xl bg-white text-[#0052CC] hover:bg-blue-50 font-black text-xs sm:text-sm shadow-xl hover:shadow-2xl transition duration-200 flex items-center gap-2">
+                <a href="{{ route('admin.cms.homepage') }}" class="px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs sm:text-sm shadow-xl hover:shadow-2xl transition duration-200 flex items-center gap-2 border border-blue-400/30">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/></svg>
                     <span>تخصيص وإدارة المنصة CMS</span>
                 </a>
@@ -47,7 +48,7 @@ $femalePercent = 100 - $malePercent;
     ═════════════════════════════════════════════════════════════════════ --}}
     <div>
         <h2 class="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-4 flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-[#0066FF]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
             <span>المؤشرات والإحصائيات الشاملة للنظام</span>
         </h2>
 
@@ -56,7 +57,7 @@ $femalePercent = 100 - $malePercent;
             {{-- Pillar 1: Users & Accounts --}}
             <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
                 <div class="flex items-center justify-between">
-                    <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-[#0066FF] dark:text-blue-400 flex items-center justify-center border border-blue-100">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-100">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     </div>
                     <span class="px-2.5 py-1 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 text-[10px] font-black">
@@ -64,7 +65,7 @@ $femalePercent = 100 - $malePercent;
                     </span>
                 </div>
                 <div>
-                    <span class="text-3xl sm:text-4xl font-black text-[#06205C] dark:text-white tracking-tight">{{ number_format($totalUsers) }}</span>
+                    <span class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">{{ number_format($totalUsers) }}</span>
                     <p class="text-xs text-slate-500 font-bold mt-1">إجمالي الحسابات المسجلة بالنظام</p>
                 </div>
                 <div class="pt-2 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs font-bold">
@@ -84,7 +85,7 @@ $femalePercent = 100 - $malePercent;
                     </span>
                 </div>
                 <div>
-                    <span class="text-3xl sm:text-4xl font-black text-[#06205C] dark:text-white tracking-tight">{{ number_format($totalRegistrations) }}</span>
+                    <span class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">{{ number_format($totalRegistrations) }}</span>
                     <p class="text-xs text-slate-500 font-bold mt-1">إجمالي الملفات والترشيحات المقدمة</p>
                 </div>
                 <div class="pt-2 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-[11px] font-bold">
@@ -106,11 +107,11 @@ $femalePercent = 100 - $malePercent;
                 </div>
                 <div>
                     <div class="flex items-center justify-between text-xs font-black text-slate-900 dark:text-white mb-1.5">
-                        <span>ذكوّر: {{ number_format($maleCandidatesCount) }} ({{ $malePercent }}%)</span>
+                        <span>ذكور: {{ number_format($maleCandidatesCount) }} ({{ $malePercent }}%)</span>
                         <span>إناث: {{ number_format($femaleCandidatesCount) }} ({{ $femalePercent }}%)</span>
                     </div>
                     <div class="w-full h-3 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden flex">
-                        <div class="bg-[#0066FF] h-full" style="width: {{ $malePercent }}%"></div>
+                        <div class="bg-blue-600 h-full" style="width: {{ $malePercent }}%"></div>
                         <div class="bg-pink-500 h-full" style="width: {{ $femalePercent }}%"></div>
                     </div>
                 </div>
@@ -128,7 +129,7 @@ $femalePercent = 100 - $malePercent;
                     </span>
                 </div>
                 <div>
-                    <span class="text-3xl sm:text-4xl font-black text-[#06205C] dark:text-white tracking-tight">{{ number_format($totalSkills) }}</span>
+                    <span class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">{{ number_format($totalSkills) }}</span>
                     <p class="text-xs text-slate-500 font-bold mt-1">تخصص مهني معتمد في المنافسة</p>
                 </div>
                 <div class="pt-2 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs font-bold">
@@ -140,28 +141,86 @@ $femalePercent = 100 - $malePercent;
     </div>
 
     {{-- ═════════════════════════════════════════════════════════════════════
-         3. SECTOR BREAKDOWN & TOP REQUESTED SKILLS (إحصائيات التخصصات والقطاعات)
+         3. APEXCHARTS VISUAL ANALYTICS (دوائر نسبية، أعمدة بيانية ومخططات)
     ═════════════════════════════════════════════════════════════════════ --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div>
+        <h2 class="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-4 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span>الرسومات البيانية والمخططات النسبية (Interactive Analytics Charts)</span>
+        </h2>
 
-        {{-- Column 1 & 2: Top Most Requested Skills & Sector Counts --}}
-        <div class="lg:col-span-2 space-y-6">
-            
-            {{-- Top Skills Table / Card List --}}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            {{-- Chart 1: User Roles Distribution Donut Chart (دائرة نسبية لأدوار المستخدمين) --}}
             <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
                     <div>
-                        <h3 class="text-base font-black text-[#06205C] dark:text-white">التخصصات الأكثر إقبالاً وطلباً</h3>
+                        <h3 class="text-base font-black text-slate-900 dark:text-white">توزيع حسابات المستخدمين حسب الأدوار</h3>
+                        <p class="text-xs text-slate-500 font-bold mt-0.5">مخطط دائري نسبي (Donut Chart) للأدوار والمسؤوليات</p>
+                    </div>
+                </div>
+                <div id="rolesDonutChart" class="w-full min-h-[300px]"></div>
+            </div>
+
+            {{-- Chart 2: Registration Status Pie Chart (دائرة نسبية لحالة الترشحات) --}}
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
+                    <div>
+                        <h3 class="text-base font-black text-slate-900 dark:text-white">النسب المئوية لحالة طلبات الترشح</h3>
+                        <p class="text-xs text-slate-500 font-bold mt-0.5">مخطط دائري (Pie Chart) للقبول والرفض والانتظار</p>
+                    </div>
+                </div>
+                <div id="statusPieChart" class="w-full min-h-[300px]"></div>
+            </div>
+
+            {{-- Chart 3: Sector Skills & Candidates Bar Chart (أعمدة بيانية للقطاعات) --}}
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
+                    <div>
+                        <h3 class="text-base font-black text-slate-900 dark:text-white">إحصائية المهن والمسجلين حسب القطاعات</h3>
+                        <p class="text-xs text-slate-500 font-bold mt-0.5">أعمدة بيانية (Column Bar Chart) للقطاعات الـ 6</p>
+                    </div>
+                </div>
+                <div id="sectorBarChart" class="w-full min-h-[300px]"></div>
+            </div>
+
+            {{-- Chart 4: Top Wilayas Participation Horizontal Bar Chart (مخطط أفقي للولايات) --}}
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
+                    <div>
+                        <h3 class="text-base font-black text-slate-900 dark:text-white">التوزيع الجغرافي للولايات الأكثر مشاركة</h3>
+                        <p class="text-xs text-slate-500 font-bold mt-0.5">مخطط أفقي (Horizontal Bar Chart) لترتيب الولايات</p>
+                    </div>
+                </div>
+                <div id="wilayaBarChart" class="w-full min-h-[300px]"></div>
+            </div>
+
+        </div>
+    </div>
+
+    {{-- ═════════════════════════════════════════════════════════════════════
+         4. DETAILED ANALYTICS TABLES & CARDS
+    ═════════════════════════════════════════════════════════════════════ --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        {{-- Column 1 & 2: Top Skills List & Sector Details --}}
+        <div class="lg:col-span-2 space-y-6">
+            
+            {{-- Top Requested Skills List --}}
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
+                    <div>
+                        <h3 class="text-base font-black text-slate-900 dark:text-white">التخصصات الأكثر إقبالاً وطلباً</h3>
                         <p class="text-xs text-slate-500 font-bold mt-0.5">ترتيب التخصصات حسب أعداد المسجلين والمقبولين رسمياً</p>
                     </div>
-                    <a href="{{ route('admin.skills') }}" class="text-xs font-black text-[#0066FF] hover:underline">عرض كل التخصصات ←</a>
+                    <a href="{{ route('admin.skills') }}" class="text-xs font-black text-blue-600 hover:underline">عرض كل التخصصات ←</a>
                 </div>
 
                 <div class="space-y-3">
                     @forelse($topSkills as $sk)
                         <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
                             <div class="flex items-center gap-3 min-w-0">
-                                <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-[#0066FF] flex items-center justify-center font-mono font-black text-xs shrink-0">
+                                <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-600 flex items-center justify-center font-mono font-black text-xs shrink-0">
                                     {{ $sk->code }}
                                 </div>
                                 <div class="truncate">
@@ -186,17 +245,17 @@ $femalePercent = 100 - $malePercent;
                 </div>
             </div>
 
-            {{-- Sector Breakdown Grid --}}
+            {{-- Sector Details Grid --}}
             <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
                 <div class="pb-3 border-b border-slate-100 dark:border-slate-700">
-                    <h3 class="text-base font-black text-[#06205C] dark:text-white">إحصائيات المهن والمسجلين حسب القطاعات</h3>
+                    <h3 class="text-base font-black text-slate-900 dark:text-white">تفاصيل المهن والمسجلين حسب القطاعات</h3>
                     <p class="text-xs text-slate-500 font-bold mt-0.5">توزيع التخصصات والأعداد المسجلة والمقبولة في كل قطاع</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     @foreach($sectorStats as $sec)
-                        <div class="p-4 rounded-2xl bg-blue-50/50 dark:bg-slate-900/40 border border-blue-100 dark:border-slate-800 space-y-2">
-                            <h4 class="text-xs font-black text-[#06205C] dark:text-white">{{ $sec->name_ar }}</h4>
+                        <div class="p-4 rounded-2xl bg-blue-50/40 dark:bg-slate-900/40 border border-blue-100 dark:border-slate-800 space-y-2">
+                            <h4 class="text-xs font-black text-slate-900 dark:text-white">{{ $sec->name_ar }}</h4>
                             <div class="flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-300">
                                 <span>عدد التخصصات: <strong class="text-blue-600">{{ $sec->skills_count }}</strong></span>
                                 <span>المسجلين: <strong class="text-slate-900 dark:text-white">{{ $sec->total_candidates }}</strong></span>
@@ -211,38 +270,14 @@ $femalePercent = 100 - $malePercent;
 
         </div>
 
-        {{-- Column 3: Organizations, Rejection Reasons & Top Wilayas --}}
+        {{-- Column 3: Rejection Reasons & Organizations --}}
         <div class="space-y-6">
 
-            {{-- Top Wilayas Participation --}}
-            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
-                <div class="pb-3 border-b border-slate-100 dark:border-slate-700">
-                    <h3 class="text-base font-black text-[#06205C] dark:text-white">الولايات الأكثر مشاركة</h3>
-                    <p class="text-xs text-slate-500 font-bold mt-0.5">ترتيب الولايات حسب أعداد المسجلين</p>
-                </div>
-
-                <div class="space-y-2.5">
-                    @foreach($topWilayasParticipation as $index => $w)
-                        <div class="flex items-center justify-between text-xs font-bold p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/50">
-                            <div class="flex items-center gap-2">
-                                <span class="w-5 h-5 rounded-md bg-blue-100 text-[#0066FF] font-mono font-black flex items-center justify-center text-[10px]">
-                                    {{ $w->code }}
-                                </span>
-                                <span class="text-slate-900 dark:text-white font-black">{{ $w->name_ar }}</span>
-                            </div>
-                            <span class="px-2.5 py-1 rounded-full bg-blue-50 text-[#0066FF] font-black text-[11px]">
-                                {{ number_format($w->candidates_count) }} مترشح
-                            </span>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            {{-- Top Rejection Reasons --}}
+            {{-- Rejection Reasons --}}
             <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
                 <div class="pb-3 border-b border-slate-100 dark:border-slate-700">
                     <h3 class="text-base font-black text-rose-600">أسباب الرفض الأكثر شيوعاً</h3>
-                    <p class="text-xs text-slate-500 font-bold mt-0.5">تحليل أسباب رفض طلبات الترشح الغير مستوفية</p>
+                    <p class="text-xs text-slate-500 font-bold mt-0.5">تحليل أسباب رفض طلبات الترشح غير المستوفية</p>
                 </div>
 
                 <div class="space-y-2.5">
@@ -260,7 +295,7 @@ $femalePercent = 100 - $malePercent;
             {{-- Top Organizations --}}
             <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
                 <div class="pb-3 border-b border-slate-100 dark:border-slate-700">
-                    <h3 class="text-base font-black text-[#06205C] dark:text-white">أبرز المؤسسات التكوينية</h3>
+                    <h3 class="text-base font-black text-slate-900 dark:text-white">أبرز المؤسسات التكوينية</h3>
                     <p class="text-xs text-slate-500 font-bold mt-0.5">المؤسسات الأكثر تقديمات للمترشحين</p>
                 </div>
 
@@ -283,35 +318,62 @@ $femalePercent = 100 - $malePercent;
 
     </div>
 
-    {{-- ═════════════════════════════════════════════════════════════════════
-         4. RECENT ACTIVITY LOGS & REGISTRATIONS
-    ═════════════════════════════════════════════════════════════════════ --}}
-    <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
-            <div>
-                <h3 class="text-base font-black text-[#06205C] dark:text-white">آخر ملفات الترشح والأنشطة بالنظام</h3>
-                <p class="text-xs text-slate-500 font-bold mt-0.5">سجل التحديثات الحية الفورية</p>
-            </div>
-            <a href="{{ route('admin.registrations') }}" class="text-xs font-black text-[#0066FF] hover:underline">عرض كل الملفات ←</a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            @foreach($recentRegistrations as $reg)
-                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 text-xs">
-                    <div>
-                        <span class="font-mono font-black text-[#0066FF] block text-[11px]">{{ $reg->registration_number }}</span>
-                        <h4 class="font-black text-slate-900 dark:text-white text-xs mt-0.5">{{ $reg->user?->name ?? 'مترشح مجهول' }}</h4>
-                        <span class="text-[10px] font-bold text-slate-500 block">{{ $reg->skill?->getLocalized('name') ?? 'تخصص عام' }}</span>
-                    </div>
-                    <div class="text-end">
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-black {{ $reg->status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' : ($reg->status === 'REJECTED' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800') }}">
-                            {{ $reg->status === 'APPROVED' ? 'مقبول' : ($reg->status === 'REJECTED' ? 'مرفوض' : 'انتظار') }}
-                        </span>
-                        <span class="text-[10px] font-mono text-slate-400 block mt-1">{{ $reg->created_at?->diffForHumans() }}</span>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-
 </div>
+
+{{-- ═════════════════════════════════════════════════════════════════════
+     APEXCHARTS INITIALIZATION SCRIPT
+═════════════════════════════════════════════════════════════════════ --}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // 1. Roles Donut Chart
+    var roleOptions = {
+        series: @json($roleSeries),
+        labels: @json($roleLabels),
+        chart: { type: 'donut', height: 320, fontFamily: 'inherit' },
+        colors: ['#0066FF', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#6366F1', '#3B82F6'],
+        legend: { position: 'bottom', fontSize: '12px', fontWeight: 700 },
+        dataLabels: { enabled: true },
+        tooltip: { y: { formatter: function(val) { return val + " حساب"; } } }
+    };
+    var roleChart = new ApexCharts(document.querySelector("#rolesDonutChart"), roleOptions);
+    roleChart.render();
+
+    // 2. Status Pie Chart
+    var statusOptions = {
+        series: [@json($approvedRegistrations), @json($pendingRegistrations), @json($rejectedRegistrations)],
+        labels: ['مقبول رسمياً', 'قيد الدراسة والانتظار', 'طلب مرفوض'],
+        chart: { type: 'pie', height: 320, fontFamily: 'inherit' },
+        colors: ['#10B981', '#F59E0B', '#EF4444'],
+        legend: { position: 'bottom', fontSize: '12px', fontWeight: 700 },
+        dataLabels: { enabled: true },
+        tooltip: { y: { formatter: function(val) { return val + " طلب ترشح"; } } }
+    };
+    var statusChart = new ApexCharts(document.querySelector("#statusPieChart"), statusOptions);
+    statusChart.render();
+
+    // 3. Sector Bar Chart
+    var sectorOptions = {
+        series: [{ name: 'إجمالي المسجلين', data: @json($sectorSeries) }],
+        chart: { type: 'bar', height: 320, fontFamily: 'inherit', toolbar: { show: false } },
+        colors: ['#0066FF'],
+        plotOptions: { bar: { borderRadius: 8, columnWidth: '55%', distributed: true } },
+        xaxis: { categories: @json($sectorLabels), labels: { style: { fontSize: '11px', fontWeight: 700 } } },
+        legend: { show: false },
+        tooltip: { y: { formatter: function(val) { return val + " مسجل"; } } }
+    };
+    var sectorChart = new ApexCharts(document.querySelector("#sectorBarChart"), sectorOptions);
+    sectorChart.render();
+
+    // 4. Wilaya Horizontal Bar Chart
+    var wilayaOptions = {
+        series: [{ name: 'عدد المترشحين', data: @json($wilayaSeries) }],
+        chart: { type: 'bar', height: 320, fontFamily: 'inherit', toolbar: { show: false } },
+        colors: ['#10B981'],
+        plotOptions: { bar: { borderRadius: 6, horizontal: true, barHeight: '60%' } },
+        xaxis: { categories: @json($wilayaLabels), labels: { style: { fontSize: '11px', fontWeight: 700 } } },
+        tooltip: { y: { formatter: function(val) { return val + " مترشح"; } } }
+    };
+    var wilayaChart = new ApexCharts(document.querySelector("#wilayaBarChart"), wilayaOptions);
+    wilayaChart.render();
+});
+</script>

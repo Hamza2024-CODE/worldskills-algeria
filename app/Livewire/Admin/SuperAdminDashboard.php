@@ -78,6 +78,9 @@ class SuperAdminDashboard extends Component
             ->groupBy('skill_categories.id', 'skill_categories.name_ar')
             ->get();
 
+        $sectorLabels = $sectorStats->pluck('name_ar')->toArray();
+        $sectorSeries = $sectorStats->pluck('total_candidates')->map(fn($v) => (int)$v)->toArray();
+
         // ── 5. ORGANIZATIONS & REJECTIONS (المؤسسات وأسباب الرفض) ──
         $totalOrganizations = Organization::count();
         $topOrganizations   = Organization::with('wilaya')
@@ -103,6 +106,9 @@ class SuperAdminDashboard extends Component
             ->orderByDesc('candidates_count')
             ->take(8)
             ->get();
+
+        $wilayaLabels = $topWilayasParticipation->pluck('name_ar')->toArray();
+        $wilayaSeries = $topWilayasParticipation->pluck('candidates_count')->map(fn($v) => (int)$v)->toArray();
 
         // ── 7. ROLES & SYSTEM AUDIT DATA ──
         $roleLabelsMap = [
@@ -163,12 +169,16 @@ class SuperAdminDashboard extends Component
             'activeSkillsCount'         => $activeSkillsCount,
             'topSkills'                 => $topSkills,
             'sectorStats'               => $sectorStats,
+            'sectorLabels'              => $sectorLabels,
+            'sectorSeries'              => $sectorSeries,
 
             'totalOrganizations'        => $totalOrganizations,
             'topOrganizations'          => $topOrganizations,
             'rejectionReasons'          => $rejectionReasons,
 
             'topWilayasParticipation'   => $topWilayasParticipation,
+            'wilayaLabels'              => $wilayaLabels,
+            'wilayaSeries'              => $wilayaSeries,
 
             'totalWilayas'              => DB::table('wilayas')->count(),
             'totalEditions'             => Edition::count(),
