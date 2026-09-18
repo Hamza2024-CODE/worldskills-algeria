@@ -17,10 +17,14 @@ class AdminCisEvaluationIndex extends Component
 {
     use WithPagination;
 
-    public string $activeTab   = 'modules'; // modules | skills | discrepancies | results
+    public string $activeTab   = 'modules'; // modules | skills | discrepancies | results | guide
     public string $search      = '';
     public string $filterSkill = '';
+
+    // Modals
     public bool   $moduleFormOpen = false;
+    public bool   $deleteConfirmOpen = false;
+    public ?int   $deleteTargetModuleId = null;
 
     // Module form fields
     public ?int   $editingModuleId = null;
@@ -31,6 +35,8 @@ class AdminCisEvaluationIndex extends Component
     public int    $skill_id_form   = 0;
     public ?int   $edition_id_form = null;
 
+    protected $queryString = ['activeTab', 'search', 'filterSkill'];
+
     protected array $rules = [
         'title_ar'       => 'required|string|max:200',
         'title_fr'       => 'required|string|max:200',
@@ -39,9 +45,12 @@ class AdminCisEvaluationIndex extends Component
         'skill_id_form'  => 'required|integer|min:1',
     ];
 
+    public function updatingSearch(): void { $this->resetPage(); }
+    public function updatingFilterSkill(): void { $this->resetPage(); }
+
     public function setTab(string $tab): void
     {
-        if (in_array($tab, ['modules', 'skills', 'discrepancies', 'results'])) {
+        if (in_array($tab, ['modules', 'skills', 'discrepancies', 'results', 'guide'])) {
             $this->activeTab = $tab;
         }
     }
@@ -49,7 +58,7 @@ class AdminCisEvaluationIndex extends Component
     public function openCreate(): void
     {
         $this->reset(['editingModuleId', 'code', 'title_ar', 'title_fr', 'max_score', 'skill_id_form', 'edition_id_form']);
-        $this->max_score     = 100;
+        $this->max_score      = 100;
         $this->moduleFormOpen = true;
     }
 
@@ -57,11 +66,11 @@ class AdminCisEvaluationIndex extends Component
     {
         $m = CompetitionAssessmentModule::findOrFail($id);
         $this->editingModuleId = $m->id;
-        $this->code           = $m->code ?? '';
-        $this->title_ar       = $m->title_ar;
-        $this->title_fr       = $m->title_fr;
-        $this->max_score      = $m->max_score;
-        $this->skill_id_form  = $m->skill_id;
+        $this->code            = $m->code ?? '';
+        $this->title_ar        = $m->title_ar;
+        $this->title_fr        = $m->title_fr;
+        $this->max_score       = $m->max_score;
+        $this->skill_id_form   = $m->skill_id;
         $this->edition_id_form = $m->edition_id;
         $this->moduleFormOpen  = true;
     }
@@ -71,9 +80,9 @@ class AdminCisEvaluationIndex extends Component
         $this->validate();
 
         $data = [
-            'code'       => $this->code ?: null,
-            'title_ar'   => $this->title_ar,
-            'title_fr'   => $this->title_fr,
+            'code'       => $this->code ? strtoupper(trim($this->code)) : null,
+            'title_ar'   => trim($this->title_ar),
+            'title_fr'   => trim($this->title_fr),
             'max_score'  => $this->max_score,
             'skill_id'   => $this->skill_id_form,
             'edition_id' => $this->edition_id_form,
@@ -81,21 +90,37 @@ class AdminCisEvaluationIndex extends Component
 
         if ($this->editingModuleId) {
             CompetitionAssessmentModule::findOrFail($this->editingModuleId)->update($data);
+            $msg = 'تم تحديث بيانات وحدة التقييم المعيارية بنجاح.';
         } else {
             CompetitionAssessmentModule::create($data);
+            $msg = 'تم إضافة وحدة التقييم المعيارية الجديدة بنجاح.';
         }
 
         $this->moduleFormOpen = false;
-        session()->flash('success', 'تم حفظ وحدة التقييم بنجاح.');
+        $this->dispatch('notify', ['type' => 'success', 'msg' => $msg]);
+    }
+
+    public function confirmDelete(int $id): void
+    {
+        $this->deleteTargetModuleId = $id;
+        $this->deleteConfirmOpen    = true;
+    }
+
+    public function deleteModule(): void
+    {
+        CompetitionAssessmentModule::findOrFail($this->deleteTargetModuleId)->delete();
+        $this->deleteConfirmOpen = false;
+        $this->resetPage();
+        $this->dispatch('notify', ['type' => 'success', 'msg' => 'تم حذف وحدة التقييم بنجاح.']);
     }
 
     public function lockAssessment(int $assessmentId): void
     {
         try {
             (new CisScoringService())->lockAssessment($assessmentId, auth()->id());
-            session()->flash('success', 'تم قفل التقييم بنجاح.');
+            $this->dispatch('notify', ['type' => 'success', 'msg' => 'تم قفل التقييم بنجاح.']);
         } catch (\DomainException $e) {
-            session()->flash('error', $e->getMessage());
+            $this->dispatch('notify', ['type' => 'error', 'msg' => $e->getMessage()]);
         }
     }
 
@@ -103,15 +128,15 @@ class AdminCisEvaluationIndex extends Component
     {
         $edition = Edition::where('is_active', true)->first() ?? Edition::first();
         if (!$edition) {
-            session()->flash('error', 'لا توجد دورة نشطة.');
+            $this->dispatch('notify', ['type' => 'error', 'msg' => 'لا توجد دورة نشطة حالياً.']);
             return;
         }
 
         try {
             (new CisScoringService())->calculateResultsForSkill($skillId, $edition->id);
-            session()->flash('success', 'تم احتساب النتائج والميداليات بنجاح عبر محرك التقييم الحسابي.');
+            $this->dispatch('notify', ['type' => 'success', 'msg' => 'تم احتساب النتائج والميداليات بنجاح عبر محرك التقييم الحسابي CIS.']);
         } catch (\DomainException $e) {
-            session()->flash('error', $e->getMessage());
+            $this->dispatch('notify', ['type' => 'error', 'msg' => $e->getMessage()]);
         }
     }
 
@@ -122,14 +147,14 @@ class AdminCisEvaluationIndex extends Component
             'published_at' => now(),
         ]);
 
-        session()->flash('success', 'تم نشر نتائج التخصص رسمياً للجمهور والمشاركين.');
+        $this->dispatch('notify', ['type' => 'success', 'msg' => 'تم نشر نتائج التخصص رسمياً للجمهور والمشاركين.']);
     }
 
     public function render()
     {
         $modules = CompetitionAssessmentModule::with(['skill'])
-            ->when($this->search, fn ($q) => $q->where('title_ar', 'like', "%{$this->search}%"))
-            ->when($this->filterSkill, fn ($q) => $q->where('skill_id', $this->filterSkill))
+            ->when($this->search !== '', fn ($q) => $q->where('title_ar', 'like', "%{$this->search}%"))
+            ->when($this->filterSkill !== '', fn ($q) => $q->where('skill_id', $this->filterSkill))
             ->paginate(15);
 
         $results = CompetitionResult::with(['registration.participant', 'skill'])
