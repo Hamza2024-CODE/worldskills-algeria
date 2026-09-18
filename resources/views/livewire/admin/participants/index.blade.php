@@ -24,7 +24,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                 </h1>
                 
                 <p class="text-xs sm:text-sm text-slate-300 font-bold max-w-2xl">
-                    سجل حصر ودليل المشاركين المقبولين رسمياً للمشاركة في الألعاب والمنافسات الوطنية والدولية مع إمكانيات الفلترة والتصدير.
+                    سجل حصر ودليل المشاركين المقبولين رسمياً للمشاركة في الألعاب والمنافسات الوطنية والدولية مع إمكانيات الفلترة والتصدير وطباعة شارات الاعتماد.
                 </p>
             </div>
 
@@ -60,7 +60,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
     @endif
 
     {{-- ═════════════════════════════════════════════════════════════════════
-         3. STATISTICAL KPI METRICS GRID
+         3. EXACT STATISTICAL KPI METRICS GRID (المشاركون المعتمدون حصراً)
     ═════════════════════════════════════════════════════════════════════ --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
@@ -70,15 +70,15 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
         </div>
 
         <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
-            <span class="text-xs font-black text-blue-600 dark:text-blue-400 block uppercase">عدد الذكور</span>
-            <span class="text-3xl font-black text-blue-600 dark:text-blue-400 tracking-tight block">{{ number_format($maleCount) }}</span>
-            <span class="text-[11px] font-bold text-blue-700 dark:text-blue-500 block">متنافس مشارك</span>
+            <span class="text-xs font-black text-blue-600 dark:text-blue-400 block uppercase">عدد الذكور المقبولين</span>
+            <span class="text-3xl font-black text-blue-600 dark:text-blue-400 tracking-tight block">{{ number_format($maleApproved) }}</span>
+            <span class="text-[11px] font-bold text-blue-700 dark:text-blue-500 block">{{ $totalApproved > 0 ? round(($maleApproved/$totalApproved)*100, 1) : 0 }}% من المشاركين المعتمدين</span>
         </div>
 
         <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
-            <span class="text-xs font-black text-purple-600 dark:text-purple-400 block uppercase">عدد الإناث</span>
-            <span class="text-3xl font-black text-purple-600 dark:text-purple-400 tracking-tight block">{{ number_format($femaleCount) }}</span>
-            <span class="text-[11px] font-bold text-purple-700 dark:text-purple-500 block">متنافسة مشاركة</span>
+            <span class="text-xs font-black text-purple-600 dark:text-purple-400 block uppercase">عدد الإناث المقبولات</span>
+            <span class="text-3xl font-black text-purple-600 dark:text-purple-400 tracking-tight block">{{ number_format($femaleApproved) }}</span>
+            <span class="text-[11px] font-bold text-purple-700 dark:text-purple-500 block">{{ $totalApproved > 0 ? round(($femaleApproved/$totalApproved)*100, 1) : 0 }}% من المشاركين المعتمدين</span>
         </div>
 
         <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
@@ -188,8 +188,8 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                         <th class="px-5 py-4 text-start">التخصص والمهارة</th>
                         <th class="px-5 py-4 text-start">الولاية / الدولة</th>
                         <th class="px-5 py-4 text-start">الاتصال ورقم NIN</th>
-                        <th class="px-5 py-4 text-center">حالة الاعتماد</th>
-                        <th class="px-5 py-4 text-end">التفاصيل</th>
+                        <th class="px-5 py-4 text-center">شارة الاعتماد</th>
+                        <th class="px-5 py-4 text-end">التفاصيل والإجراءات</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60 font-bold">
@@ -198,6 +198,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                             $p = $reg->participant;
                             $photoUrl = $reg->photo_url;
                             $isFemale = in_array(strtolower($p?->gender ?? ''), ['female', 'أنثى']);
+                            $badgeRoute = route('accreditation.badge', ['identifier' => $reg->registration_number]);
                         @endphp
                         <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-700/40 transition">
                             
@@ -266,11 +267,15 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                 </div>
                             </td>
 
-                            {{-- Status Badge --}}
+                            {{-- Official Accreditation Badge Link --}}
                             <td class="px-5 py-4 text-center">
-                                <span class="px-3 py-1 rounded-xl text-[11px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                                    مقبول ومعتمد ✓
-                                </span>
+                                <a 
+                                    href="{{ $badgeRoute }}" 
+                                    target="_blank" 
+                                    class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-mono font-black text-[11px] border border-amber-300 dark:border-amber-800 inline-flex items-center gap-1 transition">
+                                    <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                    <span>بادج الاعتماد</span>
+                                </a>
                             </td>
 
                             {{-- Actions --}}
@@ -318,6 +323,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
     @if($drawerOpen && $selected)
         @php
             $sp = $selected->participant;
+            $sBadgeRoute = route('accreditation.badge', ['identifier' => $selected->registration_number]);
         @endphp
         <div class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-end p-4">
             <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full h-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6 overflow-y-auto">
@@ -337,6 +343,16 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                 </div>
 
                 <div class="space-y-4 text-xs font-bold">
+                    
+                    {{-- Accreditation Badge Button --}}
+                    <a 
+                        href="{{ $sBadgeRoute }}" 
+                        target="_blank" 
+                        class="w-full py-3 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-black text-xs transition shadow-md flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        <span>عرض وطباعة شارة الاعتماد الرسمية (Badge 2026)</span>
+                    </a>
+
                     <div class="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 flex items-center justify-between">
                         <span>حالة الاعتماد بالحساب:</span>
                         <span class="px-3 py-1 rounded-xl text-xs font-black bg-emerald-600 text-white">

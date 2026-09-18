@@ -232,8 +232,13 @@ class AdminParticipantIndex extends Component
             ->orderByDesc('id');
 
         $totalApproved = Registration::whereIn('status', ['APPROVED', 'QUALIFIED', 'COMPLETED'])->count();
-        $maleCount     = ParticipantProfile::whereIn('gender', ['MALE', 'male', 'ذكر'])->count();
-        $femaleCount   = ParticipantProfile::whereIn('gender', ['FEMALE', 'female', 'أنثى'])->count();
+
+        // Calculate male and female counts SPECIFICALLY for approved participants
+        $femaleApproved = Registration::whereIn('status', ['APPROVED', 'QUALIFIED', 'COMPLETED'])
+            ->whereHas('participant', fn($pq) => $pq->whereIn('gender', ['FEMALE', 'female', 'أنثى']))
+            ->count();
+
+        $maleApproved = max(0, $totalApproved - $femaleApproved);
 
         return view('livewire.admin.participants.index', [
             'registrations'     => $query->paginate(15),
@@ -241,8 +246,8 @@ class AdminParticipantIndex extends Component
             'countries'         => Country::orderBy('name_ar')->get(),
             'skills'            => Skill::where('is_active', true)->orderBy('name_ar')->get(),
             'totalApproved'     => $totalApproved,
-            'maleCount'         => $maleCount,
-            'femaleCount'       => $femaleCount,
+            'maleApproved'      => $maleApproved,
+            'femaleApproved'    => $femaleApproved,
             'totalSkills'       => Skill::count(),
             'search'            => $this->search,
             'filterCountry'     => $this->filterCountry,
