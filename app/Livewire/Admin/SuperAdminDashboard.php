@@ -35,8 +35,8 @@ class SuperAdminDashboard extends Component
     {
         // ── 1. USERS & ACCOUNTS (الحسابات المفعّلة وغير المفعّلة) ──
         $totalUsers          = User::count();
-        $activeUsersCount    = User::whereNotNull('email_verified_at')->count();
-        $inactiveUsersCount  = User::whereNull('email_verified_at')->count();
+        $activeUsersCount    = User::where('is_active', true)->count();
+        $inactiveUsersCount  = User::where('is_active', false)->count();
 
         // ── 2. CANDIDATE APPLICATIONS & REGISTRATIONS (طلبات الترشح والتسجيلات) ──
         $totalRegistrations    = Registration::count();
