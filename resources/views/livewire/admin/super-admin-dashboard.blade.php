@@ -320,7 +320,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                 </div>
 
                 <div class="pt-3 border-t border-slate-100 dark:border-slate-700/80 space-y-2">
-                    <a href="{{ route('admin.schedule.index') }}" class="block px-3 py-2 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 transition">← محرك الجدولة والعمليات</a>
+                    <a href="{{ route('admin.operations') }}" class="block px-3 py-2 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 transition">← محرك الجدولة والعمليات</a>
                     <a href="{{ route('admin.operations') }}" class="block px-3 py-2 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 transition">← العمليات المباشرة بالأرضية</a>
                 </div>
             </div>

@@ -220,26 +220,26 @@ Route::prefix('hamza')->middleware(['auth', 'role:' . RoleEnum::SUPER_ADMIN->val
     Route::get('/logistics/arrivals', \App\Livewire\Admin\ArrivalsCenter::class)->name('logistics.arrivals');
     Route::get('/users', AdminUserIndex::class)->name('users');
     Route::get('/participants', AdminParticipantIndex::class)->name('participants');
-    Route::get('/organizations', AdminOrganizationIndex::class)->name('organizations');
+    // DEACTIVATED: Route::get('/organizations', AdminOrganizationIndex::class)->name('organizations');
     Route::get('/countries', AdminCountryIndex::class)->name('countries');
-    Route::get('/delegation-invitations', \App\Livewire\Admin\DelegationInvitationsIndex::class)->name('delegation.invitations');
-    Route::get('/delegation-invitations/print/{countryId}', [\App\Http\Controllers\Admin\DelegationInvitationPrintController::class, 'printSingle'])->name('delegation.invitations.print.single');
+    // DEACTIVATED: Route::get('/delegation-invitations', \App\Livewire\Admin\DelegationInvitationsIndex::class)->name('delegation.invitations');
+    // DEACTIVATED: Route::get('/delegation-invitations/print/{countryId}', [\App\Http\Controllers\Admin\DelegationInvitationPrintController::class, 'printSingle'])->name('delegation.invitations.print.single');
     Route::get('/partners', AdminPartnerIndex::class)->name('partners');
     Route::get('/skills',          AdminSkillIndex::class)->name('skills');
-    Route::get('/wilayas',         AdminWilayaIndex::class)->name('wilayas');
+    // DEACTIVATED: Route::get('/wilayas',         AdminWilayaIndex::class)->name('wilayas');
     Route::get('/editions',        AdminEditionIndex::class)->name('editions');
     Route::get('/registrations',   AdminRegistrationIndex::class)->name('registrations');
     Route::get('/judges',          AdminJudgeIndex::class)->name('judges');
     Route::get('/equipment',       AdminEquipmentIndex::class)->name('equipment');
     Route::get('/accommodations',  AdminAccommodationIndex::class)->name('accommodations');
-    Route::get('/transport',       AdminTransportIndex::class)->name('transport');
+    // DEACTIVATED: Route::get('/transport',       AdminTransportIndex::class)->name('transport');
     Route::get('/restaurants',     AdminRestaurantIndex::class)->name('restaurants');
     Route::get('/meal-scanner',    AdminMealScannerIndex::class)->name('meal.scanner');
     Route::get('/dietary',         AdminDietaryIndex::class)->name('dietary');
     Route::get('/diplomatic',      DiplomaticCenter::class)->name('diplomatic');
     Route::get('/audit',           AdminAuditLogIndex::class)->name('audit');
     Route::get('/reports',         AdminReportsIndex::class)->name('reports');
-    Route::get('/logistics', AdminLogisticsCenter::class)->name('logistics');
+    // DEACTIVATED: Route::get('/logistics', AdminLogisticsCenter::class)->name('logistics');
     Route::get('/readiness', ReadinessCenter::class)->name('readiness');
     Route::get('/events', AdminEventCenter::class)->name('events');
     Route::get('/cms/legal', \App\Livewire\Admin\LegalCmsManager::class)->name('cms.legal');
@@ -247,7 +247,7 @@ Route::prefix('hamza')->middleware(['auth', 'role:' . RoleEnum::SUPER_ADMIN->val
     // Communication & Notification Center (WSAP V8.3)
     Route::get('/notifications', \App\Livewire\Admin\Notifications\NotificationIndex::class)->name('notifications.index');
     Route::get('/notifications/create', \App\Livewire\Admin\Notifications\NotificationCreate::class)->name('notifications.create');
-    Route::get('/schedule-engine', \App\Livewire\Admin\Schedule\MasterScheduleIndex::class)->name('schedule.index');
+    // DEACTIVATED: Route::get('/schedule-engine', \App\Livewire\Admin\Schedule\MasterScheduleIndex::class)->name('schedule.index');
     Route::get('/operations', \App\Livewire\Admin\FieldOperationsDashboard::class)->name('operations');
 
     // Competition Governance Layer (V8.2)
@@ -257,7 +257,7 @@ Route::prefix('hamza')->middleware(['auth', 'role:' . RoleEnum::SUPER_ADMIN->val
     Route::get('/accreditations/batch-print', \App\Livewire\Public\AccreditationBatchPrint::class)->name('accreditations.batch-print');
     Route::get('/scanner',          \App\Livewire\Admin\AdminQrScanner::class)->name('scanner');
     Route::get('/appeals',          AdminTechnicalAppealsIndex::class)->name('appeals');
-    Route::get('/integrity',        AdminIntegrityAuditIndex::class)->name('integrity');
+    // DEACTIVATED: Route::get('/integrity',        AdminIntegrityAuditIndex::class)->name('integrity');
 });
 
 // Public: Certificate Verification & Live TV Display

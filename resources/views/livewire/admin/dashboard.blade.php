@@ -79,7 +79,7 @@
                 </div>
             </a>
 
-            <a href="{{ route('admin.schedule.index') }}" class="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
+            <a href="{{ route('admin.operations') }}" class="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
                 <div class="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                     <x-ws.icon name="calendar" class="w-5 h-5" />
                 </div>

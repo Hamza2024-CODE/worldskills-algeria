@@ -69,7 +69,7 @@ $qrUrl = \App\Services\QrCodeService::generateDataUri($invitation['login_url'], 
 
     <!-- Top Floating Controls (Hidden when printing) -->
     <div class="no-print w-full max-w-[210mm] py-4 flex items-center justify-between px-2">
-        <a href="{{ route('admin.delegation.invitations') }}" class="px-4 py-2 rounded-xl bg-slate-800 text-white font-bold text-xs hover:bg-slate-700 transition flex items-center gap-2 border border-slate-700">
+        <a href="{{ route('admin.countries') }}" class="px-4 py-2 rounded-xl bg-slate-800 text-white font-bold text-xs hover:bg-slate-700 transition flex items-center gap-2 border border-slate-700">
             ← العودة إلى قائمة دعوات الوفود
         </a>
 

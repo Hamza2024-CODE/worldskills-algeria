@@ -49,7 +49,7 @@
         </a>
 
         {{-- TRANSPORT CARD --}}
-        <a href="{{ route('admin.transport') }}" class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-500 rounded-2xl p-6 transition shadow-xs hover:shadow-md">
+        <a href="{{ route('admin.accommodations') }}" class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-500 rounded-2xl p-6 transition shadow-xs hover:shadow-md">
             <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:scale-105 transition">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
