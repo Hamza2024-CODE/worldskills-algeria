@@ -65,7 +65,14 @@
                 const script = document.createElement('script');
                 script.src = '/js/html5-qrcode.min.js';
                 script.onload = () => resolve(true);
-                script.onerror = () => resolve(false);
+                script.onerror = () => {
+                    console.warn('Local html5-qrcode.min.js failed to load, trying CDN fallback...');
+                    const cdnScript = document.createElement('script');
+                    cdnScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js';
+                    cdnScript.onload = () => resolve(true);
+                    cdnScript.onerror = () => resolve(false);
+                    document.head.appendChild(cdnScript);
+                };
                 document.head.appendChild(script);
             });
         },
