@@ -188,7 +188,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                         <th class="px-5 py-4 text-start">التخصص والمهارة</th>
                         <th class="px-5 py-4 text-start">الولاية / الدولة</th>
                         <th class="px-5 py-4 text-start">الاتصال ورقم NIN</th>
-                        <th class="px-5 py-4 text-center">شارة الاعتماد</th>
+                        <th class="px-5 py-4 text-center">حالة الاعتماد</th>
                         <th class="px-5 py-4 text-end">التفاصيل والإجراءات</th>
                     </tr>
                 </thead>
@@ -267,20 +267,27 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                 </div>
                             </td>
 
-                            {{-- Official Accreditation Badge Link --}}
+                            {{-- Status Badge --}}
                             <td class="px-5 py-4 text-center">
-                                <a 
-                                    href="{{ $badgeRoute }}" 
-                                    target="_blank" 
-                                    class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-mono font-black text-[11px] border border-amber-300 dark:border-amber-800 inline-flex items-center gap-1 transition">
-                                    <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                                    <span>بادج الاعتماد</span>
-                                </a>
+                                <span class="px-3 py-1 rounded-xl text-[11px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                                    مقبول ومعتمد ✓
+                                </span>
                             </td>
 
-                            {{-- Actions --}}
+                            {{-- Actions (Badge Icon, Details, Delete) --}}
                             <td class="px-5 py-4 text-end">
                                 <div class="flex items-center justify-end gap-1.5">
+                                    
+                                    {{-- Accreditation Badge Icon Button --}}
+                                    <a 
+                                        href="{{ $badgeRoute }}" 
+                                        target="_blank" 
+                                        title="عرض وطباعة شارة الاعتماد الرسمية (Badge)" 
+                                        class="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 transition border border-amber-200 dark:border-amber-800/60">
+                                        <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                    </a>
+
+                                    {{-- View Details --}}
                                     <button 
                                         wire:click="openDrawer({{ $reg->id }})" 
                                         title="عرض التفاصيل والملفات" 
@@ -288,6 +295,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                     </button>
 
+                                    {{-- Delete --}}
                                     <button 
                                         wire:click="confirmDelete({{ $reg->id }})" 
                                         title="حذف الملف" 
