@@ -38,9 +38,9 @@ class AdminAccreditationIndex extends Component
     public string $valid_until    = '';
 
     // Edit Zones Modal
-    public bool   $editZonesOpen        = false;
-    public ?int   $editingUserId        = null;
-    public array  $userEditingZoneIds   = [];
+    public bool   $editZonesOpen      = false;
+    public ?int   $editingUserId      = null;
+    public array  $userEditingZoneIds = [];
 
     protected $queryString = [
         'search', 'filterRole', 'filterCountry', 'filterSkill', 'filterWilaya', 'filterStatus'
@@ -229,6 +229,10 @@ class AdminAccreditationIndex extends Component
             'badges'
         ])
         ->where('is_active', true)
+        // Strictly exclude rejected registrations / candidates
+        ->whereDoesntHave('participant.registrations', function ($r) {
+            $r->whereIn('status', ['REJECTED', 'REJECTED_BY_ADMIN', 'REJECTED_BY_SUPER_ADMIN']);
+        })
         ->when($this->search, function ($q) {
             $s = '%' . $this->search . '%';
             $q->where(function ($sub) use ($s) {
@@ -292,17 +296,20 @@ class AdminAccreditationIndex extends Component
     {
         $users = $this->getFilteredUsersQuery()->orderByDesc('created_at')->paginate(12);
 
+        $baseQuery = User::where('is_active', true)
+            ->whereDoesntHave('participant.registrations', fn($r) => $r->whereIn('status', ['REJECTED', 'REJECTED_BY_ADMIN', 'REJECTED_BY_SUPER_ADMIN']));
+
         return view('livewire.admin.accreditations.index', [
-            'users'        => $users,
-            'allUsers'     => User::where('is_active', true)->orderBy('name')->take(100)->get(),
-            'countries'    => Country::orderBy('name_ar')->get(),
-            'skills'       => Skill::where('is_active', true)->orderBy('name_ar')->get(),
-            'wilayas'      => Wilaya::orderBy('code')->get(),
-            'zones'        => AccreditationZone::orderBy('id')->get(),
-            'totalUsers'   => User::where('is_active', true)->count(),
-            'competitorCount' => User::whereHas('roles', fn($r) => $r->where('name', RoleEnum::PARTICIPANT->value))->count(),
-            'vipCount'     => User::whereHas('roles', fn($r) => $r->whereIn('name', [RoleEnum::EXECUTIVE_VIEWER->value, RoleEnum::COUNTRY_ADMIN->value]))->count(),
-            'zonesCount'   => AccreditationZone::count(),
+            'users'           => $users,
+            'allUsers'        => (clone $baseQuery)->orderBy('name')->take(100)->get(),
+            'countries'       => Country::orderBy('name_ar')->get(),
+            'skills'          => Skill::where('is_active', true)->orderBy('name_ar')->get(),
+            'wilayas'         => Wilaya::orderBy('code')->get(),
+            'zones'           => AccreditationZone::orderBy('id')->get(),
+            'totalUsers'      => (clone $baseQuery)->count(),
+            'competitorCount' => (clone $baseQuery)->whereHas('roles', fn($r) => $r->where('name', RoleEnum::PARTICIPANT->value))->count(),
+            'vipCount'        => (clone $baseQuery)->whereHas('roles', fn($r) => $r->whereIn('name', [RoleEnum::EXECUTIVE_VIEWER->value, RoleEnum::COUNTRY_ADMIN->value]))->count(),
+            'zonesCount'      => AccreditationZone::count(),
         ]);
     }
 }

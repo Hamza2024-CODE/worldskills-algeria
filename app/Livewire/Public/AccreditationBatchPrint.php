@@ -34,11 +34,18 @@ class AccreditationBatchPrint extends Component
             $idArray = array_filter(explode(',', $ids));
             $this->users = User::with(['roles', 'country', 'organization', 'participant.registrations', 'badges'])
                 ->whereIn('id', $idArray)
+                ->where('is_active', true)
+                ->whereDoesntHave('participant.registrations', function ($r) {
+                    $r->whereIn('status', ['REJECTED', 'REJECTED_BY_ADMIN', 'REJECTED_BY_SUPER_ADMIN']);
+                })
                 ->get()
                 ->all();
         } else {
             $query = User::with(['roles', 'country', 'organization', 'participant.registrations', 'badges'])
-                ->where('is_active', true);
+                ->where('is_active', true)
+                ->whereDoesntHave('participant.registrations', function ($r) {
+                    $r->whereIn('status', ['REJECTED', 'REJECTED_BY_ADMIN', 'REJECTED_BY_SUPER_ADMIN']);
+                });
             
             if ($this->filterRole) {
                 $roleMap = [
