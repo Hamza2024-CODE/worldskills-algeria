@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use App\Enums\ParticipantStatus;
 use App\Models\Country;
 use App\Models\Edition;
+use App\Models\ParticipantProfile;
 use App\Models\Registration;
 use App\Models\Skill;
 use App\Models\Wilaya;
@@ -21,24 +22,26 @@ class AdminRegistrationIndex extends Component
     public string $search        = '';
     public string $filterStatus  = '';
     public string $filterCountry = '';
-    public string $filterSkill   = '';
-    public string $filterWilaya  = '';
+    public string $filterSkill    = '';
+    public string $filterWilaya   = '';
     public string $filterRole    = '';
     public string $filterEdition = '';
 
     // Detail Drawer
-    public bool          $drawerOpen          = false;
+    public bool   $drawerOpen           = false;
+    public ?int   $selectedId           = null;
     public ?Registration $selectedRegistration = null;
 
-    // Status change modal
-    public bool    $statusModalOpen   = false;
-    public ?int    $statusTargetId    = null;
-    public string  $newStatus         = '';
-    public string  $rejectionReason   = '';
+    // Change Status Modal
+    public bool   $statusModalOpen = false;
+    public string $newStatus       = 'APPROVED';
 
-    // Delete confirm
+    // Reject Reason Modal
+    public bool   $rejectModalOpen = false;
+    public string $rejectionReason = '';
+
+    // Delete Modal
     public bool $deleteConfirmOpen = false;
-    public bool $rejectModalOpen   = false;
     public ?int $deleteTargetId    = null;
 
     protected $queryString = [
@@ -65,9 +68,9 @@ class AdminRegistrationIndex extends Component
         $this->resetPage();
     }
 
-    /* ─── Drawer ─── */
     public function openDrawer(int $id): void
     {
+        $this->selectedId = $id;
         $this->selectedRegistration = Registration::with([
             'participant',
             'participant.user',
@@ -75,9 +78,10 @@ class AdminRegistrationIndex extends Component
             'participant.organization',
             'country',
             'skill',
-            'edition',
             'documents',
-        ])->findOrFail($id);
+            'edition'
+        ])->find($id);
+
         $this->drawerOpen = true;
     }
 
@@ -85,52 +89,43 @@ class AdminRegistrationIndex extends Component
     {
         $this->drawerOpen = false;
         $this->selectedRegistration = null;
+        $this->selectedId = null;
     }
 
-    /* ─── Status Change ─── */
-    public function openStatusModal(int $id, string $status): void
+    public function openStatusModal(int $id): void
     {
-        $this->statusTargetId  = $id;
-        $this->newStatus       = $status;
-        $this->rejectionReason = '';
+        $this->selectedId = $id;
+        $reg = Registration::find($id);
+        $this->newStatus = $reg?->status instanceof ParticipantStatus ? $reg->status->value : ($reg?->status ?? 'APPROVED');
         $this->statusModalOpen = true;
     }
 
-    public function applyStatus(): void
+    public function saveStatus(): void
     {
-        $registration = Registration::findOrFail($this->statusTargetId);
-        $updateData   = ['status' => $this->newStatus, 'reviewed_at' => now()];
+        $reg = Registration::findOrFail($this->selectedId);
 
         if ($this->newStatus === ParticipantStatus::REJECTED->value) {
-            $updateData['rejection_reason'] = $this->rejectionReason;
+            $this->statusModalOpen = false;
+            $this->rejectionReason = '';
+            $this->rejectModalOpen = true;
+            return;
         }
 
-        $registration->update($updateData);
+        $reg->update([
+            'status'      => $this->newStatus,
+            'reviewed_at' => now(),
+        ]);
+
         $this->statusModalOpen = false;
-        $this->selectedRegistration = null;
-        $this->drawerOpen = false;
-        session()->flash('success', 'تم تحديث حالة التسجيل بنجاح.');
+        session()->flash('success', 'تم تحديث حالة طلب التسجيل بنجاح.');
     }
 
-    public function approveRegistration(int $id): void
+    public function saveRejection(): void
     {
-        $reg = Registration::findOrFail($id);
-        $reg->update(['status' => ParticipantStatus::APPROVED->value, 'reviewed_at' => now()]);
-        session()->flash('success', 'تم قبول طلب الترشح بنجاح.');
-    }
+        $this->validate(['rejectionReason' => 'required|string|min:3']);
 
-    public function openRejectModal(int $id): void
-    {
-        $this->statusTargetId  = $id;
-        $this->newStatus       = ParticipantStatus::REJECTED->value;
-        $this->rejectionReason = '';
-        $this->rejectModalOpen  = true;
-    }
-
-    public function rejectRegistration(): void
-    {
-        if ($this->statusTargetId) {
-            $reg = Registration::findOrFail($this->statusTargetId);
+        $reg = Registration::find($this->selectedId);
+        if ($reg) {
             $reg->update([
                 'status'           => ParticipantStatus::REJECTED->value,
                 'rejection_reason' => $this->rejectionReason,
@@ -155,6 +150,49 @@ class AdminRegistrationIndex extends Component
         $this->deleteConfirmOpen = false;
         $this->resetPage();
         session()->flash('success', 'تم حذف التسجيل نهائياً.');
+    }
+
+    /* ─── Export Printable PDF Report List (la liste des participants) ─── */
+    public function exportPdf()
+    {
+        $query = Registration::with(['participant', 'participant.wilaya', 'participant.organization', 'country', 'skill'])
+            ->when($this->search, fn($q) => $q->where(function ($sq) {
+                $sq->where('registration_number', 'like', '%'.$this->search.'%')
+                   ->orWhereHas('participant', function ($pq) {
+                       $pq->where('first_name_ar', 'like', '%'.$this->search.'%')
+                          ->orWhere('last_name_ar', 'like', '%'.$this->search.'%')
+                          ->orWhere('national_id', 'like', '%'.$this->search.'%')
+                          ->orWhere('phone', 'like', '%'.$this->search.'%');
+                   });
+            }))
+            ->when($this->filterStatus,  fn($q) => $q->where('status',     $this->filterStatus))
+            ->when($this->filterCountry, fn($q) => $q->where('country_id', $this->filterCountry))
+            ->when($this->filterSkill,   fn($q) => $q->where('skill_id',   $this->filterSkill))
+            ->when($this->filterWilaya,  fn($q) => $q->whereHas('participant', fn($pq) => $pq->where('wilaya_id', $this->filterWilaya)))
+            ->when($this->filterRole,    fn($q) => $q->whereHas('participant.user', fn($uq) => $uq->role($this->filterRole)))
+            ->when($this->filterEdition, fn($q) => $q->where('edition_id', $this->filterEdition))
+            ->orderByDesc('created_at');
+
+        $registrations = $query->get();
+
+        $wilayaName  = $this->filterWilaya ? Wilaya::find($this->filterWilaya)?->name_ar : 'جميع الولايات';
+        $countryName = $this->filterCountry ? Country::find($this->filterCountry)?->name_ar : 'جميع الدول';
+        $skillName   = $this->filterSkill ? Skill::find($this->filterSkill)?->name_ar : 'جميع التخصصات';
+
+        $html = view('pdf.registrations-list', [
+            'registrations' => $registrations,
+            'wilayaName'    => $wilayaName,
+            'countryName'   => $countryName,
+            'skillName'     => $skillName,
+            'statusFilter'  => $this->filterStatus ?: 'جميع الحالات',
+            'generatedAt'   => now()->format('Y-m-d H:i'),
+        ])->render();
+
+        return response()->streamDownload(function () use ($html) {
+            echo $html;
+        }, 'WSAP_Participants_List_' . date('Y_m_d_His') . '.html', [
+            'Content-Type' => 'text/html; charset=UTF-8',
+        ]);
     }
 
     /* ─── Export Filtered Registrations to Excel (CSV) ─── */
@@ -200,6 +238,7 @@ class AdminRegistrationIndex extends Component
 
         foreach ($registrations as $r) {
             $p = $r->participant;
+            $statusVal = $r->status instanceof ParticipantStatus ? $r->status->value : $r->status;
             $csvData[] = [
                 $r->registration_number,
                 ($p?->first_name_ar ?? '') . ' ' . ($p?->last_name_ar ?? ''),
@@ -213,7 +252,7 @@ class AdminRegistrationIndex extends Component
                 $r->shoe_size ?? '—',
                 $r->height_cm ? $r->height_cm . ' سم' : '—',
                 $p?->phone ?? '—',
-                $r->status instanceof ParticipantStatus ? $r->status->value : $r->status,
+                $statusVal,
                 $r->created_at ? $r->created_at->format('Y-m-d H:i') : '—',
             ];
         }
@@ -290,6 +329,8 @@ class AdminRegistrationIndex extends Component
             'statusModalOpen'      => $this->statusModalOpen,
             'rejectModalOpen'      => $this->rejectModalOpen,
             'deleteConfirmOpen'    => $this->deleteConfirmOpen,
+            'rejectionReason'      => $this->rejectionReason,
+            'newStatus'            => $this->newStatus,
         ]);
     }
 }
