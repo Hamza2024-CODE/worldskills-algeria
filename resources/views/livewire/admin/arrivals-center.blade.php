@@ -1,5 +1,11 @@
 @php
     $locale = app()->getLocale();
+    $showFormModal = $showFormModal ?? false;
+    $previewModalOpen = $previewModalOpen ?? false;
+    $approveModalOpen = $approveModalOpen ?? false;
+    $selectedArrival = $selectedArrival ?? null;
+    $editingId = $editingId ?? null;
+
     $t = function($ar, $fr, $en) use ($locale) {
         return match($locale) {
             'fr' => $fr,
@@ -144,7 +150,7 @@
         <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
             <h2 class="text-base sm:text-lg font-black text-[#06205C] dark:text-white flex items-center gap-2">
                 <svg class="w-5 h-5 text-[#0052CC] dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                <span>{{ $t('جدول وصول الوفود والمعاينة الفورية لتذاكر الطيران', 'Registre des Arrivées & Billets d'Avion', 'Delegation Arrivals & Ticket Inspection Register') }}</span>
+                <span>{{ $t('جدول وصول الوفود والمعاينة الفورية لتذاكر الطيران', 'Registre des Arrivées & Billets d\'Avion', 'Delegation Arrivals & Ticket Inspection Register') }}</span>
             </h2>
             <span class="text-xs font-mono font-bold text-slate-500">
                 {{ $arrivals->total() }} {{ $t('سجل وصول', 'entrées', 'records') }}
@@ -157,7 +163,7 @@
                     <tr>
                         <th class="py-4 px-6 text-start">{{ $t('الدولة والوفد', 'Pays & Délégation', 'Country & Delegation') }}</th>
                         <th class="py-4 px-6 text-start">{{ $t('شركة الطيران والرحلة', 'Compagnie & Vol', 'Airline & Flight') }}</th>
-                        <th class="py-4 px-6 text-start">{{ $t('تاريخ ووقت الوصول', 'Date & Heure d'Arrivée', 'Arrival Date & Time') }}</th>
+                        <th class="py-4 px-6 text-start">{{ $t('تاريخ ووقت الوصول', 'Date & Heure d\'Arrivée', 'Arrival Date & Time') }}</th>
                         <th class="py-4 px-6 text-start">{{ $t('عدد الركاب', 'Passagers', 'Passengers') }}</th>
                         <th class="py-4 px-6 text-start">{{ $t('مطار الوصول والحافلة', 'Aéroport & Navette', 'Airport & Shuttle') }}</th>
                         <th class="py-4 px-6 text-center">{{ $t('تذكرة الطيران', 'Billet', 'Flight Ticket') }}</th>
@@ -302,7 +308,7 @@
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-4">
                 <h3 class="text-base font-black text-[#06205C] dark:text-white flex items-center gap-2">
                     <svg class="w-5 h-5 text-[#0052CC]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                    <span>{{ $editingId ? $t('تعديل بيانات وصول الوفد', 'Modifier l Arrivée', 'Edit Arrival') : $t('إضافة وصول وفد جديد وتخصيص الرحلة', 'Nouveau Vol d Arrivée', 'New Delegation Arrival') }}</span>
+                    <span>{{ $editingId ? $t('تعديل بيانات وصول الوفد', 'Modifier l\'Arrivée', 'Edit Arrival') : $t('إضافة وصول وفد جديد وتخصيص الرحلة', 'Nouveau Vol d\'Arrivée', 'New Delegation Arrival') }}</span>
                 </h3>
                 <button type="button" wire:click="$set('showFormModal', false)" class="text-slate-400 hover:text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
             </div>
@@ -344,21 +350,21 @@
 
                     {{-- Arrival Date --}}
                     <div>
-                        <label class="block font-black text-slate-700 dark:text-slate-300 mb-1">{{ $t('تاريخ الوصول *', 'Date d Arrivée *', 'Arrival Date *') }}</label>
+                        <label class="block font-black text-slate-700 dark:text-slate-300 mb-1">{{ $t('تاريخ الوصول *', 'Date d\'Arrivée *', 'Arrival Date *') }}</label>
                         <input type="date" wire:model="arrival_date" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold text-xs">
                         @error('arrival_date') <span class="text-rose-500 font-bold block pt-1">{{ $message }}</span> @enderror
                     </div>
 
                     {{-- Arrival Time --}}
                     <div>
-                        <label class="block font-black text-slate-700 dark:text-slate-300 mb-1">{{ $t('وقت الوصول المخطط *', 'Heure d Arrivée *', 'Arrival Time *') }}</label>
+                        <label class="block font-black text-slate-700 dark:text-slate-300 mb-1">{{ $t('وقت الوصول المخطط *', 'Heure d\'Arrivée *', 'Arrival Time *') }}</label>
                         <input type="time" wire:model="arrival_time" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold text-xs">
                         @error('arrival_time') <span class="text-rose-500 font-bold block pt-1">{{ $message }}</span> @enderror
                     </div>
 
                     {{-- Arrival Airport --}}
                     <div class="sm:col-span-2">
-                        <label class="block font-black text-slate-700 dark:text-slate-300 mb-1">{{ $t('مطار الوصول المعتمد *', 'Aéroport d Arrivée *', 'Arrival Airport *') }}</label>
+                        <label class="block font-black text-slate-700 dark:text-slate-300 mb-1">{{ $t('مطار الوصول المعتمد *', 'Aéroport d\'Arrivée *', 'Arrival Airport *') }}</label>
                         <input type="text" wire:model="arrival_airport" required placeholder="مثال: مطار هواري بومدين الدولي (الجزائر العاصمة)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold text-xs">
                         @error('arrival_airport') <span class="text-rose-500 font-bold block pt-1">{{ $message }}</span> @enderror
                     </div>
@@ -399,7 +405,7 @@
                         {{ $t('إلغاء', 'Annuler', 'Cancel') }}
                     </button>
                     <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#0052CC] hover:bg-blue-700 text-white font-black text-xs shadow-md">
-                        {{ $editingId ? $t('حفظ التعديلات', 'Enregistrer Changes', 'Save Changes') : $t('تسجيل وصول الوفد', 'Enregistrer L Arrivée', 'Save Arrival Record') }}
+                        {{ $editingId ? $t('حفظ التعديلات', 'Enregistrer Changes', 'Save Changes') : $t('تسجيل وصول الوفد', 'Enregistrer L\'Arrivée', 'Save Arrival Record') }}
                     </button>
                 </div>
             </form>
