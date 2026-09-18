@@ -62,13 +62,19 @@ class AdminQrScanner extends Component
                 ->first();
         }
 
+        $isNumeric = ctype_digit($clean);
+
         if (!$this->delegationMember) {
             $this->delegationMember = DelegationMember::with(['skill', 'delegation.country', 'user'])
-                ->where('uuid', $clean)
-                ->orWhere('id', $clean)
-                ->orWhere('email', $clean)
-                ->orWhere('passport_number', $clean)
-                ->orWhere('nin_number', $clean)
+                ->where(function($q) use ($clean, $isNumeric) {
+                    $q->where('uuid', $clean)
+                      ->orWhere('email', $clean)
+                      ->orWhere('passport_number', $clean)
+                      ->orWhere('nin_number', $clean);
+                    if ($isNumeric) {
+                        $q->orWhere('id', (int)$clean);
+                    }
+                })
                 ->first();
 
             if ($this->delegationMember && !$this->scannedUser) {
@@ -90,11 +96,15 @@ class AdminQrScanner extends Component
                 'participant.registrations.skill',
                 'participant.registrations.country',
             ])
-            ->where('email', $clean)
-            ->orWhere('uuid', $clean)
-            ->orWhere('id', $clean)
-            ->orWhereHas('participant.registrations', function($q) use ($clean) {
-                $q->where('registration_number', $clean);
+            ->where(function($q) use ($clean, $isNumeric) {
+                $q->where('email', $clean)
+                  ->orWhere('uuid', $clean)
+                  ->orWhereHas('participant.registrations', function($rq) use ($clean) {
+                      $rq->where('registration_number', $clean);
+                  });
+                if ($isNumeric) {
+                    $q->orWhere('id', (int)$clean);
+                }
             })
             ->first();
         }

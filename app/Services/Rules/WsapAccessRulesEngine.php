@@ -329,11 +329,17 @@ class WsapAccessRulesEngine
      */
     protected function resolveBadge(string $cleanBadge, string $rawBadge): ?Badge
     {
-        // 1. Direct search on Badge by access_token, badge_uuid, or id
+        $isNumeric = ctype_digit($cleanBadge);
+
+        // 1. Direct search on Badge by access_token, badge_uuid, or numeric id
         $badge = Badge::with(['user.roles', 'user.country', 'user.participant.registrations'])
-            ->where('access_token', $cleanBadge)
-            ->orWhere('badge_uuid', $cleanBadge)
-            ->orWhere('id', $cleanBadge)
+            ->where(function($q) use ($cleanBadge, $isNumeric) {
+                $q->where('access_token', $cleanBadge)
+                  ->orWhere('badge_uuid', $cleanBadge);
+                if ($isNumeric) {
+                    $q->orWhere('id', (int)$cleanBadge);
+                }
+            })
             ->first();
 
         if (!$badge && strlen($cleanBadge) >= 4) {
@@ -349,22 +355,30 @@ class WsapAccessRulesEngine
 
         // 2. Search User directly
         $user = User::with(['roles', 'country', 'wilaya', 'organization', 'participant.registrations'])
-            ->where('email', $cleanBadge)
-            ->orWhere('email', $rawBadge)
-            ->orWhere('uuid', $cleanBadge)
-            ->orWhere('id', $cleanBadge)
+            ->where(function($q) use ($cleanBadge, $rawBadge, $isNumeric) {
+                $q->where('email', $cleanBadge)
+                  ->orWhere('email', $rawBadge)
+                  ->orWhere('uuid', $cleanBadge);
+                if ($isNumeric) {
+                    $q->orWhere('id', (int)$cleanBadge);
+                }
+            })
             ->first();
 
-        // 3. Search DelegationMember by uuid, id, email, passport, nin, or phone
+        // 3. Search DelegationMember by uuid, numeric id, email, passport, nin, or phone
         $member = null;
         if (!$user) {
             $member = \App\Models\DelegationMember::with(['delegation.country', 'skill', 'user'])
-                ->where('uuid', $cleanBadge)
-                ->orWhere('id', $cleanBadge)
-                ->orWhere('email', $cleanBadge)
-                ->orWhere('email', $rawBadge)
-                ->orWhere('passport_number', $cleanBadge)
-                ->orWhere('nin_number', $cleanBadge)
+                ->where(function($q) use ($cleanBadge, $rawBadge, $isNumeric) {
+                    $q->where('uuid', $cleanBadge)
+                      ->orWhere('email', $cleanBadge)
+                      ->orWhere('email', $rawBadge)
+                      ->orWhere('passport_number', $cleanBadge)
+                      ->orWhere('nin_number', $cleanBadge);
+                    if ($isNumeric) {
+                        $q->orWhere('id', (int)$cleanBadge);
+                    }
+                })
                 ->first();
 
             if ($member) {

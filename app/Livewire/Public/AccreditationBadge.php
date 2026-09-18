@@ -26,10 +26,15 @@ class AccreditationBadge extends Component
         $service = new CertificateService();
 
         // 1. Try finding User directly by uuid, id, or email FIRST to guarantee system accounts resolve correctly
+        $isNumeric = ctype_digit($identifier);
         $user = User::with(['roles', 'country', 'organization', 'wilaya', 'participant'])
-            ->where('uuid', $identifier)
-            ->orWhere('id', $identifier)
-            ->orWhere('email', $identifier)
+            ->where(function($q) use ($identifier, $isNumeric) {
+                $q->where('uuid', $identifier)
+                  ->orWhere('email', $identifier);
+                if ($isNumeric) {
+                    $q->orWhere('id', (int)$identifier);
+                }
+            })
             ->first();
 
         if ($user) {
@@ -95,11 +100,15 @@ class AccreditationBadge extends Component
 
         // 3. Try finding DelegationMember by uuid, id, passport_number, nin_number, or email
         $delegationMember = DelegationMember::with(['delegation.country', 'skill', 'user'])
-            ->where('uuid', $identifier)
-            ->orWhere('id', $identifier)
-            ->orWhere('passport_number', $identifier)
-            ->orWhere('nin_number', $identifier)
-            ->orWhere('email', $identifier)
+            ->where(function($q) use ($identifier, $isNumeric) {
+                $q->where('uuid', $identifier)
+                  ->orWhere('passport_number', $identifier)
+                  ->orWhere('nin_number', $identifier)
+                  ->orWhere('email', $identifier);
+                if ($isNumeric) {
+                    $q->orWhere('id', (int)$identifier);
+                }
+            })
             ->first();
 
         if ($delegationMember) {
