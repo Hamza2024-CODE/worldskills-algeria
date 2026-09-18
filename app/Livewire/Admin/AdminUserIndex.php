@@ -2,7 +2,10 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\Country;
+use App\Models\Organization;
 use App\Models\User;
+use App\Models\Wilaya;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
@@ -15,9 +18,12 @@ class AdminUserIndex extends Component
 {
     use WithPagination;
 
-    public string $search       = '';
-    public string $filterRole   = '';
-    public string $filterStatus = '';
+    public string $search             = '';
+    public string $filterRole         = '';
+    public string $filterStatus       = ''; // '1', '0'
+    public string $filterWilaya       = '';
+    public string $filterCountry      = '';
+    public string $filterOrganization = '';
 
     // Detail Drawer
     public bool   $drawerOpen   = false;
@@ -29,16 +35,30 @@ class AdminUserIndex extends Component
     public string $newRole       = '';
 
     // Create User Modal
-    public bool   $createModalOpen = false;
-    public string $create_name     = '';
-    public string $create_email    = '';
-    public string $create_role     = 'COUNTRY_ADMIN';
-    public string $create_password = '';
+    public bool   $createModalOpen       = false;
+    public string $create_name           = '';
+    public string $create_email          = '';
+    public string $create_role           = 'COUNTRY_ADMIN';
+    public string $create_password       = '';
+    public string $create_wilaya_id      = '';
+    public string $create_country_id     = '';
+    public string $create_organization_id = '';
+
+    // Delete Modal
+    public bool $deleteConfirmOpen = false;
+    public ?int $deleteTargetId    = null;
 
     // Official Registration Status
     public bool $officialRegistrationOpen = true;
 
-    protected $queryString = ['search', 'filterRole', 'filterStatus'];
+    protected $queryString = [
+        'search'             => ['except' => ''],
+        'filterRole'         => ['except' => ''],
+        'filterStatus'       => ['except' => ''],
+        'filterWilaya'       => ['except' => ''],
+        'filterCountry'      => ['except' => ''],
+        'filterOrganization' => ['except' => ''],
+    ];
 
     public function mount(): void
     {
@@ -55,14 +75,23 @@ class AdminUserIndex extends Component
         session()->flash('success', $newStatus === '1' ? 'تم فتح وتفعيل صفحة التسجيل الرسمي للحكام والوفود والصحافة.' : 'تم توقيف وإغلاق صفحة التسجيل الرسمي واختفائها.');
     }
 
-    public function updatingSearch(): void       { $this->resetPage(); }
-    public function updatingFilterRole(): void   { $this->resetPage(); }
-    public function updatingFilterStatus(): void { $this->resetPage(); }
+    public function updatingSearch(): void             { $this->resetPage(); }
+    public function updatingFilterRole(): void         { $this->resetPage(); }
+    public function updatingFilterStatus(): void       { $this->resetPage(); }
+    public function updatingFilterWilaya(): void       { $this->resetPage(); }
+    public function updatingFilterCountry(): void      { $this->resetPage(); }
+    public function updatingFilterOrganization(): void { $this->resetPage(); }
+
+    public function resetFilters(): void
+    {
+        $this->reset(['search', 'filterRole', 'filterStatus', 'filterWilaya', 'filterCountry', 'filterOrganization']);
+        $this->resetPage();
+    }
 
     public function openDrawer(int $userId): void
     {
         $this->selectedId   = $userId;
-        $this->selectedUser = User::with('roles')->find($userId);
+        $this->selectedUser = User::with(['roles', 'wilaya', 'country', 'organization', 'participant'])->find($userId);
         $this->drawerOpen   = true;
     }
 
@@ -89,10 +118,13 @@ class AdminUserIndex extends Component
         session()->flash('success', 'تم تحديث الدور بنجاح.');
     }
 
-    /* ─── Create User Modal (Delegation / Judge / Media / Staff) ─── */
+    /* ─── Create User Modal ─── */
     public function openCreateModal(): void
     {
-        $this->reset(['create_name', 'create_email', 'create_role', 'create_password']);
+        $this->reset([
+            'create_name', 'create_email', 'create_role', 'create_password',
+            'create_wilaya_id', 'create_country_id', 'create_organization_id'
+        ]);
         $this->create_role     = 'COUNTRY_ADMIN';
         $this->create_password = Str::random(10);
         $this->createModalOpen = true;
@@ -113,11 +145,14 @@ class AdminUserIndex extends Component
         ]);
 
         $user = User::create([
-            'uuid'      => (string) Str::uuid(),
-            'name'      => $this->create_name,
-            'email'     => $this->create_email,
-            'password'  => Hash::make($this->create_password),
-            'is_active' => true,
+            'uuid'            => (string) Str::uuid(),
+            'name'            => $this->create_name,
+            'email'           => $this->create_email,
+            'password'        => Hash::make($this->create_password),
+            'is_active'       => true,
+            'wilaya_id'       => $this->create_wilaya_id ?: null,
+            'country_id'      => $this->create_country_id ?: null,
+            'organization_id' => $this->create_organization_id ?: null,
         ]);
 
         $user->assignRole($this->create_role);
@@ -160,10 +195,23 @@ class AdminUserIndex extends Component
         session()->flash('success', 'تم حذف الحساب بنجاح.');
     }
 
-    /* ─── Export Users to Excel (CSV) ─── */
+    /* ─── Export Filtered Users to Excel (CSV) ─── */
     public function exportExcel()
     {
-        $users = User::with('roles')->latest()->get();
+        $query = User::with(['roles', 'wilaya', 'country', 'organization'])
+            ->when($this->search, fn($q) => $q->where(function ($sq) {
+                $sq->where('name', 'like', '%'.$this->search.'%')
+                   ->orWhere('email', 'like', '%'.$this->search.'%')
+                   ->orWhere('uuid', 'like', '%'.$this->search.'%');
+            }))
+            ->when($this->filterRole, fn($q) => $q->role($this->filterRole))
+            ->when($this->filterStatus !== '', fn($q) => $q->where('is_active', $this->filterStatus === '1'))
+            ->when($this->filterWilaya, fn($q) => $q->where('wilaya_id', $this->filterWilaya))
+            ->when($this->filterCountry, fn($q) => $q->where('country_id', $this->filterCountry))
+            ->when($this->filterOrganization, fn($q) => $q->where('organization_id', $this->filterOrganization))
+            ->latest();
+
+        $users = $query->get();
 
         $csvData = [];
         $csvData[] = [
@@ -171,9 +219,12 @@ class AdminUserIndex extends Component
             'الاسم واللقب',
             'البريد الإلكتروني',
             'الدور / الصلاحية الرسمية',
+            'الولاية',
+            'الدولة',
+            'المؤسسة التكوينية',
             'حالة الحساب',
             'صلاحية مسح QR',
-            'تاريخ إنشاء الحساب'
+            'تاريخ الإنشاء'
         ];
 
         foreach ($users as $u) {
@@ -182,13 +233,16 @@ class AdminUserIndex extends Component
                 $u->name,
                 $u->email,
                 $u->roles->first()?->name ?? '—',
+                $u->wilaya?->name_ar ?? '—',
+                $u->country?->name_ar ?? '—',
+                $u->organization?->name_ar ?? '—',
                 $u->is_active ? 'نشط' : 'معطل',
                 $u->can_scan_qr ? 'ممنوح' : 'غير ممنوح',
                 $u->created_at ? $u->created_at->format('Y-m-d H:i') : '—',
             ];
         }
 
-        $filename = 'WSAP_System_Users_Accounts_' . date('Y_m_d_His') . '.csv';
+        $filename = 'WSAP_Users_Filtered_' . date('Y_m_d_His') . '.csv';
 
         return response()->streamDownload(function () use ($csvData) {
             $file = fopen('php://output', 'w');
@@ -205,20 +259,40 @@ class AdminUserIndex extends Component
 
     public function render()
     {
-        $query = User::with('roles')
-            ->when($this->search, fn($q) => $q->where(function ($q) {
-                $q->where('name', 'like', '%'.$this->search.'%')
-                  ->orWhere('email', 'like', '%'.$this->search.'%');
+        $query = User::with(['roles', 'wilaya', 'country', 'organization'])
+            ->when($this->search, fn($q) => $q->where(function ($sq) {
+                $sq->where('name', 'like', '%'.$this->search.'%')
+                   ->orWhere('email', 'like', '%'.$this->search.'%')
+                   ->orWhere('uuid', 'like', '%'.$this->search.'%');
             }))
             ->when($this->filterRole, fn($q) => $q->role($this->filterRole))
             ->when($this->filterStatus !== '', fn($q) => $q->where('is_active', $this->filterStatus === '1'))
+            ->when($this->filterWilaya, fn($q) => $q->where('wilaya_id', $this->filterWilaya))
+            ->when($this->filterCountry, fn($q) => $q->where('country_id', $this->filterCountry))
+            ->when($this->filterOrganization, fn($q) => $q->where('organization_id', $this->filterOrganization))
             ->latest();
 
         return view('livewire.admin.users.index', [
-            'users'       => $query->paginate(15),
-            'allRoles'    => Role::pluck('name'),
-            'totalUsers'  => User::count(),
-            'activeUsers' => User::where('is_active', true)->count(),
+            'users'                    => $query->paginate(15),
+            'allRoles'                 => Role::pluck('name'),
+            'totalUsers'               => User::count(),
+            'activeUsers'              => User::where('is_active', true)->count(),
+            'inactiveUsers'            => User::where('is_active', false)->count(),
+            'wilayas'                  => Wilaya::orderBy('code')->get(),
+            'countries'                => Country::orderBy('name_ar')->get(),
+            'organizations'            => Organization::orderBy('name_ar')->take(150)->get(),
+            'officialRegistrationOpen' => $this->officialRegistrationOpen,
+            'search'                   => $this->search,
+            'filterRole'               => $this->filterRole,
+            'filterStatus'             => $this->filterStatus,
+            'filterWilaya'             => $this->filterWilaya,
+            'filterCountry'            => $this->filterCountry,
+            'filterOrganization'       => $this->filterOrganization,
+            'createModalOpen'          => $this->createModalOpen,
+            'drawerOpen'               => $this->drawerOpen,
+            'selectedUser'             => $this->selectedUser,
+            'roleModalOpen'            => $this->roleModalOpen,
+            'deleteConfirmOpen'        => $this->deleteConfirmOpen,
         ]);
     }
 }
