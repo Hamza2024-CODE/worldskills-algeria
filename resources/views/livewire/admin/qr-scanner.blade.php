@@ -54,7 +54,133 @@
     }
 @endphp
 
-<div class="space-y-6 select-none" x-data="{ cameraOpen: false }">
+<div class="space-y-6 select-none"
+     x-data="{
+        cameraOpen: false,
+        html5QrCode: null,
+        cameraError: null,
+        async ensureScriptLoaded() {
+            if (typeof Html5Qrcode !== 'undefined') return true;
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = '/js/html5-qrcode.min.js';
+                script.onload = () => resolve(true);
+                script.onerror = () => resolve(false);
+                document.head.appendChild(script);
+            });
+        },
+        async toggleCamera() {
+            if (this.cameraOpen) {
+                await this.stopCamera();
+            } else {
+                await this.startCamera();
+            }
+        },
+        async startCamera() {
+            this.cameraError = null;
+            this.cameraOpen = true;
+
+            await this.ensureScriptLoaded();
+            await this.$nextTick();
+
+            if (typeof Html5Qrcode === 'undefined') {
+                this.cameraError = 'لم يتم تحميل مكتبة الكاميرا بنجاح. يرجى إعادة تحديث الصفحة.';
+                return;
+            }
+
+            try {
+                if (this.html5QrCode) {
+                    try { await this.html5QrCode.stop(); } catch(e){}
+                    try { await this.html5QrCode.clear(); } catch(e){}
+                }
+
+                this.html5QrCode = new Html5Qrcode('qr-reader-video-container');
+
+                const config = {
+                    fps: 15,
+                    qrbox: (viewfinderWidth, viewfinderHeight) => {
+                        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+                        const qrboxSize = Math.floor(minEdge * 0.75);
+                        return { width: qrboxSize, height: qrboxSize };
+                    },
+                    aspectRatio: 1.0
+                };
+
+                const onScanSuccess = (decodedText) => {
+                    try {
+                        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.type = 'sine';
+                        osc.frequency.value = 880;
+                        gain.gain.value = 0.1;
+                        osc.start();
+                        osc.stop(ctx.currentTime + 0.15);
+                    } catch(e) {}
+
+                    @this.set('query', decodedText);
+                    @this.scan();
+                    this.stopCamera();
+                };
+
+                const onScanFailure = (error) => {
+                    // Ignore per-frame decode failure
+                };
+
+                try {
+                    await this.html5QrCode.start(
+                        { facingMode: 'environment' },
+                        config,
+                        onScanSuccess,
+                        onScanFailure
+                    );
+                } catch (envErr) {
+                    console.warn('Environment camera failed, trying device list fallback:', envErr);
+                    const devices = await Html5Qrcode.getCameras();
+                    if (devices && devices.length > 0) {
+                        const backCam = devices.find(d => d.label.toLowerCase().includes('back') || d.label.toLowerCase().includes('rear') || d.label.toLowerCase().includes('خلف'));
+                        const cameraId = backCam ? backCam.id : devices[0].id;
+                        await this.html5QrCode.start(
+                            cameraId,
+                            config,
+                            onScanSuccess,
+                            onScanFailure
+                        );
+                    } else {
+                        throw envErr;
+                    }
+                }
+            } catch (err) {
+                console.error('Camera init error:', err);
+                let msg = err.message || err;
+                if (typeof msg === 'string') {
+                    if (msg.includes('Permission') || msg.includes('NotAllowedError')) {
+                        msg = 'يرجى السماح باستخدام الكاميرا في إعدادات المتصفح وإعادة المحاولة.';
+                    } else if (msg.includes('NotFoundError') || msg.includes('DevicesNotFoundError')) {
+                        msg = 'لم يتم العثور على أي كاميرا متصلة بالجهاز.';
+                    } else if (msg.includes('NotReadableError') || msg.includes('TrackStartError')) {
+                        msg = 'الكاميرا مستخدمة حالياً من قبل تطبيق آخر أو متصفح آخر.';
+                    }
+                }
+                this.cameraError = 'تعذر تشغيل الكاميرا: ' + msg;
+            }
+        },
+        async stopCamera() {
+            if (this.html5QrCode) {
+                try {
+                    await this.html5QrCode.stop();
+                    await this.html5QrCode.clear();
+                } catch(e) {}
+                this.html5QrCode = null;
+            }
+            this.cameraOpen = false;
+        }
+     }">
+
+    {{-- Script dependency --}}
+    <script src="/js/html5-qrcode.min.js"></script>
 
     {{-- TOP TITLE HEADER CAPSULE --}}
     <div class="bg-gradient-to-r from-[#06205C] via-[#0A3580] to-[#0052CC] rounded-3xl p-6 text-white shadow-xl border border-white/10 relative overflow-hidden">
@@ -78,33 +204,26 @@
 
             {{-- SEARCH FORM & CAMERA TOGGLE --}}
             <div class="flex items-center gap-2 w-full md:w-auto shrink-0">
-                <button type="button" @click="cameraOpen = !cameraOpen"
-                    class="px-4 py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/20 text-white font-black text-xs transition backdrop-blur-md flex items-center justify-center gap-2 shadow-sm">
-                    <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button type="button" @click="toggleCamera()"
+                    class="px-5 py-3 rounded-2xl text-white font-black text-xs transition backdrop-blur-md flex items-center justify-center gap-2.5 shadow-md"
+                    :class="cameraOpen ? 'bg-rose-600 hover:bg-rose-700' : 'bg-emerald-500 hover:bg-emerald-600'">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574v9.176c0 1.067.75 1.994 1.802 2.169a47.865 47.865 0 0011.396 0c1.052-.175 1.802-1.102 1.802-2.169V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0c-.69.04-1.332.42-1.736 1.039l-.821 1.316z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
                     </svg>
-                    <span x-text="cameraOpen ? '{{ $t('إغلاق الكاميرا', 'Fermer Caméra', 'Close Camera') }}' : '{{ $t('فتح الكاميرا لمسح الـ QR', 'Ouvrir Caméra QR', 'Open QR Camera') }}'"></span>
+                    <span x-text="cameraOpen ? '{{ $t('إغلاق الكاميرا', 'Fermer Caméra', 'Close Camera') }}' : '{{ $t('تشغيل الكاميرا والمثال المباشر', 'Ouvrir Caméra QR', 'Open Camera Scanner') }}'"></span>
                 </button>
             </div>
         </div>
 
         {{-- CAMERA FEED CONTAINER --}}
-        <div x-show="cameraOpen" x-transition class="mt-4 pt-4 border-t border-white/10">
-            <div class="relative w-full max-w-sm mx-auto aspect-square rounded-3xl overflow-hidden border-2 border-white/30 shadow-2xl bg-black">
-                <video x-ref="scanVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div class="relative w-48 h-48">
-                        <span class="absolute top-0 start-0 w-8 h-8 border-t-4 border-s-4 border-emerald-400 rounded-tl-xl animate-pulse"></span>
-                        <span class="absolute top-0 end-0 w-8 h-8 border-t-4 border-e-4 border-emerald-400 rounded-tr-xl animate-pulse"></span>
-                        <span class="absolute bottom-0 start-0 w-8 h-8 border-b-4 border-s-4 border-emerald-400 rounded-bl-xl animate-pulse"></span>
-                        <span class="absolute bottom-0 end-0 w-8 h-8 border-b-4 border-e-4 border-emerald-400 rounded-br-xl animate-pulse"></span>
-                    </div>
-                </div>
-                <div class="absolute bottom-4 inset-x-0 text-center">
-                    <span class="inline-block px-4 py-1.5 bg-black/75 backdrop-blur-md text-white text-xs font-bold rounded-full">
-                        {{ $t('وجّه كاميرا الجهاز نحو كود الـ QR للبطاقة', 'Orientez la caméra vers le code QR', 'Point camera towards the QR code') }}
-                    </span>
+        <div x-show="cameraOpen" x-transition class="mt-4 pt-4 border-t border-white/10 space-y-3">
+            <div class="relative w-full max-w-md mx-auto aspect-square rounded-3xl overflow-hidden border-2 border-emerald-400/80 shadow-2xl bg-slate-950">
+                <div id="qr-reader-video-container" class="w-full h-full object-cover"></div>
+
+                <div x-show="cameraError" class="absolute inset-0 p-4 bg-slate-900/90 flex flex-col items-center justify-center text-center text-rose-300 space-y-2">
+                    <svg class="w-8 h-8 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
+                    <p class="text-xs font-bold" x-text="cameraError"></p>
                 </div>
             </div>
         </div>
@@ -113,7 +232,7 @@
         <form wire:submit.prevent="scan" class="mt-5">
             <div class="flex gap-2">
                 <div class="relative flex-1">
-                    <input type="text" wire:model.defer="query" autofocus
+                    <input type="text" wire:model.defer="query" autofocus id="badge-input"
                         placeholder="{{ $t('أدخل UUID الشارة، التوكين، رقم جواز السفر، الإيميل أو معرف المستخدم...', 'Saisissez le code UUID, passeport, email ou ID...', 'Enter Badge UUID, Token, Passport, Email or User ID...') }}"
                         class="w-full pe-4 ps-11 py-3.5 rounded-2xl border border-white/20 text-sm font-bold bg-white/10 text-white placeholder-blue-200 focus:bg-white focus:text-slate-900 transition shadow-inner">
                     <svg class="w-5 h-5 text-blue-200 absolute start-4 top-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
