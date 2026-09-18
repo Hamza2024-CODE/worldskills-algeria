@@ -122,7 +122,9 @@ class AdminQrScanner extends Component
             $emailToSearch = $this->delegationMember?->email ?: $this->scannedUser?->email;
             if ($emailToSearch) {
                 $this->registration = Registration::with(['skill', 'country'])
-                    ->where('email', $emailToSearch)
+                    ->whereHas('participant.user', function($q) use ($emailToSearch) {
+                        $q->where('email', $emailToSearch);
+                    })
                     ->latest()
                     ->first();
             }

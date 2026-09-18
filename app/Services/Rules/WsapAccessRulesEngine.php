@@ -376,10 +376,12 @@ class WsapAccessRulesEngine
             }
         }
 
-        // 4. Search Registration by registration_number or email
+        // 4. Search Registration by registration_number or via participant user email
         if (!$user) {
             $registration = \App\Models\Registration::where('registration_number', $cleanBadge)
-                ->orWhere('email', $cleanBadge)
+                ->orWhereHas('participant.user', function($q) use ($cleanBadge) {
+                    $q->where('email', $cleanBadge);
+                })
                 ->first();
             if ($registration && $registration->participant?->user_id) {
                 $user = User::with(['roles', 'country', 'wilaya', 'organization', 'participant.registrations'])->find($registration->participant->user_id);
