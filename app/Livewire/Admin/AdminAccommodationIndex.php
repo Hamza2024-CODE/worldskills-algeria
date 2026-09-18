@@ -168,7 +168,7 @@ class AdminAccommodationIndex extends Component
             'floor'            => $this->new_floor ?: null,
             'room_number'      => trim($this->new_room_number),
             'capacity'         => $this->new_capacity ?? 2,
-            'gender'           => $this->new_gender ?: 'any',
+            'gender'           => (!empty($this->new_gender) && in_array($this->new_gender, ['male', 'female', 'any'])) ? $this->new_gender : 'any',
             'status'           => 'AVAILABLE',
         ]);
 
@@ -205,7 +205,7 @@ class AdminAccommodationIndex extends Component
                 [
                     'floor'    => $this->batch_floor ?: null,
                     'capacity' => $this->batch_capacity ?: 2,
-                    'gender'   => $this->batch_gender ?: 'any',
+                    'gender'   => (!empty($this->batch_gender) && in_array($this->batch_gender, ['male', 'female', 'any'])) ? $this->batch_gender : 'any',
                     'status'   => 'AVAILABLE',
                 ]
             );
