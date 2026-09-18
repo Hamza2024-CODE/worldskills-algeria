@@ -104,7 +104,7 @@
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @foreach($skills as $sk)
-                                @php $skImg = asset($sk->image_path ?: 'images/skills/trade_16.png'); @endphp
+                                @php $skImg = $sk->getImageUrl(); @endphp
                                 <a href="{{ route('skills') }}" class="bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-200 hover:shadow-2xl hover:border-[#0066FF] transition-all group flex flex-col justify-between">
                                     <div class="h-36 bg-slate-900 relative overflow-hidden">
                                         <img src="{{ $skImg }}" alt="{{ $sk->getLocalized('name') }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">

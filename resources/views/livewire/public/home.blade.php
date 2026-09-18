@@ -513,7 +513,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($skills as $skill)
                 @php
-                    $imgUrl = asset($skill->image_path ?: 'images/skills/trade_16.png');
+                    $imgUrl = $skill->getImageUrl();
                 @endphp
                 <div class="bg-white rounded-3xl overflow-hidden shadow-xl border border-slate-200/90 hover:shadow-2xl transition-all duration-400 transform mac-dock-hover relative overflow-hidden  group cursor-pointer flex flex-col justify-between hover:border-[#0066FF] wsap-hover-card">
                     

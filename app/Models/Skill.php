@@ -112,17 +112,45 @@ class Skill extends Model
             if (file_exists(public_path($cleanPath))) {
                 return asset($cleanPath);
             }
+            if (file_exists(public_path('storage/' . $cleanPath))) {
+                return asset('storage/' . $cleanPath);
+            }
+            if (str_starts_with($cleanPath, 'storage/')) {
+                return asset($cleanPath);
+            }
         }
 
-        return match((int) $this->category_id) {
-            1 => 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80',
-            2 => 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80',
-            3 => 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&auto=format&fit=crop&q=80',
-            4 => 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&auto=format&fit=crop&q=80',
-            5 => 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&auto=format&fit=crop&q=80',
-            6 => 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80',
-            default => 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80',
+        $num = null;
+        if (!empty($this->code) && preg_match('/(\d+)/', $this->code, $m)) {
+            $num = str_pad($m[1], 2, '0', STR_PAD_LEFT);
+        } elseif ($this->sort_order && $this->sort_order >= 1 && $this->sort_order <= 64) {
+            $num = str_pad($this->sort_order, 2, '0', STR_PAD_LEFT);
+        } elseif ($this->id && $this->id >= 1 && $this->id <= 64) {
+            $num = str_pad($this->id, 2, '0', STR_PAD_LEFT);
+        }
+
+        if ($num) {
+            $tradeFile = "images/skills/trade_{$num}.png";
+            if (file_exists(public_path($tradeFile))) {
+                return asset($tradeFile);
+            }
+        }
+
+        $catImg = match((int) $this->category_id) {
+            1 => 'images/skills/manufacturing.png',
+            2 => 'images/skills/ict.png',
+            3 => 'images/skills/construction.png',
+            4 => 'images/skills/transport.png',
+            5 => 'images/skills/creative.png',
+            6 => 'images/skills/services.png',
+            default => 'images/skills/ict.png',
         };
+
+        if (file_exists(public_path($catImg))) {
+            return asset($catImg);
+        }
+
+        return 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80';
     }
 
     public function assessmentModules()
