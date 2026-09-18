@@ -138,4 +138,9 @@ class Registration extends Model
     {
         return $this->hasOneThrough(Organization::class, ParticipantProfile::class, 'id', 'id', 'participant_id', 'organization_id');
     }
+
+    public function result()
+    {
+        return $this->hasOne(CompetitionResult::class, 'registration_id');
+    }
 }

@@ -2,9 +2,13 @@
 
 namespace App\Livewire\Admin;
 
+use App\Enums\RoleEnum;
 use App\Models\Certificate;
+use App\Models\Country;
 use App\Models\Registration;
 use App\Models\Skill;
+use App\Models\User;
+use App\Models\Wilaya;
 use App\Services\CertificateService;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -15,14 +19,49 @@ class AdminCertificateIndex extends Component
 {
     use WithPagination;
 
-    public string $search       = '';
-    public string $filterType   = '';
-    public string $filterStatus = '';
-    public bool   $formOpen     = false;
+    public string $search        = '';
+    public string $filterRole    = '';
+    public string $filterStatus  = '';
+    public string $filterAward   = '';
+    public string $filterSkill   = '';
+    public string $filterCountry = '';
+    public string $filterWilaya  = '';
 
-    // Issue form
+    // Checkbox multi-selection for bulk actions
+    public array  $selectedRegistrations = [];
+    public bool   $selectAll             = false;
+
+    // Issue modal
+    public bool   $formOpen         = false;
     public int    $registration_id  = 0;
     public string $certificate_type = 'PARTICIPATION';
+
+    protected $queryString = [
+        'search', 'filterRole', 'filterStatus', 'filterAward', 'filterSkill', 'filterCountry', 'filterWilaya'
+    ];
+
+    public function updatingSearch(): void        { $this->resetPage(); }
+    public function updatingFilterRole(): void    { $this->resetPage(); }
+    public function updatingFilterStatus(): void  { $this->resetPage(); }
+    public function updatingFilterAward(): void   { $this->resetPage(); }
+    public function updatingFilterSkill(): void   { $this->resetPage(); }
+    public function updatingFilterCountry(): void { $this->resetPage(); }
+    public function updatingFilterWilaya(): void  { $this->resetPage(); }
+
+    public function updatedSelectAll(bool $value): void
+    {
+        if ($value) {
+            $this->selectedRegistrations = $this->getFilteredRegistrationsQuery()->pluck('id')->map(fn($id) => (string)$id)->toArray();
+        } else {
+            $this->selectedRegistrations = [];
+        }
+    }
+
+    public function clearSelection(): void
+    {
+        $this->selectedRegistrations = [];
+        $this->selectAll             = false;
+    }
 
     public function openCreate(): void
     {
@@ -47,30 +86,178 @@ class AdminCertificateIndex extends Component
                 $reg->skill_id
             );
             $this->formOpen = false;
-            session()->flash('success', 'تم استخراج وإصدار الشهادة الرسمية بنجاح.');
+            session()->flash('success', 'تم استخراج وتوثيق الشهادة الرسمية بنجاح.');
         }
+    }
+
+    /* ─── Export Certificates to CSV ─── */
+    public function exportExcel()
+    {
+        $regs = $this->getFilteredRegistrationsQuery()->latest()->get();
+
+        $csvData = [];
+        $csvData[] = [
+            'ID',
+            'رقم التسجيل',
+            'الاسم بالعربية',
+            'الاسم باللاتينية',
+            'الدور والصفة المعتمدة',
+            'حالة الاعتماد والقبول',
+            'التخصص المهني',
+            'الدولة / الوفد',
+            'الولاية',
+            'نقاط التقييم CIS',
+            'الرتبة والنتيجة',
+            'نوع الشهادة المستحقة'
+        ];
+
+        foreach ($regs as $reg) {
+            $num       = $reg->registration_number;
+            $nameAr    = $reg->participant?->first_name_ar ? ($reg->participant->first_name_ar . ' ' . $reg->participant->last_name_ar) : $reg->user?->name;
+            $nameLatin = $reg->participant?->first_name_latin ? ($reg->participant->first_name_latin . ' ' . $reg->participant->last_name_latin) : $reg->user?->email;
+            $statusStr = is_object($reg->status) ? ($reg->status->value ?? 'APPROVED') : ($reg->status ?? 'APPROVED');
+            $userRole  = $reg->user?->roles->first()?->name ?? 'PARTICIPANT';
+
+            $score     = $reg->result?->final_score ? number_format($reg->result->final_score, 2) : '—';
+            $rank      = $reg->result?->rank ? ('المركز ' . $reg->result->rank) : '—';
+            $award     = $reg->result?->award ?? '—';
+
+            // Auto suggested cert type
+            $suggestedCert = match(true) {
+                $award === 'GOLD' || $reg->result?->rank == 1            => 'شهادة الميدالية الذهبية (WINNER_GOLD)',
+                $award === 'SILVER' || $reg->result?->rank == 2          => 'شهادة الميدالية الفضية (WINNER_SILVER)',
+                $award === 'BRONZE' || $reg->result?->rank == 3          => 'شهادة الميدالية البرونزية (WINNER_BRONZE)',
+                ($reg->result?->final_score ?? 0) >= 700                  => 'شهادة التميز (MEDALLION_EXCELLENCE)',
+                $userRole === RoleEnum::JUDGE->value                     => 'شهادة حكم خبير (EXPERT_JUDGE)',
+                $userRole === RoleEnum::COUNTRY_ADMIN->value             => 'شهادة رئيس وفد (DELEGATION_HEAD)',
+                $userRole === RoleEnum::MEDIA_MANAGER->value             => 'شهادة صحفي إعلامي (MEDIA)',
+                $userRole === RoleEnum::ORGANIZATION_ADMIN->value        => 'شهادة منظم معتمد (ORGANIZER)',
+                default                                                  => 'شهادة مشاركة وتأهل (PARTICIPATION)',
+            };
+
+            $csvData[] = [
+                $reg->id,
+                $num,
+                $nameAr,
+                $nameLatin,
+                $userRole,
+                $statusStr,
+                $reg->skill?->name_ar ?? 'تخصص مهني',
+                $reg->country?->name_ar ?? 'الجزائر',
+                $reg->wilaya?->name_ar ?? '—',
+                $score,
+                $rank,
+                $suggestedCert,
+            ];
+        }
+
+        $filename = 'WSAP_Official_Certificates_' . date('Y_m_d_His') . '.csv';
+
+        return response()->streamDownload(function () use ($csvData) {
+            $file = fopen('php://output', 'w');
+            fputs($file, "\xEF\xBB\xBF");
+            foreach ($csvData as $row) {
+                fputcsv($file, $row);
+            }
+            fclose($file);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
+    private function getFilteredRegistrationsQuery()
+    {
+        return Registration::with([
+            'participant.user.roles',
+            'country',
+            'skill',
+            'organization',
+            'wilaya',
+            'result'
+        ])
+        // Filter by Status (Default to non-rejected or filterStatus if specified)
+        ->when($this->filterStatus, function ($q) {
+            $q->where('status', $this->filterStatus);
+        })
+        // Search
+        ->when($this->search, function ($q) {
+            $s = '%' . $this->search . '%';
+            $q->where(function ($sub) use ($s) {
+                $sub->where('registration_number', 'like', $s)
+                    ->orWhere('verification_token', 'like', $s)
+                    ->orWhereHas('user', fn($u) => $u->where('name', 'like', $s)->orWhere('email', 'like', $s))
+                    ->orWhereHas('participant', fn($p) =>
+                        $p->where('first_name_ar', 'like', $s)
+                          ->orWhere('last_name_ar', 'like', $s)
+                          ->orWhere('first_name_latin', 'like', $s)
+                          ->orWhere('last_name_latin', 'like', $s)
+                          ->orWhere('national_id', 'like', $s)
+                          ->orWhere('passport_number', 'like', $s)
+                    );
+            });
+        })
+        // Filter by Role
+        ->when($this->filterRole, function ($q) {
+            $roleMap = [
+                'COMPETITOR'      => [RoleEnum::PARTICIPANT->value],
+                'DELEGATION_HEAD' => [RoleEnum::COUNTRY_ADMIN->value],
+                'EXPERT_JUDGE'    => [RoleEnum::JUDGE->value],
+                'MEDIA'           => [RoleEnum::MEDIA_MANAGER->value],
+                'VIP'             => [RoleEnum::EXECUTIVE_VIEWER->value],
+                'ORGANIZER'       => [RoleEnum::ORGANIZATION_ADMIN->value, RoleEnum::SUPER_ADMIN->value],
+            ];
+            if (isset($roleMap[$this->filterRole])) {
+                $q->whereHas('user.roles', fn($r) => $r->whereIn('name', $roleMap[$this->filterRole]));
+            }
+        })
+        // Filter by Award / CIS Score Rank
+        ->when($this->filterAward, function ($q) {
+            if ($this->filterAward === 'WINNER_GOLD') {
+                $q->whereHas('result', fn($r) => $r->where('award', 'GOLD')->orWhere('rank', 1));
+            } elseif ($this->filterAward === 'WINNER_SILVER') {
+                $q->whereHas('result', fn($r) => $r->where('award', 'SILVER')->orWhere('rank', 2));
+            } elseif ($this->filterAward === 'WINNER_BRONZE') {
+                $q->whereHas('result', fn($r) => $r->where('award', 'BRONZE')->orWhere('rank', 3));
+            } elseif ($this->filterAward === 'MEDALLION_EXCELLENCE') {
+                $q->whereHas('result', fn($r) => $r->where('final_score', '>=', 700));
+            } elseif ($this->filterAward === 'WINNERS_ONLY') {
+                $q->whereHas('result', fn($r) => $r->whereIn('rank', [1, 2, 3])->orWhereIn('award', ['GOLD', 'SILVER', 'BRONZE']));
+            } elseif ($this->filterAward === 'PARTICIPATION') {
+                $q->whereDoesntHave('result')
+                  ->orWhereHas('result', fn($r) => $r->whereNull('award')->whereNotIn('rank', [1, 2, 3]));
+            }
+        })
+        // Filter by Skill
+        ->when($this->filterSkill, function ($q) {
+            $q->where('skill_id', $this->filterSkill);
+        })
+        // Filter by Country
+        ->when($this->filterCountry, function ($q) {
+            $q->where('country_id', $this->filterCountry);
+        })
+        // Filter by Wilaya
+        ->when($this->filterWilaya, function ($q) {
+            $q->whereHas('participant', fn($p) => $p->where('wilaya_id', $this->filterWilaya));
+        });
     }
 
     public function render()
     {
-        $registrations = Registration::with(['participant.user', 'country', 'skill', 'organization', 'wilaya'])
-            ->where('status', 'APPROVED')
-            ->when($this->search, function ($q) {
-                $s = '%' . $this->search . '%';
-                $q->where('registration_number', 'like', $s)
-                  ->orWhereHas('user', fn($u) => $u->where('name', 'like', $s)->orWhere('email', 'like', $s))
-                  ->orWhereHas('participant', fn($p) => $p->where('first_name_ar', 'like', $s)->orWhere('last_name_ar', 'like', $s));
-            })
-            ->orderByDesc('created_at')
-            ->paginate(12);
+        $registrations = $this->getFilteredRegistrationsQuery()->orderByDesc('created_at')->paginate(12);
 
         return view('livewire.admin.certificates.index', [
-            'registrations' => $registrations,
-            'certificates'  => Certificate::with(['user', 'skill'])->orderByDesc('issued_at')->take(10)->get(),
-            'totalCerts'    => Registration::where('status', 'APPROVED')->count(),
-            'goldCount'     => Certificate::where('certificate_type', 'WINNER_GOLD')->count(),
-            'silverCount'   => Certificate::where('certificate_type', 'WINNER_SILVER')->count(),
-            'bronzeCount'   => Certificate::where('certificate_type', 'WINNER_BRONZE')->count(),
+            'registrations'  => $registrations,
+            'allApprovedRegs'=> Registration::where('status', 'APPROVED')->take(100)->get(),
+            'countries'      => Country::orderBy('name_ar')->get(),
+            'skills'         => Skill::where('is_active', true)->orderBy('name_ar')->get(),
+            'wilayas'        => Wilaya::orderBy('code')->get(),
+            'totalApproved'  => Registration::where('status', 'APPROVED')->count(),
+            'winnersCount'   => Registration::whereHas('result', fn($r) => $r->whereIn('rank', [1, 2, 3])->orWhereIn('award', ['GOLD', 'SILVER', 'BRONZE']))->count(),
+            'goldCount'      => Registration::whereHas('result', fn($r) => $r->where('award', 'GOLD')->orWhere('rank', 1))->count(),
+            'silverCount'    => Registration::whereHas('result', fn($r) => $r->where('award', 'SILVER')->orWhere('rank', 2))->count(),
+            'bronzeCount'    => Registration::whereHas('result', fn($r) => $r->where('award', 'BRONZE')->orWhere('rank', 3))->count(),
+            'excellenceCount'=> Registration::whereHas('result', fn($r) => $r->where('final_score', '>=', 700))->count(),
         ]);
     }
 }
