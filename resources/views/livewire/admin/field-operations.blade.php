@@ -46,7 +46,7 @@ $hasActiveLockdown = $activeLockdowns->count() > 0;
                 </button>
 
                 <a 
-                    href="{{ route('scan') }}" 
+                    href="{{ route('admin.scanner') }}" 
                     target="_blank"
                     class="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm shadow-xl transition flex items-center gap-2 border border-emerald-400/30">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>

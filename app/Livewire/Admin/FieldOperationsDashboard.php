@@ -175,6 +175,12 @@ class FieldOperationsDashboard extends Component
             'totalNotifications'  => WsapNotification::count(),
             'deliveredCount'      => UserNotification::count(),
             'readCount'           => UserNotification::whereNotNull('read_at')->orWhere('status', 'READ')->count(),
+            'flashMessage'        => $this->flashMessage,
+            'activeTab'           => $this->activeTab,
+            'decisionFilter'      => $this->decisionFilter,
+            'serviceFilter'       => $this->serviceFilter,
+            'showEmergencyModal'  => $this->showEmergencyModal,
+            'showNotificationModal' => $this->showNotificationModal,
         ]);
     }
 }
