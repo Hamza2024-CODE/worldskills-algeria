@@ -16,6 +16,103 @@
         };
     };
 
+    $participant = $scannedUser?->participant;
+
+    // 1. FULL NAME (Arabic & Latin)
+    $nameAr = $delegationMember?->first_name 
+        ? trim($delegationMember->first_name . ' ' . $delegationMember->last_name)
+        : ($participant?->first_name_ar 
+            ? trim($participant->first_name_ar . ' ' . $participant->last_name_ar)
+            : ($scannedUser?->name ?? '—'));
+
+    $nameLatin = $participant?->first_name_fr 
+        ? trim($participant->first_name_fr . ' ' . $participant->last_name_fr)
+        : ($scannedUser?->name ?? '');
+
+    // 2. GENDER (ذكر / أنثى)
+    $rawGender = strtolower(trim((string)(
+        $delegationMember?->gender 
+        ?: ($participant?->gender 
+        ?: ($scannedUser?->gender ?? ''))
+    )));
+
+    $isFemale = in_array($rawGender, ['female', 'f', 'feminin', 'أنثى']);
+    $isMale = in_array($rawGender, ['male', 'm', 'masculin', 'ذكر']);
+
+    $genderLabel = match(true) {
+        $isFemale => $t('أنثى ♀', 'Féminin ♀', 'Female ♀'),
+        $isMale   => $t('ذكر ♂', 'Masculin ♂', 'Male ♂'),
+        default   => $t('ذكر ♂', 'Masculin ♂', 'Male ♂'),
+    };
+
+    // 3. ROLE / FUNCTION (الصفة / الوظيفة)
+    $roleKey = strtoupper(trim((string)(
+        $delegationMember?->member_type 
+        ?: ($scannedUser?->roles->first()?->name ?: 'COMPETITOR')
+    )));
+
+    $roleLabel = match ($roleKey) {
+        'EXECUTIVE_VIEWER', 'MINISTERIAL_OBSERVER', 'MINISTER' => $t('ملاحظ تنفيذي وزاري', 'OBSERVATEUR MINISTÉRIEL', 'MINISTERIAL EXECUTIVE OBSERVER'),
+        'COUNTRY_ADMIN', 'DELEGATION_HEAD', 'CHEF_DE_DELEGATION' => $t('رئيس الوفد الرسمي', 'CHEF DE DÉLÉGATION', 'DELEGATION HEAD'),
+        'MEDIA_MANAGER', 'PRESS', 'MEDIA'                    => $t('إعلام وصحافة', 'MÉDIA & PRESSE', 'MEDIA & PRESS'),
+        'JUDGE', 'EXPERT', 'EXPERT JUDGE'                   => $t('خبير ومحكم تقني', 'EXPERT & JUGE', 'EXPERT JUDGE'),
+        'ORGANIZATION_ADMIN', 'SUPER_ADMIN', 'ORGANIZER'     => $t('اللجنة التنظيمية', 'ORGANISATEUR', 'ORGANIZING COMMITTEE'),
+        'SUPERVISOR', 'TEAM_LEADER'                          => $t('مشرف ومؤطر', 'ENCADRANT / SUPERVISEUR', 'SUPERVISOR'),
+        default                                             => $t('متنافس رسمي — COMPETITOR', 'COMPÉTITEUR OFFICIEL', 'OFFICIAL COMPETITOR'),
+    };
+
+    // 4. NATIONAL IDENTITY (NIN & PASSPORT)
+    $ninNumber = $delegationMember?->nin_number 
+        ?: ($participant?->national_id 
+        ?: ($scannedUser?->national_id ?: '—'));
+
+    $passportNumber = $delegationMember?->passport_number 
+        ?: ($participant?->passport_number 
+        ?: ($scannedUser?->passport_number ?: '—'));
+
+    $phoneNumber = $delegationMember?->phone 
+        ?: ($participant?->phone 
+        ?: ($scannedUser?->phone ?: '—'));
+
+    $dateOfBirth = $participant?->date_of_birth 
+        ? \Carbon\Carbon::parse($participant->date_of_birth)->format('Y/m/d')
+        : ($delegationMember?->date_of_birth 
+            ? \Carbon\Carbon::parse($delegationMember->date_of_birth)->format('Y/m/d')
+            : '—');
+
+    // 5. SKILL / SPECIALTY (المهنة والتخصص)
+    $skillName = $registration?->skill?->name_ar 
+        ?: ($delegationMember?->skill?->name_ar 
+        ?: ($participant?->registrations?->first()?->skill?->name_ar 
+        ?: ($registration?->skill?->name_fr ?? '—')));
+
+    // 6. WILAYA & PROVINCE (الولاية التابعة له)
+    $wilayaName = $scannedUser?->wilaya?->name_ar 
+        ?: ($scannedUser?->participant?->wilaya?->name_ar 
+        ?: ($registration?->participant?->wilaya?->name_ar 
+        ?: ($delegationMember?->wilaya?->name_ar ?: '—')));
+
+    // 7. ORGANIZATION / INSTITUTION (المؤسسة التعليمية والتكوينية)
+    $orgName = $scannedUser?->organization?->name_ar 
+        ?: ($scannedUser?->participant?->organization?->name_ar 
+        ?: ($registration?->participant?->organization?->name_ar 
+        ?: ($delegationMember?->organization_name ?: 'المؤسسة الوطنية للتكوين والتعليم المهنيين')));
+
+    // 8. COUNTRY / DELEGATION (الوفد والبلد)
+    $countryName = $scannedUser?->country?->name_ar 
+        ?: ($delegationMember?->delegation?->country?->name_ar ?: 'الجزائر');
+
+    // 9. PHOTO URL
+    $photoUrl = null;
+    if ($delegationMember?->photo_path) {
+        $photoUrl = asset('storage/' . $delegationMember->photo_path);
+    } elseif ($registration?->photo_url) {
+        $photoUrl = $registration->photo_url;
+    } elseif ($scannedUser?->avatar_path) {
+        $photoUrl = asset('storage/' . $scannedUser->avatar_path);
+    }
+
+    // 10. REJECTION & STATUS
     $memberStatus = $delegationMember?->status 
         ? (is_object($delegationMember->status) ? $delegationMember->status->value : (string) $delegationMember->status)
         : null;
@@ -37,21 +134,6 @@
         strtoupper((string)$regStatus) === 'PENDING' || strtoupper((string)$memberStatus) === 'PENDING' => $t('قيد المراجعة', 'EN ATTENTE', 'PENDING REVIEW'),
         default => $t('نشط بالموقع', 'ACTIF', 'ACTIVE'),
     };
-
-    $skillName = $registration?->skill?->name_ar 
-        ?: ($delegationMember?->skill?->name_ar ?: ($registration?->skill?->name_fr ?? '—'));
-
-    $countryName = $scannedUser?->country?->name_ar 
-        ?: ($delegationMember?->delegation?->country?->name_ar ?: 'الجزائر');
-
-    $orgName = $scannedUser?->organization?->name_ar ?: '—';
-
-    $photoUrl = null;
-    if ($delegationMember?->photo_path) {
-        $photoUrl = asset('storage/' . $delegationMember->photo_path);
-    } elseif ($scannedUser?->avatar_path) {
-        $photoUrl = asset('storage/' . $scannedUser->avatar_path);
-    }
 @endphp
 
 <div class="space-y-6 select-none"
@@ -127,8 +209,8 @@
                         osc.stop(ctx.currentTime + 0.15);
                     } catch(e) {}
 
-                    @this.set('query', decodedText);
-                    @this.scan();
+$wire.set('query', decodedText);
+                    $wire.scan();
                     this.stopCamera();
                 };
 
@@ -240,7 +322,7 @@
             <div class="flex gap-2">
                 <div class="relative flex-1">
                     <input type="text" wire:model.defer="query" autofocus id="badge-input"
-                        placeholder="{{ $t('أدخل UUID الشارة، التوكين، رقم جواز السفر، الإيميل أو معرف المستخدم...', 'Saisissez le code UUID, passeport, email ou ID...', 'Enter Badge UUID, Token, Passport, Email or User ID...') }}"
+                        placeholder="{{ $t('أدخل UUID الشارة، التوكين، رقم جواز السفر، NIN، الإيميل أو رقم التسجيل...', 'Saisissez UUID, passeport, NIN, email ou code...', 'Enter Badge UUID, Token, Passport, NIN, Email or Reg #...') }}"
                         class="w-full pe-4 ps-11 py-3.5 rounded-2xl border border-white/20 text-sm font-bold bg-white/10 text-white placeholder-blue-200 focus:bg-white focus:text-slate-900 transition shadow-inner">
                     <svg class="w-5 h-5 text-blue-200 absolute start-4 top-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -321,14 +403,14 @@
                 <div class="flex items-center gap-5">
                     <div class="w-24 h-24 rounded-2xl border-2 border-white/30 overflow-hidden shrink-0 shadow-2xl bg-slate-900 flex items-center justify-center relative">
                         @if($photoUrl)
-                            <img src="{{ $photoUrl }}" alt="{{ $scannedUser->name }}" class="w-full h-full object-cover">
+                            <img src="{{ $photoUrl }}" alt="{{ $nameAr }}" class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-900 to-slate-900 text-white p-2 text-center">
                                 <svg class="w-10 h-10 text-blue-300/80 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                                 </svg>
                                 <span class="text-[10px] font-black text-blue-200 uppercase tracking-wider">
-                                    {{ mb_substr($delegationMember?->first_name ?: $scannedUser->name, 0, 1) }}
+                                    {{ mb_substr($nameAr, 0, 1) }}
                                 </span>
                             </div>
                         @endif
@@ -343,8 +425,13 @@
                     <div class="space-y-1.5">
                         <div class="flex items-center gap-2 flex-wrap">
                             <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight">
-                                {{ $delegationMember?->first_name ? ($delegationMember->first_name . ' ' . $delegationMember->last_name) : $scannedUser->name }}
+                                {{ $nameAr }}
                             </h3>
+                            @if(!empty($nameLatin) && $nameLatin !== $nameAr)
+                                <span class="text-xs font-mono font-bold text-blue-200 bg-white/10 px-2 py-0.5 rounded-lg border border-white/10">
+                                    {{ $nameLatin }}
+                                </span>
+                            @endif
                             @if($scannedUser->country?->flag_emoji)
                                 <span class="text-xl" title="{{ $countryName }}">{{ $scannedUser->country->flag_emoji }}</span>
                             @endif
@@ -356,12 +443,13 @@
 
                         <div class="flex flex-wrap items-center gap-2 pt-1">
                             {{-- Role Badge --}}
-                            @php 
-                                $role = $delegationMember?->member_type 
-                                    ?: ($scannedUser->roles->first()?->name ?: 'COMPETITOR');
-                            @endphp
                             <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-400 text-slate-950 border border-amber-300 uppercase shadow-2xs">
-                                {{ $role }}
+                                {{ $roleLabel }}
+                            </span>
+
+                            {{-- Gender Badge --}}
+                            <span class="px-3 py-1 rounded-full text-xs font-black {{ $isFemale ? 'bg-pink-500 text-white border border-pink-400' : 'bg-blue-600 text-white border border-blue-400' }} shadow-2xs">
+                                {{ $genderLabel }}
                             </span>
 
                             {{-- Status Badge --}}
@@ -412,67 +500,110 @@
 
         </div>
 
-        {{-- DOSSIER DETAILS GRID (8 COMPREHENSIVE CARDS) --}}
+        {{-- DOSSIER DETAILS GRID (ALL 8 COMPLETE CARDS) --}}
         <div class="p-6 bg-slate-50/50 dark:bg-slate-900/40 space-y-6">
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
-                {{-- CARD 1: SKILL & CATEGORY --}}
-                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-1.5">
+                {{-- CARD 1: IDENTITY & GENDER --}}
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-2">
                     <div class="flex items-center gap-2 text-xs font-black text-[#0052CC] dark:text-blue-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
                         </svg>
-                        <span>{{ $t('المهنة / التخصص الفني', 'Métier / Spécialité', 'Skill & Trade Domain') }}</span>
+                        <span>{{ $t('الجنس والصفة والميلاد', 'Genre & Qualité', 'Gender & Quality') }}</span>
                     </div>
-                    <span class="text-sm font-black text-slate-900 dark:text-white block leading-tight">
-                        {{ $skillName }}
-                    </span>
-                    @if($registration?->registration_number)
-                        <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 block pt-1">
-                            #{{ $registration->registration_number }}
-                        </span>
-                    @endif
+                    <div class="text-xs font-bold space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400">{{ $t('الجنس:', 'Genre:', 'Gender:') }}</span>
+                            <span class="font-black {{ $isFemale ? 'text-pink-600 dark:text-pink-400' : 'text-blue-600 dark:text-blue-400' }}">
+                                {{ $genderLabel }}
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400">{{ $t('تاريخ الميلاد:', 'Date de Naissance:', 'DOB:') }}</span>
+                            <span class="font-mono text-slate-800 dark:text-slate-200">{{ $dateOfBirth }}</span>
+                        </div>
+                    </div>
                 </div>
 
-                {{-- CARD 2: COUNTRY & ORGANIZATION --}}
-                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-1.5">
-                    <div class="flex items-center gap-2 text-xs font-black text-[#0052CC] dark:text-blue-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m-18.432 0A8.959 8.959 0 013 12c0-.778.099-1.533.284-2.253"/>
-                        </svg>
-                        <span>{{ $t('الدولة والمؤسسة التكوينية', 'Pays & Établissement', 'Country & Institution') }}</span>
-                    </div>
-                    <span class="text-sm font-black text-slate-900 dark:text-white block leading-tight">
-                        {{ $countryName }}
-                    </span>
-                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 block truncate pt-0.5">
-                        {{ $orgName }}
-                    </span>
-                </div>
-
-                {{-- CARD 3: PASSPORT & NIN --}}
-                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-1.5">
+                {{-- CARD 2: NATIONAL IDENTITY (NIN & PASSPORT) --}}
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-2">
                     <div class="flex items-center gap-2 text-xs font-black text-[#0052CC] dark:text-blue-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
                         </svg>
                         <span>{{ $t('وثائق الهوية الوطنية', 'Pièces d Identité', 'Identity Documents') }}</span>
                     </div>
-                    <div class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 space-y-0.5">
-                        <div class="flex justify-between">
-                            <span class="text-slate-400 font-sans">{{ $t('جواز السفر:', 'Passeport:', 'Passport:') }}</span>
-                            <span>{{ $delegationMember?->passport_number ?: '—' }}</span>
-                        </div>
-                        <div class="flex justify-between">
+                    <div class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 space-y-1">
+                        <div class="flex justify-between items-center">
                             <span class="text-slate-400 font-sans">{{ $t('الرقم الوطني NIN:', 'NIN:', 'NIN:') }}</span>
-                            <span>{{ $delegationMember?->nin_number ?: '—' }}</span>
+                            <span class="text-amber-600 dark:text-amber-400 truncate max-w-[140px]" title="{{ $ninNumber }}">{{ $ninNumber }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 font-sans">{{ $t('جواز السفر:', 'Passeport:', 'Passport:') }}</span>
+                            <span>{{ $passportNumber }}</span>
                         </div>
                     </div>
                 </div>
 
-                {{-- CARD 4: ACCOMMODATION & ROOM --}}
-                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-1.5">
+                {{-- CARD 3: INSTITUTION & WILAYA --}}
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-2">
+                    <div class="flex items-center gap-2 text-xs font-black text-[#0052CC] dark:text-blue-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m-18.432 0A8.959 8.959 0 013 12c0-.778.099-1.533.284-2.253"/>
+                        </svg>
+                        <span>{{ $t('المؤسسة أين يدرس والولاية', 'Établissement & Wilaya', 'Institution & Wilaya') }}</span>
+                    </div>
+                    <span class="text-xs font-black text-slate-900 dark:text-white block leading-tight truncate" title="{{ $orgName }}">
+                        {{ $orgName }}
+                    </span>
+                    <div class="flex justify-between items-center text-xs font-bold pt-0.5">
+                        <span class="text-slate-400">{{ $t('الولاية التابعة له:', 'Wilaya:', 'Wilaya:') }}</span>
+                        <span class="text-emerald-600 dark:text-emerald-400 font-black">{{ $wilayaName }}</span>
+                    </div>
+                </div>
+
+                {{-- CARD 4: SKILL & SPECIALTY --}}
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-2">
+                    <div class="flex items-center gap-2 text-xs font-black text-[#0052CC] dark:text-blue-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+                        </svg>
+                        <span>{{ $t('المهنة والتخصص الرسمي', 'Métier / Spécialité', 'Skill & Trade Domain') }}</span>
+                    </div>
+                    <span class="text-xs font-black text-slate-900 dark:text-white block leading-tight truncate" title="{{ $skillName }}">
+                        {{ $skillName }}
+                    </span>
+                    @if($registration?->registration_number)
+                        <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 block pt-0.5">
+                            #{{ $registration->registration_number }}
+                        </span>
+                    @endif
+                </div>
+
+                {{-- CARD 5: CONTACT & PHONE --}}
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-2">
+                    <div class="flex items-center gap-2 text-xs font-black text-[#0052CC] dark:text-blue-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.824-1.154-5.08-3.41-6.234-6.234l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/>
+                        </svg>
+                        <span>{{ $t('بيانات الاتصال والهاتف', 'Contact & Téléphone', 'Contact Info & Phone') }}</span>
+                    </div>
+                    <div class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 space-y-1">
+                        <div class="flex justify-between items-center dir-ltr">
+                            <span class="text-slate-400 font-sans">{{ $t('الهاتف:', 'Tél:', 'Phone:') }}</span>
+                            <span>{{ $phoneNumber }}</span>
+                        </div>
+                        <div class="flex justify-between items-center dir-ltr truncate">
+                            <span class="text-slate-400 font-sans me-1">Email:</span>
+                            <span class="truncate text-[11px]">{{ $scannedUser->email }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- CARD 6: ACCOMMODATION & ROOM --}}
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-2">
                     <div class="flex items-center gap-2 text-xs font-black text-[#0052CC] dark:text-blue-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21"/>
@@ -487,8 +618,8 @@
                     </span>
                 </div>
 
-                {{-- CARD 5: DIETARY NOTES --}}
-                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-1.5">
+                {{-- CARD 7: DIETARY REQUIREMENTS --}}
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-2">
                     <div class="flex items-center gap-2 text-xs font-black text-emerald-600 dark:text-emerald-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25"/>
@@ -498,58 +629,13 @@
                     <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                         {{ !empty($delegationMember?->dietary_requirements) ? implode(', ', $delegationMember->dietary_requirements) : 'حلال / عالي التغذية' }}
                     </span>
-                    @if($delegationMember?->dietary_notes)
-                        <span class="text-[11px] text-slate-500 block truncate pt-0.5">
-                            {{ $delegationMember->dietary_notes }}
-                        </span>
-                    @endif
                 </div>
 
-                {{-- CARD 6: PERSONAL SPECS & SIZES --}}
-                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-1.5">
-                    <div class="flex items-center gap-2 text-xs font-black text-purple-600 dark:text-purple-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
-                        </svg>
-                        <span>{{ $t('القياسات الشخصية', 'Taille & Pointure', 'Personal Specs') }}</span>
-                    </div>
-                    <div class="text-xs font-bold text-slate-800 dark:text-slate-200 space-y-0.5">
-                        <div class="flex justify-between">
-                            <span class="text-slate-400 font-sans">{{ $t('الجنس:', 'Genre:', 'Gender:') }}</span>
-                            <span>{{ $delegationMember?->gender === 'MALE' ? 'ذكر' : ($delegationMember?->gender === 'FEMALE' ? 'أنثى' : '—') }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-400 font-sans">{{ $t('بدلة | حذاء:', 'Taille | Pointure:', 'Suit | Shoe:') }}</span>
-                            <span>{{ $delegationMember?->suit_size ?: ($registration?->suit_size ?: '—') }} | {{ $delegationMember?->shoe_size ?: ($registration?->shoe_size ?: '—') }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- CARD 7: FLIGHTS & TRAVEL --}}
-                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-1.5">
-                    <div class="flex items-center gap-2 text-xs font-black text-amber-600 dark:text-amber-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12L3 21l9-3 9 3-3-9M6 12l9-3m-9 3l-3-9 9 3 9-3-3 9"/>
-                        </svg>
-                        <span>{{ $t('رحلات الوصول والمغادرة', 'Vols & Logistique', 'Flights & Travel') }}</span>
-                    </div>
-                    <div class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 space-y-0.5">
-                        <div class="flex justify-between">
-                            <span class="text-slate-400 font-sans">{{ $t('الوصول:', 'Arrivée:', 'Arrival:') }}</span>
-                            <span>{{ $delegationMember?->arrival_flight ?: '—' }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-400 font-sans">{{ $t('المغادرة:', 'Départ:', 'Departure:') }}</span>
-                            <span>{{ $delegationMember?->departure_flight ?: '—' }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- CARD 8: SYSTEM & ACCESS METADATA --}}
-                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-1.5">
-                    <div class="flex items-center gap-2 text-xs font-black text-slate-600 dark:text-slate-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0h-18"/>
+                {{-- CARD 8: SYSTEM & AUDIT INFO --}}
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs space-y-2">
+                    <div class="flex items-center gap-2 text-xs font-black text-slate-600 dark:text-slate-300">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.02M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
                         </svg>
                         <span>{{ $t('معلومات النظام والنفاذ', 'Infos Système', 'System Info') }}</span>
                     </div>
