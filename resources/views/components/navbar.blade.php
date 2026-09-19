@@ -1,7 +1,9 @@
 @php
-    $siteLogo = app(\App\Services\SettingsEngine::class)->get('site_logo', '/logo.svg');
+    $settingsEngine = app(\App\Services\SettingsEngine::class);
+    $siteLogo = $settingsEngine->get('site_logo', '/logo.svg');
     $logoUrl = str_starts_with($siteLogo, 'http') ? $siteLogo : asset($siteLogo);
     $locale = app()->getLocale();
+    $registrationEnabled = $settingsEngine->getBool('registration_competitors_enabled', false);
 @endphp
 
 <header class="sticky top-3 sm:top-4 z-50 w-full px-3 sm:px-6 lg:px-8 pointer-events-none {{ request()->routeIs('home') ? '-mb-20 sm:-mb-24' : 'mb-6 sm:mb-10' }}" x-data="{ mobileMenuOpen: false, activeDropdown: null, dark: document.documentElement.classList.contains('dark'), toggleDark() { this.dark = !this.dark; localStorage.setItem('wsap_dark_mode', this.dark); document.documentElement.classList.toggle('dark', this.dark); } }">
@@ -151,11 +153,18 @@
              3. BADGES & TOOLS: STATUS PILL, LANG, MOON TOGGLE
              ═════════════════════════════════════════════════════════════════ -->
         <div class="hidden lg:flex items-center gap-2 shrink-0">
-            <!-- Registrations Open Live Pulse Badge -->
-            <a href="{{ route('registration') }}" class="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/90 text-xs font-black flex items-center gap-2 ws-transition hover:bg-emerald-100 shadow-2xs" title="انطلاق التسجيلات الرسمية للأولمبياد">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
-                <span>{{ $locale === 'fr' ? 'Inscriptions Ouvertes' : ($locale === 'en' ? 'Registrations Open' : 'التسجيلات مفتوحة') }}</span>
-            </a>
+            <!-- Registrations Live Status Badge -->
+            @if($registrationEnabled)
+                <a href="{{ route('registration') }}" class="px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200/90 dark:border-emerald-800/60 text-xs font-black flex items-center gap-2 ws-transition hover:bg-emerald-100 dark:hover:bg-emerald-900/50 shadow-2xs" title="انطلاق التسجيلات الرسمية للأولمبياد">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                    <span>{{ $locale === 'fr' ? 'Inscriptions Ouvertes' : ($locale === 'en' ? 'Registrations Open' : 'التسجيلات مفتوحة') }}</span>
+                </a>
+            @else
+                <a href="{{ route('registration') }}" class="px-3 py-1.5 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200/90 dark:border-rose-800/60 text-xs font-black flex items-center gap-2 ws-transition hover:bg-rose-100 dark:hover:bg-rose-900/50 shadow-2xs" title="التسجيلات مغلقة حالياً">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>
+                    <span>{{ $locale === 'fr' ? 'Inscriptions Fermées' : ($locale === 'en' ? 'Registrations Closed' : 'التسجيلات مغلقة') }}</span>
+                </a>
+            @endif
 
             <!-- Language Switcher Pill -->
             <div class="relative" x-data="{ langOpen: false }">
@@ -243,7 +252,7 @@
                         <!-- Header inside Dropdown -->
                         <div class="px-3 py-1.5 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-wider flex items-center justify-between">
                             <span>{{ $locale === 'fr' ? 'Choisir le type d inscription' : ($locale === 'en' ? 'Choose Registration Type' : 'اختر نوع التسجيل في الأولمبياد') }}</span>
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="w-2 h-2 rounded-full {{ $registrationEnabled ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500' }}"></span>
                         </div>
 
                         <!-- 1. Competitor Registration Option -->
