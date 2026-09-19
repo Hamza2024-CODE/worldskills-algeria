@@ -179,13 +179,14 @@ Route::match(['get', 'post'], '/lang/{locale}', function (string $locale, \Illum
 // Shared CMS & Media Routes (Accessible by Super Admin & Media Manager)
 Route::prefix('hamza')->middleware(['auth', 'role:' . RoleEnum::SUPER_ADMIN->value . '|' . RoleEnum::MEDIA_MANAGER->value])->name('admin.')->group(function () {
     Route::get('/media/dashboard', MediaManagerDashboard::class)->name('media.dashboard');
-    Route::get('/cms/news',        AdminNewsIndex::class)->name('cms.news');
-    Route::get('/cms/gallery',     AdminGalleryIndex::class)->name('cms.gallery');
-    Route::get('/cms/videos',      AdminVideoIndex::class)->name('cms.videos');
-    Route::get('/cms/homepage',    CmsHomepageManager::class)->name('cms.homepage');
-    Route::get('/cms/guide', \App\Livewire\Admin\AdminGuideCmsManager::class)->name('cms.guide');
-    Route::get('/appearance',      \App\Livewire\Admin\PlatformAppearanceManager::class)->name('appearance');
-    Route::get('/live-tv',         \App\Livewire\Admin\LiveTvIndex::class)->name('live-tv');
+    Route::get('/cms',             \App\Livewire\Admin\CmsUnifiedHub::class)->name('cms.hub');
+    Route::get('/cms/homepage',    \App\Livewire\Admin\CmsUnifiedHub::class)->name('cms.homepage');
+    Route::get('/live-tv',         \App\Livewire\Admin\CmsUnifiedHub::class)->name('live-tv');
+    Route::get('/cms/news',        \App\Livewire\Admin\CmsUnifiedHub::class)->name('cms.news');
+    Route::get('/cms/videos',      \App\Livewire\Admin\CmsUnifiedHub::class)->name('cms.videos');
+    Route::get('/cms/gallery',     \App\Livewire\Admin\CmsUnifiedHub::class)->name('cms.gallery');
+    Route::get('/cms/guide',       \App\Livewire\Admin\CmsUnifiedHub::class)->name('cms.guide');
+    Route::get('/appearance',      \App\Livewire\Admin\CmsUnifiedHub::class)->name('appearance');
 });
 
 // Smart Admin Dashboard Route — Handles all roles seamlessly without 403 Access Denied errors
@@ -242,7 +243,7 @@ Route::prefix('hamza')->middleware(['auth', 'role:' . RoleEnum::SUPER_ADMIN->val
     // DEACTIVATED: Route::get('/logistics', AdminLogisticsCenter::class)->name('logistics');
     Route::get('/readiness', ReadinessCenter::class)->name('readiness');
     Route::get('/events', AdminEventCenter::class)->name('events');
-    Route::get('/cms/legal', \App\Livewire\Admin\LegalCmsManager::class)->name('cms.legal');
+    Route::get('/cms/legal', \App\Livewire\Admin\CmsUnifiedHub::class)->name('cms.legal');
 
     // Communication & Notification Center (WSAP V8.3)
     Route::get('/notifications', \App\Livewire\Admin\Notifications\NotificationIndex::class)->name('notifications.index');
