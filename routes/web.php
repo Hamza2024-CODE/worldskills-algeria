@@ -234,7 +234,7 @@ Route::prefix('hamza')->middleware(['auth', 'role:' . RoleEnum::SUPER_ADMIN->val
     Route::get('/accommodations',  AdminAccommodationIndex::class)->name('accommodations');
     // DEACTIVATED: Route::get('/transport',       AdminTransportIndex::class)->name('transport');
     Route::get('/restaurants',     AdminRestaurantIndex::class)->name('restaurants');
-    Route::get('/meal-scanner',    AdminMealScannerIndex::class)->name('meal.scanner');
+    Route::get('/meal-scanner',    fn() => redirect()->route('admin.restaurants'))->name('meal.scanner');
     Route::get('/dietary',         AdminDietaryIndex::class)->name('dietary');
     Route::get('/diplomatic',      DiplomaticCenter::class)->name('diplomatic');
     Route::get('/audit',           AdminAuditLogIndex::class)->name('audit');
