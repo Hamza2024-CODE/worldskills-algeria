@@ -14,8 +14,10 @@ use App\Services\Rules\WsapAccessRulesEngine;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
 
+#[Layout('components.dashboard.app-shell')]
 class AdminRestaurantIndex extends Component
 {
     use WithPagination;
