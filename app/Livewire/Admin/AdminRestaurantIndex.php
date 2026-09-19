@@ -177,7 +177,7 @@ class AdminRestaurantIndex extends Component
 
         // Strategy 2: Search User directly if not matched via Badge
         if (!$user) {
-            $user = User::with(['country', 'participant.registrations', 'dietaryRequirements', 'badge'])
+            $user = User::with(['country', 'participant.registrations'])
                 ->where(function ($q) use ($token) {
                     $q->where('email', $token)
                       ->orWhere('name', $token);
@@ -194,8 +194,8 @@ class AdminRestaurantIndex extends Component
                 })
                 ->first();
 
-            if ($user && $user->badge) {
-                $badge = $user->badge;
+            if ($user) {
+                $badge = Badge::where('user_id', $user->id)->first();
             }
         }
 
@@ -294,7 +294,7 @@ class AdminRestaurantIndex extends Component
         // Evaluate access with WsapAccessRulesEngine
         if ($badge) {
             $accessEngine = app(WsapAccessRulesEngine::class);
-            $decision = $accessEngine->evaluateAccess($badge, null, 'MEAL_SLOT', (string) $slot->id, (string) Auth::id());
+            $decision = $accessEngine->evaluateAccess($badge->badge_uuid ?? $badge->id, 'MEAL_SLOT', (string) $slot->id, null, (string) Auth::id());
             $isAllowed = $decision['is_allowed'];
             $reasonAr  = $decision['message_ar'] ?? ($isAllowed ? 'مصرح بالوجبة' : 'غير مصرح');
         } else {
@@ -353,7 +353,7 @@ class AdminRestaurantIndex extends Component
             'meal_slot_id'              => $slot->id,
             'user_id'                   => $user->id,
             'scanned_by_user_id'        => Auth::id(),
-            'badge_code'                => $user->badge?->badge_uuid ?? 'MANUAL_OVERRIDE',
+            'badge_code'                => Badge::where('user_id', $user->id)->first()?->badge_uuid ?? 'MANUAL_OVERRIDE',
             'status'                    => 'AUTHORIZED',
             'denial_reason'             => 'تجاوز واستثناء يدوي مصرح به من المشرف',
             'participant_name_snapshot' => $user->name,
