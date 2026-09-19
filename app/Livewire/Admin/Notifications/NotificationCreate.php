@@ -57,9 +57,9 @@ class NotificationCreate extends Component
         switch ($templateKey) {
             case 'MEAL':
                 $this->type = 'MEAL';
-                $this->title_ar = '🍽️ وجبة الغداء متاحة الآن';
-                $this->title_fr = '🍽️ Le déjeuner est disponible';
-                $this->title_en = '🍽️ Lunch is now open';
+                $this->title_ar = 'وجبة الغداء متاحة الآن';
+                $this->title_fr = 'Le déjeuner est disponible';
+                $this->title_en = 'Lunch is now open';
                 $this->body_ar = 'تذكرة: وجبة الغداء متاحة الآن في المطعم المخصص. يرجى إبراز الشارة الرسمية عند الدخول.';
                 $this->priority = 'NORMAL';
                 $this->action_type = 'MEAL_SLOT';
@@ -67,9 +67,9 @@ class NotificationCreate extends Component
 
             case 'TECHNICAL_MEETING':
                 $this->type = 'TECHNICAL_MEETING';
-                $this->title_ar = '🏛️ تذكير باجتماع تقني جديد';
-                $this->title_fr = '🏛️ Rappel de réunion technique';
-                $this->title_en = '🏛️ Technical Meeting Reminder';
+                $this->title_ar = 'تذكير باجتماع تقني جديد';
+                $this->title_fr = 'Rappel de réunion technique';
+                $this->title_en = 'Technical Meeting Reminder';
                 $this->body_ar = 'نذكركم بحضور الاجتماع التقني الخاص بالتخصص لمناقشة التعليمات وقواعد التحكيم والتوزيع.';
                 $this->priority = 'HIGH';
                 $this->action_type = 'TECHNICAL_MEETING';
@@ -77,9 +77,9 @@ class NotificationCreate extends Component
 
             case 'ACCOMMODATION':
                 $this->type = 'ACCOMMODATION';
-                $this->title_ar = '🏠 تعليمات وتوزيع السكن والإقامة';
-                $this->title_fr = '🏠 Consignes d\'hébergement';
-                $this->title_en = '🏠 Accommodation Instructions';
+                $this->title_ar = 'تعليمات وتوزيع السكن والإقامة';
+                $this->title_fr = 'Consignes d\'hébergement';
+                $this->title_en = 'Accommodation Instructions';
                 $this->body_ar = 'يرجى الاطلاع على تفاصيل الغرفة المسندة ومواعيد الدخول والمغادرة في مقر السكن.';
                 $this->priority = 'NORMAL';
                 $this->action_type = 'ACCOMMODATION';
@@ -88,18 +88,18 @@ class NotificationCreate extends Component
             case 'URGENT':
                 $this->type = 'URGENT';
                 $this->priority = 'URGENT';
-                $this->title_ar = '🚨 تنبيه عاجل من الإدارة العليا';
-                $this->title_fr = '🚨 Alerte urgente de la direction';
-                $this->title_en = '🚨 Urgent Alert from Management';
+                $this->title_ar = 'تنبيه عاجل من الإدارة العليا';
+                $this->title_fr = 'Alerte urgente de la direction';
+                $this->title_en = 'Urgent Alert from Management';
                 $this->body_ar = 'تنبيه هام وعاجل لجميع الأعضاء والوفود: يرجى الاتباع الفوري للتعليمات المرفقة.';
                 $this->action_type = 'NOTIFICATION_CENTER';
                 break;
 
             case 'COMPETITION':
                 $this->type = 'COMPETITION';
-                $this->title_ar = '🏆 انطلاق الجولة القادمة للمنافسة';
-                $this->title_fr = '🏆 Début de la prochaine épreuve';
-                $this->title_en = '🏆 Start of Next Competition Round';
+                $this->title_ar = 'انطلاق الجولة القادمة للمنافسة';
+                $this->title_fr = 'Début de la prochaine épreuve';
+                $this->title_en = 'Start of Next Competition Round';
                 $this->body_ar = 'نحيطكم علماً ببدء الجولة التنافسية القادمة. يرجى التواجد في الورشات 15 دقيقة قبل الانطلاق.';
                 $this->priority = 'HIGH';
                 $this->action_type = 'COMPETITION';
