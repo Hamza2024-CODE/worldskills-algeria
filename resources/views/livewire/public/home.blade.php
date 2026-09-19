@@ -297,7 +297,7 @@
                         <span>مباشر</span>
                     </div>
                     <div id="wsap-live-clock" class="font-mono text-xs font-black text-slate-900 leading-tight">14:30:22</div>
-                    <div id="wsap-live-date" class="text-[9px] font-bold text-slate-600 mt-0.5 leading-none">{{ app()->getLocale() === 'fr' ? '15 - 20 Novembre 2026' : (app()->getLocale() === 'en' ? 'Nov 15 - 20, 2026' : '15 - 20 نوفمبر 2026') }}</div>
+                    <div id="wsap-live-date" class="text-[9px] font-bold text-slate-600 mt-0.5 leading-none">{{ app()->getLocale() === 'fr' ? '16 - 21 Novembre 2026' : (app()->getLocale() === 'en' ? 'Nov 16 - 21, 2026' : '16 - 21 نوفمبر 2026') }}</div>
                 </div>
             </div>
 

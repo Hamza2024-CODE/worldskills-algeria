@@ -24,7 +24,7 @@ return [
     'logout' => 'Log Out',
     'search' => 'Search Platform',
     'hero_title' => 'African Skills Competition 2026',
-    'hero_subtitle' => 'WorldSkills Algeria — 15 to 20 November 2026',
+    'hero_subtitle' => 'WorldSkills Algeria — 16 to 21 November 2026',
     'explore_more' => 'Explore More',
     'register_now' => 'Register Now',
     'african_event_countdown' => 'Countdown — Opening of African Skills Competition 2026',
