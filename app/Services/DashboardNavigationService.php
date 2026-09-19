@@ -8,75 +8,77 @@ use App\Models\User;
 class DashboardNavigationService
 {
     /**
-     * Returns structured categorized navigation arrays for dashboard sidebars and mobile drawers.
+     * Get categorized navigation menu tailored to user roles.
      */
     public function getCategorizedNavigation(?User $user = null): array
     {
-        // Default fallback to SUPER_ADMIN / NATIONAL_ADMIN
-        if (!$user || $user->hasRole(RoleEnum::SUPER_ADMIN->value) || $user->hasRole(RoleEnum::NATIONAL_ADMIN->value)) {
+        $user = $user ?? auth()->user();
+        if (!$user) {
+            return [];
+        }
+
+        if ($user->hasRole(RoleEnum::SUPER_ADMIN->value) || $user->hasRole(RoleEnum::NATIONAL_ADMIN->value)) {
             return [
                 [
-                    'category' => $this->t('التحكم والتوجيه الإستراتيجي', 'Commandement Central', 'Strategic Command'),
+                    'category' => $this->t('الرئيسية والإدارة والوفود', 'Aperçu & Roster', 'Executive Overview & Roster'),
                     'category_icon' => 'home',
                     'items' => [
-                        ['key' => 'dash',       'label' => $this->t('لوحة التحكم القيادية', 'Tableau de Bord', 'Main Dashboard'), 'icon' => 'home', 'route' => 'admin.dashboard'],
-                        ['key' => 'operations', 'label' => $this->t('مركز العمليات والجهوزية الميدانية', 'Centre d\'Opérations', 'Field Operations Center'), 'icon' => 'bolt', 'route' => 'admin.operations'],
-                        ['key' => 'readiness',  'label' => $this->t('مؤشر الجهوزية الأولمبية', 'Indicateur de Préparation', 'Readiness Index'), 'icon' => 'chart-bar', 'route' => 'admin.readiness'],
-                        ['key' => 'events',     'label' => $this->t('جدول التظاهرات والفعاليات', 'Événements & Agenda', 'Events & Ceremonies'), 'icon' => 'calendar', 'route' => 'admin.events'],
-                    ]
-                ],
-                [
-                    'category' => $this->t('إدارة المتنافسين والوفود', 'Compétiteurs & Délégations', 'Competitors & Delegations'),
-                    'category_icon' => 'users',
-                    'items' => [
+                        ['key' => 'dash',          'label' => $this->t('اللوحة التنفيذية الرئيسية', 'Tableau de Bord', 'Executive Dashboard'), 'icon' => 'home', 'route' => 'admin.dashboard'],
                         ['key' => 'users',         'label' => $this->t('سجل وحسابات المستخدمين', 'Utilisateurs', 'Users & Accounts'), 'icon' => 'users', 'route' => 'admin.users'],
                         ['key' => 'registrations', 'label' => $this->t('سجل التسجيلات والطلبات', 'Inscriptions', 'Registrations Log'), 'icon' => 'clipboard-list', 'route' => 'admin.registrations'],
                         ['key' => 'participants',  'label' => $this->t('المتنافسون والمترشحون المعتمدون', 'Compétiteurs', 'Approved Competitors'), 'icon' => 'user', 'route' => 'admin.participants'],
                         ['key' => 'countries',     'label' => $this->t('الدول والوفود الوطنية المشاركة', 'Délégations Nationales', 'Participating Countries'), 'icon' => 'flag', 'route' => 'admin.countries'],
-                        ['key' => 'diplomatic',    'label' => $this->t('الوفود الرسمية والدبلوماسية VIP', 'Délégations VIP', 'VIP & Diplomatic'), 'icon' => 'sparkles', 'route' => 'admin.diplomatic'],
+                        ['key' => 'diplomatic',    'label' => $this->t('الوفود الرسمية والدبلوماسية VIP', 'Délégations VIP', 'VIP & Diplomatic Roster'), 'icon' => 'sparkles', 'route' => 'admin.diplomatic'],
                     ]
                 ],
                 [
-                    'category' => $this->t('التخصصات والتحكيم والتنافس', 'Métiers & Évaluation', 'Skills & Assessment'),
+                    'category' => $this->t('التخصصات والتحكيم والتنافس الأولمبي', 'Métiers, Jury & Évaluation', 'Skills, Assessment & Jury'),
                     'category_icon' => 'trophy',
                     'items' => [
                         ['key' => 'skills',        'label' => $this->t('التخصصات الأولمبية والمهن', 'Compétences Olympiques', 'Olympic Skills'), 'icon' => 'trophy', 'route' => 'admin.skills'],
                         ['key' => 'judges',        'label' => $this->t('المحكمون والخبراء ومجالس التحكيم', 'Jury & Experts', 'Judges & Experts'), 'icon' => 'scale', 'route' => 'admin.judges'],
                         ['key' => 'cis',           'label' => $this->t('نظام التقييم الميداني (CIS)', 'Système d\'Évaluation CIS', 'CIS Evaluation System'), 'icon' => 'chart-bar', 'route' => 'admin.cis'],
-// DEACTIVATED: ['key' => 'appeals',       'label' => $this->t('الطعون الفنية والاعتراضات', 'Recours Techniques', 'Technical Appeals'), 'icon' => 'scale', 'route' => 'admin.appeals'],
                         ['key' => 'equipment',     'label' => $this->t('المعدات والتجهيزات الفنية', 'Équipements Techniques', 'Technical Equipment'), 'icon' => 'wrench-screwdriver', 'route' => 'admin.equipment'],
                     ]
                 ],
                 [
-                    'category' => $this->t('الاعتمادات والأمن والخدمات الميدانية', 'Accréditations & Services', 'Accreditation & Field Services'),
+                    'category' => $this->t('الاعتمادات والخدمات واللوجستيات', 'Accréditations & Logistique', 'Accreditations & Field Services'),
                     'category_icon' => 'shield-check',
                     'items' => [
                         ['key' => 'accreditations','label' => $this->t('بطاقات الاعتماد والمناطق الأمنية', 'Accréditations & Zones', 'Accreditations & Zones'), 'icon' => 'identification', 'route' => 'admin.accreditations'],
                         ['key' => 'certificates',  'label' => $this->t('الشهادات والتوثيق الإلكتروني QR', 'Certificats & QR', 'QR Certificates'), 'icon' => 'document-check', 'route' => 'admin.certificates'],
                         ['key' => 'scanner',       'label' => $this->t('ماسح الـ QR الأمني المباشر', 'Scanner QR Sécurité', 'Security QR Scanner'), 'icon' => 'camera', 'route' => 'admin.scanner'],
-                        ['key' => 'accommodations','label' => $this->t('السكن والإقامة بالقرية', 'Hébergement', 'Accommodations'), 'icon' => 'building-office', 'route' => 'admin.accommodations'],
-                        ['key' => 'logistics_arrivals', 'label' => $this->t('وصول الوفود وتذاكر الطيران', 'Arrivées & Vol', 'Arrivals & Flights'), 'icon' => 'truck', 'route' => 'admin.logistics.arrivals'],
-                        ['key' => 'restaurants',   'label' => $this->t('المطاعم والإطعام والوجبات', 'Restauration & Repas', 'Catering & Meals'), 'icon' => 'cake', 'route' => 'admin.restaurants'],
-                        ['key' => 'meal_scanner',  'label' => $this->t('ماسح شارة المطعم الإطعام', 'Scanner Repas', 'Meal Scanner'), 'icon' => 'qr-code', 'route' => 'admin.meal.scanner'],
-                        ['key' => 'dietary',       'label' => $this->t('حساسيات الطعام والأنظمة الغذائية', 'Régimes Alimentaires', 'Dietary & Allergies'), 'icon' => 'sparkles', 'route' => 'admin.dietary'],
+                        ['key' => 'accommodations','label' => $this->t('السكن والإقامة بالقرية الأولمبية', 'Hébergement', 'Accommodations'), 'icon' => 'building-office', 'route' => 'admin.accommodations'],
+                        ['key' => 'logistics_arrivals', 'label' => $this->t('وصول الوفود وتذاكر الطيران', 'Arrivées & Vols', 'Arrivals & Flights'), 'icon' => 'truck', 'route' => 'admin.logistics.arrivals'],
+                        ['key' => 'dietary',       'label' => $this->t('مركز المطاعم والأنظمة الغذائية والحساسيات', 'Restauration & Régimes', 'Catering & Dietary Center'), 'icon' => 'sparkles', 'route' => 'admin.dietary'],
                     ]
                 ],
                 [
-                    'category' => $this->t('محتوى المنصة والتواصل والإعدادات', 'CMS, Media & Système', 'CMS, Media & System'),
+                    'category' => $this->t('المركز الإعلامي والمنصة والإعدادات', 'CMS, Média & Système', 'CMS, Media & System Center'),
                     'category_icon' => 'newspaper',
                     'items' => [
-                        ['key' => 'cms_homepage',  'label' => $this->t('إدارة الواجهة والصفحة الرئيسية (CMS)', 'CMS Page d\'Accueil', 'CMS Homepage Manager'), 'icon' => 'home', 'route' => 'admin.cms.homepage'],
-                        ['key' => 'live_tv',       'label' => $this->t('التحكم بالبث المباشر (Live TV)', 'Direct TV & Diffusion', 'Live TV Broadcast'), 'icon' => 'video-camera', 'route' => 'admin.live-tv'],
-                        ['key' => 'cms_news',      'label' => $this->t('الأخبار والمقالات والتغطيات', 'Actualités & Articles', 'News & Articles'), 'icon' => 'newspaper', 'route' => 'admin.cms.news'],
-                        ['key' => 'cms_videos',    'label' => $this->t('مكتبة الفيديو والتلفزيون', 'Vidéothèque', 'Video Library'), 'icon' => 'video-camera', 'route' => 'admin.cms.videos'],
-                        ['key' => 'cms_gallery',   'label' => $this->t('معرض الصور والفعاليات', 'Galerie Photos', 'Photo Gallery'), 'icon' => 'photo', 'route' => 'admin.cms.gallery'],
+                        ['key' => 'cms_hub',       'label' => $this->t('المركز الإعلامي وCMS الموحد', 'Centre Média & CMS', 'Unified Media & CMS Hub'), 'icon' => 'home', 'route' => 'admin.cms.hub'],
                         ['key' => 'partners',      'label' => $this->t('الشركاء والرعاة الرسميون', 'Partenaires & Sponsors', 'Partners & Sponsors'), 'icon' => 'sparkles', 'route' => 'admin.partners'],
                         ['key' => 'legal',         'label' => $this->t('الشروط والسياسات القانونية', 'Mentions Légales', 'Legal & Terms'), 'icon' => 'document-text', 'route' => 'admin.cms.legal'],
-                        ['key' => 'notifications', 'label' => $this->t('مركز التواصل والتنبيهات', 'Centre de Notifications', 'Notification Center'), 'icon' => 'bell', 'route' => 'admin.notifications.index'],
-                        ['key' => 'reports',       'label' => $this->t('التقارير والإحصائيات الشاملة', 'Rapports & Statistiques', 'Reports & Analytics'), 'icon' => 'chart-bar', 'route' => 'admin.reports'],
-                        ['key' => 'appearance',    'label' => $this->t('استوديو المظهر والهوية', 'Apparence & Style', 'Appearance Studio'), 'icon' => 'paint-brush', 'route' => 'admin.appearance'],
+                        ['key' => 'notifications', 'label' => $this->t('مركز التواصل والتنبيهات الموحد', 'Centre de Notifications', 'Central Notification Hub'), 'icon' => 'bell', 'route' => 'admin.notifications.index'],
+                        ['key' => 'reports',       'label' => $this->t('التقارير والإحصائيات الشاملة', 'Rapports & Statistiques', 'Executive Reports & Analytics'), 'icon' => 'chart-bar', 'route' => 'admin.reports'],
                         ['key' => 'editions',      'label' => $this->t('الدورات والطبعات الرسمية', 'Éditions Officielles', 'Official Editions'), 'icon' => 'calendar', 'route' => 'admin.editions'],
-                        ['key' => 'security',      'label' => $this->t('الأمان وسجلات الرقابة التدقيقية', 'Sécurité & Traçabilité', 'Security Audit Trail'), 'icon' => 'shield-check', 'route' => 'admin.audit'],
+                        ['key' => 'appearance',    'label' => $this->t('استوديو المظهر والهوية', 'Apparence & Style', 'Appearance Studio'), 'icon' => 'paint-brush', 'route' => 'admin.appearance'],
+                        ['key' => 'security',      'label' => $this->t('الأمان وسجلات الرقابة والتدقيق', 'Sécurité & Traçabilité', 'Security Audit Trail'), 'icon' => 'shield-check', 'route' => 'admin.audit'],
+                    ]
+                ]
+            ];
+        }
+
+        if ($user->hasRole(RoleEnum::MEDIA_MANAGER->value)) {
+            return [
+                [
+                    'category' => $this->t('المركز الإعلامي وCMS', 'Centre Média & CMS', 'Media & CMS Hub'),
+                    'category_icon' => 'newspaper',
+                    'items' => [
+                        ['key' => 'media_dash',  'label' => $this->t('لوحة التحكم الإعلامية', 'Tableau Média', 'Media Dashboard'), 'icon' => 'home', 'route' => 'admin.media.dashboard'],
+                        ['key' => 'cms_hub',     'label' => $this->t('المركز الإعلامي وCMS الموحد', 'Centre Média & CMS', 'Unified Media & CMS Hub'), 'icon' => 'newspaper', 'route' => 'admin.cms.hub'],
+                        ['key' => 'appearance',  'label' => $this->t('استوديو المظهر والهوية', 'Apparence & Style', 'Appearance Studio'), 'icon' => 'paint-brush', 'route' => 'admin.appearance'],
                     ]
                 ]
             ];
@@ -116,7 +118,6 @@ class DashboardNavigationService
                     'category' => $this->t('الخدمات واللوجستيات', 'Logistique & Services', 'Logistics & Services'),
                     'category_icon' => 'truck',
                     'items' => [
-// DEACTIVATED: ['key' => 'appeals',     'label' => $this->t('الطعون الفنية', 'Recours Techniques', 'Technical Appeals'), 'icon' => 'document-text', 'route' => 'country.appeals'],
                         ['key' => 'dietary',     'label' => $this->t('حساسية الطعام والإطعام', 'Allergies & Restauration', 'Dietary & Food Allergies'), 'icon' => 'sparkles', 'route' => 'country.dietary'],
                         ['key' => 'arrivals',    'label' => $this->t('تذاكر الطيران وتوقيت الوصول', 'Billets d\'Avion & Arrivée', 'Flight Tickets & Arrival'), 'icon' => 'truck', 'route' => 'country.arrivals'],
                         ['key' => 'skills_sel',  'label' => $this->t('اختيار التخصصات', 'Sélection Métiers', 'Skill Selection'), 'icon' => 'check-circle', 'route' => 'country.skills'],
