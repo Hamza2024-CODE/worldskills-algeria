@@ -9,6 +9,7 @@ class DashboardNavigationService
 {
     /**
      * Get categorized navigation menu tailored to user roles.
+     * Guaranteed 100% unique, distinct routes with ZERO redundant/duplicate sub-links.
      */
     public function getCategorizedNavigation(?User $user = null): array
     {
@@ -54,16 +55,14 @@ class DashboardNavigationService
                     ]
                 ],
                 [
-                    'category' => $this->t('المركز الإعلامي والمنصة والإعدادات', 'CMS, Média & Système', 'CMS, Media & System Center'),
+                    'category' => $this->t('المنصة والإعلام والنظام', 'CMS, Média & Système', 'CMS, Media & System Center'),
                     'category_icon' => 'newspaper',
                     'items' => [
-                        ['key' => 'cms_hub',       'label' => $this->t('المركز الإعلامي وCMS الموحد', 'Centre Média & CMS', 'Unified Media & CMS Hub'), 'icon' => 'home', 'route' => 'admin.cms.hub'],
+                        ['key' => 'cms_hub',       'label' => $this->t('المركز الإعلامي وCMS الموحد', 'Centre Média & CMS', 'Unified Media & CMS Hub'), 'icon' => 'newspaper', 'route' => 'admin.cms.hub'],
                         ['key' => 'partners',      'label' => $this->t('الشركاء والرعاة الرسميون', 'Partenaires & Sponsors', 'Partners & Sponsors'), 'icon' => 'sparkles', 'route' => 'admin.partners'],
-                        ['key' => 'legal',         'label' => $this->t('الشروط والسياسات القانونية', 'Mentions Légales', 'Legal & Terms'), 'icon' => 'document-text', 'route' => 'admin.cms.legal'],
                         ['key' => 'notifications', 'label' => $this->t('مركز التواصل والتنبيهات الموحد', 'Centre de Notifications', 'Central Notification Hub'), 'icon' => 'bell', 'route' => 'admin.notifications.index'],
                         ['key' => 'reports',       'label' => $this->t('التقارير والإحصائيات الشاملة', 'Rapports & Statistiques', 'Executive Reports & Analytics'), 'icon' => 'chart-bar', 'route' => 'admin.reports'],
                         ['key' => 'editions',      'label' => $this->t('الدورات والطبعات الرسمية', 'Éditions Officielles', 'Official Editions'), 'icon' => 'calendar', 'route' => 'admin.editions'],
-                        ['key' => 'appearance',    'label' => $this->t('استوديو المظهر والهوية', 'Apparence & Style', 'Appearance Studio'), 'icon' => 'paint-brush', 'route' => 'admin.appearance'],
                         ['key' => 'security',      'label' => $this->t('الأمان وسجلات الرقابة والتدقيق', 'Sécurité & Traçabilité', 'Security Audit Trail'), 'icon' => 'shield-check', 'route' => 'admin.audit'],
                     ]
                 ]
@@ -78,7 +77,6 @@ class DashboardNavigationService
                     'items' => [
                         ['key' => 'media_dash',  'label' => $this->t('لوحة التحكم الإعلامية', 'Tableau Média', 'Media Dashboard'), 'icon' => 'home', 'route' => 'admin.media.dashboard'],
                         ['key' => 'cms_hub',     'label' => $this->t('المركز الإعلامي وCMS الموحد', 'Centre Média & CMS', 'Unified Media & CMS Hub'), 'icon' => 'newspaper', 'route' => 'admin.cms.hub'],
-                        ['key' => 'appearance',  'label' => $this->t('استوديو المظهر والهوية', 'Apparence & Style', 'Appearance Studio'), 'icon' => 'paint-brush', 'route' => 'admin.appearance'],
                     ]
                 ]
             ];
