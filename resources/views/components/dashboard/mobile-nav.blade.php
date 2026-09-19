@@ -27,7 +27,7 @@
         'camera'             => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>',
         'calendar'           => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>',
         'paint-brush'        => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4c0-1.423.806-2.585 2-3.13V5a2 2 0 012-2h4a2 2 0 012 2v8.87c1.194.545 2 1.707 2 3.13a4 4 0 01-4 4H7z"/>',
-        'document-text'      => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
+        'document-text'      => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
     ];
 @endphp
 
@@ -48,19 +48,19 @@
     <div @click="mobileNavOpen = false" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md"></div>
 
     {{-- DRAWER CONTAINER --}}
-    <div class="relative flex-1 flex flex-col max-w-xs w-full bg-slate-900 text-white border-e border-slate-800 shadow-2xl overflow-y-auto">
+    <div class="relative flex-1 flex flex-col max-w-xs w-full bg-white dark:bg-[#070D1E] text-slate-900 dark:text-white border-e border-slate-200 dark:border-slate-800 shadow-2xl overflow-y-auto">
         
         <div class="p-4 space-y-4">
             
             {{-- DRAWER HEADER --}}
-            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-                <div class="bg-slate-800/80 px-3 py-1.5 rounded-2xl flex items-center gap-2 border border-slate-700 shadow-inner">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200/80 dark:border-slate-800">
+                <div class="bg-slate-100 dark:bg-slate-800/80 px-3 py-1.5 rounded-2xl flex items-center gap-2 border border-slate-200 dark:border-slate-700 shadow-inner">
                     <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-6 w-auto object-contain">
-                    <div class="h-4 w-px bg-slate-700 shrink-0"></div>
+                    <div class="h-4 w-px bg-slate-200 dark:bg-slate-700 shrink-0"></div>
                     <img src="/logo.svg" alt="WorldSkills Algeria" class="h-6 w-auto object-contain">
                 </div>
 
-                <button @click="mobileNavOpen = false" type="button" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition">
+                <button @click="mobileNavOpen = false" type="button" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -71,7 +71,7 @@
                     type="text"
                     x-model="mobileSearch"
                     placeholder="{{ $locale === 'fr' ? 'Recherche rapide...' : ($locale === 'en' ? 'Quick search...' : 'بحث سريع في القائمة...') }}"
-                    class="w-full pl-8 pr-3 py-2 rounded-xl text-xs bg-slate-800/80 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition"
+                    class="w-full pl-8 pr-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:focus:ring-amber-500/50 transition"
                 >
                 <svg class="w-4 h-4 text-slate-400 absolute {{ $locale === 'ar' ? 'left-3' : 'right-3' }} top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -92,8 +92,8 @@
                          class="space-y-1.5">
 
                         <div class="flex items-center gap-2 px-2 py-1">
-                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                            <span class="text-[11px] font-black text-amber-400 uppercase tracking-wider font-mono">
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#0052CC] dark:bg-amber-500"></span>
+                            <span class="text-[11px] font-black text-slate-500 dark:text-amber-400 uppercase tracking-wider font-mono">
                                 {{ $catName }}
                             </span>
                         </div>
@@ -115,9 +115,9 @@
                                 <a href="{{ $href }}"
                                    @click="mobileNavOpen = false"
                                    x-show="mobileSearch === '' || '{{ strtolower($item['label']) }}'.includes(mobileSearch.toLowerCase())"
-                                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 {{ $isActive ? 'bg-gradient-to-r from-[#06205C] via-[#0A2E80] to-[#06205C] text-white font-black border border-amber-500/40 shadow-lg' : 'text-slate-300 hover:bg-slate-800' }}"
+                                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 {{ $isActive ? 'bg-[#0052CC] text-white font-black shadow-lg shadow-blue-500/25 dark:bg-gradient-to-r dark:from-[#06205C] dark:via-[#0A2E80] dark:to-[#06205C] dark:text-white dark:border dark:border-amber-500/40' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800' }}"
                                 >
-                                    <div class="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 {{ $isActive ? 'bg-amber-500/20 text-amber-300' : 'bg-slate-800 text-slate-400' }}">
+                                    <div class="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 {{ $isActive ? 'bg-white/20 text-white dark:bg-amber-500/20 dark:text-amber-300' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400' }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4" aria-hidden="true">
                                             {!! $svgPath !!}
                                         </svg>
@@ -126,7 +126,7 @@
                                     <span class="truncate leading-snug">{{ $item['label'] }}</span>
 
                                     @if($isActive)
-                                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse ml-auto"></span>
+                                        <span class="w-2 h-2 rounded-full bg-white dark:bg-amber-400 animate-pulse ml-auto"></span>
                                     @endif
                                 </a>
                             @endforeach
@@ -138,15 +138,15 @@
         </div>
 
         {{-- USER FOOTER & LOGOUT --}}
-        <div class="p-4 border-t border-slate-800 mt-auto space-y-3">
-            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-800/80 border border-slate-700">
+        <div class="p-4 border-t border-slate-200/80 dark:border-slate-800 mt-auto space-y-3 pb-8">
+            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
                 <div class="flex items-center gap-2.5 overflow-hidden ps-1">
-                    <div class="w-8 h-8 rounded-lg bg-[#06205C] overflow-hidden shrink-0 border border-amber-500/30">
+                    <div class="w-8 h-8 rounded-lg bg-[#06205C] overflow-hidden shrink-0 border border-slate-200 dark:border-amber-500/30">
                         <img src="{{ $user?->avatar_url }}" alt="{{ $user?->name }}" class="w-full h-full object-cover">
                     </div>
                     <div class="flex flex-col truncate">
-                        <span class="text-xs font-black text-white truncate">{{ $user?->name ?? '' }}</span>
-                        <span class="text-[10px] text-amber-400 font-bold truncate">{{ $user?->email ?? '' }}</span>
+                        <span class="text-xs font-black text-slate-900 dark:text-white truncate">{{ $user?->name ?? '' }}</span>
+                        <span class="text-[10px] text-blue-600 dark:text-amber-400 font-bold truncate">{{ $user?->email ?? '' }}</span>
                     </div>
                 </div>
             </div>
@@ -155,7 +155,7 @@
                 @csrf
                 <button 
                     type="submit"
-                    class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition cursor-pointer"
+                    class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition cursor-pointer"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/>
