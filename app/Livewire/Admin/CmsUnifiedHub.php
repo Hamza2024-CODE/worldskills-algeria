@@ -640,7 +640,7 @@ class CmsUnifiedHub extends Component
             ->orderByDesc('id')
             ->paginate(10, ['*'], 'videoPage');
 
-        $albums = Album::with('photos')->query()
+        $albums = Album::query()->with('photos')
             ->when($this->gallerySearch, fn($q) => $q->where('title_ar', 'like', "%{$this->gallerySearch}%"))
             ->orderByDesc('id')
             ->paginate(10, ['*'], 'albumPage');
