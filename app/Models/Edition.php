@@ -46,4 +46,9 @@ class Edition extends Model
     {
         return $this->hasMany(EditionCountry::class);
     }
+
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class);
+    }
 }

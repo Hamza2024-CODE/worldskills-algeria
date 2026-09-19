@@ -22,21 +22,31 @@ class AdminEditionIndex extends Component
     public bool   $isEditing = false;
     public ?int   $editingId = null;
 
-    #[Validate('required|integer|min:2020')] public ?int   $year     = null;
-    #[Validate('required|min:2')]            public string $name_ar  = '';
-    #[Validate('required|min:2')]            public string $name_fr  = '';
-    #[Validate('nullable')]                  public string $name_en  = '';
-    #[Validate('nullable')]                  public string $status   = 'draft';
-    public bool   $is_active = false;
+    #[Validate('required|integer|min:2020|max:2099')] 
+    public ?int $year = null;
+
+    #[Validate('required|string|min:2|max:255')] 
+    public string $name_ar = '';
+
+    #[Validate('required|string|min:2|max:255')] 
+    public string $name_fr = '';
+
+    #[Validate('nullable|string|max:255')] 
+    public string $name_en = '';
+
+    #[Validate('required|string')] 
+    public string $status = 'ACTIVE';
+
+    public bool $is_active = false;
 
     // Dates sub-form
     public array $dates = [];
 
     // Detail Drawer
-    public bool     $drawerOpen     = false;
+    public bool     $drawerOpen      = false;
     public ?Edition $selectedEdition = null;
 
-    // Delete
+    // Delete Modal
     public bool $deleteConfirmOpen = false;
     public ?int $deleteTargetId   = null;
 
@@ -45,11 +55,12 @@ class AdminEditionIndex extends Component
     public function updatingSearch(): void       { $this->resetPage(); }
     public function updatingFilterStatus(): void { $this->resetPage(); }
 
-    /* ─── Form ─── */
     public function openCreate(): void
     {
         $this->resetForm();
         $this->isEditing = false;
+        $this->year      = (int) date('Y');
+        $this->status    = 'ACTIVE';
         $this->formOpen  = true;
     }
 
@@ -61,21 +72,32 @@ class AdminEditionIndex extends Component
         $this->name_ar   = $e->name_ar ?? '';
         $this->name_fr   = $e->name_fr ?? '';
         $this->name_en   = $e->name_en ?? '';
-        $this->status    = $e->status ?? 'draft';
+        $this->status    = $e->status ?? 'ACTIVE';
         $this->is_active = (bool) $e->is_active;
+
         $this->dates     = $e->dates->map(fn($d) => [
-            'id'         => $d->id,
-            'label_ar'   => $d->label_ar ?? '',
-            'label_fr'   => $d->label_fr ?? '',
-            'event_date' => $d->event_date?->format('Y-m-d') ?? '',
+            'id'          => $d->id,
+            'date_type'   => $d->date_type ?? 'EVENT',
+            'location_ar' => $d->location_ar ?? '',
+            'location_fr' => $d->location_fr ?? '',
+            'start_at'    => $d->start_at?->format('Y-m-d') ?? '',
+            'end_at'      => $d->end_at?->format('Y-m-d') ?? '',
         ])->toArray();
+
         $this->isEditing = true;
         $this->formOpen  = true;
     }
 
     public function addDate(): void
     {
-        $this->dates[] = ['id' => null, 'label_ar' => '', 'label_fr' => '', 'event_date' => ''];
+        $this->dates[] = [
+            'id'          => null,
+            'date_type'   => 'EVENT',
+            'location_ar' => '',
+            'location_fr' => '',
+            'start_at'    => '',
+            'end_at'      => ''
+        ];
     }
 
     public function removeDate(int $idx): void
@@ -87,9 +109,10 @@ class AdminEditionIndex extends Component
     public function save(): void
     {
         $this->validate([
-            'year'    => 'required|integer|min:2020',
-            'name_ar' => 'required|min:2',
-            'name_fr' => 'required|min:2',
+            'year'    => 'required|integer|min:2020|max:2099',
+            'name_ar' => 'required|min:2|max:255',
+            'name_fr' => 'required|min:2|max:255',
+            'status'  => 'required|string',
         ]);
 
         $data = [
@@ -101,21 +124,31 @@ class AdminEditionIndex extends Component
             'is_active' => $this->is_active,
         ];
 
+        if ($this->is_active) {
+            // Deactivate all other editions if this one is set active
+            if ($this->isEditing) {
+                Edition::where('id', '!=', $this->editingId)->update(['is_active' => false]);
+            } else {
+                Edition::query()->update(['is_active' => false]);
+            }
+        }
+
         if ($this->isEditing) {
             $edition = Edition::findOrFail($this->editingId);
             $edition->update($data);
-            // Sync dates
             $edition->dates()->delete();
         } else {
             $edition = Edition::create($data);
         }
 
         foreach ($this->dates as $date) {
-            if (!empty($date['event_date'])) {
+            if (!empty($date['start_at'])) {
                 $edition->dates()->create([
-                    'label_ar'   => $date['label_ar'] ?? '',
-                    'label_fr'   => $date['label_fr'] ?? '',
-                    'event_date' => $date['event_date'],
+                    'date_type'   => $date['date_type'] ?? 'EVENT',
+                    'location_ar' => $date['location_ar'] ?? '',
+                    'location_fr' => $date['location_fr'] ?? '',
+                    'start_at'    => $date['start_at'],
+                    'end_at'      => !empty($date['end_at']) ? $date['end_at'] : null,
                 ]);
             }
         }
@@ -128,12 +161,18 @@ class AdminEditionIndex extends Component
     public function toggleActive(int $id): void
     {
         $edition = Edition::findOrFail($id);
-        $edition->update(['is_active' => !$edition->is_active]);
+        if (!$edition->is_active) {
+            Edition::where('id', '!=', $id)->update(['is_active' => false]);
+            $edition->update(['is_active' => true]);
+        } else {
+            $edition->update(['is_active' => false]);
+        }
+        $this->dispatch('notify', ['type' => 'success', 'msg' => 'تم تعديل حالة تفعيل الطبعة']);
     }
 
     public function openDrawer(int $id): void
     {
-        $this->selectedEdition = Edition::with(['dates', 'countries'])->find($id);
+        $this->selectedEdition = Edition::with(['dates', 'countries'])->withCount(['registrations'])->find($id);
         $this->drawerOpen      = true;
     }
 
@@ -145,18 +184,23 @@ class AdminEditionIndex extends Component
 
     public function deleteEdition(): void
     {
-        Edition::findOrFail($this->deleteTargetId)->delete();
-        $this->deleteConfirmOpen = false;
-        $this->resetPage();
-        $this->dispatch('notify', ['type' => 'success', 'msg' => 'تم حذف الدورة']);
+        if ($this->deleteTargetId) {
+            Edition::findOrFail($this->deleteTargetId)->delete();
+            $this->deleteConfirmOpen = false;
+            $this->deleteTargetId    = null;
+            $this->resetPage();
+            $this->dispatch('notify', ['type' => 'success', 'msg' => 'تم حذف الطبعة بنجاح']);
+        }
     }
 
     private function resetForm(): void
     {
         $this->editingId = null;
         $this->year      = null;
-        $this->name_ar   = $this->name_fr = $this->name_en = '';
-        $this->status    = 'draft';
+        $this->name_ar   = '';
+        $this->name_fr   = '';
+        $this->name_en   = '';
+        $this->status    = 'ACTIVE';
         $this->is_active = false;
         $this->dates     = [];
         $this->resetErrorBag();
@@ -164,19 +208,27 @@ class AdminEditionIndex extends Component
 
     public function render()
     {
-        $query = Edition::withCount('countries')
-            ->when($this->search, fn($q) => $q->where(function ($q) {
-                $q->where('name_ar', 'like', '%'.$this->search.'%')
-                  ->orWhere('name_fr', 'like', '%'.$this->search.'%')
-                  ->orWhere('year',    'like', '%'.$this->search.'%');
-            }))
-            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
+        $query = Edition::withCount(['registrations', 'countries'])
+            ->when($this->search, function ($q) {
+                $q->where(function ($sq) {
+                    $sq->where('name_ar', 'like', '%'.$this->search.'%')
+                       ->orWhere('name_fr', 'like', '%'.$this->search.'%')
+                       ->orWhere('name_en', 'like', '%'.$this->search.'%')
+                       ->orWhere('year',    'like', '%'.$this->search.'%');
+                });
+            })
+            ->when($this->filterStatus, function ($q) {
+                $q->where('status', $this->filterStatus);
+            })
             ->orderByDesc('year');
 
         return view('livewire.admin.editions.index', [
-            'editions'      => $query->paginate(10),
-            'totalEditions' => Edition::count(),
-            'activeEdition' => Edition::where('is_active', true)->first(),
+            'editions'        => $query->paginate(10),
+            'totalEditions'   => Edition::count(),
+            'activeEdition'   => Edition::where('is_active', true)->first(),
+            'activeCount'     => Edition::where('is_active', true)->count(),
+            'completedCount'  => Edition::where('status', 'COMPLETED')->count(),
+            'draftCount'      => Edition::where('status', 'DRAFT')->count(),
         ]);
     }
 }
