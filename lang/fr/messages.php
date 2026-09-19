@@ -24,7 +24,7 @@ return [
     'logout' => 'Déconnexion',
     'search' => 'Rechercher sur la plateforme',
     'hero_title' => 'Olympiades des Métiers Afrique 2026',
-    'hero_subtitle' => 'Olympiades des Métiers en Algérie — Du 25 au 30 Novembre 2026',
+    'hero_subtitle' => 'Olympiades des Métiers en Algérie — Du 15 au 20 Novembre 2026',
     'explore_more' => 'Découvrir Plus',
     'register_now' => 'S\'inscrire Maintenant',
     'african_event_countdown' => 'Compte à rebours — Ouverture des Olympiades Afrique 2026',

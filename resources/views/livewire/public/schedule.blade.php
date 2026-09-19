@@ -77,7 +77,7 @@
                     </p>
                 </div>
                 <div class="font-mono text-xs font-bold text-[#06205C] bg-slate-50 px-4 py-2.5 rounded-2xl border border-slate-200 shrink-0">
-                    16 - 21 Novembre 2026
+                    {{ app()->getLocale() === 'fr' ? '15 - 20 Novembre 2026' : (app()->getLocale() === 'en' ? 'Nov 15 - 20, 2026' : '15 - 20 نوفمبر 2026') }}
                 </div>
             </div>
         </div>

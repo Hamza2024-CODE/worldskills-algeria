@@ -76,9 +76,9 @@ class CmsHomepageManager extends Component
         $this->hero_title_fr = $settings->get('home_hero_title_fr', 'Olympiades des Métiers Algérie 2026');
         $this->hero_title_en = $settings->get('home_hero_title_en', 'WorldSkills Competition Algeria 2026');
 
-        $this->hero_subtitle_ar = $settings->get('home_hero_subtitle_ar', 'من 16 إلى 21 نوفمبر 2026 — مركز المؤتمرات وهران');
-        $this->hero_subtitle_fr = $settings->get('home_hero_subtitle_fr', 'Du 16 au 21 Novembre 2026 — Oran');
-        $this->hero_subtitle_en = $settings->get('home_hero_subtitle_en', '16 to 21 November 2026 — Oran');
+        $this->hero_subtitle_ar = $settings->get('home_hero_subtitle_ar', 'من 15 إلى 20 نوفمبر 2026 — مركز المؤتمرات وهران');
+        $this->hero_subtitle_fr = $settings->get('home_hero_subtitle_fr', 'Du 15 au 20 Novembre 2026 — Oran');
+        $this->hero_subtitle_en = $settings->get('home_hero_subtitle_en', '15 to 20 November 2026 — Oran');
 
         $this->cta_text_ar = $settings->get('home_cta_text_ar', 'كن جزءاً من أكبر حدث للمهارات في الجزائر!');
         $this->cta_text_fr = $settings->get('home_cta_text_fr', 'Faites partie du plus grand événement des compétences en Algérie!');
