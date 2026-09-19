@@ -499,14 +499,23 @@ class CmsUnifiedHub extends Component
         // Upload photos if any
         if (!empty($this->newPhotos) && isset($album)) {
             foreach ($this->newPhotos as $photo) {
-                $path = $photo->store('gallery', 'public');
-                Media::create([
-                    'uuid'       => (string) Str::uuid(),
-                    'album_id'   => $album->id,
-                    'file_path'  => '/storage/' . $path,
-                    'file_name'  => $photo->getClientOriginalName(),
-                    'media_type' => 'IMAGE',
+                $filename = Str::random(20) . '.' . $photo->getClientOriginalExtension();
+                $path = $photo->storeAs('albums', $filename, 'public');
+
+                $media = Media::create([
+                    'filename'          => $filename,
+                    'original_filename' => $photo->getClientOriginalName(),
+                    'mime_type'         => $photo->getMimeType(),
+                    'file_size'         => $photo->getSize(),
+                    'storage_path'      => 'storage/' . $path,
+                    'visibility'        => 'PUBLIC',
+                    'status'            => 'READY',
                 ]);
+
+                $album->mediaItems()->attach($media->id);
+                if (!$album->cover_media_id) {
+                    $album->update(['cover_media_id' => $media->id]);
+                }
             }
         }
 
@@ -640,7 +649,7 @@ class CmsUnifiedHub extends Component
             ->orderByDesc('id')
             ->paginate(10, ['*'], 'videoPage');
 
-        $albums = Album::query()->with('photos')
+        $albums = Album::query()->with('mediaItems')
             ->when($this->gallerySearch, fn($q) => $q->where('title_ar', 'like', "%{$this->gallerySearch}%"))
             ->orderByDesc('id')
             ->paginate(10, ['*'], 'albumPage');

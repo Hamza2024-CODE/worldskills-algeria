@@ -448,7 +448,7 @@
                     <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 space-y-3">
                         <div class="flex items-center justify-between">
                             <h4 class="font-black text-slate-900 dark:text-white text-sm">{{ $alb->title_ar }}</h4>
-                            <span class="text-[10px] font-bold px-2 py-0.5 bg-amber-100 text-amber-800 rounded">{{ $alb->photos_count ?? ($alb->photos?->count() ?? 0) }} {{ $t('صورة', 'Photos', 'Photos') }}</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 bg-amber-100 text-amber-800 rounded">{{ $alb->media_items_count ?? ($alb->mediaItems?->count() ?? 0) }} {{ $t('صورة', 'Photos', 'Photos') }}</span>
                         </div>
                         <p class="text-xs text-slate-500 font-bold line-clamp-2">{{ $alb->description_ar ?? '—' }}</p>
                         <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
