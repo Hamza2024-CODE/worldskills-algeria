@@ -27,7 +27,14 @@
         'camera'             => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>',
         'calendar'           => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>',
         'paint-brush'        => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4c0-1.423.806-2.585 2-3.13V5a2 2 0 012-2h4a2 2 0 012 2v8.87c1.194.545 2 1.707 2 3.13a4 4 0 01-4 4H7z"/>',
-        'document-text'      => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
+        'document-text'      => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
+    ];
+
+    $catIcons = [
+        'home'         => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>',
+        'trophy'       => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.6 15.428a2 2 0 00-1.022.547l-1.42 1.42a2 2 0 00-.547 1.022l-.477 2.387a2 2 0 002.409 2.409l2.387-.477a2 2 0 001.022-.547l1.42-1.42a2 2 0 00.547-1.022l.477-2.387a6 6 0 00-.517-3.86l-.158-.318a6 6 0 01-.517-3.86l.477-2.387a2 2 0 00-.547-1.022l-1.42-1.42a2 2 0 00-1.022-.547l-2.387.477a2 2 0 00-2.409 2.409l.477 2.387a2 2 0 00.547 1.022l1.42 1.42z"/>',
+        'shield-check' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>',
+        'newspaper'    => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>',
     ];
 @endphp
 
@@ -38,13 +45,13 @@
         toggle() { this.collapsed = !this.collapsed; localStorage.setItem('wsap_sidebar', this.collapsed); }
     }"
     :class="collapsed ? 'w-20' : 'w-80'"
-    class="hidden lg:flex bg-white/95 dark:bg-[#070D1E]/95 text-slate-800 dark:text-slate-100 backdrop-blur-2xl border-e border-slate-200/80 dark:border-slate-800/80 flex-col shrink-0 h-[calc(100vh-64px)] sticky top-16 transition-all duration-300 ease-in-out z-30 select-none shadow-[4px_0_24px_rgba(0,0,0,0.03)] dark:shadow-[8px_0_30px_rgba(0,0,0,0.25)]"
+    class="hidden lg:flex bg-white/80 dark:bg-[#080E1E]/85 backdrop-blur-2xl border-e border-slate-200/70 dark:border-slate-800/70 flex-col shrink-0 h-[calc(100vh-64px)] sticky top-16 transition-all duration-300 ease-in-out z-30 select-none shadow-[4px_0_24px_rgba(0,0,0,0.03)] dark:shadow-[8px_0_30px_rgba(0,0,0,0.25)]"
 >
 
     {{-- FLOATING TOGGLE BUTTON --}}
     <button
         @click="toggle()"
-        class="absolute top-4 -end-3.5 z-50 w-7 h-7 rounded-full bg-white dark:bg-[#06205C] border border-slate-300 dark:border-amber-500/40 text-slate-700 dark:text-amber-400 flex items-center justify-center shadow-md hover:scale-110 hover:bg-blue-600 hover:text-white dark:hover:bg-amber-500 dark:hover:text-slate-950 transition-all cursor-pointer"
+        class="absolute top-4 -end-3.5 z-50 w-7 h-7 rounded-full bg-white dark:bg-[#06205C] border border-slate-200 dark:border-amber-500/40 text-slate-700 dark:text-amber-400 flex items-center justify-center shadow-lg hover:scale-110 hover:bg-blue-600 hover:text-white dark:hover:bg-amber-500 dark:hover:text-slate-950 transition-all cursor-pointer"
         title="طي / توسيع القائمة"
     >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -56,21 +63,21 @@
     </button>
 
     {{-- SEARCH BAR CAPSULE --}}
-    <div x-show="!collapsed" class="p-4 pb-3 border-b border-slate-200/60 dark:border-slate-800/80">
+    <div x-show="!collapsed" class="p-3.5 pb-3 border-b border-slate-200/60 dark:border-slate-800/70">
         <div class="relative">
             <input 
                 type="text"
                 x-model="search"
-                placeholder="{{ $locale === 'fr' ? 'Recherche rapide...' : ($locale === 'en' ? 'Quick Search...' : 'بحث سريع في المنصة...') }}"
-                class="w-full pl-9 pr-4 py-2.5 rounded-2xl text-xs bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-amber-500/50 transition shadow-inner"
+                placeholder="{{ $locale === 'fr' ? 'Recherche rapide...' : ($locale === 'en' ? 'Quick Search...' : 'تصفية وبحث سريع...') }}"
+                class="w-full pl-9 pr-4 py-2 text-xs font-bold rounded-2xl bg-slate-100/80 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/70 text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:focus:ring-amber-500/50 transition shadow-inner"
             >
-            <svg class="w-4 h-4 text-slate-400 absolute {{ $locale === 'ar' ? 'left-3' : 'right-3' }} top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-slate-400 absolute {{ $locale === 'ar' ? 'left-3' : 'right-3' }} top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
             <button 
                 x-show="search !== ''" 
                 @click="search = ''" 
-                class="absolute {{ $locale === 'ar' ? 'right-3' : 'left-3' }} top-3 text-slate-400 hover:text-slate-700 dark:hover:text-white"
+                class="absolute {{ $locale === 'ar' ? 'right-3' : 'left-3' }} top-2.5 text-slate-400 hover:text-slate-700 dark:hover:text-white"
             >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
@@ -78,38 +85,43 @@
     </div>
 
     {{-- CATEGORIZED EXECUTIVE NAVIGATION MENU --}}
-    <nav class="flex-1 overflow-y-auto overflow-x-hidden p-3.5 space-y-4 scrollbar-none">
+    <nav class="flex-1 overflow-y-auto overflow-x-hidden p-3 space-y-3.5 scrollbar-none">
 
         @foreach($categorizedNav as $catIndex => $group)
             @php
                 $catName = $group['category'] ?? '';
+                $catIconKey = $group['category_icon'] ?? 'home';
                 $groupItems = $group['items'] ?? [];
             @endphp
             @if(count($groupItems) === 0) @continue @endif
 
             <div x-data="{ open: true }"
                  x-show="search === '' || {{ json_encode(array_column($groupItems, 'label')) }}.some(l => l.toLowerCase().includes(search.toLowerCase()))"
-                 class="space-y-1.5">
+                 class="space-y-1">
 
                 {{-- SECTION HEADER --}}
                 <div 
                     x-show="!collapsed"
                     @click="open = !open"
-                    class="flex items-center justify-between px-3 py-2 rounded-xl cursor-pointer hover:bg-slate-100/80 dark:hover:bg-slate-800/50 transition group/cat"
+                    class="flex items-center justify-between px-3 py-1.5 rounded-xl cursor-pointer hover:bg-slate-100/80 dark:hover:bg-slate-800/50 transition group/cat"
                 >
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-[#0052CC] dark:bg-amber-500 shadow-sm shrink-0"></span>
-                        <span class="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-amber-400/90 font-mono">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                        <div class="w-5 h-5 rounded-lg bg-blue-500/10 dark:bg-amber-500/10 text-blue-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                {!! $catIcons[$catIconKey] ?? $catIcons['home'] !!}
+                            </svg>
+                        </div>
+                        <span class="text-[11px] font-black uppercase text-slate-600 dark:text-amber-400/90 tracking-wider truncate font-sans">
                             {{ $catName }}
                         </span>
                     </div>
-                    <svg class="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 transition-transform duration-200 group-hover/cat:text-blue-600 dark:group-hover/cat:text-amber-400" :class="open ? '' : '-rotate-90'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 transition-transform duration-200 group-hover/cat:text-blue-600 dark:group-hover/cat:text-amber-400 shrink-0" :class="open ? '' : '-rotate-90'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </div>
 
                 {{-- NAV ITEMS --}}
-                <div x-show="open || search !== ''" class="space-y-1.5">
+                <div x-show="open || search !== ''" class="space-y-1">
                     @foreach($groupItems as $item)
                         @php
                             try {
@@ -125,18 +137,18 @@
 
                         <a href="{{ $href }}"
                            x-show="search === '' || '{{ strtolower($item['label']) }}'.includes(search.toLowerCase())"
-                           :class="collapsed ? 'justify-center px-0 py-3' : 'px-3.5 py-2.5'"
-                           class="relative flex items-center gap-3 rounded-2xl text-xs font-bold transition-all duration-200 group/item {{ $isActive ? 'bg-[#0052CC] text-white font-black shadow-lg shadow-blue-500/25 dark:bg-gradient-to-r dark:from-[#06205C] dark:via-[#0A2E80] dark:to-[#06205C] dark:text-white dark:border dark:border-amber-500/40 dark:shadow-blue-900/40' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100/90 dark:hover:bg-slate-800/80 hover:text-blue-600 dark:hover:text-white border border-transparent' }}"
+                           :class="collapsed ? 'justify-center px-0 py-2.5' : 'px-3 py-2'"
+                           class="relative flex items-center gap-3 rounded-2xl text-xs font-bold transition-all duration-200 group/item {{ $isActive ? 'bg-[#0052CC] text-white font-black shadow-md shadow-blue-500/25 dark:bg-gradient-to-r dark:from-[#06205C] dark:via-[#0A2E80] dark:to-[#06205C] dark:text-white dark:border dark:border-amber-500/40 dark:shadow-blue-900/40' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100/90 dark:hover:bg-slate-800/80 hover:text-blue-600 dark:hover:text-white border border-transparent' }}"
                         >
                             {{-- ICON WRAPPER --}}
-                            <div class="w-7 h-7 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 {{ $isActive ? 'bg-white/20 text-white dark:bg-amber-500/20 dark:text-amber-300' : 'bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 group-hover/item:bg-blue-600/10 group-hover/item:text-blue-600 dark:group-hover/item:bg-blue-600/20 dark:group-hover/item:text-blue-400' }}">
+                            <div class="w-7 h-7 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 {{ $isActive ? 'bg-white/20 text-white dark:bg-amber-500/20 dark:text-amber-300' : 'bg-slate-100 dark:bg-slate-800/70 text-slate-500 dark:text-slate-400 group-hover/item:bg-blue-500/10 group-hover/item:text-blue-600 dark:group-hover/item:bg-blue-600/20 dark:group-hover/item:text-blue-400' }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 transition-transform duration-200 group-hover/item:scale-110">
                                     {!! $svgPath !!}
                                 </svg>
                             </div>
 
                             {{-- LABEL --}}
-                            <span x-show="!collapsed" class="truncate leading-relaxed font-bold transition-transform duration-200 group-hover/item:translate-x-0.5">
+                            <span x-show="!collapsed" class="truncate leading-normal font-bold transition-transform duration-200 group-hover/item:translate-x-0.5">
                                 {{ $item['label'] }}
                             </span>
 
@@ -159,23 +171,23 @@
 
             </div>
 
-            <div x-show="!collapsed" class="border-t border-slate-200/60 dark:border-slate-800/60 my-2"></div>
+            <div x-show="!collapsed" class="border-t border-slate-200/50 dark:border-slate-800/60 my-1.5"></div>
         @endforeach
 
     </nav>
 
     {{-- USER PROFILE SUMMARY FOOTER --}}
-    <div class="p-3.5 border-t border-slate-200/60 dark:border-slate-800/80 bg-slate-50/80 dark:bg-slate-950/60 backdrop-blur-md">
+    <div class="p-3 border-t border-slate-200/60 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-950/60 backdrop-blur-md">
         <a href="{{ route('profile') }}"
-           :class="collapsed ? 'justify-center px-0' : 'px-3 py-2'"
-           class="w-full flex items-center gap-3 rounded-2xl text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-800/90 border border-slate-200/80 dark:border-slate-800 transition-all shadow-xs group"
+           :class="collapsed ? 'justify-center px-0' : 'px-2.5 py-1.5'"
+           class="w-full flex items-center gap-3 rounded-2xl text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-800/90 border border-slate-200/70 dark:border-slate-800 transition-all shadow-xs group"
         >
-            <div class="w-9 h-9 rounded-xl bg-[#06205C] overflow-hidden shrink-0 border border-slate-200 dark:border-amber-500/30 shadow-md flex items-center justify-center text-white font-black text-xs">
+            <div class="w-8 h-8 rounded-xl bg-[#06205C] overflow-hidden shrink-0 border border-slate-200 dark:border-amber-500/30 shadow-md flex items-center justify-center text-white font-black text-xs">
                 <img src="{{ $user?->avatar_url }}" alt="{{ $user?->name }}" class="w-full h-full object-cover">
             </div>
             <div x-show="!collapsed" class="flex flex-col truncate">
                 <span class="truncate font-black text-slate-900 dark:text-white leading-tight text-xs">{{ $user?->name ?? '' }}</span>
-                <span class="text-[10px] text-blue-600 dark:text-amber-400/90 font-bold leading-tight mt-0.5 truncate">{{ $user?->email ?? '' }}</span>
+                <span class="text-[10px] text-blue-600 dark:text-amber-400 font-bold leading-tight mt-0.5 truncate">{{ $user?->email ?? '' }}</span>
             </div>
         </a>
     </div>
