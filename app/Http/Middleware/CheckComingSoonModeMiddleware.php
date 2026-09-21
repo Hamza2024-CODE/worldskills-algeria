@@ -56,7 +56,7 @@ class CheckComingSoonModeMiddleware
                 || $request->is('api/*')
                 || $request->is('sw.js')
                 || $request->is('manifest.webmanifest')
-                || $request->is('livewire/*');
+                || $request->is('livewire*');
 
             if (!$isAllowedPath) {
                 // Strictly redirect public visitors to the coming-soon page
