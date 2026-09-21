@@ -55,8 +55,10 @@
              await this.startCamera(this.targetField);
          },
          takePhoto() {
+             const field = this.targetField;
              const video = this.$refs.video;
-             if (!video) return;
+             if (!video || !field) return;
+
              const canvas = document.createElement('canvas');
              canvas.width = video.videoWidth || 1280;
              canvas.height = video.videoHeight || 720;
@@ -64,10 +66,14 @@
              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
              canvas.toBlob((blob) => {
+                 if (!blob) return;
                  const file = new File([blob], 'camera_capture_' + Date.now() + '.jpg', { type: 'image/jpeg' });
-                 $wire.upload(this.targetField, file,
+                 $wire.upload(field, file,
                      () => { this.stopCamera(); },
-                     (error) => { alert('{{ __('messages.camera_upload_error') }}'); }
+                     (error) => { 
+                         console.error('Livewire upload error for ' + field + ':', error);
+                         alert('{{ __('messages.camera_upload_error') }}'); 
+                     }
                  );
              }, 'image/jpeg', 0.92);
          },
