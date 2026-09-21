@@ -643,7 +643,7 @@
             <div class="w-full max-w-xl flex items-center justify-between text-white">
                 <div class="flex items-center gap-2">
                     <span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
-                    <span class="text-xs font-bold" x-text="targetField === 'photoFile' ? '{{ app()->getLocale() === 'fr' ? 'Photo d'identité officielle (Visage)' : (app()->getLocale() === 'en' ? 'Official Candidate Photo (Face)' : 'التقاط الصورة الشخصية الرسمية (وجه المترشح)') }}' : '{{ app()->getLocale() === 'fr' ? 'Scan Document d'identité (CNI / Passeport)' : (app()->getLocale() === 'en' ? 'Scan Identity Document (ID / Passport)' : 'تصوير وثيقة الهوية (بطاقة التعريف / جواز السفر)') }}'"></span>
+                    <span class="text-xs font-bold" x-text="targetField === 'photoFile' ? '{{ app()->getLocale() === 'fr' ? 'Photo d&apos;identité officielle (Visage)' : (app()->getLocale() === 'en' ? 'Official Candidate Photo (Face)' : 'التقاط الصورة الشخصية الرسمية (وجه المترشح)') }}' : '{{ app()->getLocale() === 'fr' ? 'Scan Document d&apos;identité (CNI / Passeport)' : (app()->getLocale() === 'en' ? 'Scan Identity Document (ID / Passport)' : 'تصوير وثيقة الهوية (بطاقة التعريف / جواز السفر)') }}'"></span>
                 </div>
                 <button type="button" @click="stopCamera()" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-xs font-bold transition flex items-center gap-1">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -660,7 +660,7 @@
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] text-white font-bold bg-black/60 px-2.5 py-1 rounded-md flex items-center gap-1">
                             <svg class="w-3 h-3 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span x-text="targetField === 'photoFile' ? '{{ app()->getLocale() === 'fr' ? 'Placez le visage du candidat au centre du cadre' : (app()->getLocale() === 'en' ? 'Place candidate face in center of frame' : 'ضع وجه المترشح في منتصف الإطار مع إضاءة جيدة') }}' : '{{ app()->getLocale() === 'fr' ? 'Placez le document d'identité complet dans le cadre' : (app()->getLocale() === 'en' ? 'Place complete ID document inside frame' : 'ضع وثيقة الهوية (بطاقة التعريف / الجواز) كاملة داخل الإطار') }}'"></span>
+                            <span x-text="targetField === 'photoFile' ? '{{ app()->getLocale() === 'fr' ? 'Placez le visage du candidat au centre du cadre' : (app()->getLocale() === 'en' ? 'Place candidate face in center of frame' : 'ضع وجه المترشح في منتصف الإطار مع إضاءة جيدة') }}' : '{{ app()->getLocale() === 'fr' ? 'Placez le document d&apos;identité complet dans le cadre' : (app()->getLocale() === 'en' ? 'Place complete ID document inside frame' : 'ضع وثيقة الهوية (بطاقة التعريف / الجواز) كاملة داخل الإطار') }}'"></span>
                         </span>
                         <span class="text-[10px] text-emerald-300 font-mono font-bold bg-black/60 px-2.5 py-1 rounded-md">ID-1 / MRZ Standard</span>
                     </div>
