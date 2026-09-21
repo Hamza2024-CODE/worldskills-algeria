@@ -89,7 +89,7 @@
 
         @if(!$registrationEnabled)
             <!-- Registration Closed Card -->
-            <div class="bg-white rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-xl border border-slate-200/90 max-w-xl mx-auto my-8">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-xl border border-slate-200/90 dark:border-slate-800/90 max-w-xl mx-auto my-8">
                 <div class="w-16 h-16 rounded-3xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center mx-auto shadow-sm">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                 </div>
@@ -103,7 +103,7 @@
                     </p>
                 </div>
 
-                <div class="pt-4 border-t border-slate-100 flex items-center justify-center gap-3">
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-center gap-3">
                     <a href="{{ route('home') }}" class="px-6 py-2.5 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs shadow-md transition">
                         {{ app()->getLocale() === 'fr' ? 'Retour à l\'Accueil' : (app()->getLocale() === 'en' ? 'Return to Homepage' : 'العودة للرئيسية') }}
                     </a>
@@ -111,7 +111,7 @@
             </div>
         @elseif($isSubmitted)
             <!-- Success & Printable Certificate Screen -->
-            <div class="bg-white rounded-3xl p-8 sm:p-12 text-center space-y-8 shadow-2xl border border-slate-200/80 animate-in fade-in zoom-in duration-300">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-12 text-center space-y-8 shadow-2xl border border-slate-200/80 dark:border-slate-800/80 animate-in fade-in zoom-in duration-300">
                 <div class="w-20 h-20 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border-2 border-emerald-200 shadow-lg">
                     <x-ws.icon name="check-circle" class="w-12 h-12 text-emerald-600" />
                 </div>
@@ -125,7 +125,7 @@
                     </p>
                 </div>
 
-                <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200 max-w-md mx-auto space-y-4 shadow-sm">
+                <div class="p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 max-w-md mx-auto space-y-4 shadow-sm">
                     <div>
                         <span class="text-[10px] font-bold uppercase text-slate-400 block">{{ __('messages.official_code_label') }}</span>
                         <div class="font-mono font-black text-2xl text-brand-500 tracking-wider mt-1">
@@ -141,12 +141,12 @@
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-slate-500 font-bold">{{ __('messages.password_credential') }}</span>
-                            <span class="font-mono font-black text-emerald-600 bg-white px-2 py-0.5 rounded border border-blue-200">password123</span>
+                            <span class="font-mono font-black text-emerald-600 bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-blue-200">password123</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <div class="pt-6 border-t border-slate-100 dark:border-slate-800/60 flex flex-col sm:flex-row items-center justify-center gap-3">
                     <a href="{{ route('login') }}" class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-lg transition flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
                         <span>{{ __('messages.go_to_my_space') }}</span>
@@ -157,7 +157,7 @@
                         <span>{{ __('messages.view_official_certificate') }}</span>
                     </a>
 
-                    <a href="{{ route('verify', ['token' => $verificationToken]) }}" target="_blank" class="w-full sm:w-auto px-5 py-3.5 rounded-xl border border-slate-300 text-[#06205C] hover:bg-slate-50 font-bold text-xs transition flex items-center justify-center gap-2">
+                    <a href="{{ route('verify', ['token' => $verificationToken]) }}" target="_blank" class="w-full sm:w-auto px-5 py-3.5 rounded-xl border border-slate-300 text-[#06205C] hover:bg-slate-50 dark:bg-slate-800/80 font-bold text-xs transition flex items-center justify-center gap-2">
                         <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <span>{{ __('messages.verification_portal_btn') }}</span>
                     </a>
@@ -166,26 +166,26 @@
         @else
 
             <!-- Multi-Step Wizard Progress -->
-            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-md mb-8">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-md mb-8">
                 <div class="grid grid-cols-4 gap-2 text-center text-xs font-bold text-slate-400 mb-4">
                     <span class="{{ $step >= 1 ? 'text-brand-500 font-black' : '' }}">{{ __('messages.step_1') }}</span>
                     <span class="{{ $step >= 2 ? 'text-brand-500 font-black' : '' }}">{{ __('messages.step_2') }}</span>
                     <span class="{{ $step >= 3 ? 'text-brand-500 font-black' : '' }}">{{ __('messages.step_3') }}</span>
                     <span class="{{ $step >= 4 ? 'text-brand-500 font-black' : '' }}">{{ __('messages.step_4') }}</span>
                 </div>
-                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                <div class="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800">
                     <div class="h-full bg-gradient-to-r from-brand-700 via-brand-500 to-brand-sky rounded-full transition-all duration-500 {{ $step === 1 ? 'w-1/4' : ($step === 2 ? 'w-2/4' : ($step === 3 ? 'w-3/4' : 'w-full')) }}"></div>
                 </div>
             </div>
 
             <!-- Wizard Form -->
-            <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-xl">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-10 border border-slate-200/80 dark:border-slate-800/80 shadow-xl">
                 <form wire:submit.prevent="submitRegistration" class="space-y-8">
                     
                     <!-- STEP 1: Country / Delegation Selection & Personal Information -->
                     @if($step === 1)
                         <div class="space-y-6 animate-in fade-in duration-300">
-                            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/60 pb-3">
                                 <h3 class="text-lg font-black text-[#06205C] flex items-center gap-2">
                                     <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                     <span>{{ __('messages.step_1') }} — {{ __('messages.step_1_title') }}</span>
@@ -213,7 +213,7 @@
                                     @endif
                                 </div>
 
-                                <select wire:model.live="countryId" class="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-black text-[#06205C] focus:ring-2 focus:ring-brand-500 bg-white shadow-xs">
+                                <select wire:model.live="countryId" class="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-black text-[#06205C] focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-900 shadow-xs">
                                     @foreach($countries as $c)
                                         <option value="{{ $c->id }}">
                                             {{ app()->getLocale() === 'fr' ? $c->name_fr : (app()->getLocale() === 'en' ? $c->name_en : $c->name_ar) }} ({{ $c->code }})
@@ -225,20 +225,20 @@
 
                             <!-- Arabic Name Fields (Only shown for Arabic-speaking nations) -->
                             @if($isArabicCountry)
-                                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
-                                    <div class="flex items-center gap-2 text-xs font-bold text-slate-700">
+                                <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 space-y-4">
+                                    <div class="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
                                         <span class="w-2.5 h-2.5 rounded-full bg-brand-500"></span>
                                         <span>{{ __('messages.name_ar_section') }}</span>
                                     </div>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
-                                            <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.first_name_ar_label') }}</label>
-                                            <input type="text" wire:model="firstNameAr" placeholder="مثال: محمد" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-brand-500 bg-white">
+                                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.first_name_ar_label') }}</label>
+                                            <input type="text" wire:model="firstNameAr" placeholder="مثال: محمد" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-900">
                                             @error('firstNameAr') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.last_name_ar_label') }}</label>
-                                            <input type="text" wire:model="lastNameAr" placeholder="مثال: الجزائري" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-brand-500 bg-white">
+                                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.last_name_ar_label') }}</label>
+                                            <input type="text" wire:model="lastNameAr" placeholder="مثال: الجزائري" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-900">
                                             @error('lastNameAr') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
                                         </div>
                                     </div>
@@ -246,20 +246,20 @@
                             @endif
 
                             <!-- French/Latin Name Fields (Strict Latin Script) -->
-                            <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
-                                <div class="flex items-center gap-2 text-xs font-bold text-slate-700">
+                            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 space-y-4">
+                                <div class="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
                                     <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
                                     <span>{{ __('messages.name_latin_section') }}</span>
                                 </div>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.first_name_latin_label') }}</label>
-                                        <input type="text" wire:model="firstNameLatin" placeholder="Ex: Mohamed" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-brand-500 bg-white font-mono">
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.first_name_latin_label') }}</label>
+                                        <input type="text" wire:model="firstNameLatin" placeholder="Ex: Mohamed" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-900 font-mono">
                                         @error('firstNameLatin') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.last_name_latin_label') }}</label>
-                                        <input type="text" wire:model="lastNameLatin" placeholder="Ex: DJAZAIRI" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-brand-500 bg-white font-mono uppercase">
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.last_name_latin_label') }}</label>
+                                        <input type="text" wire:model="lastNameLatin" placeholder="Ex: DJAZAIRI" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-900 font-mono uppercase">
                                         @error('lastNameLatin') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
@@ -268,18 +268,18 @@
                             <!-- Birth, Phone & Email -->
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.email_label') }}</label>
-                                    <input type="email" wire:model="email" placeholder="candidate@worldskills.dz" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold focus:ring-2 focus:ring-brand-500">
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.email_label') }}</label>
+                                    <input type="email" wire:model="email" placeholder="candidate@worldskills.dz" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold focus:ring-2 focus:ring-brand-500">
                                     @error('email') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.phone_label') }} *</label>
-                                    <input type="text" wire:model="phone" required placeholder="{{ $this->phonePlaceholder }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold font-mono focus:ring-2 focus:ring-brand-500">
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.phone_label') }} *</label>
+                                    <input type="text" wire:model="phone" required placeholder="{{ $this->phonePlaceholder }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold font-mono focus:ring-2 focus:ring-brand-500">
                                     @error('phone') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.birth_date') }} ({{ app()->getLocale() === 'ar' ? '26 سنة فأقل' : '≤ 26 ' . __('messages.years_unit') }}) *</label>
-                                    <input type="date" wire:model="dateOfBirth" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold focus:ring-2 focus:ring-brand-500">
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.birth_date') }} ({{ app()->getLocale() === 'ar' ? '26 سنة فأقل' : '≤ 26 ' . __('messages.years_unit') }}) *</label>
+                                    <input type="date" wire:model="dateOfBirth" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold focus:ring-2 focus:ring-brand-500">
                                     @error('dateOfBirth') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
                                 </div>
                             </div>
@@ -289,14 +289,14 @@
                     <!-- STEP 2: Official Photo & Identity Document Upload with Live Visual Samples & Camera Capture -->
                     @if($step === 2)
                         <div class="space-y-6 animate-in fade-in duration-300">
-                            <h3 class="text-lg font-black text-[#06205C] flex items-center gap-2 border-b border-slate-100 pb-3">
+                            <h3 class="text-lg font-black text-[#06205C] flex items-center gap-2 border-b border-slate-100 dark:border-slate-800/60 pb-3">
                                 <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 <span>{{ __('messages.step_2') }} — {{ __('messages.step_2_title') }}</span>
                             </h3>
 
                             <!-- Current Selected Country Badge -->
-                            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
-                                <span class="font-bold text-slate-700">{{ __('messages.selected_country_label') }}</span>
+                            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
+                                <span class="font-bold text-slate-700 dark:text-slate-300">{{ __('messages.selected_country_label') }}</span>
                                 <span class="font-black text-[#06205C]">
                                     {{ $isAlgeria ? __('messages.algeria_national_delegation_text') : __('messages.foreign_delegation_text') }}
                                 </span>
@@ -316,15 +316,15 @@
                                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                                     
                                     <!-- Live Visual Example / Guidelines Card -->
-                                    <div class="md:col-span-5 bg-white p-4 rounded-2xl border border-blue-200 shadow-sm space-y-3">
+                                    <div class="md:col-span-5 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-blue-200 shadow-sm space-y-3">
                                         <span class="text-[11px] font-black text-brand-600 uppercase tracking-wider block">{{ __('messages.photo_guideline_sample') }}</span>
                                         <div class="flex items-center gap-4">
-                                            <div class="w-20 h-24 rounded-xl bg-slate-100 border-2 border-dashed border-emerald-400 p-1 flex flex-col items-center justify-center relative overflow-hidden shrink-0 shadow-xs">
+                                            <div class="w-20 h-24 rounded-xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-emerald-400 p-1 flex flex-col items-center justify-center relative overflow-hidden shrink-0 shadow-xs">
                                                 <div class="w-10 h-10 rounded-full bg-slate-300 mb-1"></div>
                                                 <div class="w-14 h-8 bg-slate-400 rounded-t-xl"></div>
                                                 <span class="absolute top-1 right-1 text-emerald-600 font-black text-xs"><x-ws.icon name="check" class="w-3.5 h-3.5" /></span>
                                             </div>
-                                            <div class="text-[11px] text-slate-600 space-y-1 font-medium">
+                                            <div class="text-[11px] text-slate-600 dark:text-slate-400 space-y-1 font-medium">
                                                 <p>{{ __('messages.photo_guide_1') }}</p>
                                                 <p>{{ __('messages.photo_guide_2') }}</p>
                                                 <p>{{ __('messages.photo_guide_3') }}</p>
@@ -337,7 +337,7 @@
                                     <div class="md:col-span-7 space-y-3">
                                         <div class="flex flex-col sm:flex-row gap-2">
                                             <div class="flex-1">
-                                                <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.upload_from_files') }}</label>
+                                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.upload_from_files') }}</label>
                                                 <input type="file" wire:model="photoFile" accept="image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-500 file:text-white hover:file:bg-brand-600 shadow-sm">
                                             </div>
                                             <button type="button" @click="startCamera('photoFile')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 shrink-0 self-end">
@@ -347,8 +347,8 @@
                                         @error('photoFile') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
 
                                         @if($photoFile)
-                                            <div class="p-3 rounded-2xl bg-white border border-emerald-300 flex items-center gap-3">
-                                                <img src="{{ $photoFile->temporaryUrl() }}" alt="Preview" class="w-12 h-14 rounded-lg object-cover border border-slate-200">
+                                            <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-emerald-300 flex items-center gap-3">
+                                                <img src="{{ $photoFile->temporaryUrl() }}" alt="Preview" class="w-12 h-14 rounded-lg object-cover border border-slate-200 dark:border-slate-800">
                                                 <div>
                                                     <span class="text-xs font-bold text-emerald-700 block">{{ __('messages.photo_selected_success') }}</span>
                                                     <span class="text-[10px] text-slate-400 font-mono">{{ $photoFile->getClientOriginalName() }}</span>
@@ -362,19 +362,19 @@
 
                             <!-- 2. National ID or Passport Section with Sample Guide & Live Camera Capture -->
                             @if($isAlgeria)
-                                <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-5">
+                                <div class="p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 space-y-5">
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.nin_label') }}</label>
-                                        <input type="text" wire:model="nationalId" maxlength="18" placeholder="{{ __('messages.nin_placeholder') }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-mono font-bold focus:ring-2 focus:ring-brand-500 bg-white">
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.nin_label') }}</label>
+                                        <input type="text" wire:model="nationalId" maxlength="18" placeholder="{{ __('messages.nin_placeholder') }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-mono font-bold focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-900">
                                         @error('nationalId') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
                                     </div>
 
                                     <!-- Upload Scanned Card / Photo of National ID -->
-                                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center border-t border-slate-200 pt-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center border-t border-slate-200 dark:border-slate-800 pt-4">
                                         
                                         <!-- Sample Visual Card Guide -->
-                                        <div class="md:col-span-5 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
-                                            <span class="text-[11px] font-bold text-slate-600 block">{{ __('messages.attach_national_id') }}</span>
+                                        <div class="md:col-span-5 bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-2">
+                                            <span class="text-[11px] font-bold text-slate-600 dark:text-slate-400 block">{{ __('messages.attach_national_id') }}</span>
                                             <div class="flex items-center gap-3">
                                                 <div class="w-20 h-12 bg-gradient-to-r from-blue-100 to-emerald-100 rounded-lg border border-slate-300 p-1 flex flex-col justify-between shrink-0 shadow-xs">
                                                     <div class="w-4 h-4 bg-emerald-500/20 rounded-full"></div>
@@ -387,14 +387,28 @@
                                         <div class="md:col-span-7 space-y-2">
                                             <div class="flex flex-col sm:flex-row gap-2">
                                                 <div class="flex-1">
-                                                    <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.choose_id_file') }}</label>
-                                                    <input type="file" wire:model="nationalIdFile" accept="application/pdf,image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-200 file:text-slate-800 hover:file:bg-slate-300">
+                                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.choose_id_file') }}</label>
+                                                    <input type="file" wire:model="nationalIdFile" accept="application/pdf,image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-200 file:text-slate-800 dark:text-slate-200 hover:file:bg-slate-300">
                                                 </div>
                                                 <button type="button" @click="startCamera('nationalIdFile')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 shrink-0 self-end">
                                                     <span>{{ __('messages.capture_id_card') }}</span>
                                                 </button>
                                             </div>
                                             @error('nationalIdFile') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
+
+                                            @if($nationalIdFile)
+                                                <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-blue-400 flex items-center gap-3 mt-2 shadow-xs">
+                                                    <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 font-bold text-xs shrink-0">
+                                                        <x-ws.icon name="document-text" class="w-5 h-5 text-blue-600" />
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <span class="text-xs font-bold text-blue-800 dark:text-blue-300 block truncate">
+                                                            ✔️ {{ app()->getLocale() === 'fr' ? 'Document CNI / Carte d&apos;identité sélectionné' : (app()->getLocale() === 'en' ? 'National ID Document Selected' : 'تم اختيار ملف بطاقة التعريف الوطنية بنجاح') }}
+                                                        </span>
+                                                        <span class="text-[10px] text-slate-400 font-mono block truncate">{{ $nationalIdFile->getClientOriginalName() }}</span>
+                                                    </div>
+                                                </div>
+                                            @endif
                                         </div>
 
                                     </div>
@@ -403,12 +417,12 @@
                                 <div class="p-6 rounded-3xl bg-amber-50 border border-amber-200 space-y-5">
                                     <div>
                                         <label class="block text-xs font-bold text-amber-900 mb-1">{{ __('messages.passport_label') }}</label>
-                                        <input type="text" wire:model="passportNumber" maxlength="18" placeholder="{{ __('messages.passport_placeholder') }}" class="w-full px-4 py-2.5 rounded-xl border border-amber-200 text-xs font-mono font-bold focus:ring-2 focus:ring-brand-500 bg-white">
+                                        <input type="text" wire:model="passportNumber" maxlength="18" placeholder="{{ __('messages.passport_placeholder') }}" class="w-full px-4 py-2.5 rounded-xl border border-amber-200 text-xs font-mono font-bold focus:ring-2 focus:ring-brand-500 bg-white dark:bg-slate-900">
                                         @error('passportNumber') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
                                     </div>
 
                                     <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center border-t border-amber-200 pt-4">
-                                        <div class="md:col-span-5 bg-white p-3.5 rounded-2xl border border-amber-200 shadow-xs space-y-2">
+                                        <div class="md:col-span-5 bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-amber-200 shadow-xs space-y-2">
                                             <span class="text-[11px] font-bold text-amber-800 block">{{ __('messages.attach_passport_page') }}</span>
                                             <p class="text-[10px] text-slate-500">{{ __('messages.passport_guide_text') }}</p>
                                         </div>
@@ -424,6 +438,20 @@
                                                 </button>
                                             </div>
                                             @error('passportFile') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
+
+                                            @if($passportFile)
+                                                <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-amber-400 flex items-center gap-3 mt-2 shadow-xs">
+                                                    <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center text-amber-600 font-bold text-xs shrink-0">
+                                                        <x-ws.icon name="document-text" class="w-5 h-5 text-amber-600" />
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <span class="text-xs font-bold text-amber-800 dark:text-amber-300 block truncate">
+                                                            ✔️ {{ app()->getLocale() === 'fr' ? 'Document Passeport sélectionné' : (app()->getLocale() === 'en' ? 'Passport Document Selected' : 'تم اختيار ملف جواز السفر بنجاح') }}
+                                                        </span>
+                                                        <span class="text-[10px] text-slate-400 font-mono block truncate">{{ $passportFile->getClientOriginalName() }}</span>
+                                                    </div>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -434,15 +462,15 @@
                     <!-- STEP 3: Clothing & Equipment Sizing -->
                     @if($step === 3)
                         <div class="space-y-6 animate-in fade-in duration-300">
-                            <h3 class="text-lg font-black text-[#06205C] flex items-center gap-2 border-b border-slate-100 pb-3">
+                            <h3 class="text-lg font-black text-[#06205C] flex items-center gap-2 border-b border-slate-100 dark:border-slate-800/60 pb-3">
                                 <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
                                 <span>{{ __('messages.step_3') }} — {{ __('messages.step_3_title') }}</span>
                             </h3>
 
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.suit_size') }} *</label>
-                                    <select wire:model="suitSize" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold focus:ring-2 focus:ring-brand-500">
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.suit_size') }} *</label>
+                                    <select wire:model="suitSize" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold focus:ring-2 focus:ring-brand-500">
                                         <option value="S">S (Small)</option>
                                         <option value="M">M (Medium)</option>
                                         <option value="L">L (Large)</option>
@@ -453,8 +481,8 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.shoe_size') }} *</label>
-                                    <select wire:model="shoeSize" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold focus:ring-2 focus:ring-brand-500">
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.shoe_size') }} *</label>
+                                    <select wire:model="shoeSize" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold focus:ring-2 focus:ring-brand-500">
                                         @for($s = 38; $s <= 48; $s++)
                                             <option value="{{ $s }}">{{ $s }}</option>
                                         @endfor
@@ -462,8 +490,8 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.height_cm') }} (سم) *</label>
-                                    <input type="number" wire:model="heightCm" min="120" max="220" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold focus:ring-2 focus:ring-brand-500">
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.height_cm') }} (سم) *</label>
+                                    <input type="number" wire:model="heightCm" min="120" max="220" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold focus:ring-2 focus:ring-brand-500">
                                 </div>
                             </div>
                         </div>
@@ -472,7 +500,7 @@
                     <!-- STEP 4: Hierarchy & Skill Selection -->
                     @if($step === 4)
                         <div class="space-y-6 animate-in fade-in duration-300">
-                            <h3 class="text-lg font-black text-[#06205C] flex items-center gap-2 border-b border-slate-100 pb-3">
+                            <h3 class="text-lg font-black text-[#06205C] flex items-center gap-2 border-b border-slate-100 dark:border-slate-800/60 pb-3">
                                 <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
                                 <span>{{ __('messages.step_4') }} — {{ __('messages.step_4_title') }}</span>
                             </h3>
@@ -480,8 +508,8 @@
                             @if($isAlgeria)
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.wilaya_label') }}</label>
-                                        <select wire:model.live="wilayaId" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold focus:ring-2 focus:ring-brand-500">
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.wilaya_label') }}</label>
+                                        <select wire:model.live="wilayaId" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold focus:ring-2 focus:ring-brand-500">
                                             <option value="">{{ __('messages.select_wilaya') }}</option>
                                             @foreach($wilayas as $w)
                                                 <option value="{{ $w->id }}">{{ $w->code }} - {{ app()->getLocale() === 'fr' ? $w->name_fr : (app()->getLocale() === 'en' ? $w->name_en : $w->name_ar) }}</option>
@@ -489,8 +517,8 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.organization_label') }}</label>
-                                        <select wire:model="organizationId" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold focus:ring-2 focus:ring-brand-500">
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.organization_label') }}</label>
+                                        <select wire:model="organizationId" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold focus:ring-2 focus:ring-brand-500">
                                             <option value="">
                                                 {{ $wilayaId ? __('messages.select_organization') : __('messages.select_wilaya_first') }}
                                             </option>
@@ -506,8 +534,8 @@
                             @endif
 
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">{{ __('messages.skill_select') }} *</label>
-                                <select wire:model.live="skillId" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold focus:ring-2 focus:ring-brand-500">
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.skill_select') }} *</label>
+                                <select wire:model.live="skillId" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold focus:ring-2 focus:ring-brand-500">
                                     <option value="">{{ __('messages.select_skill_placeholder') }}</option>
                                     @foreach($skills as $sk)
                                         <option value="{{ $sk->id }}">{{ $sk->code }} — {{ $sk->getLocalized('name') }}</option>
@@ -522,8 +550,8 @@
                                 @endphp
 
                                 @if($currentSkill)
-                                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
-                                        <div class="flex items-center justify-between gap-2 border-b border-slate-200 pb-3">
+                                    <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 space-y-4">
+                                        <div class="flex items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
                                             <div class="flex items-center gap-2">
                                                 <span class="px-3 py-1 rounded-xl bg-blue-50 text-[#0066FF] font-mono font-black text-xs border border-blue-100">
                                                     {{ $currentSkill->code }}
@@ -532,7 +560,7 @@
                                                     {{ $currentSkill->getLocalized('name') }}
                                                 </h4>
                                             </div>
-                                            <span class="text-xs font-bold text-slate-500 bg-white px-3 py-1 rounded-full border border-slate-200">
+                                            <span class="text-xs font-bold text-slate-500 bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-800">
                                                 {{ __('messages.age_limit_label') }} {{ $currentSkill->min_age ?: 16 }} - {{ $currentSkill->max_age ?: 25 }} {{ __('messages.years_unit') }}
                                             </span>
                                         </div>
@@ -547,10 +575,10 @@
                                             @if(count($skillEquipments) > 0)
                                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                                     @foreach($skillEquipments as $eq)
-                                                        <div class="flex items-center justify-between gap-2 bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
+                                                        <div class="flex items-center justify-between gap-2 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
                                                             <div class="flex items-center gap-2">
                                                                 <span class="w-2 h-2 rounded-full bg-[#0066FF]"></span>
-                                                                <span class="font-bold text-slate-800 text-xs">
+                                                                <span class="font-bold text-slate-800 dark:text-slate-200 text-xs">
                                                                     {{ optional($eq->equipmentItem)->getLocalized('name') ?? optional($eq->equipmentItem)->name_ar ?? 'تجهيزات ومعدات معتمدة' }}
                                                                 </span>
                                                             </div>
@@ -564,13 +592,13 @@
                                                 </div>
                                             @else
                                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                                                    <div class="flex items-center gap-2 bg-white p-3 rounded-xl border border-slate-200">
+                                                    <div class="flex items-center gap-2 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                                                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                                        <span class="font-bold text-slate-700">{{ app()->getLocale() === 'fr' ? 'Équipement de Protection Individuelle (EPI)' : (app()->getLocale() === 'en' ? 'Personal Protective Equipment (PPE)' : 'معدات الوقاية الفردية والسلامة (EPI)') }}</span>
+                                                        <span class="font-bold text-slate-700 dark:text-slate-300">{{ app()->getLocale() === 'fr' ? 'Équipement de Protection Individuelle (EPI)' : (app()->getLocale() === 'en' ? 'Personal Protective Equipment (PPE)' : 'معدات الوقاية الفردية والسلامة (EPI)') }}</span>
                                                     </div>
-                                                    <div class="flex items-center gap-2 bg-white p-3 rounded-xl border border-slate-200">
+                                                    <div class="flex items-center gap-2 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                                                         <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                                                        <span class="font-bold text-slate-700">{{ app()->getLocale() === 'fr' ? 'Outillage technique individuel' : (app()->getLocale() === 'en' ? 'Individual technical tools' : 'العدّة والعتاد التقني الفردي للتخصص') }}</span>
+                                                        <span class="font-bold text-slate-700 dark:text-slate-300">{{ app()->getLocale() === 'fr' ? 'Outillage technique individuel' : (app()->getLocale() === 'en' ? 'Individual technical tools' : 'العدّة والعتاد التقني الفردي للتخصص') }}</span>
                                                     </div>
                                                 </div>
                                             @endif
@@ -582,9 +610,9 @@
                     @endif
 
                     <!-- Step Navigation Buttons -->
-                    <div class="flex items-center justify-between pt-6 border-t border-slate-100 mt-8">
+                    <div class="flex items-center justify-between pt-6 border-t border-slate-100 dark:border-slate-800/60 mt-8">
                         @if($step > 1)
-                            <button type="button" wire:click="prevStep" class="px-6 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition">
+                            <button type="button" wire:click="prevStep" class="px-6 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-800/80 transition">
                                 {{ __('messages.prev_step') }}
                             </button>
                         @else
@@ -615,7 +643,7 @@
             <div class="w-full max-w-xl flex items-center justify-between text-white">
                 <div class="flex items-center gap-2">
                     <span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
-                    <span class="text-xs font-bold">{{ app()->getLocale() === 'fr' ? 'Scanner & Vérificateur Biométrique OCR' : (app()->getLocale() === 'en' ? 'Biometric OCR & Document Authenticator' : 'ماسح ومحقق صحة الوثائق البيومترية (Biometric OCR & Scanner)') }}</span>
+                    <span class="text-xs font-bold" x-text="targetField === 'photoFile' ? '{{ app()->getLocale() === 'fr' ? 'Photo d'identité officielle (Visage)' : (app()->getLocale() === 'en' ? 'Official Candidate Photo (Face)' : 'التقاط الصورة الشخصية الرسمية (وجه المترشح)') }}' : '{{ app()->getLocale() === 'fr' ? 'Scan Document d'identité (CNI / Passeport)' : (app()->getLocale() === 'en' ? 'Scan Identity Document (ID / Passport)' : 'تصوير وثيقة الهوية (بطاقة التعريف / جواز السفر)') }}'"></span>
                 </div>
                 <button type="button" @click="stopCamera()" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-xs font-bold transition flex items-center gap-1">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -632,7 +660,7 @@
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] text-white font-bold bg-black/60 px-2.5 py-1 rounded-md flex items-center gap-1">
                             <svg class="w-3 h-3 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span>{{ app()->getLocale() === 'fr' ? 'Placez le document original dans le cadre' : (app()->getLocale() === 'en' ? 'Place the original document inside the frame' : 'ضع الوثيقة الأصلية كاملة داخل الإطار') }}</span>
+                            <span x-text="targetField === 'photoFile' ? '{{ app()->getLocale() === 'fr' ? 'Placez le visage du candidat au centre du cadre' : (app()->getLocale() === 'en' ? 'Place candidate face in center of frame' : 'ضع وجه المترشح في منتصف الإطار مع إضاءة جيدة') }}' : '{{ app()->getLocale() === 'fr' ? 'Placez le document d'identité complet dans le cadre' : (app()->getLocale() === 'en' ? 'Place complete ID document inside frame' : 'ضع وثيقة الهوية (بطاقة التعريف / الجواز) كاملة داخل الإطار') }}'"></span>
                         </span>
                         <span class="text-[10px] text-emerald-300 font-mono font-bold bg-black/60 px-2.5 py-1 rounded-md">ID-1 / MRZ Standard</span>
                     </div>

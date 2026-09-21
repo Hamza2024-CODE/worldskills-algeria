@@ -241,6 +241,21 @@ class Registration extends Component
                 return;
             }
 
+            // 1.5. Prevent Uploading Same File for Photo and Document
+            $docFileCheck = $this->isAlgeria ? $this->nationalIdFile : $this->passportFile;
+            if ($this->photoFile && $docFileCheck) {
+                $pHash = $docVerifier->calculateFileHash($this->photoFile);
+                $dHash = $docVerifier->calculateFileHash($docFileCheck);
+                if ($pHash && $dHash && $pHash === $dHash) {
+                    $this->addError('photoFile', $locale === 'fr' 
+                        ? "La photo personnelle (visage) et le document d'identité (CNI/Passeport) ne peuvent pas être le même fichier." 
+                        : ($locale === 'en' 
+                            ? 'Personal photo (face) and ID document (National ID/Passport) cannot be the same file.' 
+                            : 'عذراً، يجب إرفاق الصورة الشخصية للمترشح (صورة الوجه) في حقل الصورة الأول، وإرفاق وثيقة الهوية (بطاقة التعريف / جواز السفر) في الحقل الثاني. لا يمكن إرفاق نفس الملف في الحقلين.'));
+                    return;
+                }
+            }
+
             // 2. Check Personal Photo Uniqueness (Prevent Photo Duplication)
             $checkPhoto = $docVerifier->checkPhotoUniqueness($this->photoFile);
             if (!$checkPhoto['is_unique']) {
