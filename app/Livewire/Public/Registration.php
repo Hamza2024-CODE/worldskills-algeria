@@ -242,7 +242,7 @@ class Registration extends Component
             }
 
             // Check Email & Phone Uniqueness
-            $checkUser = $docVerifier->checkUserUniqueness($this->email, $this->phone);
+            $checkUser = $docVerifier->checkIdentityUniqueness(email: $this->email, phone: $this->phone);
             if (!$checkUser['is_valid']) {
                 foreach ($checkUser['errors'] as $field => $msg) {
                     $this->addError($field, $msg);
