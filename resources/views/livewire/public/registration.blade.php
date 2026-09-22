@@ -4,6 +4,36 @@
          targetField: '',
          stream: null,
          facingMode: 'user',
+         uploadPhotoFile(e) {
+             const file = e.target.files[0];
+             if (!file) return;
+             if (!['image/jpeg', 'image/png', 'image/webp', 'image/jpg'].includes(file.type)) {
+                 alert('{{ app()->getLocale() === 'fr' ? 'La photo personnelle doit être une image (PNG/JPG/WEBP).' : (app()->getLocale() === 'en' ? 'Personal photo must be an image (PNG/JPG/WEBP).' : 'حقل الصورة الشخصية يقبل الصور فقط (PNG, JPG, WEBP). لا يمكنك رفع ملف PDF هنا.') }}');
+                 e.target.value = '';
+                 return;
+             }
+             const reader = new FileReader();
+             reader.onload = (evt) => {
+                 $wire.setPhotoData(evt.target.result, file.name);
+                 e.target.value = '';
+             };
+             reader.readAsDataURL(file);
+         },
+         uploadDocumentFile(e) {
+             const file = e.target.files[0];
+             if (!file) return;
+             if (!['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/jpg'].includes(file.type)) {
+                 alert('{{ app()->getLocale() === 'fr' ? 'Le document doit être un fichier PDF ou une image (PNG/JPG).' : (app()->getLocale() === 'en' ? 'Document must be a PDF or image file.' : 'وثيقة الهوية تقبل ملفات PDF أو صور (PNG, JPG, WEBP).') }}');
+                 e.target.value = '';
+                 return;
+             }
+             const reader = new FileReader();
+             reader.onload = (evt) => {
+                 $wire.setDocumentData(evt.target.result, file.name);
+                 e.target.value = '';
+             };
+             reader.readAsDataURL(file);
+         },
          async getMediaStream(mode) {
              const getUM = (c) => {
                  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -65,17 +95,13 @@
              const ctx = canvas.getContext('2d');
              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-             canvas.toBlob((blob) => {
-                 if (!blob) return;
-                 const file = new File([blob], 'camera_capture_' + Date.now() + '.jpg', { type: 'image/jpeg' });
-                 $wire.upload(field, file,
-                     () => { this.stopCamera(); },
-                     (error) => { 
-                         console.error('Livewire upload error for ' + field + ':', error);
-                         alert('{{ __('messages.camera_upload_error') }}'); 
-                     }
-                 );
-             }, 'image/jpeg', 0.92);
+             const base64Data = canvas.toDataURL('image/jpeg', 0.92);
+             if (field === 'photoFile' || field === 'photo') {
+                 $wire.setPhotoData(base64Data, 'camera_photo_' + Date.now() + '.jpg');
+             } else {
+                 $wire.setDocumentData(base64Data, 'camera_document_' + Date.now() + '.jpg');
+             }
+             this.stopCamera();
          },
          stopCamera() {
              if (this.stream) {
@@ -344,7 +370,7 @@
                                         <div class="flex flex-col sm:flex-row gap-2">
                                             <div class="flex-1">
                                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.upload_from_files') }}</label>
-                                                <input type="file" wire:model="photoFile" accept="image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-500 file:text-white hover:file:bg-brand-600 shadow-sm">
+                                                <input type="file" accept="image/jpeg,image/png,image/webp" @change="uploadPhotoFile($event)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-500 file:text-white hover:file:bg-brand-600 shadow-sm">
                                             </div>
                                             <button type="button" @click="startCamera('photoFile')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 shrink-0 self-end">
                                                 <span>{{ __('messages.take_photo_camera') }}</span>
@@ -352,13 +378,20 @@
                                         </div>
                                         @error('photoFile') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
 
-                                        @if($photoFile)
-                                            <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-emerald-300 flex items-center gap-3">
-                                                <img src="{{ $photoFile->temporaryUrl() }}" alt="Preview" class="w-12 h-14 rounded-lg object-cover border border-slate-200 dark:border-slate-800">
-                                                <div>
-                                                    <span class="text-xs font-bold text-emerald-700 block">{{ __('messages.photo_selected_success') }}</span>
-                                                    <span class="text-[10px] text-slate-400 font-mono">{{ $photoFile->getClientOriginalName() }}</span>
+                                        @if($photoData)
+                                            <div class="p-3.5 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-300 dark:border-emerald-700/60 flex items-center justify-between gap-3 shadow-xs mt-2">
+                                                <div class="flex items-center gap-3 min-w-0">
+                                                    <img src="{{ $photoData }}" alt="Preview" class="w-12 h-14 rounded-xl object-cover border border-emerald-400 shadow-xs shrink-0">
+                                                    <div class="min-w-0">
+                                                        <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 block truncate">
+                                                            ✔️ {{ app()->getLocale() === 'fr' ? 'Photo officielle enregistrée' : (app()->getLocale() === 'en' ? 'Official photo recorded' : 'تم اختيار الصورة الشخصية بنجاح') }}
+                                                        </span>
+                                                        <span class="text-[10px] text-slate-500 font-mono block truncate">{{ $photoFileName ?? 'candidate_photo.jpg' }}</span>
+                                                    </div>
                                                 </div>
+                                                <button type="button" wire:click="clearPhotoData" class="px-2.5 py-1.5 rounded-lg bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 hover:bg-rose-200 font-bold text-xs shrink-0 transition flex items-center gap-1">
+                                                    <span>{{ app()->getLocale() === 'fr' ? 'Supprimer' : (app()->getLocale() === 'en' ? 'Remove' : 'حذف') }}</span>
+                                                </button>
                                             </div>
                                         @endif
                                     </div>
@@ -394,7 +427,7 @@
                                             <div class="flex flex-col sm:flex-row gap-2">
                                                 <div class="flex-1">
                                                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ __('messages.choose_id_file') }}</label>
-                                                    <input type="file" wire:model="nationalIdFile" accept="application/pdf,image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-200 file:text-slate-800 dark:text-slate-200 hover:file:bg-slate-300">
+                                                    <input type="file" accept="application/pdf,image/jpeg,image/png,image/webp" @change="uploadDocumentFile($event)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-200 file:text-slate-800 dark:text-slate-200 hover:file:bg-slate-300">
                                                 </div>
                                                 <button type="button" @click="startCamera('nationalIdFile')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 shrink-0 self-end">
                                                     <span>{{ __('messages.capture_id_card') }}</span>
@@ -402,17 +435,26 @@
                                             </div>
                                             @error('nationalIdFile') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
 
-                                            @if($nationalIdFile)
-                                                <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-blue-400 flex items-center gap-3 mt-2 shadow-xs">
-                                                    <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 font-bold text-xs shrink-0">
-                                                        <x-ws.icon name="document-text" class="w-5 h-5 text-blue-600" />
+                                            @if($documentData)
+                                                <div class="p-3.5 rounded-2xl bg-blue-50/80 dark:bg-blue-950/30 border border-blue-400/80 dark:border-blue-700/60 flex items-center justify-between gap-3 shadow-xs mt-2">
+                                                    <div class="flex items-center gap-3 min-w-0">
+                                                        @if($documentFileType === 'pdf' || str_contains($documentData, 'application/pdf'))
+                                                            <div class="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+                                                                PDF
+                                                            </div>
+                                                        @else
+                                                            <img src="{{ $documentData }}" alt="Document Preview" class="w-12 h-12 rounded-xl object-cover border border-blue-400 shadow-xs shrink-0">
+                                                        @endif
+                                                        <div class="min-w-0">
+                                                            <span class="text-xs font-bold text-blue-800 dark:text-blue-300 block truncate">
+                                                                ✔️ {{ app()->getLocale() === 'fr' ? 'Document CNI / Carte d&apos;identité enregistré' : (app()->getLocale() === 'en' ? 'National ID Document Recorded' : 'تم اختيار ملف بطاقة التعريف الوطنية بنجاح') }}
+                                                            </span>
+                                                            <span class="text-[10px] text-slate-500 font-mono block truncate">{{ $documentFileName ?? 'identity_document' }}</span>
+                                                        </div>
                                                     </div>
-                                                    <div class="flex-1 min-w-0">
-                                                        <span class="text-xs font-bold text-blue-800 dark:text-blue-300 block truncate">
-                                                            ✔️ {{ app()->getLocale() === 'fr' ? 'Document CNI / Carte d&apos;identité sélectionné' : (app()->getLocale() === 'en' ? 'National ID Document Selected' : 'تم اختيار ملف بطاقة التعريف الوطنية بنجاح') }}
-                                                        </span>
-                                                        <span class="text-[10px] text-slate-400 font-mono block truncate">{{ $nationalIdFile->getClientOriginalName() }}</span>
-                                                    </div>
+                                                    <button type="button" wire:click="clearDocumentData" class="px-2.5 py-1.5 rounded-lg bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 hover:bg-rose-200 font-bold text-xs shrink-0 transition flex items-center gap-1">
+                                                        <span>{{ app()->getLocale() === 'fr' ? 'Supprimer' : (app()->getLocale() === 'en' ? 'Remove' : 'حذف') }}</span>
+                                                    </button>
                                                 </div>
                                             @endif
                                         </div>
@@ -437,7 +479,7 @@
                                             <div class="flex flex-col sm:flex-row gap-2">
                                                 <div class="flex-1">
                                                     <label class="block text-xs font-bold text-amber-900 mb-1">{{ __('messages.choose_passport_file') }}</label>
-                                                    <input type="file" wire:model="passportFile" accept="application/pdf,image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-200 file:text-amber-900 hover:file:bg-amber-300">
+                                                    <input type="file" accept="application/pdf,image/jpeg,image/png,image/webp" @change="uploadDocumentFile($event)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-200 file:text-amber-900 hover:file:bg-amber-300">
                                                 </div>
                                                 <button type="button" @click="startCamera('passportFile')" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 shrink-0 self-end">
                                                     <span>{{ __('messages.capture_passport') }}</span>
@@ -445,17 +487,26 @@
                                             </div>
                                             @error('passportFile') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
 
-                                            @if($passportFile)
-                                                <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-amber-400 flex items-center gap-3 mt-2 shadow-xs">
-                                                    <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center text-amber-600 font-bold text-xs shrink-0">
-                                                        <x-ws.icon name="document-text" class="w-5 h-5 text-amber-600" />
+                                            @if($documentData)
+                                                <div class="p-3.5 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-400/80 dark:border-amber-700/60 flex items-center justify-between gap-3 shadow-xs mt-2">
+                                                    <div class="flex items-center gap-3 min-w-0">
+                                                        @if($documentFileType === 'pdf' || str_contains($documentData, 'application/pdf'))
+                                                            <div class="w-12 h-12 rounded-xl bg-amber-600 text-white flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+                                                                PDF
+                                                            </div>
+                                                        @else
+                                                            <img src="{{ $documentData }}" alt="Passport Preview" class="w-12 h-12 rounded-xl object-cover border border-amber-400 shadow-xs shrink-0">
+                                                        @endif
+                                                        <div class="min-w-0">
+                                                            <span class="text-xs font-bold text-amber-800 dark:text-amber-300 block truncate">
+                                                                ✔️ {{ app()->getLocale() === 'fr' ? 'Document Passeport enregistré' : (app()->getLocale() === 'en' ? 'Passport Document Recorded' : 'تم اختيار ملف جواز السفر بنجاح') }}
+                                                            </span>
+                                                            <span class="text-[10px] text-slate-500 font-mono block truncate">{{ $documentFileName ?? 'passport_document' }}</span>
+                                                        </div>
                                                     </div>
-                                                    <div class="flex-1 min-w-0">
-                                                        <span class="text-xs font-bold text-amber-800 dark:text-amber-300 block truncate">
-                                                            ✔️ {{ app()->getLocale() === 'fr' ? 'Document Passeport sélectionné' : (app()->getLocale() === 'en' ? 'Passport Document Selected' : 'تم اختيار ملف جواز السفر بنجاح') }}
-                                                        </span>
-                                                        <span class="text-[10px] text-slate-400 font-mono block truncate">{{ $passportFile->getClientOriginalName() }}</span>
-                                                    </div>
+                                                    <button type="button" wire:click="clearDocumentData" class="px-2.5 py-1.5 rounded-lg bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 hover:bg-rose-200 font-bold text-xs shrink-0 transition flex items-center gap-1">
+                                                        <span>{{ app()->getLocale() === 'fr' ? 'Supprimer' : (app()->getLocale() === 'en' ? 'Remove' : 'حذف') }}</span>
+                                                    </button>
                                                 </div>
                                             @endif
                                         </div>

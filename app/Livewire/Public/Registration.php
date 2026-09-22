@@ -16,15 +16,13 @@ use App\Models\User;
 use App\Models\Wilaya;
 use App\Services\DocumentVerificationService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Livewire\WithFileUploads;
 
 #[Layout('components.layouts.public')]
 class Registration extends Component
 {
-    use WithFileUploads;
-
     public int $step = 1;
     public mixed $countryId = null;
     public bool $isAlgeria = true;
@@ -39,13 +37,70 @@ class Registration extends Component
     public string $email = '';
     public string $phone = '';
 
-    // Step 2: Official Photo & Identity Documents
-    public mixed $photoFile = null;
+    // Step 2: Official Photo & Identity Documents (Base64 Direct Storage)
+    public ?string $photoData = null;
+    public ?string $photoFileName = null;
+
     public string $identificationType = 'national_id';
     public string $nationalId = '';
     public string $passportNumber = '';
-    public mixed $nationalIdFile = null;
-    public mixed $passportFile = null;
+    public ?string $documentData = null;
+    public ?string $documentFileName = null;
+    public ?string $documentFileType = null;
+
+    public function setPhotoData(string $base64Data, ?string $fileName = null): void
+    {
+        if (!preg_match('/^data:image\/(jpeg|png|webp|jpg);base64,/', $base64Data)) {
+            $locale = app()->getLocale();
+            $this->addError('photoFile', $locale === 'fr' 
+                ? 'La photo personnelle doit être une image valide (PNG/JPG/WEBP).' 
+                : ($locale === 'en' 
+                    ? 'Personal photo must be a valid image file.' 
+                    : 'حقل الصورة الشخصية يقبل الصور فقط (PNG, JPG, WEBP). لا يمكنك رفع ملف PDF هنا.'));
+            return;
+        }
+
+        $this->photoData = $base64Data;
+        $this->photoFileName = $fileName ?: 'candidate_photo_' . time() . '.jpg';
+        $this->resetErrorBag('photoFile');
+    }
+
+    public function setDocumentData(string $base64Data, ?string $fileName = null): void
+    {
+        if (!preg_match('/^data:(image\/(jpeg|png|webp|jpg)|application\/pdf);base64,/', $base64Data)) {
+            $locale = app()->getLocale();
+            $msg = $locale === 'fr' 
+                ? 'Le document doit être un fichier PDF ou une image (PNG/JPG).' 
+                : ($locale === 'en' 
+                    ? 'Document must be a PDF or image file.' 
+                    : 'وثيقة الهوية تقبل ملفات PDF أو صور (PNG, JPG, WEBP).');
+            $this->addError('nationalIdFile', $msg);
+            $this->addError('passportFile', $msg);
+            return;
+        }
+
+        $this->documentData = $base64Data;
+        $this->documentFileName = $fileName ?: 'identity_document_' . time() . ($this->isAlgeria ? '.pdf' : '.jpg');
+        $this->documentFileType = str_contains($base64Data, 'application/pdf') ? 'pdf' : 'image';
+        $this->resetErrorBag('nationalIdFile');
+        $this->resetErrorBag('passportFile');
+    }
+
+    public function clearPhotoData(): void
+    {
+        $this->photoData = null;
+        $this->photoFileName = null;
+        $this->resetErrorBag('photoFile');
+    }
+
+    public function clearDocumentData(): void
+    {
+        $this->documentData = null;
+        $this->documentFileName = null;
+        $this->documentFileType = null;
+        $this->resetErrorBag('nationalIdFile');
+        $this->resetErrorBag('passportFile');
+    }
 
     // Step 3: Suit & Clothing Sizing
     public string $suitSize = 'M';
@@ -69,65 +124,54 @@ class Registration extends Component
 
     public function mount(): void
     {
-        $settings = app(\App\Services\SettingsEngine::class);
-        $this->registrationEnabled = (bool) $settings->get('registration_competitors_enabled', true);
-
-        $algeria = Country::where('iso2', 'DZ')->first();
-        if ($algeria) {
-            $this->countryId = $algeria->id;
+        $dz = Country::where('code', 'DZ')->first();
+        if ($dz) {
+            $this->countryId = $dz->id;
             $this->isAlgeria = true;
             $this->isArabicCountry = true;
         }
-        $this->dateOfBirth = date('Y-m-d', strtotime('-20 years'));
+
+        $activeEdition = Edition::where('is_active', true)->first();
+        if ($activeEdition && $activeEdition->registration_start_date && $activeEdition->registration_end_date) {
+            $now = Carbon::now();
+            $start = Carbon::parse($activeEdition->registration_start_date)->startOfDay();
+            $end = Carbon::parse($activeEdition->registration_end_date)->endOfDay();
+            $this->registrationEnabled = $now->between($start, $end);
+        }
     }
 
-    public function updatedCountryId(mixed $val): void
+    public function updatedCountryId($value): void
     {
-        $arabicIsos = ['DZ', 'TN', 'MA', 'EG', 'LY', 'MR', 'SD', 'DJ', 'KM', 'SO'];
-        $country = Country::find($val);
-        $this->isAlgeria = $country ? (bool) $country->is_algeria : false;
-        $this->isArabicCountry = $country ? in_array($country->iso2, $arabicIsos) : true;
-        $this->identificationType = $this->isAlgeria ? 'national_id' : 'passport';
+        $country = Country::find($value);
+        if ($country) {
+            $this->isAlgeria = ($country->code === 'DZ');
+            $arabicCodes = ['DZ', 'TN', 'MA', 'EG', 'SA', 'AE', 'QA', 'KW', 'OM', 'BH', 'JO', 'LB', 'IQ', 'SY', 'LY', 'SD', 'YE', 'MR', 'SO', 'DJ', 'KM', 'PS'];
+            $this->isArabicCountry = in_array(strtoupper($country->code), $arabicCodes);
+
+            if (!$this->isAlgeria) {
+                $this->wilayaId = null;
+                $this->organizationId = null;
+                $this->identificationType = 'passport';
+            } else {
+                $this->identificationType = 'national_id';
+            }
+        }
     }
 
-    public function updatedWilayaId(mixed $val): void
+    public function updatedWilayaId($value): void
     {
         $this->organizationId = null;
     }
 
-    public function updatedSkillId(mixed $val): void
+    public function updatedSkillId($value): void
     {
-        if ($val) {
-            $this->selectedSkill = Skill::find($val);
-            $this->skillEquipments = SkillEquipment::with('equipmentItem')->where('skill_id', $val)->get();
+        if ($value) {
+            $this->selectedSkill = Skill::find($value);
+            $this->skillEquipments = SkillEquipment::where('skill_id', $value)->get();
         } else {
             $this->selectedSkill = null;
             $this->skillEquipments = [];
         }
-    }
-
-    public function getPhonePlaceholderProperty(): string
-    {
-        $country = Country::find($this->countryId);
-        $locale = app()->getLocale();
-        if (!$country) {
-            return $locale === 'fr' ? 'Ex: 0550123456 ou +213550123456' : ($locale === 'en' ? 'Ex: 0550123456 or +213550123456' : 'مثال: 0550123456 أو +213550123456');
-        }
-
-        $code = $country->phone_code ?: ($country->is_algeria ? '+213' : '');
-
-        return match($country->iso2) {
-            'DZ' => $locale === 'fr' ? 'Ex: 0550123456 ou +213550123456' : ($locale === 'en' ? 'Ex: 0550123456 or +213550123456' : 'مثال: 0550123456 أو +213550123456'),
-            'TN' => "{$code} 20 123 456",
-            'MA' => "{$code} 6 12 34 56 78",
-            'EG' => "{$code} 10 1234 5678",
-            'LY' => "{$code} 91 123 4567",
-            'MR' => "{$code} 45 12 34 56",
-            'SD' => "{$code} 91 234 5678",
-            default => !empty($code) 
-                ? ($locale === 'fr' ? "Ex: {$code} 55 000 0000" : ($locale === 'en' ? "Ex: {$code} 55 000 0000" : "مثال: {$code} 55 000 0000"))
-                : ($locale === 'fr' ? 'Ex: +213 550 00 00 00' : ($locale === 'en' ? 'Ex: +213 550 00 00 00' : 'مثال: 0550000000 / +213'))
-        };
     }
 
     public function validateAge(): bool
@@ -161,69 +205,75 @@ class Registration extends Component
                 'email'          => ['required', 'email', 'regex:' . $emailRegex],
                 'phone'          => ['required', 'regex:' . $phoneRegex],
                 'dateOfBirth'    => ['required', 'date'],
+                'gender'         => ['required', 'in:male,female'],
             ];
 
             if ($this->isArabicCountry) {
                 $rules['firstNameAr'] = ['required', 'min:2', 'regex:/^[\x{0600}-\x{06FF}\s\-]+$/u'];
                 $rules['lastNameAr']  = ['required', 'min:2', 'regex:/^[\x{0600}-\x{06FF}\s\-]+$/u'];
+            } else {
+                $rules['firstNameAr'] = ['nullable', 'regex:/^[\x{0600}-\x{06FF}\s\-]*$/u'];
+                $rules['lastNameAr']  = ['nullable', 'regex:/^[\x{0600}-\x{06FF}\s\-]*$/u'];
             }
 
-            $locale = app()->getLocale();
+            $messages = [
+                'countryId.required'      => app()->getLocale() === 'fr' ? 'Veuillez sélectionner le pays.' : (app()->getLocale() === 'en' ? 'Please select country.' : 'يرجى اختيار البلد.'),
+                'firstNameLatin.required' => app()->getLocale() === 'fr' ? 'Le prénom (Latin) est obligatoire.' : (app()->getLocale() === 'en' ? 'First name (Latin) is required.' : 'الاسم الأول (بالأحرف اللاتينية) مطلوب.'),
+                'firstNameLatin.regex'    => app()->getLocale() === 'fr' ? 'Le prénom latin ne doit contenir que des lettres latines.' : (app()->getLocale() === 'en' ? 'Latin first name must contain only Latin characters.' : 'الاسم الأول باللاتينية يجب أن يحتوي على أحرف لاتينية فقط.'),
+                'lastNameLatin.required'  => app()->getLocale() === 'fr' ? 'Le nom (Latin) est obligatoire.' : (app()->getLocale() === 'en' ? 'Last name (Latin) is required.' : 'اللقب (بالأحرف اللاتينية) مطلوب.'),
+                'lastNameLatin.regex'     => app()->getLocale() === 'fr' ? 'Le nom latin ne doit contenir que des lettres latines.' : (app()->getLocale() === 'en' ? 'Latin last name must contain only Latin characters.' : 'اللقب باللاتينية يجب أن يحتوي على أحرف لاتينية فقط.'),
+                'firstNameAr.required'    => app()->getLocale() === 'fr' ? 'Le prénom en arabe est requis.' : (app()->getLocale() === 'en' ? 'First name in Arabic is required.' : 'الاسم الأول باللغة العربية مطلوب للمترشحين من الدول العربية.'),
+                'firstNameAr.regex'       => app()->getLocale() === 'fr' ? 'Le prénom arabe doit contenir des lettres arabes uniquement.' : (app()->getLocale() === 'en' ? 'Arabic first name must contain Arabic characters.' : 'الاسم بالعربية يجب أن يحتوي على أحرف عربية فقط دون أرقام.'),
+                'lastNameAr.required'     => app()->getLocale() === 'fr' ? 'Le nom en arabe est requis.' : (app()->getLocale() === 'en' ? 'Last name in Arabic is required.' : 'اللقب باللغة العربية مطلوب للمترشحين من الدول العربية.'),
+                'lastNameAr.regex'        => app()->getLocale() === 'fr' ? 'Le nom arabe doit contenir des lettres arabes uniquement.' : (app()->getLocale() === 'en' ? 'Arabic last name must contain Arabic characters.' : 'اللقب بالعربية يجب أن يحتوي على أحرف عربية فقط دون أرقام.'),
+                'email.required'          => app()->getLocale() === 'fr' ? 'L\'adresse email est requise.' : (app()->getLocale() === 'en' ? 'Email is required.' : 'البريد الإلكتروني مطلوب.'),
+                'email.email'             => app()->getLocale() === 'fr' ? 'Veuillez saisir une adresse email valide.' : (app()->getLocale() === 'en' ? 'Please enter a valid email.' : 'يرجى كتابة بريد إلكتروني صحيح.'),
+                'email.regex'             => app()->getLocale() === 'fr' ? 'Format email invalide.' : (app()->getLocale() === 'en' ? 'Invalid email format.' : 'صيغة البريد الإلكتروني غير صحيحة.'),
+                'phone.required'          => app()->getLocale() === 'fr' ? 'Le numéro de téléphone est requis.' : (app()->getLocale() === 'en' ? 'Phone number is required.' : 'رقم الهاتف مطلوب.'),
+                'phone.regex'             => app()->getLocale() === 'fr' ? 'Format de téléphone invalide.' : (app()->getLocale() === 'en' ? 'Invalid phone format.' : 'رقم الهاتف غير صحيح (يرجى إدخال 10 أرقام تبدأ بـ 05 أو 06 أو 07 في الجزائر).'),
+                'dateOfBirth.required'    => app()->getLocale() === 'fr' ? 'La date de naissance est requise.' : (app()->getLocale() === 'en' ? 'Date of birth is required.' : 'تاريخ الميلاد مطلوب.'),
+            ];
 
-            $this->validate($rules, [
-                'countryId.required'   => $locale === 'fr' ? 'Veuillez sélectionner le pays de la délégation.' : ($locale === 'en' ? 'Please select delegation country.' : 'يرجى اختيار دولة الوفد المشارك.'),
-                'firstNameAr.required' => $locale === 'fr' ? 'Le prénom en arabe est requis.' : ($locale === 'en' ? 'First name in Arabic is required.' : 'الاسم الشخصي بالعربية مطلوب.'),
-                'lastNameAr.required'  => $locale === 'fr' ? 'Le nom en arabe est requis.' : ($locale === 'en' ? 'Last name in Arabic is required.' : 'اللقب العائلي بالعربية مطلوب.'),
-                'firstNameAr.regex'    => $locale === 'fr' ? 'Le prénom en arabe doit contenir uniquement des lettres arabes.' : ($locale === 'en' ? 'First name in Arabic must contain Arabic characters only.' : 'الاسم بالعربية يجب أن يتكون من أحرف عربية فقط.'),
-                'lastNameAr.regex'     => $locale === 'fr' ? 'Le nom en arabe doit contenir uniquement des lettres arabes.' : ($locale === 'en' ? 'Last name in Arabic must contain Arabic characters only.' : 'اللقب بالعربية يجب أن يتكون من أحرف عربية فقط.'),
-                'firstNameLatin.required' => $locale === 'fr' ? 'Le prénom en latin est requis.' : ($locale === 'en' ? 'First name in Latin characters is required.' : 'الاسم بالفرنسية/اللاتينية مطلوب.'),
-                'lastNameLatin.required'  => $locale === 'fr' ? 'Le nom en latin est requis.' : ($locale === 'en' ? 'Last name in Latin characters is required.' : 'اللقب بالفرنسية/اللاتينية مطلوب.'),
-                'firstNameLatin.regex' => $locale === 'fr' ? 'Le prénom doit contenir uniquement des lettres latines.' : ($locale === 'en' ? 'First name must contain Latin characters only.' : 'الاسم بالفرنسية/اللاتينية يجب أن يحتوي على أحرف لاتينية فقط.'),
-                'lastNameLatin.regex'  => $locale === 'fr' ? 'Le nom doit contenir uniquement des lettres latines.' : ($locale === 'en' ? 'Last name must contain Latin characters only.' : 'اللقب بالفرنسية/اللاتينية يجب أن يحتوي على أحرف لاتينية فقط.'),
-                'email.required'       => $locale === 'fr' ? 'L\'adresse email est requise.' : ($locale === 'en' ? 'Email address is required.' : 'البريد الإلكتروني مطلوب.'),
-                'email.regex'          => $locale === 'fr' ? 'Veuillez saisir une adresse email valide.' : ($locale === 'en' ? 'Please enter a valid email address.' : 'يرجى إدخال بريد إلكتروني صحيح ومعتمد.'),
-                'phone.required'       => $locale === 'fr' ? 'Le numéro de téléphone est requis.' : ($locale === 'en' ? 'Phone number is required.' : 'رقم الهاتف مطلوب.'),
-                'phone.regex'          => $this->isAlgeria 
-                                            ? ($locale === 'fr' ? 'Numéro algérien invalide. Doit comporter 10 chiffres et commencer par (05/06/07).' : ($locale === 'en' ? 'Invalid Algerian phone number. Must be 10 digits starting with 05/06/07.' : 'رقم الهاتف الجزائري غير صحيح. يجب أن يتكون من 10 أرقام ويبدأ بـ (05/06/07).'))
-                                            : ($locale === 'fr' ? 'Numéro de téléphone invalide.' : ($locale === 'en' ? 'Invalid phone number.' : 'رقم الهاتف غير صحيح.')),
-                'dateOfBirth.required' => $locale === 'fr' ? 'La date de naissance est requise.' : ($locale === 'en' ? 'Date of birth is required.' : 'تاريخ الميلاد مطلوب.'),
-            ]);
+            $this->validate($rules, $messages);
 
-            // Uniqueness Check for Email and Phone
-            $check = $docVerifier->checkIdentityUniqueness(null, null, $this->email, $this->phone);
-            if (!$check['is_valid']) {
-                foreach ($check['errors'] as $field => $msg) {
-                    if ($field === 'email') $this->addError('email', $msg);
-                    if ($field === 'phone') $this->addError('phone', $msg);
+            if (!$this->validateAge()) {
+                $this->addError('dateOfBirth', app()->getLocale() === 'fr' ? 'Désolé, le candidat ne doit pas dépasser 25 ans exactement (Age <= 25 ans).' : (app()->getLocale() === 'en' ? 'Sorry, candidate age must not exceed 25 years.' : 'عذراً، يجب ألا يتجاوز عمر المترشح 25 سنة بالضبط للمشاركة في أولمبياد المهن (Age <= 25 years).'));
+                return;
+            }
+
+            // Check Email & Phone Uniqueness
+            $checkUser = $docVerifier->checkUserUniqueness($this->email, $this->phone);
+            if (!$checkUser['is_valid']) {
+                foreach ($checkUser['errors'] as $field => $msg) {
+                    $this->addError($field, $msg);
                 }
                 return;
             }
 
-            if (!$this->validateAge()) {
-                $this->addError('dateOfBirth', $locale === 'fr' ? 'Désolé, le candidat ne doit pas dépasser 26 ans pour participer.' : ($locale === 'en' ? 'Sorry, candidate age must not exceed 26 years.' : 'عذراً، يجب ألا يتجاوز عمر المترشح 26 سنة للمشاركة في أولمبياد المهن (≤ 26 سنة).'));
-                return;
-            }
         } elseif ($this->step === 2) {
             $locale = app()->getLocale();
-            $rules = [
-                'photoFile' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
-            ];
 
-            $messages = [
-                'photoFile.required' => $locale === 'fr' ? 'Veuillez charger la photo officielle du candidat.' : ($locale === 'en' ? 'Please upload the candidate\'s official photo.' : 'يرجى تحميل الصورة الشخصية الرسمية للمترشح.'),
-                'photoFile.image'    => $locale === 'fr' ? 'Le fichier photo doit être une image valide.' : ($locale === 'en' ? 'Uploaded photo file must be a valid image.' : 'الملف المرفق للصورة يجب أن يكون صورة بحجم مناسب.'),
-            ];
+            if (empty($this->photoData)) {
+                $this->addError('photoFile', $locale === 'fr' 
+                    ? 'Veuillez charger la photo officielle du candidat (visage).' 
+                    : ($locale === 'en' 
+                        ? 'Please upload the candidate\'s official photo (face).' 
+                        : 'يرجى تحميل الصورة الشخصية الرسمية للمترشح (صورة الوجه).'));
+                return;
+            }
 
             if ($this->isAlgeria) {
-                $rules['nationalId'] = 'required|regex:/^[0-9]{18}$/';
-                $rules['nationalIdFile'] = 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240';
-                $messages['nationalId.required'] = $locale === 'fr' ? 'Le numéro NIN (18 chiffres) est requis.' : ($locale === 'en' ? 'NIN number (18 digits) is required.' : 'رقم التعريف الوطني (18 رقماً) مطلوب.');
-                $messages['nationalId.regex'] = $locale === 'fr' ? 'Le numéro NIN doit comporter exactement 18 chiffres.' : ($locale === 'en' ? 'National ID Number (NIN) must be exactly 18 digits.' : 'يجب أن يتكون رقم بطاقة التعريف الوطنية (NIN) من 18 رقماً بالضبط دون حروف.');
+                $rules = ['nationalId' => 'required|regex:/^[0-9]{18}$/'];
+                $messages = [
+                    'nationalId.required' => $locale === 'fr' ? 'Le numéro NIN (18 chiffres) est requis.' : ($locale === 'en' ? 'NIN number (18 digits) is required.' : 'رقم التعريف الوطني (18 رقماً) مطلوب.'),
+                    'nationalId.regex'    => $locale === 'fr' ? 'Le numéro NIN doit comporter exactement 18 chiffres.' : ($locale === 'en' ? 'National ID Number (NIN) must be exactly 18 digits.' : 'يجب أن يتكون رقم بطاقة التعريف الوطنية (NIN) من 18 رقماً بالضبط دون حروف.'),
+                ];
             } else {
-                $rules['passportNumber'] = 'required|regex:/^[0-9]{18}$/';
-                $rules['passportFile'] = 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240';
-                $messages['passportNumber.required'] = $locale === 'fr' ? 'Le numéro de passeport est requis.' : ($locale === 'en' ? 'Passport number is required.' : 'رقم جواز السفر مطلوب.');
-                $messages['passportNumber.regex'] = $locale === 'fr' ? 'Le numéro de passeport doit comporter exactement 18 chiffres.' : ($locale === 'en' ? 'Passport number must be exactly 18 digits.' : 'يجب أن يتكون رقم جواز السفر من 18 رقماً بالضبط.');
+                $rules = ['passportNumber' => 'required|regex:/^[0-9]{18}$/'];
+                $messages = [
+                    'passportNumber.required' => $locale === 'fr' ? 'Le numéro de passeport est requis.' : ($locale === 'en' ? 'Passport number is required.' : 'رقم جواز السفر مطلوب.'),
+                    'passportNumber.regex'    => $locale === 'fr' ? 'Le numéro de passeport doit comporter exactement 18 chiffres.' : ($locale === 'en' ? 'Passport number must be exactly 18 digits.' : 'يجب أن يتكون رقم جواز السفر من 18 رقماً بالضبط.'),
+                ];
             }
 
             $this->validate($rules, $messages);
@@ -242,11 +292,8 @@ class Registration extends Component
             }
 
             // 1.5. Prevent Uploading Same File for Photo and Document
-            $docFileCheck = $this->isAlgeria ? $this->nationalIdFile : $this->passportFile;
-            if ($this->photoFile && $docFileCheck) {
-                $pHash = $docVerifier->calculateFileHash($this->photoFile);
-                $dHash = $docVerifier->calculateFileHash($docFileCheck);
-                if ($pHash && $dHash && $pHash === $dHash) {
+            if (!empty($this->photoData) && !empty($this->documentData)) {
+                if ($this->photoData === $this->documentData) {
                     $this->addError('photoFile', $locale === 'fr' 
                         ? "La photo personnelle (visage) et le document d'identité (CNI/Passeport) ne peuvent pas être le même fichier." 
                         : ($locale === 'en' 
@@ -256,26 +303,40 @@ class Registration extends Component
                 }
             }
 
-            // 2. Check Personal Photo Uniqueness (Prevent Photo Duplication)
-            $checkPhoto = $docVerifier->checkPhotoUniqueness($this->photoFile);
-            if (!$checkPhoto['is_unique']) {
-                $this->addError('photoFile', $checkPhoto['message']);
-                return;
-            }
+            // Store temp files for uniqueness and document matching checks
+            $tempPhotoPath = $this->storeBase64File($this->photoData, 'temp_photos', 'photo_val');
+            $tempDocPath   = $this->storeBase64File($this->documentData, 'temp_docs', 'doc_val');
 
-            // 3. Check Document Verification & Number Matching
-            $docFile = $this->isAlgeria ? $this->nationalIdFile : $this->passportFile;
-            $docNum  = $this->isAlgeria ? $this->nationalId : $this->passportNumber;
-            $docType = $this->isAlgeria ? 'national_id' : 'passport';
-
-            if ($docFile) {
-                $docMatch = $docVerifier->verifyDocumentMatch($docFile, $docType, $docNum);
-                if (!$docMatch['is_valid']) {
-                    $fieldKey = $this->isAlgeria ? 'nationalIdFile' : 'passportFile';
-                    $this->addError($fieldKey, $docMatch['message']);
+            // 2. Check Personal Photo Uniqueness
+            if ($tempPhotoPath) {
+                $checkPhoto = $docVerifier->checkPhotoUniqueness($tempPhotoPath);
+                if (!$checkPhoto['is_unique']) {
+                    $this->addError('photoFile', $checkPhoto['message']);
+                    if ($tempPhotoPath) Storage::disk('public')->delete($tempPhotoPath);
+                    if ($tempDocPath) Storage::disk('public')->delete($tempDocPath);
                     return;
                 }
             }
+
+            // 3. Check Document Verification & Number Matching
+            $docNum  = $this->isAlgeria ? $this->nationalId : $this->passportNumber;
+            $docType = $this->isAlgeria ? 'national_id' : 'passport';
+
+            if ($tempDocPath) {
+                $docMatch = $docVerifier->verifyDocumentMatch($tempDocPath, $docType, $docNum);
+                if (!$docMatch['is_valid']) {
+                    $fieldKey = $this->isAlgeria ? 'nationalIdFile' : 'passportFile';
+                    $this->addError($fieldKey, $docMatch['message']);
+                    if ($tempPhotoPath) Storage::disk('public')->delete($tempPhotoPath);
+                    if ($tempDocPath) Storage::disk('public')->delete($tempDocPath);
+                    return;
+                }
+            }
+
+            // Cleanup temp files after validation
+            if ($tempPhotoPath) Storage::disk('public')->delete($tempPhotoPath);
+            if ($tempDocPath) Storage::disk('public')->delete($tempDocPath);
+
         } elseif ($this->step === 3) {
             $this->validate([
                 'suitSize' => 'required|in:S,M,L,XL,XXL,3XL',
@@ -312,26 +373,16 @@ class Registration extends Component
         /** @var DocumentVerificationService $docVerifier */
         $docVerifier = app(DocumentVerificationService::class);
 
-        $photoHash = $docVerifier->calculateFileHash($this->photoFile);
-        $docFile = $this->isAlgeria ? $this->nationalIdFile : $this->passportFile;
-        $docHash = $docVerifier->calculateFileHash($docFile);
-
         // 1. Store Official Candidate Photo
-        $photoPath = null;
-        if ($this->photoFile) {
-            $photoPath = $this->photoFile->store('participants/photos', 'public');
-        }
+        $photoPath = $this->storeBase64File($this->photoData, 'participants/photos', 'candidate_photo');
+        $photoHash = $photoPath ? $docVerifier->calculateFileHash($photoPath) : null;
 
-        // 2. Store Identity Documents
-        $nationalIdPdfPath = null;
-        if ($this->nationalIdFile) {
-            $nationalIdPdfPath = $this->nationalIdFile->store('participants/documents', 'public');
-        }
+        // 2. Store Identity Document
+        $docPath = $this->storeBase64File($this->documentData, 'participants/documents', $this->isAlgeria ? 'cni' : 'passport');
+        $docHash = $docPath ? $docVerifier->calculateFileHash($docPath) : null;
 
-        $passportPdfPath = null;
-        if ($this->passportFile) {
-            $passportPdfPath = $this->passportFile->store('participants/documents', 'public');
-        }
+        $nationalIdPdfPath = $this->isAlgeria ? $docPath : null;
+        $passportPdfPath   = !$this->isAlgeria ? $docPath : null;
 
         // Create Candidate User Account
         $candidateUser = User::firstOrCreate(
@@ -398,9 +449,9 @@ class Registration extends Component
                 'registration_id' => $reg->id,
                 'document_type'   => 'national_id',
                 'file_path'       => $nationalIdPdfPath,
-                'original_name'   => $this->nationalIdFile ? $this->nationalIdFile->getClientOriginalName() : basename($nationalIdPdfPath),
-                'mime_type'       => $this->nationalIdFile ? $this->nationalIdFile->getClientMimeType() : 'application/pdf',
-                'file_size'       => $this->nationalIdFile ? $this->nationalIdFile->getSize() : 0,
+                'original_name'   => $this->documentFileName ?: basename($nationalIdPdfPath),
+                'mime_type'       => ($this->documentFileType === 'pdf') ? 'application/pdf' : 'image/jpeg',
+                'file_size'       => Storage::disk('public')->exists($nationalIdPdfPath) ? Storage::disk('public')->size($nationalIdPdfPath) : 0,
             ]);
         }
 
@@ -409,15 +460,47 @@ class Registration extends Component
                 'registration_id' => $reg->id,
                 'document_type'   => 'passport',
                 'file_path'       => $passportPdfPath,
-                'original_name'   => $this->passportFile ? $this->passportFile->getClientOriginalName() : basename($passportPdfPath),
-                'mime_type'       => $this->passportFile ? $this->passportFile->getClientMimeType() : 'application/pdf',
-                'file_size'       => $this->passportFile ? $this->passportFile->getSize() : 0,
+                'original_name'   => $this->documentFileName ?: basename($passportPdfPath),
+                'mime_type'       => ($this->documentFileType === 'pdf') ? 'application/pdf' : 'image/jpeg',
+                'file_size'       => Storage::disk('public')->exists($passportPdfPath) ? Storage::disk('public')->size($passportPdfPath) : 0,
             ]);
         }
 
         $this->registrationNumber = $reg->registration_number;
         $this->verificationToken = $reg->verification_token ?? bin2hex(random_bytes(16));
         $this->isSubmitted = true;
+    }
+
+    protected function storeBase64File(?string $base64Data, string $folder, string $prefix = 'file'): ?string
+    {
+        if (empty($base64Data)) {
+            return null;
+        }
+
+        if (!preg_match('/^data:(.*?);base64,(.*)$/', $base64Data, $matches)) {
+            return null;
+        }
+
+        $mimeType = $matches[1];
+        $base64Str = $matches[2];
+        $binary = base64_decode($base64Str);
+
+        if ($binary === false) {
+            return null;
+        }
+
+        $extension = match ($mimeType) {
+            'image/jpeg', 'image/jpg' => 'jpg',
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+            'application/pdf' => 'pdf',
+            default => 'bin',
+        };
+
+        $fileName = $folder . '/' . $prefix . '_' . uniqid() . '_' . time() . '.' . $extension;
+        Storage::disk('public')->put($fileName, $binary);
+
+        return $fileName;
     }
 
     public function render()
