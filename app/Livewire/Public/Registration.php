@@ -416,19 +416,12 @@ class Registration extends Component
             'phone'           => $this->phone,
             'gender'          => $this->gender,
             'date_of_birth'   => $this->dateOfBirth,
-            'country_id'      => $this->countryId,
             'wilaya_id'       => $this->wilayaId,
             'organization_id' => $this->organizationId,
-            'skill_id'        => $this->skillId,
             'national_id'     => $this->isAlgeria ? $this->nationalId : null,
             'passport_number' => !$this->isAlgeria ? $this->passportNumber : null,
-            'suit_size'       => $this->suitSize,
-            'shoe_size'       => $this->shoeSize,
-            'height_cm'       => $this->heightCm,
-            'photo_path'      => $photoPath,
             'photo_hash'      => $photoHash,
             'document_hash'   => $docHash,
-            'status'          => ParticipantStatus::PENDING->value,
         ]);
 
         $activeEdition = Edition::where('is_active', true)->first();

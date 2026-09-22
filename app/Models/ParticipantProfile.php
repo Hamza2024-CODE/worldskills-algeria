@@ -30,8 +30,6 @@ class ParticipantProfile extends Model
         'wilaya_id',
         'commune_id',
         'organization_id',
-        'skill_id',
-        'photo_path',
         'photo_hash',
         'document_hash',
     ];
