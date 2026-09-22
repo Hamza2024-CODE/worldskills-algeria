@@ -86,6 +86,17 @@ $roleLabel = match($userRoleKey) {
 
 $countryName = $user?->country ? ($locale === 'fr' ? ($user->country->name_fr ?? $user->country->name_en) : ($locale === 'en' ? $user->country->name_en : $user->country->name_ar)) : $t('الجمهورية الجزائرية', 'Algérie', 'Algeria');
 
+$dashboardUrl = match($userRole) {
+    'SUPER_ADMIN', 'NATIONAL_ADMIN' => route('admin.dashboard'),
+    'EXECUTIVE_VIEWER'              => route('executive.dashboard'),
+    'COUNTRY_ADMIN'                 => route('country.dashboard'),
+    'ORGANIZATION_ADMIN'            => route('organization.dashboard'),
+    'JUDGE', 'EXPERT'               => route('judge.dashboard'),
+    'PARTICIPANT'                   => route('participant.dashboard'),
+    'MEDIA_MANAGER'                 => route('admin.media.dashboard'),
+    default                         => route('home'),
+};
+
 $badgeVerifyUrl = route('accreditation.badge', ['identifier' => $user?->uuid ?? ($user?->id ?? 1)]);
 $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300);
 @endphp
@@ -319,7 +330,7 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
                                     <span>{{ $t('المرحلة الحالية: التدقيق الأولي والتحقق التنظيمي', 'Étape: Vérification Initiale', 'Current Step: Initial Verification') }}</span>
                                 </span>
 
-                                <a href="{{ route('dashboard') }}" class="px-5 py-2.5 rounded-2xl bg-[#06205C] hover:bg-blue-900 text-white font-black transition shadow-md flex items-center gap-2">
+                                <a href="{{ $dashboardUrl }}" class="px-5 py-2.5 rounded-2xl bg-[#06205C] hover:bg-blue-900 text-white font-black transition shadow-md flex items-center gap-2">
                                     <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                                     <span>{{ $t('الانتقال إلى لوحة التحكم (Dashboard)', 'Retour au Tableau de Bord', 'Go to Dashboard') }}</span>
                                 </a>
