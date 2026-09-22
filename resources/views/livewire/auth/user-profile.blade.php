@@ -212,7 +212,7 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
                         <div>
                             <h3 class="text-base font-black text-[#06205C] dark:text-white flex items-center gap-2">
                                 <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2"/></svg>
-                                <span>{{ $t('شارة الاعتماد الرسمية المعتمدة لصفة حسابك:', 'Votre Badge Officiel d'Accréditation:', 'Your Official Accredited Sovereign Badge Pass:') }}</span>
+                                <span>{{ $t('شارة الاعتماد الرسمية المعتمدة لصفة حسابك:', 'Votre Badge Officiel d\'Accréditation:', 'Your Official Accredited Sovereign Badge Pass:') }}</span>
                             </h3>
                             <p class="text-xs text-slate-500 dark:text-slate-400 font-bold mt-0.5">
                                 تم إصدار هذه الشارة رسميًا وتتضمن كود QR مفتاح الوصول الأمني المباشر.
@@ -277,7 +277,7 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
                     <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/80 pb-4">
                         <h3 class="text-base font-black text-[#06205C] dark:text-white flex items-center gap-2">
                             <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span>{{ $t('حالة شارة الاعتماد الرقمية:', 'Statut du Badge d'Accréditation:', 'Accreditation Badge Pass Status:') }}</span>
+                            <span>{{ $t('حالة شارة الاعتماد الرقمية:', 'Statut du Badge d\'Accréditation:', 'Accreditation Badge Pass Status:') }}</span>
                         </h3>
                     </div>
 
@@ -292,7 +292,7 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
                                         {{ $t('تم رفض طلب التسجيل', 'Candidature non retenue', 'Registration Rejected') }}
                                     </h4>
                                     <p class="text-xs font-bold text-rose-600 dark:text-rose-400 mt-0.5">
-                                        {{ $t('نأسف، لم يقع الاختيار على هذا الملف أو تم رفض التسجيل. شارة الاعتماد الرسمية غير متاحة.', 'Dossier rejeté. Le badge officiel n'est pas disponible.', 'File rejected. Official accreditation badge is unavailable.') }}
+                                        {{ $t('نأسف، لم يقع الاختيار على هذا الملف أو تم رفض التسجيل. شارة الاعتماد الرسمية غير متاحة.', 'Dossier rejeté. Le badge officiel n\'est pas disponible.', 'File rejected. Official accreditation badge is unavailable.') }}
                                     </p>
                                 </div>
                             </div>
