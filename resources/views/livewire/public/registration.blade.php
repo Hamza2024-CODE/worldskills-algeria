@@ -582,8 +582,8 @@
     </div>
 
     <!-- LIVE CAMERA OVERLAY MODAL WITH BIOMETRIC AUTHENTICITY SCANNER -->
-    <template x-if="cameraOpen">
-        <div class="fixed inset-0 z-50 bg-slate-900/90 backdrop-blur-md flex flex-col items-center justify-between p-4 sm:p-6 animate-in fade-in duration-200">
+    <template x-teleport="body" x-if="cameraOpen">
+        <div class="fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-between p-3 sm:p-6 animate-in fade-in duration-200 overflow-y-auto" style="padding-bottom: max(4rem, env(safe-area-inset-bottom));">
             <!-- Modal Top Controls -->
             <div class="w-full max-w-xl flex items-center justify-between text-white">
                 <div class="flex items-center gap-2">
@@ -618,7 +618,7 @@
             </div>
 
             <!-- Bottom Shutter Actions with SVG Icons -->
-            <div class="w-full max-w-xl flex items-center justify-center gap-4">
+            <div class="w-full max-w-xl flex items-center justify-center gap-3 shrink-0 py-2 relative z-10">
                 <button type="button" @click="toggleCamera()" class="p-3 rounded-2xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold transition flex items-center gap-1.5" title="Changer de caméra">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                     <span>{{ app()->getLocale() === 'fr' ? 'Basculer caméra' : (app()->getLocale() === 'en' ? 'Switch Camera' : 'تبديل الكاميرا') }}</span>
