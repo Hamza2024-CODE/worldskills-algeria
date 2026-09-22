@@ -36,6 +36,7 @@ class Registration extends Component
     public string $gender = 'male';
     public string $email = '';
     public string $phone = '';
+    public string $phonePlaceholder = '0550123456';
 
     // Step 2: Official Photo & Identity Documents (Base64 Direct Storage)
     public ?string $photoData = null;
@@ -130,6 +131,7 @@ class Registration extends Component
             $this->isAlgeria = true;
             $this->isArabicCountry = true;
         }
+        $this->phonePlaceholder = $this->isAlgeria ? '0550123456' : '+213550123456';
 
         $activeEdition = Edition::where('is_active', true)->first();
         if ($activeEdition && $activeEdition->registration_start_date && $activeEdition->registration_end_date) {
@@ -148,6 +150,7 @@ class Registration extends Component
             $arabicCodes = ['DZ', 'TN', 'MA', 'EG', 'SA', 'AE', 'QA', 'KW', 'OM', 'BH', 'JO', 'LB', 'IQ', 'SY', 'LY', 'SD', 'YE', 'MR', 'SO', 'DJ', 'KM', 'PS'];
             $this->isArabicCountry = in_array(strtoupper($country->iso2 ?? $country->iso3 ?? ''), $arabicCodes);
 
+            $this->phonePlaceholder = $this->isAlgeria ? '0550123456' : '+213550123456';
             if (!$this->isAlgeria) {
                 $this->wilayaId = null;
                 $this->organizationId = null;
