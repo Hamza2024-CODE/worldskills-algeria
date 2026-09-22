@@ -63,26 +63,29 @@ class Registration extends Model
     public function getPhotoUrlAttribute(): string
     {
         if ($this->user?->avatar_path) {
-            return self::resolveFileUrl($this->user->avatar_path);
+            $url = self::resolveFileUrl($this->user->avatar_path);
+            if ($url) return $url;
         }
 
         $photoDoc = $this->documents?->whereIn('document_type', ['PHOTO', 'photo', 'official_photo'])->first();
         if ($photoDoc?->file_path) {
-            return self::resolveFileUrl($photoDoc->file_path);
+            $url = self::resolveFileUrl($photoDoc->file_path);
+            if ($url) return $url;
         }
 
         if (!empty($this->participant?->photo_path)) {
-            return self::resolveFileUrl($this->participant->photo_path);
+            $url = self::resolveFileUrl($this->participant->photo_path);
+            if ($url) return $url;
         }
 
         $name = $this->participant?->first_name_ar ?? $this->user?->name ?? 'Candidate';
         return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=06205C&color=fff&bold=true&size=200';
     }
 
-    public static function resolveFileUrl(?string $path): string
+    public static function resolveFileUrl(?string $path): ?string
     {
-        if (!$path) return '';
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+        if (!$path) return null;
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, 'data:image')) {
             return $path;
         }
 
@@ -90,8 +93,26 @@ class Registration extends Model
         if (str_starts_with($cleanPath, 'storage/')) {
             $cleanPath = substr($cleanPath, 8);
         }
+        $cleanPath = ltrim($cleanPath, '/');
 
-        return asset('storage/' . ltrim($cleanPath, '/'));
+        $storageAppPath = storage_path('app/public/' . $cleanPath);
+        $publicStoragePath = public_path('storage/' . $cleanPath);
+
+        if (file_exists($storageAppPath) && !file_exists($publicStoragePath)) {
+            @mkdir(dirname($publicStoragePath), 0755, true);
+            @copy($storageAppPath, $publicStoragePath);
+        }
+
+        if (file_exists($publicStoragePath) && !file_exists($storageAppPath)) {
+            @mkdir(dirname($storageAppPath), 0755, true);
+            @copy($publicStoragePath, $storageAppPath);
+        }
+
+        if (file_exists($publicStoragePath) || file_exists($storageAppPath)) {
+            return asset('storage/' . $cleanPath);
+        }
+
+        return null;
     }
 
     public function edition()

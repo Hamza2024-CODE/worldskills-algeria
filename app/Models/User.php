@@ -32,14 +32,8 @@ class User extends Authenticatable
     public function getAvatarUrlAttribute(): string
     {
         if ($this->avatar_path) {
-            if (str_starts_with($this->avatar_path, 'http://') || str_starts_with($this->avatar_path, 'https://')) {
-                return $this->avatar_path;
-            }
-            $cleanPath = ltrim($this->avatar_path, '/');
-            if (str_starts_with($cleanPath, 'storage/')) {
-                $cleanPath = substr($cleanPath, 8);
-            }
-            return asset('storage/' . ltrim($cleanPath, '/'));
+            $url = \App\Models\Registration::resolveFileUrl($this->avatar_path);
+            if ($url) return $url;
         }
 
         $participantPhoto = $this->participant?->registrations?->first()?->photo_url;

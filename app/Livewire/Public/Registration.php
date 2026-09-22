@@ -395,7 +395,7 @@ class Registration extends Component
                 'locale'      => app()->getLocale(),
             ]
         );
-        if ($photoPath && empty($candidateUser->avatar_path)) {
+        if ($photoPath) {
             $candidateUser->update(['avatar_path' => $photoPath, 'country_id' => $this->countryId]);
         }
         if (!$candidateUser->hasRole(RoleEnum::PARTICIPANT->value)) {
@@ -444,6 +444,17 @@ class Registration extends Component
         ]);
 
         // Attach Documents
+        if ($photoPath) {
+            ParticipantDocument::create([
+                'registration_id' => $reg->id,
+                'document_type'   => 'official_photo',
+                'file_path'       => $photoPath,
+                'original_name'   => $this->photoFileName ?: basename($photoPath),
+                'mime_type'       => 'image/jpeg',
+                'file_size'       => Storage::disk('public')->exists($photoPath) ? Storage::disk('public')->size($photoPath) : 0,
+            ]);
+        }
+
         if ($nationalIdPdfPath) {
             ParticipantDocument::create([
                 'registration_id' => $reg->id,
@@ -499,6 +510,10 @@ class Registration extends Component
 
         $fileName = $folder . '/' . $prefix . '_' . uniqid() . '_' . time() . '.' . $extension;
         Storage::disk('public')->put($fileName, $binary);
+
+        $pubPath = public_path('storage/' . $fileName);
+        @mkdir(dirname($pubPath), 0755, true);
+        @file_put_contents($pubPath, $binary);
 
         return $fileName;
     }
