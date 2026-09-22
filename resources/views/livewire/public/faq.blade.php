@@ -12,7 +12,7 @@
         </div>
 
         <div class="max-w-4xl mx-auto space-y-4">
-            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md hover:shadow-lg transition space-y-2">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-md hover:shadow-lg transition space-y-2">
                 <h3 class="text-base font-black text-[#06205C]">
                     {{ app()->getLocale() === 'fr' ? 'Qui peut s\'inscrire et participer aux Olympiades ?' : (app()->getLocale() === 'en' ? 'Who can register and participate in WorldSkills?' : 'من يمكنه التسجيل والمشاركة في أولمبياد المهن؟') }}
                 </h3>
@@ -21,7 +21,7 @@
                 </p>
             </div>
 
-            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md hover:shadow-lg transition space-y-2">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-md hover:shadow-lg transition space-y-2">
                 <h3 class="text-base font-black text-[#06205C]">
                     {{ app()->getLocale() === 'fr' ? 'Quels sont les documents d\'identité requis (NIN / Passeport) ?' : (app()->getLocale() === 'en' ? 'What are the required ID documents (NIN / Passport)?' : 'ما هي الوثائق المطلوبة للمشارك الجزائري والمشارك الأجنبي؟') }}
                 </h3>
@@ -30,7 +30,7 @@
                 </p>
             </div>
 
-            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md hover:shadow-lg transition space-y-2">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-md hover:shadow-lg transition space-y-2">
                 <h3 class="text-base font-black text-[#06205C]">
                     {{ app()->getLocale() === 'fr' ? 'Peut-on modifier la spécialité après soumission ?' : (app()->getLocale() === 'en' ? 'Can the skill discipline be changed after submission?' : 'هل يمكن تعديل التخصص بعد إرسال الطلب؟') }}
                 </h3>

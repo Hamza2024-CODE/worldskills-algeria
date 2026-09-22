@@ -3,7 +3,7 @@
         
         @if(!$pagePartnersEnabled)
             <!-- Page Disabled Card -->
-            <div class="max-w-xl mx-auto my-12 bg-white rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-xl border border-slate-200">
+            <div class="max-w-xl mx-auto my-12 bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-xl border border-slate-200 dark:border-slate-800">
                 <div class="w-16 h-16 rounded-3xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center mx-auto shadow-sm">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 </div>
@@ -41,7 +41,7 @@
 
         <!-- 1. FEATURED PARTNERS GRID -->
         <div class="space-y-6">
-            <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
                 <h2 class="text-xl font-black text-[#06205C] flex items-center gap-2">
                     <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
                     <span>{{ app()->getLocale() === 'fr' ? 'Partenaires Majeurs & Sponsors Stratégiques' : (app()->getLocale() === 'en' ? 'Major Partners & Strategic Sponsors' : 'الشركاء المميزون والرعاة الاستراتيجيون') }}</span>
@@ -52,10 +52,10 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse($featuredPartners as $p)
                     @php $logoUrl = $p->logo_path ? asset($p->logo_path) : null; @endphp
-                    <div class="bg-white rounded-3xl p-8 text-center border border-slate-200/80 shadow-lg hover:shadow-xl transition flex flex-col justify-between space-y-6 group">
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 text-center border border-slate-200/80 dark:border-slate-800/80 shadow-lg hover:shadow-xl transition flex flex-col justify-between space-y-6 group">
                         <div class="space-y-4">
                             <!-- Logo container -->
-                            <div class="w-24 h-24 rounded-2xl bg-slate-50 p-4 border border-slate-100 flex items-center justify-center mx-auto shadow-sm group-hover:scale-105 transition-transform overflow-hidden">
+                            <div class="w-24 h-24 rounded-2xl bg-slate-50 dark:bg-slate-800/80 p-4 border border-slate-100 dark:border-slate-800/60 flex items-center justify-center mx-auto shadow-sm group-hover:scale-105 transition-transform overflow-hidden">
                                 @if($logoUrl)
                                     <img src="{{ $logoUrl }}" alt="{{ $p->getLocalized('name') }}" class="max-h-full max-w-full object-contain">
                                 @else
@@ -86,7 +86,7 @@
                             </p>
                         </div>
 
-                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-400">
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-xs font-bold text-slate-400">
                             @php
                                 $typeLabel = match(strtoupper($p->partner_type ?? '')) {
                                     'STRATEGIC' => app()->getLocale() === 'fr' ? 'STRATÉGIQUE' : (app()->getLocale() === 'en' ? 'STRATEGIC' : 'استراتيجي'),
@@ -107,7 +107,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-full py-12 text-center text-slate-400 font-medium bg-white rounded-3xl border border-slate-200">
+                    <div class="col-span-full py-12 text-center text-slate-400 font-medium bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
                         {{ app()->getLocale() === 'fr' ? 'Aucun partenaire majeur pour le moment.' : (app()->getLocale() === 'en' ? 'No featured partners at the moment.' : 'لا يوجد شركاء مميزون حالياً.') }}
                     </div>
                 @endforelse
@@ -120,7 +120,7 @@
                 <h3 class="text-lg font-black text-[#06205C] tracking-wide">{{ app()->getLocale() === 'fr' ? 'Partenaires & Sponsors' : (app()->getLocale() === 'en' ? 'Partners & Sponsors' : 'الشركاء والرعاة') }}</h3>
             </div>
 
-            <div class="bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-8 flex flex-wrap items-center justify-center gap-8 sm:gap-12">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-md p-6 sm:p-8 flex flex-wrap items-center justify-center gap-8 sm:gap-12">
                 @forelse($allPartners as $p)
                     @php $logoUrl = $p->logo_path ? asset($p->logo_path) : null; @endphp
                     <div class="flex items-center justify-center transition transform hover:scale-110 cursor-pointer py-2 px-3">
@@ -129,7 +129,7 @@
                         @else
                             <span class="font-black text-lg sm:text-xl font-sans tracking-tight {{ match($loop->index % 5) {
                                 0 => 'text-blue-600',
-                                1 => 'text-slate-700',
+                                1 => 'text-slate-700 dark:text-slate-300',
                                 2 => 'text-teal-600',
                                 3 => 'text-amber-500',
                                 default => 'text-rose-600'

@@ -14,11 +14,11 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-5xl mx-auto">
             <!-- Left Info Card -->
             <div class="lg:col-span-5 space-y-6">
-                <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-lg space-y-6">
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-lg space-y-6">
                     <h3 class="text-lg font-black text-[#06205C]">
                         {{ app()->getLocale() === 'fr' ? 'Siège Officiel & Coordonnées' : (app()->getLocale() === 'en' ? 'Official Headquarters' : 'العنوان والمقر الرسمي') }}
                     </h3>
-                    <div class="space-y-4 text-xs text-slate-600 font-medium">
+                    <div class="space-y-4 text-xs text-slate-600 dark:text-slate-400 font-medium">
                         <div class="flex items-start gap-3">
                             <svg class="w-5 h-5 text-brand-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             <span>Rue des Frères Aissou, Ben Aknoun, Alger, Algérie</span>
@@ -37,7 +37,7 @@
 
             <!-- Right Form Card -->
             <div class="lg:col-span-7">
-                <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-lg">
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-lg">
                     @if (session()->has('message'))
                         <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold mb-6 flex items-center gap-2">
                             <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -50,7 +50,7 @@
                             <label class="block text-xs font-bold text-[#06205C] mb-1">
                                 {{ app()->getLocale() === 'fr' ? 'Nom Complet' : (app()->getLocale() === 'en' ? 'Full Name' : 'الاسم الكامل *') }}
                             </label>
-                            <input type="text" wire:model="name" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                            <input type="text" wire:model="name" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white dark:bg-slate-900 transition">
                             @error('name') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
@@ -58,7 +58,7 @@
                             <label class="block text-xs font-bold text-[#06205C] mb-1">
                                 {{ app()->getLocale() === 'fr' ? 'Adresse Email' : (app()->getLocale() === 'en' ? 'Email Address' : 'البريد الإلكتروني الرسمي *') }}
                             </label>
-                            <input type="email" wire:model="email" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                            <input type="email" wire:model="email" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white dark:bg-slate-900 transition">
                             @error('email') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
@@ -66,7 +66,7 @@
                             <label class="block text-xs font-bold text-[#06205C] mb-1">
                                 {{ app()->getLocale() === 'fr' ? 'Sujet' : (app()->getLocale() === 'en' ? 'Subject' : 'موضوع الرسالة *') }}
                             </label>
-                            <input type="text" wire:model="subject" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                            <input type="text" wire:model="subject" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white dark:bg-slate-900 transition">
                             @error('subject') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
@@ -74,7 +74,7 @@
                             <label class="block text-xs font-bold text-[#06205C] mb-1">
                                 {{ app()->getLocale() === 'fr' ? 'Message' : (app()->getLocale() === 'en' ? 'Message Content' : 'محتوى الرسالة *') }}
                             </label>
-                            <textarea wire:model="message" rows="4" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"></textarea>
+                            <textarea wire:model="message" rows="4" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white dark:bg-slate-900 transition"></textarea>
                             @error('message') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
 

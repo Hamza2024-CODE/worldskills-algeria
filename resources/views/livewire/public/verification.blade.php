@@ -9,20 +9,20 @@
         <h1 class="text-2xl sm:text-3xl font-black text-[#041235] tracking-tight">
             نظام التوثيق والتحقق من الشارة الرسمية
         </h1>
-        <p class="text-xs text-slate-800 font-bold max-w-xl mx-auto">
+        <p class="text-xs text-slate-800 dark:text-slate-200 font-bold max-w-xl mx-auto">
             يتيح هذا المركز للجان المنظمة ولجان الاستقبال والمسح بالتأكد الفوري من الاعتماد والتأهل وحالة المتنافس.
         </p>
     </div>
 
     {{-- Search Form --}}
-    <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-200 space-y-4">
+    <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-800 space-y-4">
         <form wire:submit.prevent="verify" class="flex flex-col sm:flex-row gap-3">
             <div class="relative flex-1">
                 <input 
                     type="text" 
                     wire:model="query" 
                     placeholder="أدخل رمز الشارة، رقم التسجيل (WSAP-2026-DZ-XXXXXX)، أو المسح المباشر..."
-                    class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-[#0052CC] focus:ring-4 focus:ring-blue-100 text-xs font-mono font-bold text-[#041235] placeholder:font-sans placeholder:text-slate-700"
+                    class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 dark:border-slate-800 focus:border-[#0052CC] focus:ring-4 focus:ring-blue-100 text-xs font-mono font-bold text-[#041235] placeholder:font-sans placeholder:text-slate-700 dark:text-slate-300"
                 >
             </div>
             <button type="submit" class="px-6 py-3 rounded-2xl bg-[#0052CC] hover:bg-[#0041a8] text-white font-black text-xs transition shadow-md shrink-0 flex items-center justify-center gap-2">
@@ -67,11 +67,11 @@
                 $heightCm = $result?->height_cm ?? ($part?->height_cm ?? '175');
             @endphp
 
-            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-emerald-500/40 space-y-6 relative overflow-hidden">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-emerald-500/40 space-y-6 relative overflow-hidden">
                 <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-emerald-500 via-[#0066FF] to-amber-500"></div>
 
                 {{-- Status Banner --}}
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800/60 pb-6">
                     <div class="flex items-center gap-4">
                         <div class="w-16 h-16 rounded-2xl bg-[#06205C] border-2 border-emerald-400 overflow-hidden shrink-0 shadow-lg flex items-center justify-center text-white font-black text-2xl">
                             @if($photoUrl)
@@ -85,13 +85,13 @@
                                 <span class="px-3 py-0.5 rounded-full text-xs font-black border shadow-xs {{ $statusBadgeClass }}">
                                     {{ $statusLabelAr }}
                                 </span>
-                                <span class="text-xs font-mono font-bold text-slate-800">
+                                <span class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
                                     {{ $badgeCode ?: ($result?->registration_number ?? 'WSAP-2026-DZ') }}
                                 </span>
                             </div>
                             <h2 class="text-xl font-black text-[#041235]">{{ $nameAr }}</h2>
                             @if($nameLatin && $nameLatin !== $nameAr)
-                                <span class="text-xs font-mono font-bold text-slate-700 block dir-ltr">{{ $nameLatin }}</span>
+                                <span class="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 block dir-ltr">{{ $nameLatin }}</span>
                             @endif
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                         <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-black inline-block">
                             حالة الاعتماد: موثق وساري 
                         </span>
-                        <span class="text-[11px] text-slate-700 font-mono block">تاريخ الفحص: {{ date('Y-m-d H:i') }}</span>
+                        <span class="text-[11px] text-slate-700 dark:text-slate-300 font-mono block">تاريخ الفحص: {{ date('Y-m-d H:i') }}</span>
                     </div>
                 </div>
 
@@ -108,80 +108,80 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                     <!-- 1. PERSONAL IDENTITY & NIN -->
-                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
-                        <div class="flex items-center gap-2 border-b border-slate-200 pb-2.5">
+                    <div class="bg-slate-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                        <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2.5">
                             <span class="w-2.5 h-2.5 rounded-full bg-[#0052CC]"></span>
                             <h4 class="font-black text-[#041235] text-xs uppercase">الهوية الوطنية والمعلومات الشخصية</h4>
                         </div>
                         <div class="space-y-2 text-xs">
                             <div class="flex justify-between">
-                                <span class="text-slate-800 font-bold">الاسم الكامل بالعربية:</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-bold">الاسم الكامل بالعربية:</span>
                                 <strong class="text-[#041235] font-black">{{ $nameAr }}</strong>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-slate-800 font-bold">الاسم واللقب باللاتينية:</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-bold">الاسم واللقب باللاتينية:</span>
                                 <strong class="text-[#041235] font-mono font-bold uppercase">{{ $nameLatin }}</strong>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-slate-800 font-bold">الرقم التعريفي الوطني (NIN):</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-bold">الرقم التعريفي الوطني (NIN):</span>
                                 <strong class="text-[#0052CC] font-mono font-black">{{ $nin }}</strong>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-slate-800 font-bold">تاريخ الميلاد والسن:</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-bold">تاريخ الميلاد والسن:</span>
                                 <strong class="text-[#041235] font-mono font-bold">{{ $dob ? ($dob . ($age ? " ({$age} سنة)" : '')) : 'غير محدد' }}</strong>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-slate-800 font-bold">الهاتف والاتصال:</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-bold">الهاتف والاتصال:</span>
                                 <strong class="text-[#041235] font-mono font-bold dir-ltr">{{ $phone }}</strong>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-slate-800 font-bold">البريد الإلكتروني:</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-bold">البريد الإلكتروني:</span>
                                 <strong class="text-[#041235] font-mono font-bold truncate max-w-[180px]">{{ $email }}</strong>
                             </div>
                         </div>
                     </div>
 
                     <!-- 2. SKILL & INSTITUTION -->
-                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
-                        <div class="flex items-center gap-2 border-b border-slate-200 pb-2.5">
+                    <div class="bg-slate-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                        <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2.5">
                             <span class="w-2.5 h-2.5 rounded-full bg-[#0052CC]"></span>
                             <h4 class="font-black text-[#041235] text-xs uppercase">التخصص والمؤسسة التكوينية</h4>
                         </div>
                         <div class="space-y-2 text-xs">
                             <div>
-                                <span class="text-slate-800 font-bold block text-[10px]">المهارة التنافسية الأولمبية:</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-bold block text-[10px]">المهارة التنافسية الأولمبية:</span>
                                 <strong class="text-[#0052CC] font-black block text-xs mt-0.5">{{ $skillTitle ?: 'التخصص التنافسي المعتمد' }}</strong>
                             </div>
                             <div>
-                                <span class="text-slate-800 font-bold block text-[10px]">المؤسسة التكوينية (CFPA/INSFP):</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-bold block text-[10px]">المؤسسة التكوينية (CFPA/INSFP):</span>
                                 <strong class="text-[#041235] font-black block text-xs mt-0.5">{{ $organizationName ?: 'المؤسسة التكوينية المعتمدة' }}</strong>
                             </div>
                             <div class="flex justify-between pt-1">
-                                <span class="text-slate-800 font-bold">الولاية التكوينية:</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-bold">الولاية التكوينية:</span>
                                 <strong class="text-[#06205C] font-black">ولاية {{ $wilayaName ?: 'الجزائر' }}</strong>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-slate-800 font-bold">الصفة والمستوى:</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-bold">الصفة والمستوى:</span>
                                 <strong class="text-emerald-700 font-black">{{ $roleTitle }} — {{ $statusLabelAr }}</strong>
                             </div>
                         </div>
                     </div>
 
                     <!-- 3. ACCOMMODATION & ROOM -->
-                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
-                        <div class="flex items-center gap-2 border-b border-slate-200 pb-2.5">
+                    <div class="bg-slate-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                        <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2.5">
                             <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
                             <h4 class="font-black text-[#041235] text-xs uppercase">المبيت والإقامة واللوجستيك</h4>
                         </div>
                         <div class="space-y-2 text-xs">
                             <div>
-                                <span class="text-slate-800 font-bold block text-[10px]">مقر الإقامة والفندق:</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-bold block text-[10px]">مقر الإقامة والفندق:</span>
                                 <strong class="text-purple-950 font-black block text-xs mt-0.5">
                                     {{ $accommodation?->room?->accommodation?->name_ar ?? 'فندق وإقامة الأولمبياد الرسمية — الجزائر العاصمة' }}
                                 </strong>
                             </div>
                             <div class="flex justify-between pt-1">
-                                <span class="text-slate-800 font-bold">الجناح والغرفة:</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-bold">الجناح والغرفة:</span>
                                 <strong class="text-[#041235] font-mono font-black">
                                     @if($accommodation?->room)
                                         {{ $accommodation->room->building ? ('بلوك ' . $accommodation->room->building . ' — ') : '' }}غرفة {{ $accommodation->room->room_number }}
@@ -191,33 +191,33 @@
                                 </strong>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-slate-800 font-bold">خدمة الإطعام والوجبات:</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-bold">خدمة الإطعام والوجبات:</span>
                                 <strong class="text-emerald-700 font-black">مفعلة بالمسح ️</strong>
                             </div>
                         </div>
                     </div>
 
                     <!-- 4. EQUIPMENT & WORKWEAR SIZES -->
-                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
-                        <div class="flex items-center gap-2 border-b border-slate-200 pb-2.5">
+                    <div class="bg-slate-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                        <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2.5">
                             <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
                             <h4 class="font-black text-[#041235] text-xs uppercase">قياسات بدلة العمل والتجهيزات</h4>
                         </div>
                         <div class="grid grid-cols-3 gap-2 text-center text-xs">
-                            <div class="p-2 rounded-xl bg-white border border-slate-200">
-                                <span class="text-[10px] text-slate-700 font-bold block">البدلة</span>
+                            <div class="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                <span class="text-[10px] text-slate-700 dark:text-slate-300 font-bold block">البدلة</span>
                                 <strong class="text-sm font-black text-[#0066FF]">{{ $suitSize }}</strong>
                             </div>
-                            <div class="p-2 rounded-xl bg-white border border-slate-200">
-                                <span class="text-[10px] text-slate-700 font-bold block">الحذاء</span>
+                            <div class="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                <span class="text-[10px] text-slate-700 dark:text-slate-300 font-bold block">الحذاء</span>
                                 <strong class="text-sm font-black text-[#0066FF]">{{ $shoeSize }}</strong>
                             </div>
-                            <div class="p-2 rounded-xl bg-white border border-slate-200">
-                                <span class="text-[10px] text-slate-700 font-bold block">الطول</span>
+                            <div class="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                <span class="text-[10px] text-slate-700 dark:text-slate-300 font-bold block">الطول</span>
                                 <strong class="text-sm font-black text-[#0066FF]">{{ $heightCm }}سم</strong>
                             </div>
                         </div>
-                        <p class="text-[10px] text-slate-800 font-medium leading-tight">
+                        <p class="text-[10px] text-slate-800 dark:text-slate-200 font-medium leading-tight">
                             قياسات معتمدة لتوفير تجهيزات الوقاية الميدانية والزي الرسمي للمسابقة.
                         </p>
                     </div>

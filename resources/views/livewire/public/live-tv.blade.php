@@ -18,7 +18,7 @@
     {{-- ============================================================ --}}
     {{-- TOP BAR: Brand Header (White & Blue Theme)                    --}}
     {{-- ============================================================ --}}
-    <div class="relative z-20 flex items-center justify-between px-8 py-4 bg-white border-b border-slate-200 shadow-sm shrink-0">
+    <div class="relative z-20 flex items-center justify-between px-8 py-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm shrink-0">
         <div class="flex items-center gap-4">
             @php
                 $siteLogo = app(\App\Services\SettingsEngine::class)->get('site_logo', '/logo.svg');
@@ -34,10 +34,10 @@
         {{-- Live Badge & Clock --}}
         <div class="flex items-center gap-4">
             <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-rose-600 text-white shadow-md border border-rose-500/50 animate-pulse">
-                <span class="w-2.5 h-2.5 rounded-full bg-white animate-ping"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-900 animate-ping"></span>
                 <span class="text-xs font-black tracking-widest uppercase">LIVE BROADCAST</span>
             </div>
-            <div class="text-base font-mono font-black text-[#06205C] bg-slate-100 px-4 py-2 rounded-2xl border border-slate-200 shadow-inner" 
+            <div class="text-base font-mono font-black text-[#06205C] bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner" 
                  x-data="{ t: '' }" 
                  x-init="setInterval(() => { const d = new Date(); t = d.toLocaleTimeString('ar-DZ', {hour12: false}); }, 1000)" 
                  x-text="t"></div>
@@ -53,7 +53,7 @@
     {{-- ============================================================ --}}
     {{-- MAIN FULL-SCREEN BROADCAST STAGE (White & Blue Layout Only)  --}}
     {{-- ============================================================ --}}
-    <div class="flex-1 bg-white relative z-20 flex flex-col items-center justify-center p-4 sm:p-8 overflow-hidden shadow-inner border-b border-slate-200">
+    <div class="flex-1 bg-white dark:bg-slate-900 relative z-20 flex flex-col items-center justify-center p-4 sm:p-8 overflow-hidden shadow-inner border-b border-slate-200 dark:border-slate-800">
 
         @php
             $embedUrl = null;
@@ -102,13 +102,13 @@
                     </h2>
                     
                     @if($slide->content)
-                        <p class="text-lg sm:text-2xl text-slate-600 font-medium leading-relaxed max-w-3xl">
+                        <p class="text-lg sm:text-2xl text-slate-600 dark:text-slate-400 font-medium leading-relaxed max-w-3xl">
                             {{ $slide->content }}
                         </p>
                     @endif
                     
                     @if($slide->image_url)
-                        <div class="mt-4 p-3 bg-slate-50 rounded-3xl border border-slate-200 shadow-2xl">
+                        <div class="mt-4 p-3 bg-slate-50 dark:bg-slate-800/80 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl">
                             <img src="{{ $slide->image_url }}" alt="{{ $slide->title_ar }}" class="max-h-72 object-contain rounded-2xl">
                         </div>
                     @endif
@@ -146,7 +146,7 @@
 
                 <div class="w-48 h-1.5 bg-gradient-to-r from-[#0066FF] via-[#00A3FF] to-blue-400 mx-auto rounded-full shadow-md"></div>
 
-                <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/80 shadow-md max-w-xl mx-auto space-y-2">
+                <div class="p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-800/80 shadow-md max-w-xl mx-auto space-y-2">
                     <p class="text-sm font-black text-[#06205C] flex items-center justify-center gap-2">
                         <svg class="w-5 h-5 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         <span>المركز الدولي للمؤتمرات عبد اللطيف رحال (CIC) — الجزائر العاصمة</span>
@@ -165,7 +165,7 @@
     {{-- ============================================================ --}}
     <div class="relative z-20 h-14 bg-[#06205C] text-white border-t border-slate-300 flex items-center overflow-hidden shrink-0 shadow-2xl">
         <div class="shrink-0 bg-[#0066FF] px-6 h-full flex items-center gap-2 text-xs font-black tracking-widest uppercase whitespace-nowrap shadow-md">
-            <span class="w-2.5 h-2.5 rounded-full bg-white animate-ping"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-900 animate-ping"></span>
             <span>تنبيهات البث</span>
         </div>
         <div class="flex-1 overflow-hidden">

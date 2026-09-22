@@ -12,7 +12,7 @@
         </div>
 
         <!-- Announcement Card -->
-        <div class="bg-white rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto border border-slate-200/80 shadow-xl space-y-6">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto border border-slate-200/80 dark:border-slate-800/80 shadow-xl space-y-6">
             <div class="w-16 h-16 rounded-full bg-brand-50 text-brand-500 flex items-center justify-center mx-auto border border-brand-100 shadow-sm">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
@@ -24,7 +24,7 @@
                     {{ app()->getLocale() === 'fr' ? 'Les résultats officiels des sélections seront proclamés progressivement selon le calendrier.' : (app()->getLocale() === 'en' ? 'Official qualification lists will be announced gradually according to schedule.' : 'سيتم إعلان النتائج الرسمية للمرحلة المؤسساتية والولائية تباعاً وفق الرزنامة المعروضة.') }}
                 </p>
             </div>
-            <div class="pt-4 border-t border-slate-100">
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-800/60">
                 <a href="https://worldskills.dz/wp-content/uploads/2025/11/Liste-WSA-Participent-.pdf" target="_blank" class="px-8 py-3 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-black text-xs shadow-lg transition inline-flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                     <span>{{ app()->getLocale() === 'fr' ? 'Télécharger la liste préliminaire' : (app()->getLocale() === 'en' ? 'Download Preliminary List' : 'تحميل القائمة الأولية للمشاركين PDF') }}</span>

@@ -1,4 +1,4 @@
-<div class="min-h-screen py-10 px-4 flex flex-col items-center justify-center bg-white font-sans print:bg-white print:py-0 print:px-0">
+<div class="min-h-screen py-10 px-4 flex flex-col items-center justify-center bg-white dark:bg-slate-900 font-sans print:bg-white dark:bg-slate-900 print:py-0 print:px-0">
     
     {{-- html2canvas for High-Res Image Export --}}
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -146,8 +146,8 @@
     @endphp
 
     <!-- Top Action Bar (Hidden when printing) -->
-    <div class="w-full max-w-xl mb-8 flex flex-wrap items-center justify-between gap-3 text-slate-900 print:hidden bg-white border border-slate-200 p-4 rounded-2xl shadow-xl">
-        <a href="{{ $badgeBackRoute }}" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-xs font-bold text-slate-800 transition flex items-center gap-1.5 shadow-xs">
+    <div class="w-full max-w-xl mb-8 flex flex-wrap items-center justify-between gap-3 text-slate-900 dark:text-white print:hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-xl">
+        <a href="{{ $badgeBackRoute }}" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 transition flex items-center gap-1.5 shadow-xs">
             <svg class="w-4 h-4 text-[#06205C]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
             <span>{{ app()->getLocale() === 'fr' ? 'Retour' : (app()->getLocale() === 'en' ? 'Back' : 'الرجوع') }}</span>
         </a>
@@ -265,7 +265,7 @@
             <!-- Center: Engraved Glassmorphism QR Plate -->
             <div class="w-full flex justify-center items-center my-2 z-30">
                 <div class="relative w-[220px] sm:w-[250px] h-[220px] sm:h-[250px] bg-white/20 backdrop-blur-xl rounded-[2rem] p-3 sm:p-4 flex flex-col items-center justify-between border-2 border-white/40 shadow-[0_15px_35px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)] max-w-[92%]">
-                    <div class="w-[160px] sm:w-[190px] h-[160px] sm:h-[190px] flex items-center justify-center p-2 bg-white rounded-2xl shadow-inner border border-slate-100">
+                    <div class="w-[160px] sm:w-[190px] h-[160px] sm:h-[190px] flex items-center justify-center p-2 bg-white dark:bg-slate-900 rounded-2xl shadow-inner border border-slate-100 dark:border-slate-800/60">
                         <img src="{{ $qrCodeUrl }}" alt="Encrypted QR Code" class="w-full h-full object-contain">
                     </div>
                     <div class="text-[8px] font-mono font-black text-white/90 uppercase tracking-widest text-center drop-shadow-xs">SECURED BY WSAP ZERO-TRUST</div>

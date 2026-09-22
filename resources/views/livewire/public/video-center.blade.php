@@ -37,7 +37,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
             <div class="absolute -end-16 -top-16 w-64 h-64 rounded-full bg-red-400/20 blur-2xl pointer-events-none"></div>
 
             <div class="flex items-center gap-5 relative z-10 text-[#{{ app()->getLocale() === 'ar' ? 'right' : 'left' }}">
-                <div class="w-16 h-16 rounded-2xl bg-white/90 backdrop-blur-md text-red-600 flex items-center justify-center font-black text-2xl shadow-xl shrink-0 border border-white">
+                <div class="w-16 h-16 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-red-600 flex items-center justify-center font-black text-2xl shadow-xl shrink-0 border border-white">
                     <svg class="w-10 h-10 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                 </div>
                 <div>
@@ -51,7 +51,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                 </div>
             </div>
 
-            <a href="https://www.youtube.com/@WorldSkillsAlgeria/videos" target="_blank" class="relative z-10 w-full md:w-auto px-7 py-3.5 rounded-2xl bg-white/90 hover:bg-white backdrop-blur-md text-red-600 font-extrabold text-xs shadow-xl transition flex items-center justify-center gap-2.5 shrink-0 transform hover:-translate-y-1 border border-white">
+            <a href="https://www.youtube.com/@WorldSkillsAlgeria/videos" target="_blank" class="relative z-10 w-full md:w-auto px-7 py-3.5 rounded-2xl bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:bg-slate-900 backdrop-blur-md text-red-600 font-extrabold text-xs shadow-xl transition flex items-center justify-center gap-2.5 shrink-0 transform hover:-translate-y-1 border border-white">
                 <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                 <span>{{ $t('زيارة قائمة فيديوهات القناة (@WorldSkillsAlgeria/videos)', 'Visiter les Vidéos YouTube', 'Visit YouTube Videos (@WorldSkillsAlgeria/videos)') }}</span>
             </a>
@@ -67,7 +67,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                     $descStr  = addslashes($video->getLocalized('description'));
                 @endphp
                 <div @click="activeEmbedUrl = '{{ $embedUrl }}'; activeTitle = '{{ $titleStr }}'; activeDesc = '{{ $descStr }}'; showModal = true;"
-                     class="bg-white/80 backdrop-blur-xl rounded-[28px] overflow-hidden border border-slate-200/90 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group cursor-pointer flex flex-col justify-between hover:border-blue-500/40">
+                     class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[28px] overflow-hidden border border-slate-200/90 dark:border-slate-800/90 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group cursor-pointer flex flex-col justify-between hover:border-blue-500/40">
                     
                     {{-- Thumbnail Layer --}}
                     <div class="h-64 sm:h-72 bg-slate-950 relative overflow-hidden">
@@ -109,7 +109,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                             @endif
                         </div>
 
-                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-extrabold text-[#0066FF] group-hover:text-[#0052CC]">
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-xs font-extrabold text-[#0066FF] group-hover:text-[#0052CC]">
                             <svg class="w-4 h-4 transform group-hover:-translate-x-1.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                             </svg>
@@ -124,8 +124,8 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                     </div>
                 </div>
             @empty
-                <div class="col-span-full bg-white/80 backdrop-blur-xl rounded-3xl p-16 text-center text-slate-400 font-bold text-sm border border-slate-200 shadow-sm space-y-3">
-                    <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                <div class="col-span-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-16 text-center text-slate-400 font-bold text-sm border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                         </svg>

@@ -37,7 +37,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
             <div class="absolute -end-16 -top-16 w-64 h-64 rounded-full bg-blue-400/20 blur-2xl pointer-events-none"></div>
             
             <div class="flex items-center gap-5 relative z-10 text-[#{{ app()->getLocale() === 'ar' ? 'right' : 'left' }}">
-                <div class="w-16 h-16 rounded-2xl bg-white/90 backdrop-blur-md text-blue-600 flex items-center justify-center font-black text-2xl shadow-xl shrink-0 border border-white">
+                <div class="w-16 h-16 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-blue-600 flex items-center justify-center font-black text-2xl shadow-xl shrink-0 border border-white">
                     <svg class="w-10 h-10 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 </div>
                 <div>
@@ -51,7 +51,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                 </div>
             </div>
 
-            <a href="https://www.facebook.com/WorldSkillsAlgeria?locale=fr_FR" target="_blank" class="relative z-10 w-full md:w-auto px-7 py-3.5 rounded-2xl bg-white/90 hover:bg-white backdrop-blur-md text-blue-700 font-extrabold text-xs shadow-xl transition flex items-center justify-center gap-2.5 shrink-0 transform hover:-translate-y-1 border border-white">
+            <a href="https://www.facebook.com/WorldSkillsAlgeria?locale=fr_FR" target="_blank" class="relative z-10 w-full md:w-auto px-7 py-3.5 rounded-2xl bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:bg-slate-900 backdrop-blur-md text-blue-700 font-extrabold text-xs shadow-xl transition flex items-center justify-center gap-2.5 shrink-0 transform hover:-translate-y-1 border border-white">
                 <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 <span>{{ $t('زيارة الصفحة الرسمية على الفيسبوك (@WorldSkillsAlgeria)', 'Visiter la page Facebook', 'Visit Official Facebook Page') }}</span>
             </a>
@@ -65,7 +65,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                     $itemsCount = $album->mediaItems->count();
                 @endphp
                 <div wire:click="openAlbum({{ $album->id }})"
-                     class="bg-white/80 backdrop-blur-xl rounded-[28px] overflow-hidden border border-slate-200/90 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group cursor-pointer flex flex-col justify-between hover:border-blue-500/40">
+                     class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[28px] overflow-hidden border border-slate-200/90 dark:border-slate-800/90 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group cursor-pointer flex flex-col justify-between hover:border-blue-500/40">
                     
                     {{-- Cover Image --}}
                     <div class="h-60 bg-slate-950 relative overflow-hidden">
@@ -103,7 +103,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                             @endif
                         </div>
 
-                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-black text-blue-600 group-hover:text-blue-700">
+                        <div class="pt-3 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-xs font-black text-blue-600 group-hover:text-blue-700">
                             <span>{{ $t('تصفح الألبوم بالكامل', 'Consulter l\'album', 'View Full Album') }}</span>
                             <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
@@ -112,8 +112,8 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                     </div>
                 </div>
             @empty
-                <div class="col-span-full bg-white/80 backdrop-blur-xl rounded-3xl p-16 text-center text-slate-400 font-bold text-sm border border-slate-200 shadow-sm space-y-3">
-                    <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                <div class="col-span-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-16 text-center text-slate-400 font-bold text-sm border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>

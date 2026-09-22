@@ -1,4 +1,4 @@
-<div class="min-h-screen py-8 px-4 bg-[#F4F7FC] text-[#06205C] print:bg-white print:py-0 print:px-0" dir="rtl">
+<div class="min-h-screen py-8 px-4 bg-[#F4F7FC] text-[#06205C] print:bg-white dark:bg-slate-900 print:py-0 print:px-0" dir="rtl">
     
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&display=swap');
@@ -61,13 +61,13 @@
     </style>
 
     <!-- Print Action Header (Hidden when printing) -->
-    <div class="max-w-6xl mx-auto mb-8 flex items-center justify-between print:hidden bg-white p-5 rounded-3xl border border-slate-200 shadow-md">
+    <div class="max-w-6xl mx-auto mb-8 flex items-center justify-between print:hidden bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-md">
         <div>
             <h1 class="text-2xl font-black text-[#06205C]">طباعة دفعة شارات الاعتماد الرسمية (Batch Badge Print)</h1>
             <p class="text-xs text-slate-500 font-bold mt-0.5">طباعة الشارات الرسمية لجميع الأعضاء المعتمدين على ورق A4 (مقسمة 4 شارات بكل ورقة A4 جاهزة للتقطيع والتثبيت)</p>
         </div>
         <div class="flex items-center gap-3">
-            <a href="{{ route('admin.accreditations') }}" class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-xs font-bold text-[#06205C] transition shadow-xs">
+            <a href="{{ route('admin.accreditations') }}" class="px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 border border-slate-200 dark:border-slate-800 text-xs font-bold text-[#06205C] transition shadow-xs">
                 رجوع
             </a>
             <button onclick="window.print()" class="px-6 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-lg transition flex items-center gap-2">
@@ -162,7 +162,7 @@
                         {{-- 2. CENTER: GLASSMORPHISM QR PLATE --}}
                         <div class="my-auto text-center shrink-0">
                             <div class="bg-white/20 backdrop-blur-xl rounded-3xl p-3 shadow-2xl mx-auto w-44 h-44 flex flex-col items-center justify-between border-2 border-white/40 shadow-[0_15px_30px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]">
-                                <div class="w-32 h-32 bg-white p-1.5 rounded-2xl flex items-center justify-center shadow-inner border border-slate-100">
+                                <div class="w-32 h-32 bg-white dark:bg-slate-900 p-1.5 rounded-2xl flex items-center justify-center shadow-inner border border-slate-100 dark:border-slate-800/60">
                                     <img src="{{ $qrCodeUrl }}" alt="Encrypted QR Code" class="w-full h-full object-contain">
                                 </div>
                                 <div class="text-[7.5px] font-mono font-black text-white/90 uppercase tracking-widest text-center drop-shadow-xs">SECURED BY WSAP ZERO-TRUST</div>
@@ -170,7 +170,7 @@
                         </div>
 
                         {{-- 3. BOTTOM SECTION: USER DETAILS + EVENT PLATFORM LOGO (HIGH-CONTRAST BLACK & BLUE) --}}
-                        <div class="pt-2 pb-1.5 px-3 rounded-2xl bg-white/95 border border-slate-200 flex items-center justify-between text-right shrink-0 shadow-xs">
+                        <div class="pt-2 pb-1.5 px-3 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 flex items-center justify-between text-right shrink-0 shadow-xs">
                             {{-- User Name & Latin Name --}}
                             <div class="space-y-0.5 truncate max-w-[180px]">
                                 <h2 class="text-base font-black text-[#041235] tracking-tight truncate leading-tight">{{ $nameAr }}</h2>
@@ -185,7 +185,7 @@
 
                         {{-- 4. SOVEREIGN ROLE TITLE BANNER --}}
                         <div class="pt-2 shrink-0">
-                            <span class="text-[11px] font-black tracking-widest uppercase block text-center py-1.5 rounded-xl bg-white/95 text-[#0052CC] border border-blue-200 shadow-xs">
+                            <span class="text-[11px] font-black tracking-widest uppercase block text-center py-1.5 rounded-xl bg-white/95 dark:bg-slate-900/95 text-[#0052CC] border border-blue-200 shadow-xs">
                                 {{ $theme['badge'] }}
                             </span>
                         </div>

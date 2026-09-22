@@ -12,6 +12,26 @@ $userRoleKey = match($userRole) {
     default                             => 'COMPETITOR',
 };
 
+// Candidate Registration Status
+$latestReg = $user?->participant?->registrations()?->latest()->first();
+if (!$latestReg && $user?->participant) {
+    $latestReg = \App\Models\Registration::where('participant_id', $user->participant->id)->latest()->first();
+}
+if (!$latestReg && $user) {
+    $latestReg = \App\Models\Registration::whereHas('participant', fn($q) => $q->where('user_id', $user->id)->orWhere('email', $user->email))->latest()->first();
+}
+
+$rawStatus = $latestReg?->status;
+$regStatusStr = is_object($rawStatus) ? ($rawStatus->value ?? 'PENDING') : ((string) ($rawStatus ?? 'PENDING'));
+$regStatusUpper = strtoupper($regStatusStr);
+
+$isApprovedCandidate = in_array($regStatusUpper, ['APPROVED', 'QUALIFIED', 'QUALIFIED_REGIONAL', 'QUALIFIED_NATIONAL', 'COMPLETED']);
+$isRejectedCandidate = in_array($regStatusUpper, ['REJECTED', 'REJECTED_BY_ADMIN', 'REJECTED_BY_SUPER_ADMIN', 'DISQUALIFIED', 'WITHDRAWN']);
+$isPendingCandidate  = !$isApprovedCandidate && !$isRejectedCandidate;
+
+$isCompetitorRole = ($userRoleKey === 'COMPETITOR') || $user?->hasRole('PARTICIPANT') || ($user?->participant !== null);
+$canSeeBadge = !$isCompetitorRole || $isApprovedCandidate;
+
 $badgeTheme = match($userRoleKey) {
     'MINISTERIAL EXECUTIVE OBSERVER' => [
         'bg'     => 'radial-gradient(circle at 20% 20%, #7C3AED 0%, #4C1D95 40%, #1E1B4B 70%, #D97706 100%)',
@@ -47,7 +67,7 @@ $badgeTheme = match($userRoleKey) {
         'bg'     => 'linear-gradient(135deg, #042F2E 0%, #0D9488 40%, #0284C7 80%, #0369A1 100%)',
         'badge'  => 'متنافس رسمي — COMPETITOR',
         'accent' => '#5EEAD4',
-        'pill'   => 'bg-teal-900/80 text-teal-200 border-teal-400/40',
+        'pill'   => $isApprovedCandidate ? 'bg-teal-900/80 text-teal-200 border-teal-400/40' : ($isRejectedCandidate ? 'bg-rose-900/80 text-rose-200 border-rose-400/40' : 'bg-amber-900/80 text-amber-200 border-amber-400/40'),
     ],
 };
 
@@ -57,7 +77,11 @@ $roleLabel = match($userRoleKey) {
     'EXPERT JUDGE'                   => $t('خبير محكّم (Expert Judge)', 'Expert Juge', 'Expert Judge'),
     'MEDIA'                          => $t('مسؤول الإعلام والصحافة', 'Responsable Médias & Presse', 'Press & Media Manager'),
     'ORGANIZER'                      => $t('منظم رئيسي للمسابقة', 'Organisateur Officiel', 'Official Organizer'),
-    default                          => $t('متنافس رسمي', 'Compétiteur Officiel', 'Official Competitor'),
+    default                          => $isApprovedCandidate 
+                                            ? $t('متنافس رسمي معتمد', 'Compétiteur Officiel', 'Official Accredited Competitor')
+                                            : ($isRejectedCandidate
+                                                ? $t('مترشح مرفوض', 'Candidat Non Retenu', 'Rejected Candidate')
+                                                : $t('مترشح (قيد المعاينة والتحقق)', 'Candidat (En Traitement)', 'Candidate (Pending Verification)')),
 };
 
 $countryName = $user?->country ? ($locale === 'fr' ? ($user->country->name_fr ?? $user->country->name_en) : ($locale === 'en' ? $user->country->name_en : $user->country->name_ar)) : $t('الجمهورية الجزائرية', 'Algérie', 'Algeria');
@@ -73,10 +97,12 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
         :title="$t('الملف الشخصي وشارة الاعتماد الرقمية VIP', 'Profil & Badge d\'Accréditation VIP', 'User Profile & Official Badge Pass')"
         :subtitle="$user?->name . ' — ' . $roleLabel . ' — ' . $countryName . ' (' . $user?->email . ')'"
     >
+        @if($canSeeBadge)
         <a href="{{ $badgeVerifyUrl }}" target="_blank" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs transition shadow-lg shrink-0">
             <svg class="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
             <span>{{ $t('طباعة الشارة الرسمية (PVC Pass) ↗', 'Imprimer Badge (PVC) ↗', 'Print PVC Badge Pass ↗') }}</span>
         </a>
+        @endif
     </x-dashboard.page-header>
 
     {{-- SUCCESS NOTIFICATION --}}
@@ -151,10 +177,22 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
                 <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-700 relative z-10">
                     <div class="flex items-center justify-between text-xs font-bold">
                         <span class="text-slate-500 dark:text-slate-400">حالة التوثيق:</span>
-                        <span class="text-emerald-600 dark:text-emerald-400 font-black flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span>حساب معتمد نشط</span>
-                        </span>
+                        @if($canSeeBadge)
+                            <span class="text-emerald-600 dark:text-emerald-400 font-black flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span>{{ $t('حساب معتمد نشط', 'Compte Approuvé & Actif', 'Active Approved Account') }}</span>
+                            </span>
+                        @elseif($isRejectedCandidate)
+                            <span class="text-rose-600 dark:text-rose-400 font-black flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                                <span>{{ $t('ملف مرفوض', 'Dossier Refusé', 'File Rejected') }}</span>
+                            </span>
+                        @else
+                            <span class="text-amber-600 dark:text-amber-400 font-black flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                <span>{{ $t('قيد المعاينة والتحقق', 'En Cours de Traitement', 'Pending Verification') }}</span>
+                            </span>
+                        @endif
                     </div>
                     <div class="flex items-center justify-between text-xs font-bold">
                         <span class="text-slate-500 dark:text-slate-400">الدورة الرسمية:</span>
@@ -165,74 +203,131 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
             </div>
         </div>
 
-        {{-- RIGHT COLUMN: 3D SOVEREIGN ACCREDITATION DIPLOMATIC BADGE PASS CARD (7 COLS) --}}
+        {{-- RIGHT COLUMN: 3D SOVEREIGN ACCREDITATION DIPLOMATIC BADGE PASS CARD / STATUS NOTICE (7 COLS) --}}
         <div class="lg:col-span-7 space-y-6">
-            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-700 shadow-xl space-y-6">
-                
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-700/80 pb-4">
-                    <div>
+            @if($canSeeBadge)
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-700 shadow-xl space-y-6">
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-700/80 pb-4">
+                        <div>
+                            <h3 class="text-base font-black text-[#06205C] dark:text-white flex items-center gap-2">
+                                <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2"/></svg>
+                                <span>{{ $t('شارة الاعتماد الرسمية المعتمدة لصفة حسابك:', 'Votre Badge Officiel d'Accréditation:', 'Your Official Accredited Sovereign Badge Pass:') }}</span>
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold mt-0.5">
+                                تم إصدار هذه الشارة رسميًا وتتضمن كود QR مفتاح الوصول الأمني المباشر.
+                            </p>
+                        </div>
+
+                        <a href="{{ $badgeVerifyUrl }}" target="_blank" class="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-md transition flex items-center gap-2 shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                            <span>{{ $t('طباعة (Print PVC)', 'Imprimer', 'Print Badge') }}</span>
+                        </a>
+                    </div>
+
+                    {{-- 3D DIPLOMATIC CREDENTIAL PASS CONTAINER --}}
+                    <div class="flex justify-center py-2">
+                        <div class="w-full max-w-sm rounded-[2.5rem] p-6 shadow-2xl border-4 border-white/80 space-y-5 text-white text-center transition transform hover:scale-102 relative overflow-hidden" style="background: {{ $badgeTheme['bg'] }};">
+                            
+                            {{-- Clip Lanyard Simulation Slot --}}
+                            <div class="w-16 h-4 bg-slate-950/80 border border-white/30 rounded-full mx-auto shadow-inner flex items-center justify-center -mt-2">
+                                <div class="w-8 h-1 bg-white/40 rounded-full"></div>
+                            </div>
+
+                            {{-- 1. TOP CENTER LOGO: MINISTRY OF VOCATIONAL TRAINING (ENGRAVED & CENTERED) --}}
+                            <div class="pt-4 pb-2 border-b border-white/20 flex justify-center items-center w-full text-center px-2 mt-1">
+                                <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-9 sm:h-10 w-auto max-w-[85%] object-contain mx-auto" style="filter: brightness(0) invert(1) drop-shadow(0px -1px 1px rgba(255,255,255,0.75)) drop-shadow(0px 3px 5px rgba(0,0,0,0.92));">
+                            </div>
+
+                            {{-- 2. CENTER: ENGRAVED GLASSMORPHISM QR CODE PLATE --}}
+                            <div class="w-48 h-48 bg-white/20 backdrop-blur-xl p-3 rounded-3xl mx-auto shadow-2xl flex flex-col items-center justify-between border-2 border-white/40 shadow-[0_15px_30px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]">
+                                <div class="w-36 h-36 bg-white p-1.5 rounded-2xl flex items-center justify-center shadow-inner border border-slate-100">
+                                    <img src="{{ $badgeQrUrl }}" alt="QR Code Access Token" class="w-full h-full object-contain">
+                                </div>
+                                <span class="text-[7.5px] font-mono font-black text-white/90 uppercase tracking-wider drop-shadow-xs">SECURED BY WSAP ZERO-TRUST</span>
+                            </div>
+
+                            {{-- 3. BOTTOM SECTION: USER DETAILS + EVENT PLATFORM LOGO (BOTTOM LEFT) --}}
+                            <div class="pt-3 pb-2 flex items-center justify-between border-t border-white/20 px-2 text-right">
+                                {{-- User Name & Email --}}
+                                <div class="space-y-0.5 truncate max-w-[210px]">
+                                    <h2 class="text-lg font-black text-white tracking-tight truncate leading-tight">{{ $user?->name }}</h2>
+                                    <p class="text-[11px] font-mono font-bold text-slate-200 truncate" dir="ltr">{{ $user?->email }}</p>
+                                </div>
+
+                                {{-- Bottom Left Event Logo --}}
+                                <div class="shrink-0 pl-2">
+                                    <img src="/logo.svg" alt="WorldSkills Event Logo" class="h-9 w-auto object-contain brightness-0 invert opacity-95">
+                                </div>
+                            </div>
+
+                            {{-- 4. SOVEREIGN ROLE TITLE BANNER --}}
+                            <div class="pt-3 border-t border-white/20">
+                                <span class="text-xs font-black tracking-widest uppercase block text-center py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20" style="color: {{ $badgeTheme['accent'] }};">
+                                    {{ $badgeTheme['badge'] }}
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            @else
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-700 shadow-xl space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/80 pb-4">
                         <h3 class="text-base font-black text-[#06205C] dark:text-white flex items-center gap-2">
-                            <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2"/></svg>
-                            <span>{{ $t('شارة الاعتماد الرسمية المعتمدة لصفة حسابك:', 'Votre Badge Officiel d\'Accréditation:', 'Your Official Accredited Sovereign Badge Pass:') }}</span>
+                            <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>{{ $t('حالة شارة الاعتماد الرقمية:', 'Statut du Badge d'Accréditation:', 'Accreditation Badge Pass Status:') }}</span>
                         </h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold mt-0.5">
-                            تم إصدار هذه الشارة رسميًا وتتضمن كود QR مفتاح الوصول الأمني المباشر.
-                        </p>
                     </div>
 
-                    <a href="{{ $badgeVerifyUrl }}" target="_blank" class="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-md transition flex items-center gap-2 shrink-0">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                        <span>{{ $t('طباعة (Print PVC)', 'Imprimer', 'Print Badge') }}</span>
-                    </a>
+                    @if($isRejectedCandidate)
+                        <div class="p-6 rounded-3xl bg-rose-500/10 border-2 border-rose-500/30 text-rose-900 dark:text-rose-200 space-y-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-2xl bg-rose-500 text-white flex items-center justify-center shrink-0 shadow-md">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-black text-rose-700 dark:text-rose-300">
+                                        {{ $t('تم رفض طلب التسجيل', 'Candidature non retenue', 'Registration Rejected') }}
+                                    </h4>
+                                    <p class="text-xs font-bold text-rose-600 dark:text-rose-400 mt-0.5">
+                                        {{ $t('نأسف، لم يقع الاختيار على هذا الملف أو تم رفض التسجيل. شارة الاعتماد الرسمية غير متاحة.', 'Dossier rejeté. Le badge officiel n'est pas disponible.', 'File rejected. Official accreditation badge is unavailable.') }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border-2 border-amber-500/30 text-slate-900 dark:text-white space-y-5">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center shrink-0 shadow-lg font-black text-xl">
+                                    <svg class="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <h4 class="text-base font-black text-amber-600 dark:text-amber-400">
+                                        {{ $t('حسابك قيد المعاينة والتحقق حالياً', 'Dossier en Cours de Traitement', 'Account Under Verification') }}
+                                    </h4>
+                                    <p class="text-xs font-bold text-slate-600 dark:text-slate-300 leading-relaxed">
+                                        {{ $t('بياناتك ووثائقك الشخصية مسجلة ومحفوظة بنجاح، وتخضع الآن لمراجعة وتدقيق اللجان المعتمدة. تظهر شارة الاعتماد الرسمية المعتمدة (PVC Pass) وتفعيل خيار الطباعة فور الاعتماد النهائي والقبول الرسمي (APPROVED).', 'Vos données sont enregistrées et en cours de vérification par le comité. Le badge officiel sera généré automatiquement dès validation finale.', 'Your registration data is safely recorded and currently under verification. The official accreditation badge pass will be unlocked upon final approval.') }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-amber-500/20 flex flex-wrap items-center justify-between gap-3 text-xs font-bold">
+                                <span class="text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
+                                    <span>{{ $t('المرحلة الحالية: التدقيق الأولي والتحقق التنظيمي', 'Étape: Vérification Initiale', 'Current Step: Initial Verification') }}</span>
+                                </span>
+
+                                <a href="{{ route('dashboard') }}" class="px-5 py-2.5 rounded-2xl bg-[#06205C] hover:bg-blue-900 text-white font-black transition shadow-md flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                                    <span>{{ $t('الانتقال إلى لوحة التحكم (Dashboard)', 'Retour au Tableau de Bord', 'Go to Dashboard') }}</span>
+                                </a>
+                            </div>
+                        </div>
+                    @endif
                 </div>
-
-                {{-- 3D DIPLOMATIC CREDENTIAL PASS CONTAINER --}}
-                <div class="flex justify-center py-2">
-                    <div class="w-full max-w-sm rounded-[2.5rem] p-6 shadow-2xl border-4 border-white/80 space-y-5 text-white text-center transition transform hover:scale-102 relative overflow-hidden" style="background: {{ $badgeTheme['bg'] }};">
-                        
-                        {{-- Clip Lanyard Simulation Slot --}}
-                        <div class="w-16 h-4 bg-slate-950/80 border border-white/30 rounded-full mx-auto shadow-inner flex items-center justify-center -mt-2">
-                            <div class="w-8 h-1 bg-white/40 rounded-full"></div>
-                        </div>
-
-                        {{-- 1. TOP CENTER LOGO: MINISTRY OF VOCATIONAL TRAINING (ENGRAVED & CENTERED) --}}
-                        <div class="pt-4 pb-2 border-b border-white/20 flex justify-center items-center w-full text-center px-2 mt-1">
-                            <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-9 sm:h-10 w-auto max-w-[85%] object-contain mx-auto" style="filter: brightness(0) invert(1) drop-shadow(0px -1px 1px rgba(255,255,255,0.75)) drop-shadow(0px 3px 5px rgba(0,0,0,0.92));">
-                        </div>
-
-                        {{-- 2. CENTER: ENGRAVED GLASSMORPHISM QR CODE PLATE --}}
-                        <div class="w-48 h-48 bg-white/20 backdrop-blur-xl p-3 rounded-3xl mx-auto shadow-2xl flex flex-col items-center justify-between border-2 border-white/40 shadow-[0_15px_30px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]">
-                            <div class="w-36 h-36 bg-white p-1.5 rounded-2xl flex items-center justify-center shadow-inner border border-slate-100">
-                                <img src="{{ $badgeQrUrl }}" alt="QR Code Access Token" class="w-full h-full object-contain">
-                            </div>
-                            <span class="text-[7.5px] font-mono font-black text-white/90 uppercase tracking-wider drop-shadow-xs">SECURED BY WSAP ZERO-TRUST</span>
-                        </div>
-
-                        {{-- 3. BOTTOM SECTION: USER DETAILS + EVENT PLATFORM LOGO (BOTTOM LEFT) --}}
-                        <div class="pt-3 pb-2 flex items-center justify-between border-t border-white/20 px-2 text-right">
-                            {{-- User Name & Email --}}
-                            <div class="space-y-0.5 truncate max-w-[210px]">
-                                <h2 class="text-lg font-black text-white tracking-tight truncate leading-tight">{{ $user?->name }}</h2>
-                                <p class="text-[11px] font-mono font-bold text-slate-200 truncate" dir="ltr">{{ $user?->email }}</p>
-                            </div>
-
-                            {{-- Bottom Left Event Logo --}}
-                            <div class="shrink-0 pl-2">
-                                <img src="/logo.svg" alt="WorldSkills Event Logo" class="h-9 w-auto object-contain brightness-0 invert opacity-95">
-                            </div>
-                        </div>
-
-                        {{-- 4. SOVEREIGN ROLE TITLE BANNER --}}
-                        <div class="pt-3 border-t border-white/20">
-                            <span class="text-xs font-black tracking-widest uppercase block text-center py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20" style="color: {{ $badgeTheme['accent'] }};">
-                                {{ $badgeTheme['badge'] }}
-                            </span>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
+            @endif
         </div>
 
     </div>
@@ -268,10 +363,22 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
 
             <div class="p-5 rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700 space-y-1">
                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{{ $t('حالة تفعيل الحساب', 'Statut du Compte', 'Account Status') }}</span>
-                <p class="text-sm font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>{{ $t('مفعل ومعتمد رسمي (ACTIVE)', 'Compte Actif', 'Active Account') }}</span>
-                </p>
+                @if($canSeeBadge)
+                    <p class="text-sm font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>{{ $t('مفعل ومعتمد رسمي (APPROVED)', 'Compte Approuvé (APPROVED)', 'Official Approved Account') }}</span>
+                    </p>
+                @elseif($isRejectedCandidate)
+                    <p class="text-sm font-black text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                        <span>{{ $t('طلب غير مقبول (REJECTED)', 'Candidature Non Retenue', 'Registration Rejected') }}</span>
+                    </p>
+                @else
+                    <p class="text-sm font-black text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                        <span>{{ $t('قيد التحقق والمعاينة (PENDING)', 'En Cours de Traitement (PENDING)', 'Pending Verification (PENDING)') }}</span>
+                    </p>
+                @endif
             </div>
 
             <div class="p-5 rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700 space-y-1">

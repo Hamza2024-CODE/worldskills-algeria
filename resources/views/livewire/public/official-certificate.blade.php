@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-slate-900 flex flex-col items-center justify-center py-6 px-4 font-sans print:bg-white print:p-0 print:m-0">
+<div class="min-h-screen bg-slate-900 flex flex-col items-center justify-center py-6 px-4 font-sans print:bg-white dark:bg-slate-900 print:p-0 print:m-0">
     
     <!-- Top Action Bar (Hidden when printing) -->
     <div class="w-full max-w-[297mm] mb-4 flex items-center justify-between text-white print:hidden">
@@ -21,7 +21,7 @@
     </div>
 
     <!-- PURE 100% FULL-BLEED A4 LANDSCAPE CERTIFICATE DOCUMENT -->
-    <div class="certificate-document relative w-[297mm] h-[210mm] bg-white overflow-hidden shadow-2xl print:shadow-none print:m-0 print:p-0 print:border-none print:w-[297mm] print:h-[210mm]">
+    <div class="certificate-document relative w-[297mm] h-[210mm] bg-white dark:bg-slate-900 overflow-hidden shadow-2xl print:shadow-none print:m-0 print:p-0 print:border-none print:w-[297mm] print:h-[210mm]">
         
         <!-- Untouched Official Background Layer -->
         <img src="{{ $background_url }}" alt="Official Background Certificate" class="absolute inset-0 w-full h-full object-fill pointer-events-none select-none z-0">
@@ -29,7 +29,7 @@
         <!-- DYNAMIC OVERLAY FIELDS (ZERO UI CHROME) -->
 
         <!-- Serial Code Badge -->
-        <div class="absolute z-10 font-mono text-[11px] font-black text-slate-600 bg-white/80 px-2.5 py-0.5 rounded border border-slate-300" style="top: {{ $fields['serial']['top_pct'] }}%; left: {{ $fields['serial']['left_pct'] }}%;">
+        <div class="absolute z-10 font-mono text-[11px] font-black text-slate-600 dark:text-slate-400 bg-white/80 dark:bg-slate-900/80 px-2.5 py-0.5 rounded border border-slate-300" style="top: {{ $fields['serial']['top_pct'] }}%; left: {{ $fields['serial']['left_pct'] }}%;">
             {{ $serial_number }}
         </div>
 
@@ -49,7 +49,7 @@
         </div>
 
         <!-- Secure Verification QR Code -->
-        <div class="absolute z-10 bg-white p-1 rounded-lg border border-slate-900 shadow-sm flex items-center justify-center" style="top: {{ $fields['qr']['top_pct'] }}%; left: {{ $fields['qr']['left_pct'] }}%; width: {{ $fields['qr']['size_px'] }}px; height: {{ $fields['qr']['size_px'] }}px;">
+        <div class="absolute z-10 bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-900 shadow-sm flex items-center justify-center" style="top: {{ $fields['qr']['top_pct'] }}%; left: {{ $fields['qr']['left_pct'] }}%; width: {{ $fields['qr']['size_px'] }}px; height: {{ $fields['qr']['size_px'] }}px;">
             <a href="{{ $verify_url }}" target="_blank" class="block w-full h-full">
                 <img src="{{ $qr_code_url }}" alt="Verification QR Code" class="w-full h-full object-contain">
             </a>
@@ -68,7 +68,7 @@
 
 @media print {
     /* Hide ALL site navigation headers, footers, and app shell chrome */
-    header, nav, footer, .app-header, [role="navigation"], nav.bg-white, .print\:hidden {
+    header, nav, footer, .app-header, [role="navigation"], nav.bg-white dark:bg-slate-900, .print\:hidden {
         display: none !important;
         visibility: hidden !important;
         height: 0 !important;

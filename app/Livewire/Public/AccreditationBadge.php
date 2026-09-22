@@ -178,11 +178,16 @@ class AccreditationBadge extends Component
 
     protected function checkRejectionEligibility()
     {
-        // Only block rejected candidates for unauthenticated public guests
-        if ($this->registration && !auth()->check()) {
-            $st = is_object($this->registration->status) ? ($this->registration->status->value ?? 'APPROVED') : ($this->registration->status ?? 'APPROVED');
-            if (strtoupper((string)$st) === 'REJECTED') {
-                abort(403, 'بطاقة الاعتماد الرسمية غير متاحة للملفات المرفوضة. يقتصر إصدار الشارة وحق الدخول على المشاركين والمقبولين رسمياً.');
+        if ($this->registration) {
+            $st = is_object($this->registration->status) ? ($this->registration->status->value ?? 'PENDING') : ((string) ($this->registration->status ?? 'PENDING'));
+            $stUpper = strtoupper($st);
+            $isApproved = in_array($stUpper, ['APPROVED', 'QUALIFIED', 'QUALIFIED_REGIONAL', 'QUALIFIED_NATIONAL', 'COMPLETED']);
+
+            $user = auth()->user();
+            $isAdmin = $user && ($user->hasRole('SUPER_ADMIN') || $user->hasRole('ORGANIZATION_ADMIN') || $user->hasRole('EXECUTIVE_VIEWER') || $user->hasRole('COUNTRY_ADMIN'));
+
+            if (!$isApproved && !$isAdmin) {
+                abort(403, 'شارة الاعتماد الرسمية غيـر متاحة للملفات التي ما تزال قيد المعاينة والتحقق. تتاح الشارة فقط للمتنافسين المقبولين رسمياً (APPROVED).');
             }
         }
     }

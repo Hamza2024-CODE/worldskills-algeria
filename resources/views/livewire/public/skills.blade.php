@@ -50,14 +50,14 @@ $getSkillImageUrl = function($skill) {
         </div>
 
         <!-- Filter & Search Controls (Glassmorphism Effect) -->
-        <div class="bg-white/80 backdrop-blur-xl rounded-[28px] p-6 shadow-xl border border-slate-200/90 space-y-5">
+        <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[28px] p-6 shadow-xl border border-slate-200/90 dark:border-slate-800 space-y-5">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                 
                 {{-- Search Bar --}}
                 <div class="relative w-full md:w-96">
                     <input type="text" wire:model.live.debounce.300ms="search"
                            placeholder="{{ $t('ابحث باسم المهنة أو الكود (مثال: SKILL-01)...', 'Rechercher un métier...', 'Search skill name or code...') }}"
-                           class="w-full pr-11 pl-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-bold text-[#06205C] focus:outline-none focus:ring-2 focus:ring-[#0066FF] shadow-inner">
+                           class="w-full pr-11 pl-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-[#06205C] dark:text-white dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0066FF] shadow-inner">
                     <svg class="w-5 h-5 text-slate-400 absolute end-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
@@ -66,12 +66,12 @@ $getSkillImageUrl = function($skill) {
                 {{-- Category Filter Pills --}}
                 <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
                     <button type="button" wire:click="$set('selectedCategory', '')"
-                            class="px-4 py-2.5 rounded-2xl text-xs font-black transition shadow-sm {{ $selectedCategory === '' ? 'bg-[#0066FF] text-white shadow-blue-500/30' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}">
+                            class="px-4 py-2.5 rounded-2xl text-xs font-black transition shadow-sm {{ $selectedCategory === '' ? 'bg-[#0066FF] text-white shadow-blue-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                         {{ $t('كافة القطاعات (64 مهنة)', 'Tous les secteurs', 'All Sectors (64 Skills)') }}
                     </button>
                     @foreach($categories as $cat)
                         <button type="button" wire:click="$set('selectedCategory', '{{ $cat->id }}')"
-                                class="px-4 py-2.5 rounded-2xl text-xs font-bold transition {{ $selectedCategory == $cat->id ? 'bg-[#0066FF] text-white shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}">
+                                class="px-4 py-2.5 rounded-2xl text-xs font-bold transition {{ $selectedCategory == $cat->id ? 'bg-[#0066FF] text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                             {{ $cat->getLocalized('name') }}
                         </button>
                     @endforeach
@@ -86,7 +86,7 @@ $getSkillImageUrl = function($skill) {
                     $imgUrl = $getSkillImageUrl($skill);
                     $iconType = $getSkillIcon($skill);
                 @endphp
-                <div class="bg-white/80 backdrop-blur-xl rounded-[28px] overflow-hidden border border-slate-200/90 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group cursor-pointer flex flex-col justify-between hover:border-[#0066FF]">
+                <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[28px] overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group cursor-pointer flex flex-col justify-between hover:border-[#0066FF]">
                     
                     {{-- Skill High-Res Photo Header --}}
                     <div class="h-52 bg-slate-950 relative overflow-hidden">
@@ -107,7 +107,7 @@ $getSkillImageUrl = function($skill) {
                         </div>
 
                         {{-- Skill Icon Overlay (Bottom-Start) --}}
-                        <div class="absolute bottom-4 start-4 w-12 h-12 rounded-2xl bg-white/95 backdrop-blur-md text-[#0066FF] flex items-center justify-center shadow-lg border border-white">
+                        <div class="absolute bottom-4 start-4 w-12 h-12 rounded-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-md text-[#0066FF] dark:text-cyan-400 flex items-center justify-center shadow-lg border border-white">
                             @if($iconType === 'cpu')
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M3 9h2m-2 6h2m14-6h2m-2 6h2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
                             @elseif($iconType === 'office-building')
@@ -127,7 +127,7 @@ $getSkillImageUrl = function($skill) {
                     {{-- Card Details --}}
                     <div class="p-6 space-y-4 flex-1 flex flex-col justify-between">
                         <div class="space-y-2">
-                            <h3 class="text-lg font-black text-[#06205C] group-hover:text-[#0066FF] transition-colors leading-snug">
+                            <h3 class="text-lg font-black text-[#06205C] dark:text-white group-hover:text-[#0066FF] transition-colors leading-snug">
                                 {{ $skill->getLocalized('name') }}
                             </h3>
                             <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed font-medium">
@@ -135,10 +135,10 @@ $getSkillImageUrl = function($skill) {
                             </p>
                         </div>
 
-                        <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-3">
                             <div class="flex items-center gap-2 w-full sm:w-auto">
                                 {{-- DETAILS BUTTON --}}
-                                <button type="button" wire:click="openSkillDetails({{ $skill->id }})" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5">
+                                <button type="button" wire:click="openSkillDetails({{ $skill->id }})" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold text-xs transition flex items-center gap-1.5">
                                     <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     <span>{{ $t('عرض التفاصيل', 'Détails', 'Details') }}</span>
                                 </button>
@@ -161,7 +161,7 @@ $getSkillImageUrl = function($skill) {
                     </div>
                 </div>
             @empty
-                <div class="col-span-full p-16 text-center text-slate-400 bg-white rounded-3xl border border-slate-200 text-xs font-bold space-y-3">
+                <div class="col-span-full p-16 text-center text-slate-400 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 text-xs font-bold space-y-3">
                     <p>{{ $t('لا توجد تخصصات مطابقة لخيارات البحث.', 'Aucun métier correspondant.', 'No matching skills found.') }}</p>
                 </div>
             @endforelse
@@ -182,7 +182,7 @@ $getSkillImageUrl = function($skill) {
             }"
             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md transition-opacity">
                 
-                <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 relative max-h-[90vh] overflow-y-auto">
+                <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6 relative max-h-[90vh] overflow-y-auto">
                     
                     <!-- Modal Header with Photo Banner -->
                     <div class="relative rounded-2xl overflow-hidden h-48 bg-slate-950 -mx-2 -mt-2">
@@ -202,10 +202,10 @@ $getSkillImageUrl = function($skill) {
                     </div>
 
                     <!-- Modal Details Grid -->
-                    <div class="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-600 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <div class="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
                         <div>
                             <span class="text-[10px] text-slate-400 font-bold block mb-1">{{ $t('القطاع والفئة', 'Secteur & Catégorie', 'Sector & Category') }}</span>
-                            <span class="font-bold text-[#06205C]">{{ $selectedSkill->category ? $selectedSkill->category->getLocalized('name') : $t('قطاع التكنولوجيا والمهن', 'Secteur Technologie & Métiers', 'Technology & Skills Sector') }}</span>
+                            <span class="font-bold text-[#06205C] dark:text-white">{{ $selectedSkill->category ? $selectedSkill->category->getLocalized('name') : $t('قطاع التكنولوجيا والمهن', 'Secteur Technologie & Métiers', 'Technology & Skills Sector') }}</span>
                         </div>
                         <div>
                             <span class="text-[10px] text-slate-400 font-bold block mb-1">{{ $t('شرط العمر المقبول', 'Âge Admissible', 'Eligible Age') }}</span>
@@ -215,8 +215,8 @@ $getSkillImageUrl = function($skill) {
 
                     <!-- Description -->
                     <div class="space-y-2">
-                        <h4 class="text-xs font-black text-[#06205C] uppercase">{{ $t('الوصف الفني للمهنة:', 'Description Technique Officielle :', 'Official Technical Description:') }}</h4>
-                        <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <h4 class="text-xs font-black text-[#06205C] dark:text-white uppercase">{{ $t('الوصف الفني للمهنة:', 'Description Technique Officielle :', 'Official Technical Description:') }}</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-slate-800/80 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/60">
                             {{ $selectedSkill->getLocalized('description') }}
                         </p>
                     </div>
@@ -224,10 +224,10 @@ $getSkillImageUrl = function($skill) {
                     <!-- Skill Equipment Checklist -->
                     @if(count($selectedSkillEquipments) > 0)
                         <div class="space-y-3">
-                            <h4 class="text-xs font-black text-[#06205C] uppercase">{{ $t('التجهيزات والأدوات الفنية المطلوبة:', 'Équipements et outils requis :', 'Required technical equipment & tools:') }}</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700">
+                            <h4 class="text-xs font-black text-[#06205C] dark:text-white uppercase">{{ $t('التجهيزات والأدوات الفنية المطلوبة:', 'Équipements et outils requis :', 'Required technical equipment & tools:') }}</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700 dark:text-slate-300">
                                 @foreach($selectedSkillEquipments as $eq)
-                                    <div class="flex items-center gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                                    <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/80 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800">
                                         <span class="w-2 h-2 rounded-full bg-[#0066FF]"></span>
                                         <span class="font-bold">{{ optional($eq->equipmentItem)->getLocalized('name') ?? $eq->getLocalized('name') ?? $t('تجهيزات ومعدات فنية', 'Équipement Technique', 'Technical Equipment') }}</span>
                                     </div>
@@ -237,9 +237,9 @@ $getSkillImageUrl = function($skill) {
                     @endif
 
                     <!-- Modal Actions -->
-                    <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-3">
                         <div class="flex items-center gap-2 w-full sm:w-auto">
-                            <button type="button" wire:click="closeSkillDetails" class="px-4 py-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50 transition">
+                            <button type="button" wire:click="closeSkillDetails" class="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold hover:bg-slate-50 dark:bg-slate-800/80 transition">
                                 {{ $t('إغلاق', 'Fermer', 'Close') }}
                             </button>
                             @if($selectedSkill->getPdfUrl())
@@ -268,7 +268,7 @@ $getSkillImageUrl = function($skill) {
          x-transition 
          class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 bg-slate-900/80 backdrop-blur-md">
         
-        <div class="bg-white rounded-3xl w-full max-w-5xl h-[92vh] shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in zoom-in duration-200"
+        <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-5xl h-[92vh] shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in zoom-in duration-200"
              x-data="{ activePdfTab: 'pdf' }">
             
             {{-- Modal Reader Header Bar --}}
@@ -307,7 +307,7 @@ $getSkillImageUrl = function($skill) {
             </div>
 
             {{-- Modal Document Content Area --}}
-            <div class="flex-grow w-full bg-slate-100 relative overflow-hidden">
+            <div class="flex-grow w-full bg-slate-100 dark:bg-slate-800 relative overflow-hidden">
                 
                 {{-- TAB 1: NATIVE EMBEDDED PDF FILE --}}
                 <div x-show="activePdfTab === 'pdf'" class="w-full h-full">
@@ -319,15 +319,15 @@ $getSkillImageUrl = function($skill) {
                 </div>
 
                 {{-- TAB 2: TEXT SPECIFICATION SHEET --}}
-                <div x-show="activePdfTab === 'text'" class="w-full h-full p-6 overflow-y-auto bg-slate-50 space-y-6">
+                <div x-show="activePdfTab === 'text'" class="w-full h-full p-6 overflow-y-auto bg-slate-50 dark:bg-slate-800/80 space-y-6">
                     @if($selectedSkill)
-                        <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-                            <div class="pb-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+                            <div class="pb-6 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div>
                                     <span class="px-3 py-1 rounded-full bg-blue-50 text-[#0066FF] font-mono font-black text-xs border border-blue-200 inline-block mb-2">
                                         {{ $selectedSkill->code }} — Official Technical Specification
                                     </span>
-                                    <h2 class="text-xl sm:text-2xl font-black text-[#06205C]">{{ $selectedSkill->getLocalized('name') }}</h2>
+                                    <h2 class="text-xl sm:text-2xl font-black text-[#06205C] dark:text-white">{{ $selectedSkill->getLocalized('name') }}</h2>
                                     <p class="text-xs font-bold text-slate-500 mt-1">WorldSkills International Official Competition Standard</p>
                                 </div>
                                 @if($selectedSkill->category)
@@ -339,7 +339,7 @@ $getSkillImageUrl = function($skill) {
 
                             <div class="space-y-4">
                                 <h3 class="text-xs font-black uppercase text-slate-400 tracking-wider">التفاصيل والتوصيف الفني المعتمد (Technical Description):</h3>
-                                <div class="text-xs text-slate-800 leading-relaxed whitespace-pre-line bg-slate-50 p-5 rounded-2xl border border-slate-200 font-medium">
+                                <div class="text-xs text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line bg-slate-50 dark:bg-slate-800/80 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 font-medium">
                                     @if($selectedGuideSection)
                                         {!! nl2br(e($selectedGuideSection->getLocalizedBody())) !!}
                                     @else
@@ -349,19 +349,19 @@ $getSkillImageUrl = function($skill) {
                             </div>
 
                             {{-- Additional Skill Details in Text Tab --}}
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-100 text-xs">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-100 dark:border-slate-800/60 text-xs">
                                 <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100 space-y-1">
                                     <span class="font-black text-[#0066FF] block">شروط الأعمار المقبولة</span>
-                                    <span class="font-bold text-slate-700">{{ $selectedSkill->min_age ?? 16 }} إلى {{ $selectedSkill->max_age ?? 25 }} سنة</span>
+                                    <span class="font-bold text-slate-700 dark:text-slate-300">{{ $selectedSkill->min_age ?? 16 }} إلى {{ $selectedSkill->max_age ?? 25 }} سنة</span>
                                 </div>
                                 <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100 space-y-1">
                                     <span class="font-black text-emerald-600 block">حالة التوصيف والمواصفات</span>
-                                    <span class="font-bold text-slate-700">معتمد ورسمي (WorldSkills International Standard)</span>
+                                    <span class="font-bold text-slate-700 dark:text-slate-300">معتمد ورسمي (WorldSkills International Standard)</span>
                                 </div>
                             </div>
                         </div>
                     @else
-                        <div class="bg-white p-12 text-center text-slate-400 font-bold rounded-2xl border border-slate-200">
+                        <div class="bg-white dark:bg-slate-900 p-12 text-center text-slate-400 font-bold rounded-2xl border border-slate-200 dark:border-slate-800">
                             جاري تحميل النص التوصيفي للمهنة...
                         </div>
                     @endif
@@ -370,9 +370,9 @@ $getSkillImageUrl = function($skill) {
             </div>
 
             {{-- Footer Action Bar --}}
-            <div class="p-3.5 bg-white border-t border-slate-200 flex items-center justify-between shrink-0">
+            <div class="p-3.5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
                 <p class="text-xs text-slate-500 font-bold">WorldSkills International Official PDF Standard — Shanghai 2026</p>
-                <button type="button" @click="showPdfModal = false" class="px-6 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+                <button type="button" @click="showPdfModal = false" class="px-6 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-xs font-bold transition">
                     إغلاق المراجع
                 </button>
             </div>

@@ -1,6 +1,6 @@
 @php
     $settingsEngine = app(\App\Services\SettingsEngine::class);
-    $siteLogo = $settingsEngine->get('site_logo', '/logo.svg');
+    $siteLogo = $settingsEngine->get('site_logo', 'images/logo.png');
     $logoUrl = str_starts_with($siteLogo, 'http') ? $siteLogo : asset($siteLogo);
     $locale = app()->getLocale();
     $registrationEnabled = $settingsEngine->getBool('registration_competitors_enabled', false);
@@ -12,38 +12,40 @@
         <!-- ═════════════════════════════════════════════════════════════════
              1. RIGHT: OFFICIAL LOGO CAPSULE (Translucent White Glass Pill)
              ═════════════════════════════════════════════════════════════════ -->
-        <a href="{{ route('home') }}" class="bg-white/95 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full flex items-center gap-1.5 sm:gap-3 shrink-0 shadow-2xs border border-slate-200/60 group ws-transition hover:shadow-xs" title="الجمهورية الجزائرية الديمقراطية الشعبية — وزارة التكوين والتعليم المهنيين — أولمبياد المهن 2026">
-            <!-- 1. Ministry Logo (Hidden on mobile phones < 640px to prevent squishing) -->
-            <img src="/ministry-logo-trimmed.png" alt="وزارة التكوين والتعليم المهنيين" class="h-6 sm:h-8 w-auto object-contain ws-transition group-hover:scale-105 hidden sm:block">
-
-            <!-- Separator -->
-            <div class="h-4 sm:h-6 w-px bg-slate-200 shrink-0 hidden sm:block"></div>
-
-            <!-- 2. WorldSkills Algeria Logo (Always visible) -->
-            <img src="{{ $logoUrl }}" alt="WorldSkills Algeria Logo" class="h-6 sm:h-8 w-auto object-contain ws-transition group-hover:scale-105">
+        <a href="{{ route('home') }}" class="bg-white/95 dark:bg-slate-900/90 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full flex items-center gap-1.5 sm:gap-3 shrink-0 shadow-2xs border border-slate-200/60 dark:border-slate-700/60 group ws-transition hover:shadow-xs" title="الجمهورية الجزائرية الديمقراطية الشعبية — وزارة التكوين والتعليم المهنيين — أولمبياد المهن 2026">
+            <img src="{{ $logoUrl }}" alt="WorldSkills Algeria Logo" class="h-7 sm:h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+            <div class="hidden sm:flex flex-col text-start">
+                <span class="text-[10px] sm:text-[11px] font-black tracking-tight text-[#041235] dark:text-white leading-tight uppercase font-display">
+                    WorldSkills Algeria
+                </span>
+                <span class="text-[8px] sm:text-[9px] font-bold text-slate-500 dark:text-slate-400 tracking-wider">
+                    {{ $locale === 'fr' ? 'Compétition Nationale 2026' : ($locale === 'en' ? 'National Competition 2026' : 'أولمبياد المهن والمهارات 2026') }}
+                </span>
+            </div>
         </a>
 
         <!-- ═════════════════════════════════════════════════════════════════
-             2. CENTER: NAVIGATION CAPSULE MENU (Frosted Glass Pill)
+             2. CENTER: NAV CAPSULES (Desktop Only)
              ═════════════════════════════════════════════════════════════════ -->
-        <nav class="hidden xl:flex items-center gap-1 bg-slate-100/80 p-1 rounded-full border border-slate-200/60 shadow-2xs">
-            <!-- Home (Active Pill) -->
-            <a href="{{ route('home') }}" class="px-4 py-1.5 rounded-full font-black text-xs sm:text-sm ws-transition {{ request()->routeIs('home') ? 'bg-[#0F172A] text-white shadow-xs' : 'text-slate-800 hover:text-ws-primary hover:bg-white/80' }}">
+        <nav class="hidden xl:flex items-center gap-1 font-sans text-xs">
+
+            <!-- Home (الرئيسية) -->
+            <a href="{{ route('home') }}" class="px-3.5 py-1.5 rounded-full font-bold text-xs sm:text-sm ws-transition {{ request()->routeIs('home') ? 'bg-[#0F172A] text-white shadow-xs dark:bg-ws-primary' : 'text-slate-800 dark:text-slate-200 hover:text-ws-primary dark:hover:text-ws-cyan hover:bg-white/80 dark:hover:bg-slate-800/80' }}">
                 {{ __('messages.home') }}
             </a>
 
-            <!-- Skills / Trades Dropdown -->
-            <div class="relative" @click.outside="if (activeDropdown === 'skills') activeDropdown = null">
+            <!-- Competition Dropdown (المسابقات والتخصصات) -->
+            <div class="relative" @click.outside="if (activeDropdown === 'competition') activeDropdown = null">
                 <button
-                    @click="activeDropdown = (activeDropdown === 'skills' ? null : 'skills')"
-                    class="px-3.5 py-1.5 rounded-full font-bold text-xs sm:text-sm flex items-center gap-1 ws-transition {{ request()->routeIs('skills*') ? 'bg-[#0F172A] text-white shadow-xs' : 'text-slate-800 hover:text-ws-primary hover:bg-white/80' }}"
+                    @click="activeDropdown = (activeDropdown === 'competition' ? null : 'competition')"
+                    class="px-3.5 py-1.5 rounded-full font-bold text-xs sm:text-sm flex items-center gap-1 ws-transition {{ request()->routeIs('skills*') || request()->routeIs('guide.regulations*') ? 'bg-[#0F172A] text-white shadow-xs dark:bg-ws-primary' : 'text-slate-800 dark:text-slate-200 hover:text-ws-primary dark:hover:text-ws-cyan hover:bg-white/80 dark:hover:bg-slate-800/80' }}"
                 >
-                    <span>{{ __('messages.skills') }}</span>
-                    <svg class="w-3.5 h-3.5 text-slate-500 ws-transition" :class="activeDropdown === 'skills' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    <span>{{ __('messages.competition') }}</span>
+                    <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 ws-transition" :class="activeDropdown === 'competition' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                 </button>
 
                 <div
-                    x-show="activeDropdown === 'skills'"
+                    x-show="activeDropdown === 'competition'"
                     x-cloak
                     x-transition:enter="ease-out duration-150"
                     x-transition:enter-start="opacity-0 translate-y-2 scale-95"
@@ -51,19 +53,19 @@
                     x-transition:leave="ease-in duration-100"
                     x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                     x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-                    class="absolute top-full mt-2 ltr:left-0 rtl:right-0 w-56 rounded-ws-md bg-white text-ws-slate shadow-2xl border border-ws-border py-2 z-50 text-start"
+                    class="absolute top-full mt-2 ltr:left-0 rtl:right-0 w-56 rounded-ws-md bg-white dark:bg-slate-900 text-ws-slate dark:text-slate-100 shadow-2xl border border-ws-border dark:border-slate-800 py-2 z-50 text-start"
                 >
-                    <a href="{{ route('skills') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                    <a href="{{ route('skills') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-ws-primary dark:hover:text-ws-cyan ws-transition">
                         {{ __('messages.skills') }}
                     </a>
-                    <a href="{{ route('guide.regulations') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                    <a href="{{ route('guide.regulations') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-ws-primary dark:hover:text-ws-cyan ws-transition">
                         {{ __('messages.guide_regulations_nav') }}
                     </a>
                 </div>
             </div>
 
             <!-- Participation Guide (دليل المشاركة في أولمبياد المهن) -->
-            <a href="{{ route('guide') }}" class="px-3.5 py-1.5 rounded-full font-bold text-xs sm:text-sm ws-transition {{ request()->routeIs('guide') ? 'bg-[#0F172A] text-white shadow-xs' : 'text-slate-800 hover:text-ws-primary hover:bg-white/80' }}">
+            <a href="{{ route('guide') }}" class="px-3.5 py-1.5 rounded-full font-bold text-xs sm:text-sm ws-transition {{ request()->routeIs('guide') ? 'bg-[#0F172A] text-white shadow-xs dark:bg-ws-primary' : 'text-slate-800 dark:text-slate-200 hover:text-ws-primary dark:hover:text-ws-cyan hover:bg-white/80 dark:hover:bg-slate-800/80' }}">
                 {{ app()->getLocale() === 'fr' ? 'Guide de Participation' : (app()->getLocale() === 'en' ? 'Participation Guide' : 'دليل المشاركة') }}
             </a>
 
@@ -71,10 +73,10 @@
             <div class="relative" @click.outside="if (activeDropdown === 'about') activeDropdown = null">
                 <button
                     @click="activeDropdown = (activeDropdown === 'about' ? null : 'about')"
-                    class="px-3.5 py-1.5 rounded-full font-bold text-xs sm:text-sm flex items-center gap-1 ws-transition {{ request()->routeIs('regulations*') || request()->routeIs('schedule*') ? 'bg-[#0F172A] text-white shadow-xs' : 'text-slate-800 hover:text-ws-primary hover:bg-white/80' }}"
+                    class="px-3.5 py-1.5 rounded-full font-bold text-xs sm:text-sm flex items-center gap-1 ws-transition {{ request()->routeIs('regulations*') || request()->routeIs('schedule*') ? 'bg-[#0F172A] text-white shadow-xs dark:bg-ws-primary' : 'text-slate-800 dark:text-slate-200 hover:text-ws-primary dark:hover:text-ws-cyan hover:bg-white/80 dark:hover:bg-slate-800/80' }}"
                 >
                     <span>{{ $locale === 'fr' ? 'À Propos' : ($locale === 'en' ? 'About Olympiad' : 'عن الأولمبياد') }}</span>
-                    <svg class="w-3.5 h-3.5 text-slate-500 ws-transition" :class="activeDropdown === 'about' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 ws-transition" :class="activeDropdown === 'about' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                 </button>
 
                 <div
@@ -86,23 +88,23 @@
                     x-transition:leave="ease-in duration-100"
                     x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                     x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-                    class="absolute top-full mt-2 ltr:left-0 rtl:right-0 w-56 rounded-ws-md bg-white text-ws-slate shadow-2xl border border-ws-border py-2 z-50 text-start"
+                    class="absolute top-full mt-2 ltr:left-0 rtl:right-0 w-56 rounded-ws-md bg-white dark:bg-slate-900 text-ws-slate dark:text-slate-100 shadow-2xl border border-ws-border dark:border-slate-800 py-2 z-50 text-start"
                 >
-                    <a href="{{ route('regulations') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                    <a href="{{ route('regulations') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-ws-primary dark:hover:text-ws-cyan ws-transition">
                         {{ __('messages.regulations') }}
                     </a>
-                    <a href="{{ route('schedule') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                    <a href="{{ route('schedule') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-ws-primary dark:hover:text-ws-cyan ws-transition">
                         {{ __('messages.schedule') }}
                     </a>
-                    <a href="{{ route('results') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                    <a href="{{ route('results') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-ws-primary dark:hover:text-ws-cyan ws-transition">
                         {{ __('messages.results') }}
                     </a>
                     @if(app(\App\Services\SettingsEngine::class)->getBool('page_partners_enabled', true))
-                    <a href="{{ route('partners') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition border-t border-slate-100 mt-1 pt-2">
+                    <a href="{{ route('partners') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-ws-primary dark:hover:text-ws-cyan ws-transition border-t border-slate-100 dark:border-slate-800 mt-1 pt-2">
                         {{ __('messages.partners') }}
                     </a>
                     @endif
-                    <a href="{{ route('verify') }}" class="block px-4 py-2 text-xs font-bold text-emerald-600 hover:bg-emerald-50 ws-transition">
+                    <a href="{{ route('verify') }}" class="block px-4 py-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 ws-transition">
                         {{ __('messages.verify_nav') }}
                     </a>
                 </div>
@@ -112,10 +114,10 @@
             <div class="relative" @click.outside="if (activeDropdown === 'media') activeDropdown = null">
                 <button
                     @click="activeDropdown = (activeDropdown === 'media' ? null : 'media')"
-                    class="px-3.5 py-1.5 rounded-full font-bold text-xs sm:text-sm flex items-center gap-1 ws-transition {{ request()->routeIs('news*') || request()->routeIs('events*') || request()->routeIs('gallery*') || request()->routeIs('videos*') ? 'bg-[#0F172A] text-white shadow-xs' : 'text-slate-800 hover:text-ws-primary hover:bg-white/80' }}"
+                    class="px-3.5 py-1.5 rounded-full font-bold text-xs sm:text-sm flex items-center gap-1 ws-transition {{ request()->routeIs('news*') || request()->routeIs('events*') || request()->routeIs('gallery*') || request()->routeIs('videos*') ? 'bg-[#0F172A] text-white shadow-xs dark:bg-ws-primary' : 'text-slate-800 dark:text-slate-200 hover:text-ws-primary dark:hover:text-ws-cyan hover:bg-white/80 dark:hover:bg-slate-800/80' }}"
                 >
                     <span>{{ __('messages.media') }}</span>
-                    <svg class="w-3.5 h-3.5 text-slate-500 ws-transition" :class="activeDropdown === 'media' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 ws-transition" :class="activeDropdown === 'media' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                 </button>
 
                 <div
@@ -127,21 +129,21 @@
                     x-transition:leave="ease-in duration-100"
                     x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                     x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-                    class="absolute top-full mt-2 ltr:left-0 rtl:right-0 w-56 rounded-ws-md bg-white text-ws-slate shadow-2xl border border-ws-border py-2 z-50 text-start"
+                    class="absolute top-full mt-2 ltr:left-0 rtl:right-0 w-56 rounded-ws-md bg-white dark:bg-slate-900 text-ws-slate dark:text-slate-100 shadow-2xl border border-ws-border dark:border-slate-800 py-2 z-50 text-start"
                 >
-                    <a href="{{ route('news') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                    <a href="{{ route('news') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-ws-primary dark:hover:text-ws-cyan ws-transition">
                         {{ __('messages.news') }}
                     </a>
-                    <a href="{{ route('events') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                    <a href="{{ route('events') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-ws-primary dark:hover:text-ws-cyan ws-transition">
                         {{ __('messages.events') }}
                     </a>
-                    <a href="{{ route('gallery') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                    <a href="{{ route('gallery') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-ws-primary dark:hover:text-ws-cyan ws-transition">
                         {{ __('messages.gallery') }}
                     </a>
-                    <a href="{{ route('videos') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 hover:text-ws-primary ws-transition">
+                    <a href="{{ route('videos') }}" class="block px-4 py-2 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-ws-primary dark:hover:text-ws-cyan ws-transition">
                         {{ __('messages.videos') }}
                     </a>
-                    <a href="{{ route('live-tv') }}" target="_blank" class="block px-4 py-2 text-xs font-black text-rose-600 hover:bg-rose-50 border-t border-slate-100 mt-1 pt-2 flex items-center justify-between ws-transition">
+                    <a href="{{ route('live-tv') }}" target="_blank" class="block px-4 py-2 text-xs font-black text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border-t border-slate-100 dark:border-slate-800 mt-1 pt-2 flex items-center justify-between ws-transition">
                         <span>{{ $locale === 'fr' ? 'Direct TV (Écrans)' : ($locale === 'en' ? 'Live TV Broadcast' : 'شاشة البث المباشر (Live TV)') }}</span>
                         <span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
                     </a>
@@ -172,10 +174,10 @@
                     @click="langOpen = !langOpen"
                     @click.outside="langOpen = false"
                     type="button"
-                    class="px-2.5 py-1.5 rounded-full bg-slate-100/90 text-slate-800 hover:bg-slate-200/80 border border-slate-200/80 text-xs font-bold flex items-center gap-1.5 ws-transition shadow-2xs"
+                    class="px-2.5 py-1.5 rounded-full bg-slate-100/90 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-xs font-bold flex items-center gap-1.5 ws-transition shadow-2xs"
                     aria-label="تغيير اللغة"
                 >
-                    <svg class="w-3.5 h-3.5 text-ws-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                    <svg class="w-3.5 h-3.5 text-ws-primary dark:text-ws-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
                     <span class="uppercase font-mono text-[11px] font-black">{{ $locale }}</span>
                 </button>
 
@@ -183,30 +185,36 @@
                     x-show="langOpen"
                     x-cloak
                     x-transition
-                    class="absolute top-full mt-2 ltr:right-0 rtl:left-0 w-36 rounded-ws-md bg-white text-ws-slate shadow-2xl border border-ws-border py-1.5 z-50 text-start"
+                    class="absolute top-full mt-2 ltr:right-0 rtl:left-0 w-36 rounded-ws-md bg-white dark:bg-slate-900 text-ws-slate dark:text-slate-100 shadow-2xl border border-ws-border dark:border-slate-800 py-1.5 z-50 text-start"
                 >
-                    <a href="{{ route('lang.switch', 'ar') }}" class="flex items-center justify-between px-3 py-1.5 text-xs font-bold hover:bg-slate-50 {{ $locale === 'ar' ? 'text-ws-primary font-black' : '' }}">
+                    <a href="{{ route('lang.switch', 'ar') }}" class="flex items-center justify-between px-3 py-1.5 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800/80 {{ $locale === 'ar' ? 'text-ws-primary dark:text-ws-cyan font-black' : '' }}">
                         <span>العربية</span>
                         <span class="font-mono text-[10px] text-slate-400">AR</span>
                     </a>
-                    <a href="{{ route('lang.switch', 'fr') }}" class="flex items-center justify-between px-3 py-1.5 text-xs font-bold hover:bg-slate-50 {{ $locale === 'fr' ? 'text-ws-primary font-black' : '' }}">
+                    <a href="{{ route('lang.switch', 'fr') }}" class="flex items-center justify-between px-3 py-1.5 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800/80 {{ $locale === 'fr' ? 'text-ws-primary dark:text-ws-cyan font-black' : '' }}">
                         <span>Français</span>
                         <span class="font-mono text-[10px] text-slate-400">FR</span>
                     </a>
-                    <a href="{{ route('lang.switch', 'en') }}" class="flex items-center justify-between px-3 py-1.5 text-xs font-bold hover:bg-slate-50 {{ $locale === 'en' ? 'text-ws-primary font-black' : '' }}">
+                    <a href="{{ route('lang.switch', 'en') }}" class="flex items-center justify-between px-3 py-1.5 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800/80 {{ $locale === 'en' ? 'text-ws-primary dark:text-ws-cyan font-black' : '' }}">
                         <span>English</span>
                         <span class="font-mono text-[10px] text-slate-400">EN</span>
                     </a>
                 </div>
             </div>
 
-            <!-- Dark Mode Moon Icon Button -->
+            <!-- Dark Mode Moon/Sun Toggle Button -->
             <button
                 type="button"
-                class="w-8 h-8 rounded-full bg-slate-100/90 hover:bg-slate-200/80 text-slate-700 border border-slate-200/80 flex items-center justify-center ws-transition shadow-2xs"
-                title="الوضع المظلم / الفاتح"
+                @click="toggleDark()"
+                class="w-8 h-8 rounded-full bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 text-slate-700 dark:text-amber-300 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center ws-transition shadow-2xs cursor-pointer"
+                :title="dark ? 'الوضع الفاتح' : 'الوضع المظلم'"
             >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                <template x-if="dark">
+                    <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                </template>
+                <template x-if="!dark">
+                    <svg class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                </template>
             </button>
         </div>
 
@@ -217,7 +225,7 @@
             @auth
                 <a
                     href="{{ auth()->user()->hasRole('SUPER_ADMIN') ? route('admin.dashboard') : (auth()->user()->hasRole('COUNTRY_ADMIN') ? route('country.dashboard') : route('profile')) }}"
-                    class="bg-white text-ws-slate hover:bg-slate-50 font-black px-4 py-2 rounded-full text-xs sm:text-sm flex items-center gap-1.5 shadow-sm border border-slate-200/80 ws-transition"
+                    class="bg-white dark:bg-slate-800 text-ws-slate dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 font-black px-4 py-2 rounded-full text-xs sm:text-sm flex items-center gap-1.5 shadow-sm border border-slate-200/80 dark:border-slate-700 ws-transition"
                 >
                     <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
                     <span>{{ __('messages.my_space') ?? 'مساحتي' }}</span>
@@ -247,10 +255,10 @@
                         x-transition:leave="ease-in duration-100"
                         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                         x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-                        class="absolute top-full mt-2 rtl:left-0 ltr:right-0 w-72 sm:w-80 rounded-ws-md bg-white/95 backdrop-blur-xl text-ws-slate shadow-[0_20px_50px_rgba(0,0,0,0.18)] border border-slate-200/90 p-2 z-50 text-start space-y-1.5"
+                        class="absolute top-full mt-2 rtl:left-0 ltr:right-0 w-72 sm:w-80 rounded-ws-md bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl text-ws-slate dark:text-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.18)] border border-slate-200/90 dark:border-slate-800 p-2 z-50 text-start space-y-1.5"
                     >
                         <!-- Header inside Dropdown -->
-                        <div class="px-3 py-1.5 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                        <div class="px-3 py-1.5 border-b border-slate-100 dark:border-slate-800 text-[10px] font-black text-slate-400 uppercase tracking-wider flex items-center justify-between">
                             <span>{{ $locale === 'fr' ? 'Choisir le type d inscription' : ($locale === 'en' ? 'Choose Registration Type' : 'اختر نوع التسجيل في الأولمبياد') }}</span>
                             <span class="w-2 h-2 rounded-full {{ $registrationEnabled ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500' }}"></span>
                         </div>
@@ -258,21 +266,21 @@
                         <!-- 1. Competitor Registration Option -->
                         <a
                             href="{{ route('registration') }}"
-                            class="group flex items-start gap-3 p-2.5 sm:p-3 rounded-ws-sm hover:bg-sky-50/80 border border-transparent hover:border-sky-200 ws-transition"
+                            class="group flex items-start gap-3 p-2.5 sm:p-3 rounded-ws-sm hover:bg-sky-50/80 dark:hover:bg-sky-950/40 border border-transparent hover:border-sky-200 dark:hover:border-sky-800 ws-transition"
                         >
-                            <div class="w-9 h-9 rounded-full bg-sky-100 text-[#0052CC] flex items-center justify-center shrink-0 group-hover:scale-105 ws-transition shadow-2xs">
+                            <div class="w-9 h-9 rounded-full bg-sky-100 dark:bg-sky-950 text-[#0052CC] dark:text-sky-300 flex items-center justify-center shrink-0 group-hover:scale-105 ws-transition shadow-2xs">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between gap-1">
-                                    <span class="text-xs font-black text-slate-900 group-hover:text-ws-primary ws-transition">
+                                    <span class="text-xs font-black text-slate-900 dark:text-white group-hover:text-ws-primary dark:group-hover:text-ws-cyan ws-transition">
                                         {{ $locale === 'fr' ? 'Inscription Compétiteur' : ($locale === 'en' ? 'Competitor Registration' : 'تسجيل متنافس / مترشح') }}
                                     </span>
-                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-sky-100 text-sky-800">
+                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-sky-100 dark:bg-sky-900/60 text-sky-800 dark:text-sky-200">
                                         {{ $locale === 'fr' ? 'Métiers' : ($locale === 'en' ? 'Skills' : 'مهن') }}
                                     </span>
                                 </div>
-                                <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
                                     {{ $locale === 'fr' ? 'Pour les candidats aux épreuves et métiers WorldSkills.' : ($locale === 'en' ? 'For contestants competing in skills and trades.' : 'خاص بالمترشحين المتنافسين في مختلف تخصصات ومسابقات المهارات.') }}
                                 </p>
                             </div>
@@ -281,21 +289,21 @@
                         <!-- 2. Official Delegation Option -->
                         <a
                             href="{{ route('official.registration') }}"
-                            class="group flex items-start gap-3 p-2.5 sm:p-3 rounded-ws-sm hover:bg-amber-50/80 border border-transparent hover:border-amber-200 ws-transition"
+                            class="group flex items-start gap-3 p-2.5 sm:p-3 rounded-ws-sm hover:bg-amber-50/80 dark:hover:bg-amber-950/40 border border-transparent hover:border-amber-200 dark:hover:border-amber-800 ws-transition"
                         >
-                            <div class="w-9 h-9 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 group-hover:scale-105 ws-transition shadow-2xs">
+                            <div class="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 group-hover:scale-105 ws-transition shadow-2xs">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between gap-1">
-                                    <span class="text-xs font-black text-slate-900 group-hover:text-amber-700 ws-transition">
+                                    <span class="text-xs font-black text-slate-900 dark:text-white group-hover:text-amber-700 dark:group-hover:text-amber-300 ws-transition">
                                         {{ $locale === 'fr' ? 'Délégations Officielles' : ($locale === 'en' ? 'Official Delegation' : 'تسجيل الوفود الرسمية') }}
                                     </span>
-                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">
+                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200">
                                         {{ $locale === 'fr' ? 'Officiel' : ($locale === 'en' ? 'Official' : 'رسمي') }}
                                     </span>
                                 </div>
-                                <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
                                     {{ $locale === 'fr' ? 'Chefs de délégations, experts, jurys et invités officiels.' : ($locale === 'en' ? 'Delegation heads, experts, technical jury and VIPs.' : 'لرؤساء الوفود، الخبراء التقنيين، الحكام والمؤطرين والضيوف الرسميين.') }}
                                 </p>
                             </div>
@@ -303,26 +311,24 @@
                     </div>
                 </div>
 
-                <!-- تسجيل الدخول (White Pill with Green Door Icon - Hidden on mobile phones < 640px) -->
+                <!-- Login / Space Pill Button -->
                 <a
                     href="{{ route('login') }}"
-                    class="hidden sm:flex bg-white text-slate-900 hover:bg-slate-50 font-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm items-center gap-1.5 shadow-sm border border-slate-200/90 ws-transition active:translate-y-[1px]"
+                    class="hidden sm:flex bg-[#0052CC] hover:bg-[#0040A3] text-white font-black px-4 py-2 rounded-full text-xs sm:text-sm items-center gap-1.5 shadow-sm ws-transition cursor-pointer"
                 >
-                    <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                        <svg class="w-3 h-3 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
-                    </span>
+                    <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
                     <span>{{ __('messages.login') }}</span>
                 </a>
             @endauth
 
-            <!-- Mobile Drawer Toggle Button -->
+            <!-- Mobile Drawer Hamburger Button -->
             <button
                 type="button"
                 @click="mobileMenuOpen = !mobileMenuOpen"
-                class="xl:hidden w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center ws-transition border border-slate-200"
-                aria-label="القائمة"
+                class="xl:hidden p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 ws-transition"
+                aria-label="القائمة الرئيسية"
             >
-                <svg class="w-5 h-5" x-show="!mobileMenuOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                <svg class="w-5 h-5" x-show="!mobileMenuOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 <svg class="w-5 h-5" x-show="mobileMenuOpen" x-cloak fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -339,66 +345,66 @@
         x-transition:leave="ease-in duration-150"
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 -translate-y-4"
-        class="xl:hidden mt-2 max-w-[1360px] mx-auto rounded-3xl bg-white/95 backdrop-blur-2xl border border-white/80 p-5 shadow-2xl text-start pointer-events-auto space-y-3"
+        class="xl:hidden mt-2 max-w-[1360px] mx-auto rounded-3xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/80 dark:border-slate-800 p-5 shadow-2xl text-start pointer-events-auto space-y-3"
     >
         @guest
-            <a href="{{ route('login') }}" class="w-full p-2.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 flex items-center justify-center gap-2 font-black text-xs shadow-xs ws-transition">
-                <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <a href="{{ route('login') }}" class="w-full p-2.5 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2 font-black text-xs shadow-xs ws-transition">
+                <span class="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-300 flex items-center justify-center shrink-0">
                     <svg class="w-3 h-3 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
                 </span>
                 <span>{{ __('messages.login') }}</span>
             </a>
-            <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-start">
-                <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{{ $locale === 'fr' ? 'Portail d inscription' : ($locale === 'en' ? 'Registration Portal' : 'بوابات التسجيل في الأولمبياد') }}</span>
+            <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2 text-start">
+                <span class="text-[10px] font-black text-slate-400 dark:text-slate-300 uppercase tracking-wider block">{{ $locale === 'fr' ? 'Portail d inscription' : ($locale === 'en' ? 'Registration Portal' : 'بوابات التسجيل في الأولمبياد') }}</span>
                 <div class="grid grid-cols-1 gap-2">
-                    <a href="{{ route('registration') }}" class="p-2.5 rounded-ws-sm bg-sky-50 hover:bg-sky-100 text-sky-900 border border-sky-200 flex items-center gap-2.5 font-bold text-xs ws-transition">
+                    <a href="{{ route('registration') }}" class="p-2.5 rounded-ws-sm bg-sky-50 dark:bg-sky-950/40 hover:bg-sky-100 dark:hover:bg-sky-900/50 text-sky-900 dark:text-sky-200 border border-sky-200 dark:border-sky-800 flex items-center gap-2.5 font-bold text-xs ws-transition">
                         <span class="w-6 h-6 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs shrink-0 font-bold">+</span>
                         <div class="flex flex-col">
                             <span>{{ $locale === 'fr' ? 'Inscription Compétiteur' : ($locale === 'en' ? 'Competitor Registration' : 'تسجيل متنافس / مترشح') }}</span>
-                            <span class="text-[10px] text-sky-700 font-normal">{{ $locale === 'fr' ? 'Pour les candidats aux métiers' : 'خاص بالمترشحين المتنافسين' }}</span>
+                            <span class="text-[10px] text-sky-700 dark:text-sky-300 font-normal">{{ $locale === 'fr' ? 'Pour les candidats aux métiers' : 'خاص بالمترشحين المتنافسين' }}</span>
                         </div>
                     </a>
-                    <a href="{{ route('official.registration') }}" class="p-2.5 rounded-ws-sm bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 flex items-center gap-2.5 font-bold text-xs ws-transition">
+                    <a href="{{ route('official.registration') }}" class="p-2.5 rounded-ws-sm bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/50 text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-800 flex items-center gap-2.5 font-bold text-xs ws-transition">
                         <span class="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs shrink-0 font-bold"><x-ws.icon name="star" class="w-3.5 h-3.5" /></span>
                         <div class="flex flex-col">
                             <span>{{ $locale === 'fr' ? 'Délégations Officielles' : ($locale === 'en' ? 'Official Delegation' : 'تسجيل الوفود الرسمية') }}</span>
-                            <span class="text-[10px] text-amber-700 font-normal">{{ $locale === 'fr' ? 'Chefs, experts et invités' : 'لرؤساء الوفود والمؤطرين والخبراء' }}</span>
+                            <span class="text-[10px] text-amber-700 dark:text-amber-300 font-normal">{{ $locale === 'fr' ? 'Chefs, experts et invités' : 'لرؤساء الوفود والمؤطرين والخبراء' }}</span>
                         </div>
                     </a>
                 </div>
             </div>
         @endguest
 
-        <div class="grid grid-cols-2 gap-2 text-slate-800 font-bold text-xs">
-            <a href="{{ route('home') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('home') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+        <div class="grid grid-cols-2 gap-2 text-slate-800 dark:text-slate-200 font-bold text-xs">
+            <a href="{{ route('home') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('home') ? 'bg-ws-primary text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                 {{ __('messages.home') }}
             </a>
-            <a href="{{ route('skills') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('skills') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+            <a href="{{ route('skills') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('skills') ? 'bg-ws-primary text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                 {{ __('messages.skills') }}
             </a>
-            <a href="{{ route('guide') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('guide') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+            <a href="{{ route('guide') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('guide') ? 'bg-ws-primary text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                 {{ app()->getLocale() === 'fr' ? 'Guide de Participation' : (app()->getLocale() === 'en' ? 'Participation Guide' : 'دليل المشاركة') }}
             </a>
-            <a href="{{ route('regulations') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('regulations') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+            <a href="{{ route('regulations') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('regulations') ? 'bg-ws-primary text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                 {{ __('messages.regulations') }}
             </a>
-            <a href="{{ route('schedule') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('schedule') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+            <a href="{{ route('schedule') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('schedule') ? 'bg-ws-primary text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                 {{ __('messages.schedule') }}
             </a>
-            <a href="{{ route('results') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('results') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+            <a href="{{ route('results') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('results') ? 'bg-ws-primary text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                 {{ __('messages.results') }}
             </a>
-            <a href="{{ route('news') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('news') ? 'bg-ws-primary text-white' : 'bg-slate-100 hover:bg-slate-200' }}">
+            <a href="{{ route('news') }}" class="p-2.5 rounded-ws-sm {{ request()->routeIs('news') ? 'bg-ws-primary text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                 {{ __('messages.news') }}
             </a>
-            <a href="{{ route('verify') }}" class="p-2.5 rounded-ws-sm bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <a href="{{ route('verify') }}" class="p-2.5 rounded-ws-sm bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                 {{ __('messages.verify_nav') }}
             </a>
         </div>
 
         <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-800 dark:text-slate-200">
             <div class="flex items-center gap-2">
-                <button type="button" @click="toggleDark()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-amber-300">
+                <button type="button" @click="toggleDark()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-amber-300 cursor-pointer">
                     <template x-if="dark"><svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg></template>
                     <template x-if="!dark"><svg class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg></template>
                 </button>
@@ -406,9 +412,9 @@
             </div>
             <span class="font-bold">اللغة / Langue:</span>
             <div class="flex items-center gap-2">
-                <a href="{{ route('lang.switch', 'ar') }}" class="px-2.5 py-1 rounded-full {{ $locale === 'ar' ? 'bg-ws-primary text-white font-black' : 'bg-slate-100' }}">AR</a>
-                <a href="{{ route('lang.switch', 'fr') }}" class="px-2.5 py-1 rounded-full {{ $locale === 'fr' ? 'bg-ws-primary text-white font-black' : 'bg-slate-100' }}">FR</a>
-                <a href="{{ route('lang.switch', 'en') }}" class="px-2.5 py-1 rounded-full {{ $locale === 'en' ? 'bg-ws-primary text-white font-black' : 'bg-slate-100' }}">EN</a>
+                <a href="{{ route('lang.switch', 'ar') }}" class="px-2.5 py-1 rounded-full {{ $locale === 'ar' ? 'bg-ws-primary text-white font-black' : 'bg-slate-100 dark:bg-slate-800' }}">AR</a>
+                <a href="{{ route('lang.switch', 'fr') }}" class="px-2.5 py-1 rounded-full {{ $locale === 'fr' ? 'bg-ws-primary text-white font-black' : 'bg-slate-100 dark:bg-slate-800' }}">FR</a>
+                <a href="{{ route('lang.switch', 'en') }}" class="px-2.5 py-1 rounded-full {{ $locale === 'en' ? 'bg-ws-primary text-white font-black' : 'bg-slate-100 dark:bg-slate-800' }}">EN</a>
             </div>
         </div>
     </div>

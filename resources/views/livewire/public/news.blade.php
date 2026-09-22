@@ -48,7 +48,7 @@ $ministerGallery = [
                     $coverImg = $article->cover_url;
                 @endphp
                 <div wire:click="openArticle({{ $article->id }})"
-                     class="bg-white rounded-[28px] overflow-hidden border border-slate-200/90 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group cursor-pointer flex flex-col justify-between hover:border-[#0066FF]">
+                     class="bg-white dark:bg-slate-900 rounded-[28px] overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group cursor-pointer flex flex-col justify-between hover:border-[#0066FF]">
                     
                     {{-- Cover Thumbnail (100% Full Visibility) --}}
                     <div class="h-64 sm:h-72 bg-slate-950 relative overflow-hidden flex items-center justify-center p-2">
@@ -73,7 +73,7 @@ $ministerGallery = [
                     {{-- Details --}}
                     <div class="p-6 sm:p-8 space-y-4 flex-1 flex flex-col justify-between">
                         <div class="space-y-3">
-                            <h2 class="text-lg sm:text-xl font-black text-[#06205C] group-hover:text-[#0066FF] transition-colors leading-snug">
+                            <h2 class="text-lg sm:text-xl font-black text-[#06205C] dark:text-white group-hover:text-[#0066FF] transition-colors leading-snug">
                                 {{ $article->getLocalized('title') }}
                             </h2>
 
@@ -84,7 +84,7 @@ $ministerGallery = [
                             @endif
                         </div>
 
-                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-extrabold text-[#0066FF] group-hover:text-[#0052CC]">
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-xs font-extrabold text-[#0066FF] group-hover:text-[#0052CC]">
                             <span class="flex items-center gap-2">
                                 <span>{{ $t('قراءة الخبر بالكامل ومعاينة الصورة الكاملة', 'Lire la suite', 'Read Full Article') }}</span>
                                 <div class="w-6 h-6 rounded-full bg-blue-50 text-[#0066FF] flex items-center justify-center border border-blue-100">
@@ -99,8 +99,8 @@ $ministerGallery = [
                     </div>
                 </div>
             @empty
-                <div class="col-span-full bg-white rounded-3xl p-16 text-center text-slate-400 font-bold text-sm border border-slate-200 shadow-sm space-y-3">
-                    <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                <div class="col-span-full bg-white dark:bg-slate-900 rounded-3xl p-16 text-center text-slate-400 font-bold text-sm border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
                         </svg>
@@ -115,10 +115,10 @@ $ministerGallery = [
     {{-- ════ NEWS ARTICLE DETAIL MODAL WITH 100% FULL PHOTO VISIBILITY (WHITE & BLUE THEME) ════ --}}
     @if($modalOpen && $selectedArticle)
         <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-            <div class="bg-white rounded-3xl overflow-hidden max-w-5xl w-full shadow-2xl border border-slate-200 relative text-slate-900 my-4">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden max-w-5xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 relative text-slate-900 dark:text-white my-4">
 
                 {{-- Modal Header (Navy Blue Title & White Crisp Theme) --}}
-                <div class="p-6 bg-slate-50 border-b border-slate-200 flex items-center justify-between gap-4">
+                <div class="p-6 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4">
                     <div class="space-y-1.5">
                         <div class="flex items-center gap-2.5">
                             <span class="px-3.5 py-1 rounded-full bg-[#0066FF] text-white font-black text-[11px] uppercase tracking-wider shadow-sm">
@@ -128,12 +128,12 @@ $ministerGallery = [
                                 {{ optional($selectedArticle->published_at)->format('Y-m-d H:i') }}
                             </span>
                         </div>
-                        <h2 class="text-xl sm:text-2xl font-black text-[#06205C] leading-snug">
+                        <h2 class="text-xl sm:text-2xl font-black text-[#06205C] dark:text-white leading-snug">
                             {{ $selectedArticle->getLocalized('title') }}
                         </h2>
                     </div>
 
-                    <button wire:click="closeArticle" type="button" class="w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition shrink-0">
+                    <button wire:click="closeArticle" type="button" class="w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 dark:text-slate-300 flex items-center justify-center transition shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
@@ -148,8 +148,8 @@ $ministerGallery = [
 
                     {{-- 7 Attached Photo Gallery Thumbnails (Only for Interview Article) --}}
                     @if($selectedArticle->category === 'interview')
-                        <div class="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                            <h4 class="text-xs font-black text-[#06205C] uppercase tracking-wider flex items-center gap-2">
+                        <div class="space-y-3 bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+                            <h4 class="text-xs font-black text-[#06205C] dark:text-white uppercase tracking-wider flex items-center gap-2">
                                 <svg class="w-4 h-4 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                 <span>معرض الصور التوثيقية المرفقة بالحوار (7 صور كاملة)</span>
                             </h4>
@@ -167,19 +167,19 @@ $ministerGallery = [
 
                     {{-- Excerpt Box --}}
                     @if($selectedArticle->getLocalized('excerpt'))
-                        <div class="p-5 bg-blue-50 border-s-4 border-[#0066FF] rounded-2xl text-xs sm:text-sm font-bold text-[#06205C] leading-relaxed border border-blue-100 shadow-sm">
+                        <div class="p-5 bg-blue-50 border-s-4 border-[#0066FF] rounded-2xl text-xs sm:text-sm font-bold text-[#06205C] dark:text-white leading-relaxed border border-blue-100 shadow-sm">
                             {{ $selectedArticle->getLocalized('excerpt') }}
                         </div>
                     @endif
 
                     {{-- Article Full Text --}}
-                    <div class="text-sm sm:text-base text-slate-700 font-medium leading-relaxed space-y-4 pt-2">
+                    <div class="text-sm sm:text-base text-slate-700 dark:text-slate-300 font-medium leading-relaxed space-y-4 pt-2">
                         {!! nl2br(e($selectedArticle->getLocalized('content'))) !!}
                     </div>
                 </div>
 
                 {{-- Modal Footer --}}
-                <div class="p-5 bg-slate-50 border-t border-slate-200 flex justify-end">
+                <div class="p-5 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-800 flex justify-end">
                     <button wire:click="closeArticle" type="button" class="px-8 py-3 rounded-2xl bg-[#0066FF] hover:bg-[#0052CC] text-white font-extrabold text-xs transition shadow-xl">
                         إغلاق
                     </button>

@@ -1,5 +1,5 @@
 
-<div class="pb-16 relative overflow-hidden bg-[#FAFBFD] min-h-screen" x-data="{ showVideoModal: false }">
+<div class="pb-16 relative overflow-hidden bg-[#FAFBFD] dark:bg-[#070E20] min-h-screen" x-data="{ showVideoModal: false }">
 
     <!-- The Hybrid Dynamic Background Experience (الشبكة الهندسية الدقيقة + الهالات المتنفسة + توهج الفأرة) -->
     <x-ui.dynamic-aurora-mesh />
@@ -185,7 +185,7 @@
                 </a>
 
                 <!-- 2. Register Now (High-Contrast Solid White Button) -->
-                <a href="{{ route('registration') }}" class="px-8 py-3.5 rounded-full bg-white hover:bg-slate-100 text-[#041235] font-black text-xs sm:text-sm shadow-xl ws-transition hover:scale-105 active:scale-95 flex items-center gap-2 border border-white/90">
+                <a href="{{ route('registration') }}" class="px-8 py-3.5 rounded-full bg-white dark:bg-slate-900 hover:bg-slate-100 dark:bg-slate-800 text-[#041235] font-black text-xs sm:text-sm shadow-xl ws-transition hover:scale-105 active:scale-95 flex items-center gap-2 border border-white/90">
                     <svg class="w-4 h-4 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                     <span>{{ __('messages.register_now') }}</span>
                 </a>
@@ -266,7 +266,7 @@
         </div>
 
         <!-- Main Vintage Paper Sheet Card Container -->
-        <div class="bg-[#FDFBF7] dark:bg-[#F9F6EE] rounded-3xl p-6 sm:p-12 shadow-[0_25px_70px_rgba(6,32,92,0.15)] border-2 border-[#EADFC9] relative overflow-hidden text-slate-900">
+        <div class="bg-[#FDFBF7] dark:bg-slate-900/90 dark:border-slate-700 rounded-3xl p-6 sm:p-12 shadow-[0_25px_70px_rgba(6,32,92,0.15)] border-2 border-[#EADFC9] relative overflow-hidden text-slate-900 dark:text-white">
             
             <!-- Background Decorative Watermark Elements -->
             <!-- 1. Postal Stamp Mark Top-Right -->
@@ -278,7 +278,7 @@
 
             <!-- 2. Monument Sketch Watermark (مقام الشهيد) Bottom-Left -->
             <div class="absolute -bottom-6 -left-6 opacity-[0.08] pointer-events-none select-none">
-                <svg class="w-48 h-48 sm:w-64 sm:h-64 text-[#06205C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-48 h-48 sm:w-64 sm:h-64 text-[#06205C] dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 2L9 9l-7 3 7 3 3 7 3-7 7-3-7-3-3-9zM12 22V12"/>
                 </svg>
             </div>
@@ -291,20 +291,20 @@
                 <!-- Metallic Paperclip -->
                 <div class="w-4 h-9 border-2 border-slate-500 rounded-full shadow-xs -mb-3 z-30 bg-slate-300/40 backdrop-blur-xs"></div>
                 <!-- Post-It Card -->
-                <div class="bg-amber-100/90 border border-amber-300 shadow-md rounded-xl p-2.5 text-center transform -rotate-3 text-slate-800 w-28">
+                <div class="bg-amber-100/90 border border-amber-300 shadow-md rounded-xl p-2.5 text-center transform -rotate-3 text-slate-800 dark:text-slate-200 w-28">
                     <div class="flex items-center justify-center gap-1 text-[10px] font-black text-rose-600 mb-0.5">
                         <span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
                         <span>مباشر</span>
                     </div>
-                    <div id="wsap-live-clock" class="font-mono text-xs font-black text-slate-900 leading-tight">14:30:22</div>
-                    <div id="wsap-live-date" class="text-[9px] font-bold text-slate-600 mt-0.5 leading-none">{{ app()->getLocale() === 'fr' ? '16 - 21 Novembre 2026' : (app()->getLocale() === 'en' ? 'Nov 16 - 21, 2026' : '16 - 21 نوفمبر 2026') }}</div>
+                    <div id="wsap-live-clock" class="font-mono text-xs font-black text-slate-900 dark:text-white leading-tight">14:30:22</div>
+                    <div id="wsap-live-date" class="text-[9px] font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-none">{{ app()->getLocale() === 'fr' ? '16 - 21 Novembre 2026' : (app()->getLocale() === 'en' ? 'Nov 16 - 21, 2026' : '16 - 21 نوفمبر 2026') }}</div>
                 </div>
             </div>
 
             <!-- Center Logo & Titles -->
             <div class="text-center space-y-2 mb-8 relative z-10 pt-2">
                 <img src="/logo.svg" alt="WorldSkills Algeria 2026" class="h-12 sm:h-16 w-auto mx-auto drop-shadow-xs mb-3">
-                <h3 class="text-lg sm:text-2xl font-black text-[#06205C] tracking-tight">
+                <h3 class="text-lg sm:text-2xl font-black text-[#06205C] dark:text-white tracking-tight">
                     @if(app()->getLocale() === 'fr')
                         {{ $countdownTitleFr }}
                     @elseif(app()->getLocale() === 'en')
@@ -313,7 +313,7 @@
                         {{ $countdownTitleAr }}
                     @endif
                 </h3>
-                <div class="flex items-center justify-center gap-2 text-xs font-bold text-slate-600">
+                <div class="flex items-center justify-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-400">
                     <x-ws.icon name="star" class="w-3.5 h-3.5 text-amber-500 inline-block" />
                     <span>
                         @if(app()->getLocale() === 'fr')
@@ -345,7 +345,7 @@
                     </div>
                     
                     <div class="space-y-0.5">
-                        <span class="text-xs sm:text-sm font-black text-slate-800 block uppercase tracking-wider">{{ __('messages.seconds') }}</span>
+                        <span class="text-xs sm:text-sm font-black text-slate-800 dark:text-slate-200 block uppercase tracking-wider">{{ __('messages.seconds') }}</span>
                         <span class="text-[9px] sm:text-[10px] font-extrabold text-slate-500 block tracking-widest">SECONDS</span>
                     </div>
                 </div>
@@ -362,7 +362,7 @@
                     </div>
                     
                     <div class="space-y-0.5">
-                        <span class="text-xs sm:text-sm font-black text-slate-800 block uppercase tracking-wider">{{ __('messages.minutes') }}</span>
+                        <span class="text-xs sm:text-sm font-black text-slate-800 dark:text-slate-200 block uppercase tracking-wider">{{ __('messages.minutes') }}</span>
                         <span class="text-[9px] sm:text-[10px] font-extrabold text-slate-500 block tracking-widest">MINUTES</span>
                     </div>
                 </div>
@@ -379,7 +379,7 @@
                     </div>
                     
                     <div class="space-y-0.5">
-                        <span class="text-xs sm:text-sm font-black text-slate-800 block uppercase tracking-wider">{{ __('messages.hours') }}</span>
+                        <span class="text-xs sm:text-sm font-black text-slate-800 dark:text-slate-200 block uppercase tracking-wider">{{ __('messages.hours') }}</span>
                         <span class="text-[9px] sm:text-[10px] font-extrabold text-slate-500 block tracking-widest">HOURS</span>
                     </div>
                 </div>
@@ -396,7 +396,7 @@
                     </div>
                     
                     <div class="space-y-0.5">
-                        <span class="text-xs sm:text-sm font-black text-slate-800 block uppercase tracking-wider">{{ __('messages.days') }}</span>
+                        <span class="text-xs sm:text-sm font-black text-slate-800 dark:text-slate-200 block uppercase tracking-wider">{{ __('messages.days') }}</span>
                         <span class="text-[9px] sm:text-[10px] font-extrabold text-slate-500 block tracking-widest">DAYS</span>
                     </div>
                 </div>
@@ -482,7 +482,7 @@
 
     <!-- 4. Featured Skills Showcase -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 mb-16 sm:mb-20 ws-contain-render">
-        <div class="p-6 sm:p-8 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_10px_35px_rgba(0,82,204,0.06)] hover:shadow-[0_20px_45px_rgba(0,82,204,0.12)] hover:-translate-y-1.5 transition-all duration-500 relative group/head cursor-default overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl border border-white/80 dark:border-slate-800 shadow-[0_10px_35px_rgba(0,82,204,0.06)] hover:shadow-[0_20px_45px_rgba(0,82,204,0.12)] hover:-translate-y-1.5 transition-all duration-500 relative group/head cursor-default overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
             {{-- Ambient Decorative Glass Glow (Transforms from Blue to Cyan on Hover) --}}
             <div class="absolute -top-16 -start-16 w-60 h-60 bg-gradient-to-br from-blue-500/15 via-cyan-400/10 to-transparent rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-cyan-500/25 group-hover/head:via-blue-600/20 transition-all duration-700"></div>
 
@@ -499,7 +499,7 @@
                     </span>
                 </h2>
 
-                <p class="text-xs sm:text-sm text-slate-500 font-bold max-w-xl group-hover/head:text-slate-700 transition-colors">
+                <p class="text-xs sm:text-sm text-slate-500 font-bold max-w-xl group-hover/head:text-slate-700 dark:text-slate-300 transition-colors">
                     {{ app()->getLocale() === 'fr' ? 'Explorez les compétences officielles en compétition nationale et africaine' : (app()->getLocale() === 'en' ? 'Explore official skills and occupations competing in the Olympiad' : 'استكشف المهارات التنافسية والمهن التخصصية المشاركة في أولمبياد المهن') }}
                 </p>
             </div>
@@ -515,7 +515,7 @@
                 @php
                     $imgUrl = $skill->getImageUrl();
                 @endphp
-                <div class="bg-white rounded-3xl overflow-hidden shadow-xl border border-slate-200/90 hover:shadow-2xl transition-all duration-400 transform mac-dock-hover relative overflow-hidden  group cursor-pointer flex flex-col justify-between hover:border-[#0066FF] wsap-hover-card">
+                <div class="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-xl border border-slate-200/90 dark:border-slate-800 hover:shadow-2xl transition-all duration-400 transform mac-dock-hover relative overflow-hidden  group cursor-pointer flex flex-col justify-between hover:border-[#0066FF] wsap-hover-card">
                     
                     {{-- Photo Banner Header --}}
                     <div class="h-48 bg-slate-950 relative overflow-hidden">
@@ -539,7 +539,7 @@
                     {{-- Card Body Details --}}
                     <div class="p-6 space-y-4 flex-1 flex flex-col justify-between">
                         <div class="space-y-2">
-                            <h3 class="text-lg font-black text-[#06205C] group-hover:text-[#0066FF] transition-colors leading-snug">
+                            <h3 class="text-lg font-black text-[#06205C] dark:text-white group-hover:text-[#0066FF] transition-colors leading-snug">
                                 {{ $skill->getLocalized('name') }}
                             </h3>
                             <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed font-medium">
@@ -547,7 +547,7 @@
                             </p>
                         </div>
 
-                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between">
                             <a href="{{ route('skills') }}" class="inline-flex items-center gap-1.5 text-xs font-black text-[#0066FF] hover:text-blue-700 transition">
                                 <span>{{ __('messages.skills') }} — {{ app()->getLocale() === 'fr' ? 'Détails' : (app()->getLocale() === 'en' ? 'Details' : 'عرض التفاصيل والمعايير') }}</span>
                                 <svg class="w-4 h-4 text-[#0066FF] group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
@@ -557,7 +557,7 @@
 
                 </div>
             @empty
-                <div class="col-span-3 bg-white rounded-3xl p-8 text-center text-slate-400 font-medium text-sm">
+                <div class="col-span-3 bg-white dark:bg-slate-900 rounded-3xl p-8 text-center text-slate-400 font-medium text-sm">
                     {{ app()->getLocale() === 'fr' ? 'Aucune discipline disponible actuellement.' : (app()->getLocale() === 'en' ? 'No trade categories added yet.' : 'لا توجد تخصصات مضافة حالياً.') }}
                 </div>
             @endforelse
@@ -566,7 +566,7 @@
 
     <!-- 5. Media & Event Highlights Grid -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 mb-16 sm:mb-20 ws-contain-render">
-        <div class="p-6 sm:p-8 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_10px_35px_rgba(245,158,11,0.06)] hover:shadow-[0_20px_45px_rgba(245,158,11,0.15)] hover:-translate-y-1.5 transition-all duration-500 relative group/head cursor-default overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl border border-white/80 dark:border-slate-800 shadow-[0_10px_35px_rgba(245,158,11,0.06)] hover:shadow-[0_20px_45px_rgba(245,158,11,0.15)] hover:-translate-y-1.5 transition-all duration-500 relative group/head cursor-default overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
             {{-- Ambient Decorative Glass Glow (Transforms from Amber to Orange on Hover) --}}
             <div class="absolute -top-16 -start-16 w-60 h-60 bg-gradient-to-br from-amber-500/15 via-orange-400/10 to-transparent rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-orange-500/25 group-hover/head:via-amber-600/20 transition-all duration-700"></div>
 
@@ -583,7 +583,7 @@
                     </span>
                 </h2>
 
-                <p class="text-xs sm:text-sm text-slate-500 font-bold max-w-xl group-hover/head:text-slate-700 transition-colors">
+                <p class="text-xs sm:text-sm text-slate-500 font-bold max-w-xl group-hover/head:text-slate-700 dark:text-slate-300 transition-colors">
                     {{ app()->getLocale() === 'fr' ? 'Actualités, événements, galeries photos et médias' : (app()->getLocale() === 'en' ? 'Latest news, events, photos and video coverage' : 'متابعة حية لجميع المستجدات، الفعاليات، المعارض والتغطيات المصورة للأولمبياد') }}
                 </p>
             </div>
@@ -592,33 +592,33 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
             <!-- Card 1: معرض الصور المميز -->
-            <div class="group bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-animated wsap-shine-effect flex flex-col justify-between">
+            <div class="group bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-md border border-slate-200/80 dark:border-slate-800 wsap-card-animated wsap-shine-effect flex flex-col justify-between">
                 <div>
-                    <h3 class="text-sm font-bold text-[#06205C] mb-4">
+                    <h3 class="text-sm font-bold text-[#06205C] dark:text-white mb-4">
                         {{ app()->getLocale() === 'fr' ? 'Galerie Photos' : (app()->getLocale() === 'en' ? 'Photo Gallery' : 'معرض الصور') }}
                     </h3>
                     <div class="space-y-3">
                         @forelse($albums as $album)
                             <a href="{{ route('gallery') }}" class="flex items-center gap-3 group">
                                 @if($album->coverMedia?->storage_path || $album->mediaItems->first()?->storage_path)
-                                    <img src="{{ $album->cover_url }}" alt="{{ $album->getLocalized('title') }}" class="w-12 h-10 rounded-lg object-cover flex-shrink-0 bg-slate-200 border border-slate-200">
+                                    <img src="{{ $album->cover_url }}" alt="{{ $album->getLocalized('title') }}" class="w-12 h-10 rounded-lg object-cover flex-shrink-0 bg-slate-200 border border-slate-200 dark:border-slate-800">
                                 @else
                                     <div class="w-12 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0 border border-amber-200/60 shadow-xs">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                     </div>
                                 @endif
                                 <div class="min-w-0">
-                                    <h4 class="text-xs font-bold text-[#06205C] group-hover:text-brand-500 transition-colors leading-snug line-clamp-1">{{ $album->getLocalized('title') }}</h4>
+                                    <h4 class="text-xs font-bold text-[#06205C] dark:text-white group-hover:text-brand-500 transition-colors leading-snug line-clamp-1">{{ $album->getLocalized('title') }}</h4>
                                     <span class="text-[10px] text-slate-400">{{ optional($album->published_at)->format('Y-m-d') ?? now()->format('Y-m-d') }}</span>
                                 </div>
                             </a>
                         @empty
                             <div class="flex items-center gap-3">
-                                <div class="w-12 h-10 rounded-lg bg-slate-100 text-slate-400 flex items-center justify-center flex-shrink-0 border border-slate-200">
+                                <div class="w-12 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center flex-shrink-0 border border-slate-200 dark:border-slate-800">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                 </div>
                                 <div>
-                                    <h4 class="text-xs font-bold text-[#06205C] leading-snug line-clamp-1">WorldSkills Algeria 2026</h4>
+                                    <h4 class="text-xs font-bold text-[#06205C] dark:text-white leading-snug line-clamp-1">WorldSkills Algeria 2026</h4>
                                     <span class="text-[10px] text-slate-400">2026-08-04</span>
                                 </div>
                             </div>
@@ -632,9 +632,9 @@
             </div>
 
             <!-- Card 2: الأجندة والفعاليات القادمة -->
-            <div class="group bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-animated wsap-shine-effect flex flex-col justify-between">
+            <div class="group bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-md border border-slate-200/80 dark:border-slate-800 wsap-card-animated wsap-shine-effect flex flex-col justify-between">
                 <div>
-                    <h3 class="text-sm font-bold text-[#06205C] mb-4">
+                    <h3 class="text-sm font-bold text-[#06205C] dark:text-white mb-4">
                         {{ app()->getLocale() === 'fr' ? 'Agenda & Événements' : (app()->getLocale() === 'en' ? 'Events & Calendar' : 'الأجندة والفعاليات') }}
                     </h3>
                     <div class="space-y-3">
@@ -644,7 +644,7 @@
                                 <span class="text-[9px] uppercase">{{ app()->getLocale() === 'fr' ? 'NOV' : (app()->getLocale() === 'en' ? 'NOV' : 'نوفمبر') }}</span>
                             </div>
                             <div>
-                                <h4 class="text-xs font-bold text-[#06205C]">
+                                <h4 class="text-xs font-bold text-[#06205C] dark:text-white">
                                     {{ app()->getLocale() === 'fr' ? 'Cérémonie d\'Ouverture des Olympiades' : (app()->getLocale() === 'en' ? 'Official Opening Ceremony' : 'حفل الافتتاح الرسمي للأولمبياد الإفريقي') }}
                                 </h4>
                                 <span class="text-[10px] text-slate-400">CIC — Oran / Alger</span>
@@ -659,33 +659,33 @@
             </div>
 
             <!-- Card 3: الأخبار والمستجدات -->
-            <div class="group bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-animated wsap-shine-effect flex flex-col justify-between">
+            <div class="group bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-md border border-slate-200/80 dark:border-slate-800 wsap-card-animated wsap-shine-effect flex flex-col justify-between">
                 <div>
-                    <h3 class="text-sm font-bold text-[#06205C] mb-4">
+                    <h3 class="text-sm font-bold text-[#06205C] dark:text-white mb-4">
                         {{ app()->getLocale() === 'fr' ? 'Actualités & Articles' : (app()->getLocale() === 'en' ? 'News & Updates' : 'الأخبار والمشاركات') }}
                     </h3>
                     <div class="space-y-3">
                         @forelse($news as $article)
                             <a href="{{ route('news') }}" class="flex items-center gap-3 group">
                                 @if($article->featured_image)
-                                    <img src="{{ $article->cover_url }}" alt="{{ $article->getLocalized('title') }}" class="w-12 h-10 rounded-lg object-cover flex-shrink-0 bg-slate-200 border border-slate-200">
+                                    <img src="{{ $article->cover_url }}" alt="{{ $article->getLocalized('title') }}" class="w-12 h-10 rounded-lg object-cover flex-shrink-0 bg-slate-200 border border-slate-200 dark:border-slate-800">
                                 @else
                                     <div class="w-12 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0 border border-blue-200/60 shadow-xs">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
                                     </div>
                                 @endif
                                 <div class="min-w-0">
-                                    <h4 class="text-xs font-bold text-[#06205C] group-hover:text-brand-500 transition-colors leading-snug line-clamp-1">{{ $article->getLocalized('title') }}</h4>
+                                    <h4 class="text-xs font-bold text-[#06205C] dark:text-white group-hover:text-brand-500 transition-colors leading-snug line-clamp-1">{{ $article->getLocalized('title') }}</h4>
                                     <span class="text-[10px] text-slate-400">{{ optional($article->published_at)->format('Y-m-d') ?? now()->format('Y-m-d') }}</span>
                                 </div>
                             </a>
                         @empty
                             <div class="flex items-center gap-3">
-                                <div class="w-12 h-10 rounded-lg bg-slate-100 text-slate-400 flex items-center justify-center flex-shrink-0 border border-slate-200">
+                                <div class="w-12 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center flex-shrink-0 border border-slate-200 dark:border-slate-800">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
                                 </div>
                                 <div>
-                                    <h4 class="text-xs font-bold text-[#06205C] leading-snug line-clamp-1">WorldSkills Algeria 2026</h4>
+                                    <h4 class="text-xs font-bold text-[#06205C] dark:text-white leading-snug line-clamp-1">WorldSkills Algeria 2026</h4>
                                     <span class="text-[10px] text-slate-400">2026-08-04</span>
                                 </div>
                             </div>
@@ -699,9 +699,9 @@
             </div>
 
             <!-- Card 4: فيديو مميز -->
-            <div class="group bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 wsap-card-animated wsap-shine-effect flex flex-col justify-between">
+            <div class="group bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-md border border-slate-200/80 dark:border-slate-800 wsap-card-animated wsap-shine-effect flex flex-col justify-between">
                 <div>
-                    <h3 class="text-sm font-bold text-[#06205C] mb-4">
+                    <h3 class="text-sm font-bold text-[#06205C] dark:text-white mb-4">
                         {{ app()->getLocale() === 'fr' ? 'Centre Vidéos' : (app()->getLocale() === 'en' ? 'Video Center' : 'مركز الفيديوهات والتغطيات') }}
                     </h3>
                     <button @click="showVideoModal = true" class="relative rounded-2xl overflow-hidden bg-[#020A24] group block w-full text-right focus:outline-none h-32 border border-slate-800 shadow-md">
@@ -719,7 +719,7 @@
                         </div>
                         <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/70 text-white text-[10px] font-mono">{{ $videos->first()?->duration ?: '02:45' }}</span>
                     </button>
-                    <h4 class="text-xs font-bold text-[#06205C] mt-3 leading-snug line-clamp-1">{{ $videos->first()?->getLocalized('title') ?? 'WorldSkills International' }}</h4>
+                    <h4 class="text-xs font-bold text-[#06205C] dark:text-white mt-3 leading-snug line-clamp-1">{{ $videos->first()?->getLocalized('title') ?? 'WorldSkills International' }}</h4>
                 </div>
                 <a href="{{ route('videos') }}" class="text-xs font-bold text-brand-500 hover:text-brand-600 mt-6 inline-flex items-center gap-1">
                     <span>{{ __('messages.view_all_videos') }}</span>
@@ -733,7 +733,7 @@
     <!-- 6. Featured Partners & Sponsors Banner Grid -->
     @if(!empty($pagePartnersEnabled) && $partners->isNotEmpty())
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 mb-16 sm:mb-20 overflow-hidden ws-contain-render">
-        <div class="p-6 sm:p-8 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_10px_35px_rgba(0,82,204,0.06)] hover:shadow-[0_20px_45px_rgba(0,82,204,0.12)] hover:-translate-y-1.5 transition-all duration-500 relative group/head cursor-default overflow-hidden flex flex-col items-center text-center space-y-3">
+        <div class="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl border border-white/80 dark:border-slate-800 shadow-[0_10px_35px_rgba(0,82,204,0.06)] hover:shadow-[0_20px_45px_rgba(0,82,204,0.12)] hover:-translate-y-1.5 transition-all duration-500 relative group/head cursor-default overflow-hidden flex flex-col items-center text-center space-y-3">
             {{-- Ambient Decorative Glass Glow (Transforms from Navy/Blue to Cyan on Hover) --}}
             <div class="absolute -top-16 inset-x-0 mx-auto w-72 h-48 bg-gradient-to-b from-blue-500/15 via-cyan-400/10 to-transparent rounded-full blur-3xl pointer-events-none group-hover/head:scale-125 group-hover/head:from-cyan-500/25 group-hover/head:via-blue-600/20 transition-all duration-700"></div>
 
@@ -749,7 +749,7 @@
                 </span>
             </h3>
 
-            <p class="text-xs sm:text-sm text-slate-500 font-bold max-w-lg mx-auto group-hover/head:text-slate-700 transition-colors relative z-10">
+            <p class="text-xs sm:text-sm text-slate-500 font-bold max-w-lg mx-auto group-hover/head:text-slate-700 dark:text-slate-300 transition-colors relative z-10">
                 {{ app()->getLocale() === 'fr' ? 'Soutien industriel et institutionnel' : (app()->getLocale() === 'en' ? 'Supporting Industrial & Institutional Partners' : 'المؤسسات الرائدة والهيئات الصناعية الداعمة لأولمبياد المهن 2026') }}
             </p>
         </div>
@@ -802,7 +802,7 @@
                             @endphp
                             <!-- Partner Container / Capsule (حاوية الشريك) -->
                             <div 
-                                class="w-48 sm:w-56 h-28 sm:h-32 px-4 py-3 rounded-2xl bg-white/95 border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-[#00B8FF] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center gap-2 group shrink-0 cursor-pointer"
+                                class="w-48 sm:w-56 h-28 sm:h-32 px-4 py-3 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-800 shadow-2xs hover:shadow-md hover:border-[#00B8FF] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center gap-2 group shrink-0 cursor-pointer"
                                 dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}"
                                 title="{{ $p->getLocalized('name') }}"
                             >
@@ -843,7 +843,7 @@
                 
                 {{-- 1. Official Logo Pod (حاوية الشعار الرسمي) --}}
                 <div class="flex flex-col items-center shrink-0">
-                    <div class="relative p-6 rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-sky-200/70 shadow-lg shadow-sky-950/5 flex items-center justify-center group-hover/forum:border-cyan-400 group-hover/forum:shadow-cyan-500/20 transition-all duration-500 w-48 sm:w-56 h-48 sm:h-56">
+                    <div class="relative p-6 rounded-3xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-2 border-sky-200/70 shadow-lg shadow-sky-950/5 flex items-center justify-center group-hover/forum:border-cyan-400 group-hover/forum:shadow-cyan-500/20 transition-all duration-500 w-48 sm:w-56 h-48 sm:h-56">
                         {{-- Electric Cyan Aura --}}
                         <div class="absolute -inset-1 rounded-[28px] bg-gradient-to-tr from-[#00C4CC]/25 via-[#00A3FF]/15 to-transparent blur-md -z-10 opacity-70 group-hover/forum:opacity-100 transition-opacity"></div>
                         
@@ -875,21 +875,21 @@
                     </div>
 
                     {{-- Description --}}
-                    <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
                         {{ app()->getLocale() === 'fr' ? "L'événement politique majeur de haut niveau réunissant ministres africains, experts techniques et partenaires institutionnels et internationaux, concrétisant un principe fondamental : l'avenir des compétences en Afrique doit être façonné par les Africains eux-mêmes." : (app()->getLocale() === 'en' ? "The flagship high-level political event bringing together African ministers, technical experts, institutional and international partners, embodying a core principle: Africa's skills future must be shaped by Africans themselves." : 'الحدث السياسي الرفيع المستوى الرئيسي الذي يجمع الوزراء الأفارقة والخبراء التقنيين والشركاء المؤسساتيين والدوليين، تجسيداً لمبدأ أساسي: مستقبل المهارات في إفريقيا يجب أن يُصاغ من قبل الأفارقة أنفسهم.') }}
                     </p>
 
                     {{-- Key Pillars / Highlights in Clean Soft Chips --}}
                     <div class="flex flex-wrap items-center justify-center {{ app()->getLocale() === 'ar' ? 'lg:justify-start' : 'lg:justify-start' }} gap-2.5 pt-1">
-                        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200/90 text-slate-700 text-xs font-bold shadow-xs hover:border-sky-300 transition">
+                        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/90 text-slate-700 dark:text-slate-300 text-xs font-bold shadow-xs hover:border-sky-300 transition">
                             <span class="w-2 h-2 rounded-full bg-[#00C4CC]"></span>
                             <span>{{ app()->getLocale() === 'fr' ? 'Représentation Ministérielle' : (app()->getLocale() === 'en' ? 'Ministerial Delegations' : 'وفود وزارية قارية') }}</span>
                         </div>
-                        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200/90 text-slate-700 text-xs font-bold shadow-xs hover:border-sky-300 transition">
+                        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/90 text-slate-700 dark:text-slate-300 text-xs font-bold shadow-xs hover:border-sky-300 transition">
                             <span class="w-2 h-2 rounded-full bg-[#0052CC]"></span>
                             <span>{{ app()->getLocale() === 'fr' ? 'Partenariats Stratégiques' : (app()->getLocale() === 'en' ? 'Strategic Partnerships' : 'شراكات استراتيجية دولية') }}</span>
                         </div>
-                        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200/90 text-slate-700 text-xs font-bold shadow-xs hover:border-sky-300 transition">
+                        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/90 text-slate-700 dark:text-slate-300 text-xs font-bold shadow-xs hover:border-sky-300 transition">
                             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                             <span>{{ app()->getLocale() === 'fr' ? 'Emploi & Avenir des Jeunes' : (app()->getLocale() === 'en' ? 'Youth Skills & Employment' : 'تمكين وتشغيل الشباب') }}</span>
                         </div>
@@ -912,7 +912,7 @@
 
                 {{-- 3. Dedicated Interactive Africa Map Pod (شعار القارة الرسمي مع تدرج أزرق فاتح عند التحويم وحركة الارتفاع) --}}
                 <div class="flex flex-col items-center shrink-0 group/map cursor-pointer">
-                    <div class="relative p-6 rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-sky-200/70 shadow-lg shadow-sky-950/5 w-56 sm:w-64 h-64 sm:h-72 flex flex-col items-center justify-center overflow-hidden transition-all duration-500 group-hover/map:border-cyan-400 group-hover/map:shadow-[0_20px_50px_rgba(0,196,204,0.25)]">
+                    <div class="relative p-6 rounded-3xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-2 border-sky-200/70 shadow-lg shadow-sky-950/5 w-56 sm:w-64 h-64 sm:h-72 flex flex-col items-center justify-center overflow-hidden transition-all duration-500 group-hover/map:border-cyan-400 group-hover/map:shadow-[0_20px_50px_rgba(0,196,204,0.25)]">
                         
                         {{-- Soft Ambient Base Backlight --}}
                         <div class="absolute inset-0 rounded-3xl bg-gradient-to-tr from-sky-50 via-cyan-50/50 to-transparent pointer-events-none"></div>
@@ -934,7 +934,7 @@
                     </div>
 
                     {{-- Map Subtitle / Location Pin --}}
-                    <div class="mt-3 flex items-center gap-2 text-[11px] font-black text-slate-700 group-hover/map:text-[#0052CC] transition-colors drop-shadow-xs">
+                    <div class="mt-3 flex items-center gap-2 text-[11px] font-black text-slate-700 dark:text-slate-300 group-hover/map:text-[#0052CC] transition-colors drop-shadow-xs">
                         <span class="w-2 h-2 rounded-full bg-[#00C4CC] animate-ping"></span>
                         <span>{{ app()->getLocale() === 'fr' ? 'Oran, Algérie 2026' : (app()->getLocale() === 'en' ? 'Oran, Algeria 2026' : 'وهران، الجزائر 2026') }}</span>
                     </div>
@@ -965,7 +965,7 @@
                 </p>
             </div>
             
-            <a href="{{ route('registration') }}" class="px-8 py-3.5 rounded-2xl bg-white text-[#0052CC] font-bold text-xs shadow-xl hover:bg-blue-50 transition flex items-center gap-2 flex-shrink-0 mac-dock-hover relative overflow-hidden ">
+            <a href="{{ route('registration') }}" class="px-8 py-3.5 rounded-2xl bg-white dark:bg-slate-900 text-[#0052CC] font-bold text-xs shadow-xl hover:bg-blue-50 transition flex items-center gap-2 flex-shrink-0 mac-dock-hover relative overflow-hidden ">
                 <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 <span>{{ __('messages.register_now') }}</span>
             </a>
@@ -1044,7 +1044,7 @@
                             <div class="w-16 h-12 rounded-xl bg-slate-800 overflow-hidden relative flex-shrink-0">
                                 <img :src="'https://img.youtube.com/vi/' + vid.ytId + '/hqdefault.jpg'" class="w-full h-full object-cover">
                                 <div x-show="idx === currentIndex" class="absolute inset-0 bg-brand-600/70 flex items-center justify-center">
-                                    <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                                    <span class="w-2 h-2 rounded-full bg-white dark:bg-slate-900 animate-ping"></span>
                                 </div>
                             </div>
 

@@ -3,7 +3,7 @@ $locale = app()->getLocale();
 $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => $ar };
 @endphp
 
-<div class="min-h-screen bg-[#F4F7FC] text-slate-900 relative overflow-hidden flex flex-col justify-between font-sans selection:bg-[#0066FF] selection:text-white"
+<div class="min-h-screen bg-[#F4F7FC] text-slate-900 dark:text-white relative overflow-hidden flex flex-col justify-between font-sans selection:bg-[#0066FF] selection:text-white"
      x-data="{
          launchDate: new Date('{{ $launchDate }}').getTime(),
          days: '00',
@@ -38,10 +38,10 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
         </div>
 
         {{-- Language Switcher Only --}}
-        <div class="flex items-center gap-1 bg-white shadow-md p-1.5 rounded-2xl border border-slate-200">
-            <a href="{{ route('lang.switch', ['locale' => 'ar']) }}" class="px-3.5 py-1.5 rounded-xl text-xs font-black transition {{ $locale === 'ar' ? 'bg-[#0066FF] text-white shadow-sm' : 'text-slate-600 hover:text-[#0066FF]' }}">عربي</a>
-            <a href="{{ route('lang.switch', ['locale' => 'fr']) }}" class="px-3.5 py-1.5 rounded-xl text-xs font-black transition {{ $locale === 'fr' ? 'bg-[#0066FF] text-white shadow-sm' : 'text-slate-600 hover:text-[#0066FF]' }}">FR</a>
-            <a href="{{ route('lang.switch', ['locale' => 'en']) }}" class="px-3.5 py-1.5 rounded-xl text-xs font-black transition {{ $locale === 'en' ? 'bg-[#0066FF] text-white shadow-sm' : 'text-slate-600 hover:text-[#0066FF]' }}">EN</a>
+        <div class="flex items-center gap-1 bg-white dark:bg-slate-900 shadow-md p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <a href="{{ route('lang.switch', ['locale' => 'ar']) }}" class="px-3.5 py-1.5 rounded-xl text-xs font-black transition {{ $locale === 'ar' ? 'bg-[#0066FF] text-white shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-[#0066FF]' }}">عربي</a>
+            <a href="{{ route('lang.switch', ['locale' => 'fr']) }}" class="px-3.5 py-1.5 rounded-xl text-xs font-black transition {{ $locale === 'fr' ? 'bg-[#0066FF] text-white shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-[#0066FF]' }}">FR</a>
+            <a href="{{ route('lang.switch', ['locale' => 'en']) }}" class="px-3.5 py-1.5 rounded-xl text-xs font-black transition {{ $locale === 'en' ? 'bg-[#0066FF] text-white shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-[#0066FF]' }}">EN</a>
         </div>
     </header>
 
@@ -58,25 +58,25 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
         {{-- Clean White & Blue Countdown Timer Cards --}}
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-2xl mx-auto">
             {{-- Days --}}
-            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl flex flex-col items-center justify-center transform hover:-translate-y-1 transition duration-300">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col items-center justify-center transform hover:-translate-y-1 transition duration-300">
                 <span class="text-4xl sm:text-6xl font-black font-mono text-[#0066FF]" x-text="days">00</span>
                 <span class="text-xs font-black text-slate-500 uppercase tracking-widest mt-2">{{ $t('يوم', 'Jours', 'Days') }}</span>
             </div>
 
             {{-- Hours --}}
-            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl flex flex-col items-center justify-center transform hover:-translate-y-1 transition duration-300">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col items-center justify-center transform hover:-translate-y-1 transition duration-300">
                 <span class="text-4xl sm:text-6xl font-black font-mono text-[#0066FF]" x-text="hours">00</span>
                 <span class="text-xs font-black text-slate-500 uppercase tracking-widest mt-2">{{ $t('ساعة', 'Heures', 'Hours') }}</span>
             </div>
 
             {{-- Minutes --}}
-            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl flex flex-col items-center justify-center transform hover:-translate-y-1 transition duration-300">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col items-center justify-center transform hover:-translate-y-1 transition duration-300">
                 <span class="text-4xl sm:text-6xl font-black font-mono text-[#0066FF]" x-text="minutes">00</span>
                 <span class="text-xs font-black text-slate-500 uppercase tracking-widest mt-2">{{ $t('دقيقة', 'Minutes', 'Minutes') }}</span>
             </div>
 
             {{-- Seconds --}}
-            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl flex flex-col items-center justify-center transform hover:-translate-y-1 transition duration-300">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col items-center justify-center transform hover:-translate-y-1 transition duration-300">
                 <span class="text-4xl sm:text-6xl font-black font-mono text-[#0066FF]" x-text="seconds">00</span>
                 <span class="text-xs font-black text-slate-500 uppercase tracking-widest mt-2">{{ $t('ثانية', 'Secondes', 'Seconds') }}</span>
             </div>
@@ -85,7 +85,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
     </main>
 
     {{-- Clean Footer --}}
-    <footer class="relative z-20 max-w-7xl mx-auto w-full px-6 py-6 border-t border-slate-200 flex items-center justify-center text-xs text-slate-500 font-bold">
+    <footer class="relative z-20 max-w-7xl mx-auto w-full px-6 py-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-center text-xs text-slate-500 font-bold">
         <p>© {{ date('Y') }} WorldSkills Algeria — {{ $t('جميع الحقوق محفوظة', 'Tous droits réservés', 'All Rights Reserved') }}</p>
     </footer>
 

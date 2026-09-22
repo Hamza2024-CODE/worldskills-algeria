@@ -16,7 +16,7 @@
         <div class="space-y-6 max-w-4xl mx-auto">
             
             <!-- Document 1: Reglement.pdf -->
-            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl hover:shadow-2xl transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl bg-blue-50 text-[#0066FF] flex items-center justify-center border border-blue-200 font-black text-sm font-mono shadow-sm shrink-0">
                         PDF
@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="flex items-center gap-2 w-full md:w-auto shrink-0">
-                    <button @click="currentPdfUrl = '{{ route('td.viewer', ['key' => 'rules']) }}'; showPdfModal = true;" class="flex-1 md:flex-none px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-[#0066FF] font-bold text-xs transition border border-slate-200 flex items-center justify-center gap-1.5">
+                    <button @click="currentPdfUrl = '{{ route('td.viewer', ['key' => 'rules']) }}'; showPdfModal = true;" class="flex-1 md:flex-none px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 text-slate-700 dark:text-slate-300 hover:text-[#0066FF] font-bold text-xs transition border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-1.5">
                         <svg class="w-4 h-4 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         <span>{{ app()->getLocale() === 'fr' ? 'Consulter' : 'استعراض الآن' }}</span>
                     </button>
@@ -45,7 +45,7 @@
             </div>
 
             <!-- Document 2: GUIDE-PRATIQUE.pdf -->
-            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl hover:shadow-2xl transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200 font-black text-sm font-mono shadow-sm shrink-0">
                         PDF
@@ -61,7 +61,7 @@
                 </div>
 
                 <div class="flex items-center gap-2 w-full md:w-auto shrink-0">
-                    <button @click="currentPdfUrl = '{{ route('td.viewer', ['key' => 'scoring']) }}'; showPdfModal = true;" class="flex-1 md:flex-none px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-amber-50 text-slate-700 hover:text-amber-700 font-bold text-xs transition border border-slate-200 flex items-center justify-center gap-1.5">
+                    <button @click="currentPdfUrl = '{{ route('td.viewer', ['key' => 'scoring']) }}'; showPdfModal = true;" class="flex-1 md:flex-none px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-amber-50 text-slate-700 dark:text-slate-300 hover:text-amber-700 font-bold text-xs transition border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-1.5">
                         <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         <span>{{ app()->getLocale() === 'fr' ? 'Consulter' : 'استعراض الآن' }}</span>
                     </button>
@@ -107,7 +107,7 @@
                     إغلاق القارئ <x-ws.icon name="x-mark" class="w-4 h-4 inline-block ms-1" />
                 </button>
             </div>
-            <div class="flex-1 bg-white">
+            <div class="flex-1 bg-white dark:bg-slate-900">
                 <iframe :src="currentPdfUrl" class="w-full h-full border-0"></iframe>
             </div>
         </div>
