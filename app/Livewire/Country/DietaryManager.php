@@ -43,7 +43,7 @@ class DietaryManager extends Component
         } elseif ($user && $user->delegationMember && $user->delegationMember->delegation) {
             $this->country = $user->delegationMember->delegation->country;
         } else {
-            $this->country = Country::where('code', 'DZA')->first();
+            $this->country = Country::where('iso3', 'DZA')->orWhere('iso2', 'DZ')->first();
         }
 
         if ($this->country && $this->edition) {

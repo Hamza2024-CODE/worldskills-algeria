@@ -37,6 +37,16 @@ class Country extends Model
         'is_active' => 'boolean',
     ];
 
+    public function getCodeAttribute(): string
+    {
+        return $this->iso2 ?? $this->iso3 ?? '';
+    }
+
+    public function scopeWhereCode($query, string $code)
+    {
+        return $query->where('iso2', $code)->orWhere('iso3', $code);
+    }
+
     protected static function boot()
     {
         parent::boot();

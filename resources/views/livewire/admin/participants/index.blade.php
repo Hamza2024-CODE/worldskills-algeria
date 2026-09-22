@@ -339,7 +339,10 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                 
                 <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
                     <div class="flex items-center gap-3">
-                        <img src="{{ $selected->photo_url }}" alt="{{ $sp?->first_name_ar }}" class="w-14 h-14 rounded-2xl object-cover border-2 border-emerald-500">
+                        <img src="{{ $selected->photo_url }}" 
+                             alt="{{ $sp?->first_name_ar }}" 
+                             onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($sp?->first_name_ar ?? 'Candidate') }}&background=06205C&color=fff&bold=true&size=200';" 
+                             class="w-14 h-14 rounded-2xl object-cover border-2 border-emerald-500 shadow-xs">
                         <div>
                             <span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-[#0066FF] font-mono font-black text-xs">
                                 {{ $selected->registration_number }}
@@ -386,8 +389,10 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
 
                     <div class="space-y-2">
                         <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40">
-                            <span class="text-slate-400 block text-[10px]">رقم التعريف الوطني (NIN)</span>
-                            <span class="font-mono font-black text-slate-900 dark:text-white text-sm">{{ $sp?->national_id ?? 'غير متوفر' }}</span>
+                            <span class="text-slate-400 block text-[10px]">رقم التعريف الوطني (NIN) / رقم جواز السفر</span>
+                            <span class="font-mono font-black text-slate-900 dark:text-white text-sm">
+                                {{ $sp?->national_id ?: ($sp?->passport_number ?: 'غير متوفر') }}
+                            </span>
                         </div>
                         <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40">
                             <span class="text-slate-400 block text-[10px]">الولاية والمؤسسة التكوينية</span>
@@ -397,6 +402,33 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                             <span class="text-slate-400 block text-[10px]">رقم الهاتف والاتصال</span>
                             <span class="font-mono font-black text-slate-900 dark:text-white text-xs">{{ $sp?->phone ?? 'غير متوفر' }}</span>
                         </div>
+
+                        @if($selected->documents && $selected->documents->count() > 0)
+                            <div class="p-3.5 rounded-2xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 space-y-2 mt-3">
+                                <span class="text-[11px] font-black text-blue-900 dark:text-blue-300 block">وثائق الهوية المحملة (CNI / Passeport)</span>
+                                <div class="space-y-2">
+                                    @foreach($selected->documents as $doc)
+                                        <div class="flex items-center justify-between p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs">
+                                            <div class="flex items-center gap-2 min-w-0">
+                                                <span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-[10px] font-bold uppercase shrink-0">
+                                                    {{ $doc->document_type }}
+                                                </span>
+                                                <span class="font-mono text-[11px] text-slate-600 dark:text-slate-400 truncate">{{ $doc->original_name ?: basename($doc->file_path) }}</span>
+                                            </div>
+                                            @php
+                                                $docUrl = \App\Models\Registration::resolveFileUrl($doc->file_path);
+                                            @endphp
+                                            @if($docUrl)
+                                                <a href="{{ $docUrl }}" target="_blank" download class="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] shrink-0 transition flex items-center gap-1">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h55.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                                    <span>معاينة / تحميل</span>
+                                                </a>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
 

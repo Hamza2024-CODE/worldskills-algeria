@@ -124,7 +124,7 @@ class Registration extends Component
 
     public function mount(): void
     {
-        $dz = Country::where('code', 'DZ')->first();
+        $dz = Country::where('iso2', 'DZ')->orWhere('iso3', 'DZA')->first();
         if ($dz) {
             $this->countryId = $dz->id;
             $this->isAlgeria = true;
@@ -144,9 +144,9 @@ class Registration extends Component
     {
         $country = Country::find($value);
         if ($country) {
-            $this->isAlgeria = ($country->code === 'DZ');
+            $this->isAlgeria = ($country->iso2 === 'DZ' || $country->iso3 === 'DZA');
             $arabicCodes = ['DZ', 'TN', 'MA', 'EG', 'SA', 'AE', 'QA', 'KW', 'OM', 'BH', 'JO', 'LB', 'IQ', 'SY', 'LY', 'SD', 'YE', 'MR', 'SO', 'DJ', 'KM', 'PS'];
-            $this->isArabicCountry = in_array(strtoupper($country->code), $arabicCodes);
+            $this->isArabicCountry = in_array(strtoupper($country->iso2 ?? $country->iso3 ?? ''), $arabicCodes);
 
             if (!$this->isAlgeria) {
                 $this->wilayaId = null;
@@ -417,7 +417,7 @@ class Registration extends Component
             'wilaya_id'       => $this->wilayaId,
             'organization_id' => $this->organizationId,
             'skill_id'        => $this->skillId,
-            'nin_number'      => $this->isAlgeria ? $this->nationalId : null,
+            'national_id'     => $this->isAlgeria ? $this->nationalId : null,
             'passport_number' => !$this->isAlgeria ? $this->passportNumber : null,
             'suit_size'       => $this->suitSize,
             'shoe_size'       => $this->shoeSize,
