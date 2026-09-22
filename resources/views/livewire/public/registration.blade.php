@@ -582,8 +582,8 @@
     </div>
 
     <!-- LIVE CAMERA OVERLAY MODAL WITH BIOMETRIC AUTHENTICITY SCANNER -->
-    <template x-teleport="body" x-if="cameraOpen">
-        <div class="fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-between p-3 sm:p-6 animate-in fade-in duration-200 overflow-y-auto" style="padding-bottom: max(4rem, env(safe-area-inset-bottom));">
+    <template x-teleport="body">
+        <div x-show="cameraOpen" x-cloak class="fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-between p-3 sm:p-6 animate-in fade-in duration-200 overflow-y-auto" style="padding-bottom: max(4rem, env(safe-area-inset-bottom));">
             <!-- Modal Top Controls -->
             <div class="w-full max-w-xl flex items-center justify-between text-white">
                 <div class="flex items-center gap-2">
