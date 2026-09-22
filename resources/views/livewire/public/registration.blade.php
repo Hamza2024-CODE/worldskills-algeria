@@ -1,116 +1,4 @@
-<div class="py-12"
-     x-data="{
-         cameraOpen: false,
-         targetField: '',
-         stream: null,
-         facingMode: 'user',
-         uploadPhotoFile(e) {
-             const file = e.target.files[0];
-             if (!file) return;
-             if (!['image/jpeg', 'image/png', 'image/webp', 'image/jpg'].includes(file.type)) {
-                 alert('{{ app()->getLocale() === 'fr' ? 'La photo personnelle doit être une image (PNG/JPG/WEBP).' : (app()->getLocale() === 'en' ? 'Personal photo must be an image (PNG/JPG/WEBP).' : 'حقل الصورة الشخصية يقبل الصور فقط (PNG, JPG, WEBP). لا يمكنك رفع ملف PDF هنا.') }}');
-                 e.target.value = '';
-                 return;
-             }
-             const reader = new FileReader();
-             reader.onload = (evt) => {
-                 $wire.setPhotoData(evt.target.result, file.name);
-                 e.target.value = '';
-             };
-             reader.readAsDataURL(file);
-         },
-         uploadDocumentFile(e) {
-             const file = e.target.files[0];
-             if (!file) return;
-             if (!['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/jpg'].includes(file.type)) {
-                 alert('{{ app()->getLocale() === 'fr' ? 'Le document doit être un fichier PDF ou une image (PNG/JPG).' : (app()->getLocale() === 'en' ? 'Document must be a PDF or image file.' : 'وثيقة الهوية تقبل ملفات PDF أو صور (PNG, JPG, WEBP).') }}');
-                 e.target.value = '';
-                 return;
-             }
-             const reader = new FileReader();
-             reader.onload = (evt) => {
-                 $wire.setDocumentData(evt.target.result, file.name);
-                 e.target.value = '';
-             };
-             reader.readAsDataURL(file);
-         },
-         async getMediaStream(mode) {
-             const getUM = (c) => {
-                 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                     return navigator.mediaDevices.getUserMedia(c);
-                 }
-                 const legacyFn = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.getUserMedia;
-                 if (legacyFn) {
-                     return new Promise((res, rej) => legacyFn.call(navigator, c, res, rej));
-                 }
-                 return Promise.reject(new Error('Camera API Not Supported'));
-             };
-             try {
-                 return await getUM({ video: { facingMode: mode } });
-             } catch(e1) {
-                 try {
-                     return await getUM({ video: { facingMode: { exact: mode } } });
-                 } catch(e2) {
-                     return await getUM({ video: true });
-                 }
-             }
-         },
-         async startCamera(field) {
-             this.targetField = field;
-             this.cameraOpen = true;
-             try {
-                 const s = await this.getMediaStream(this.facingMode);
-                 this.stream = s;
-                 setTimeout(async () => {
-                     const videoEl = this.$refs.video;
-                     if (videoEl) {
-                         videoEl.setAttribute('playsinline', 'true');
-                         videoEl.setAttribute('webkit-playsinline', 'true');
-                         videoEl.setAttribute('muted', 'true');
-                         videoEl.muted = true;
-                         videoEl.srcObject = s;
-                         try { await videoEl.play(); } catch(pe) { console.log('iOS play fallback:', pe); }
-                     }
-                 }, 100);
-             } catch (err) {
-                 alert('{{ __('messages.camera_access_error') }}: ' + (err.message || err));
-                 this.cameraOpen = false;
-             }
-         },
-         async toggleCamera() {
-             this.facingMode = this.facingMode === 'user' ? 'environment' : 'user';
-             if (this.stream) {
-                 this.stream.getTracks().forEach(t => t.stop());
-             }
-             await this.startCamera(this.targetField);
-         },
-         takePhoto() {
-             const field = this.targetField;
-             const video = this.$refs.video;
-             if (!video || !field) return;
-
-             const canvas = document.createElement('canvas');
-             canvas.width = video.videoWidth || 1280;
-             canvas.height = video.videoHeight || 720;
-             const ctx = canvas.getContext('2d');
-             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-             const base64Data = canvas.toDataURL('image/jpeg', 0.92);
-             if (field === 'photoFile' || field === 'photo') {
-                 $wire.setPhotoData(base64Data, 'camera_photo_' + Date.now() + '.jpg');
-             } else {
-                 $wire.setDocumentData(base64Data, 'camera_document_' + Date.now() + '.jpg');
-             }
-             this.stopCamera();
-         },
-         stopCamera() {
-             if (this.stream) {
-                 this.stream.getTracks().forEach(t => t.stop());
-                 this.stream = null;
-             }
-             this.cameraOpen = false;
-         }
-     }">
+<div class="py-12" x-data="registrationUploader()">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Header -->
@@ -744,3 +632,135 @@
         </div>
     </template>
 </div>
+
+
+<script>
+(function() {
+    function initUploader() {
+        if (typeof Alpine !== 'undefined') {
+            Alpine.data('registrationUploader', () => ({
+                cameraOpen: false,
+                targetField: '',
+                stream: null,
+                facingMode: 'user',
+                msgPhotoError: @js(app()->getLocale() === 'fr' ? 'La photo personnelle doit être une image (PNG/JPG/WEBP).' : (app()->getLocale() === 'en' ? 'Personal photo must be an image (PNG/JPG/WEBP).' : 'حقل الصورة الشخصية يقبل الصور فقط (PNG, JPG, WEBP). لا يمكنك رفع ملف PDF هنا.')),
+                msgDocError: @js(app()->getLocale() === 'fr' ? 'Le document doit être un fichier PDF ou une image (PNG/JPG).' : (app()->getLocale() === 'en' ? 'Document must be a PDF or image file.' : 'وثيقة الهوية تقبل ملفات PDF أو صور (PNG, JPG, WEBP).')),
+                msgCameraError: @js(__('messages.camera_access_error')),
+
+                uploadPhotoFile(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (!['image/jpeg', 'image/png', 'image/webp', 'image/jpg'].includes(file.type)) {
+                        alert(this.msgPhotoError);
+                        e.target.value = '';
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        this.$wire.setPhotoData(evt.target.result, file.name);
+                        e.target.value = '';
+                    };
+                    reader.readAsDataURL(file);
+                },
+                uploadDocumentFile(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (!['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/jpg'].includes(file.type)) {
+                        alert(this.msgDocError);
+                        e.target.value = '';
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        this.$wire.setDocumentData(evt.target.result, file.name);
+                        e.target.value = '';
+                    };
+                    reader.readAsDataURL(file);
+                },
+                async getMediaStream(mode) {
+                    const getUM = (c) => {
+                        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                            return navigator.mediaDevices.getUserMedia(c);
+                        }
+                        const legacyFn = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.getUserMedia;
+                        if (legacyFn) {
+                            return new Promise((res, rej) => legacyFn.call(navigator, c, res, rej));
+                        }
+                        return Promise.reject(new Error('Camera API Not Supported'));
+                    };
+                    try {
+                        return await getUM({ video: { facingMode: mode } });
+                    } catch(e1) {
+                        try {
+                            return await getUM({ video: { facingMode: { exact: mode } } });
+                        } catch(e2) {
+                            return await getUM({ video: true });
+                        }
+                    }
+                },
+                async startCamera(field) {
+                    this.targetField = field;
+                    this.cameraOpen = true;
+                    try {
+                        const s = await this.getMediaStream(this.facingMode);
+                        this.stream = s;
+                        setTimeout(async () => {
+                            const videoEl = this.$refs.video;
+                            if (videoEl) {
+                                videoEl.setAttribute('playsinline', 'true');
+                                videoEl.setAttribute('webkit-playsinline', 'true');
+                                videoEl.setAttribute('muted', 'true');
+                                videoEl.muted = true;
+                                videoEl.srcObject = s;
+                                try { await videoEl.play(); } catch(pe) { console.log('iOS play fallback:', pe); }
+                            }
+                        }, 100);
+                    } catch (err) {
+                        alert(this.msgCameraError + ': ' + (err.message || err));
+                        this.cameraOpen = false;
+                    }
+                },
+                async toggleCamera() {
+                    this.facingMode = this.facingMode === 'user' ? 'environment' : 'user';
+                    if (this.stream) {
+                        this.stream.getTracks().forEach(t => t.stop());
+                    }
+                    await this.startCamera(this.targetField);
+                },
+                takePhoto() {
+                    const field = this.targetField;
+                    const video = this.$refs.video;
+                    if (!video || !field) return;
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth || 1280;
+                    canvas.height = video.videoHeight || 720;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    const base64Data = canvas.toDataURL('image/jpeg', 0.92);
+                    if (field === 'photoFile' || field === 'photo') {
+                        this.$wire.setPhotoData(base64Data, 'camera_photo_' + Date.now() + '.jpg');
+                    } else {
+                        this.$wire.setDocumentData(base64Data, 'camera_document_' + Date.now() + '.jpg');
+                    }
+                    this.stopCamera();
+                },
+                stopCamera() {
+                    if (this.stream) {
+                        this.stream.getTracks().forEach(t => t.stop());
+                        this.stream = null;
+                    }
+                    this.cameraOpen = false;
+                }
+            }));
+        }
+    }
+
+    if (window.Alpine) {
+        initUploader();
+    } else {
+        document.addEventListener('alpine:init', initUploader);
+    }
+})();
+</script>
