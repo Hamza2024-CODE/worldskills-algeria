@@ -1,6 +1,6 @@
 @php
     $settingsEngine = app(\App\Services\SettingsEngine::class);
-    $siteLogo = $settingsEngine->get('site_logo', 'images/logo.png');
+    $siteLogo = $settingsEngine->get('site_logo', 'logo.svg');
     $logoUrl = str_starts_with($siteLogo, 'http') ? $siteLogo : asset($siteLogo);
     $locale = app()->getLocale();
     $registrationEnabled = $settingsEngine->getBool('registration_competitors_enabled', false);
@@ -12,16 +12,8 @@
         <!-- ═════════════════════════════════════════════════════════════════
              1. RIGHT: OFFICIAL LOGO CAPSULE (Translucent White Glass Pill)
              ═════════════════════════════════════════════════════════════════ -->
-        <a href="{{ route('home') }}" class="bg-white/95 dark:bg-slate-900/90 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full flex items-center gap-1.5 sm:gap-3 shrink-0 shadow-2xs border border-slate-200/60 dark:border-slate-700/60 group ws-transition hover:shadow-xs" title="الجمهورية الجزائرية الديمقراطية الشعبية — وزارة التكوين والتعليم المهنيين — أولمبياد المهن 2026">
-            <img src="{{ $logoUrl }}" alt="WorldSkills Algeria Logo" class="h-7 sm:h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
-            <div class="hidden sm:flex flex-col text-start">
-                <span class="text-[10px] sm:text-[11px] font-black tracking-tight text-[#041235] dark:text-white leading-tight uppercase font-display">
-                    WorldSkills Algeria
-                </span>
-                <span class="text-[8px] sm:text-[9px] font-bold text-slate-500 dark:text-slate-400 tracking-wider">
-                    {{ $locale === 'fr' ? 'Compétition Nationale 2026' : ($locale === 'en' ? 'National Competition 2026' : 'أولمبياد المهن والمهارات 2026') }}
-                </span>
-            </div>
+        <a href="{{ route('home') }}" class="bg-white/95 dark:bg-slate-900/90 px-3 sm:px-4 py-1.5 rounded-full flex items-center shrink-0 shadow-2xs border border-slate-200/60 dark:border-slate-700/60 group ws-transition hover:shadow-xs" title="الجمهورية الجزائرية الديمقراطية الشعبية — وزارة التكوين والتعليم المهنيين — أولمبياد المهن 2026">
+            <img src="{{ $logoUrl }}" alt="WorldSkills Algeria Logo" class="h-8 sm:h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105" onerror="this.onerror=null; this.src='/logo.svg';">
         </a>
 
         <!-- ═════════════════════════════════════════════════════════════════
