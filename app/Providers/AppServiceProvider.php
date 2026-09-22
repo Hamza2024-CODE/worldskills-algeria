@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         try {
-            if (!app()->environment('local') && (request()->header('X-Forwarded-Proto') === 'https' || request()->secure() || request()->getHost() === 'worldskills.dz')) {
+            if (request()->header('X-Forwarded-Proto') === 'https' || request()->secure() || str_contains(request()->getHost(), 'worldskills.dz') || env('FORCE_HTTPS', false)) {
                 \Illuminate\Support\Facades\URL::forceScheme('https');
             }
         } catch (\Throwable $e) {
