@@ -12,10 +12,56 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 #[Layout('components.dashboard.app-shell')]
 class ParticipantDashboard extends Component
 {
+    use WithFileUploads;
+
+    public $photo;
+
+    public function updatedPhoto()
+    {
+        $this->validate([
+            'photo' => 'required|image|max:5120',
+        ]);
+
+        $path = $this->photo->store('avatars', 'public');
+        $user = Auth::user();
+        if ($user) {
+            $user->update(['avatar_path' => $path]);
+
+            if ($this->profile) {
+                if (\Illuminate\Support\Facades\Schema::hasColumn('participant_profiles', 'photo_path')) {
+                    $this->profile->update(['photo_path' => $path]);
+                }
+            }
+
+            if ($this->registration) {
+                $existingPhotoDoc = $this->registration->documents()->whereIn('document_type', ['PHOTO', 'photo', 'official_photo'])->first();
+                if ($existingPhotoDoc) {
+                    $existingPhotoDoc->update(['file_path' => $path]);
+                } else {
+                    \App\Models\ParticipantDocument::create([
+                        'registration_id' => $this->registration->id,
+                        'document_type'   => 'PHOTO',
+                        'file_path'       => $path,
+                        'original_name'   => 'avatar.jpg',
+                        'mime_type'       => 'image/jpeg',
+                        'file_size'       => 0,
+                    ]);
+                }
+                $this->registration->load('documents');
+            }
+        }
+
+        $this->reset('photo');
+        $this->successMessage = app()->getLocale() === 'fr' 
+            ? 'Photo officielle mise à jour avec succès.' 
+            : (app()->getLocale() === 'en' ? 'Official photo updated successfully.' : 'تم تحديث ورفع الصورة الشخصية الرسمية للمتسابق بنجاح.');
+    }
+
     public $registration;
     public $profile;
     public $accommodation;

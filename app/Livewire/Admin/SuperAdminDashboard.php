@@ -14,6 +14,7 @@ use App\Models\Registration;
 use App\Models\Skill;
 use App\Models\SkillCategory;
 use App\Models\User;
+use App\Models\Wilaya;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -193,4 +194,67 @@ class SuperAdminDashboard extends Component
             'activeTab'                 => $this->activeTab,
         ]);
     }
+
+    /* ─── Export Filtered National Finalists to Official Excel (.xls) ─── */
+    public function exportExcel()
+    {
+        $registrations = Registration::with(['participant', 'participant.wilaya', 'participant.organization', 'country', 'skill'])
+            ->whereIn('status', ['APPROVED', 'QUALIFIED', 'QUALIFIED_REGIONAL', 'QUALIFIED_NATIONAL', 'COMPLETED'])
+            ->get()
+            ->sortBy(function($r) {
+                $wilayaCode = sprintf('%02d', (int)($r->participant?->wilaya?->code ?? 99));
+                $orgName = $r->participant?->organization?->name_ar ?? 'zzz';
+                $skillCode = $r->skill?->code ?? 'zzz';
+                return $wilayaCode . '_' . $orgName . '_' . $skillCode;
+            })->values();
+
+        $html = view('exports.national-finalists-excel', [
+            'registrations' => $registrations,
+            'wilayaName'    => 'كافة الولايات (58 ولاية)',
+            'skillName'     => 'كافة التخصصات والمهارات',
+            'generatedAt'   => now()->format('Y-m-d H:i'),
+        ])->render();
+
+        $filename = 'WorldSkills_DZ_Finalistes_Nationaux_' . date('Y_m_d') . '.xls';
+
+        return response()->streamDownload(function () use ($html) {
+            echo chr(239) . chr(187) . chr(191); // UTF-8 BOM
+            echo $html;
+        }, $filename, [
+            'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
+    /* ─── Print Official National Finalists List (PDF Ready) ─── */
+    public function exportPdf()
+    {
+        $registrations = Registration::with(['participant', 'participant.wilaya', 'participant.organization', 'country', 'skill'])
+            ->whereIn('status', ['APPROVED', 'QUALIFIED', 'QUALIFIED_REGIONAL', 'QUALIFIED_NATIONAL', 'COMPLETED'])
+            ->get()
+            ->sortBy(function($r) {
+                $wilayaCode = sprintf('%02d', (int)($r->participant?->wilaya?->code ?? 99));
+                $orgName = $r->participant?->organization?->name_ar ?? 'zzz';
+                $skillCode = $r->skill?->code ?? 'zzz';
+                return $wilayaCode . '_' . $orgName . '_' . $skillCode;
+            })->values();
+
+        $html = view('pdf.registrations-list', [
+            'registrations'    => $registrations,
+            'wilayaName'       => 'كافة الولايات (58 ولاية)',
+            'countryName'      => 'الجمهورية الجزائرية الديمقراطية الشعبية',
+            'skillName'        => 'كافة التخصصات والمهارات',
+            'organizationName' => 'كافة المؤسسات التكوينية',
+            'generatedAt'      => now()->format('Y-m-d H:i'),
+        ])->render();
+
+        $filename = 'WorldSkills_DZ_Finalistes_Nationaux_' . date('Y_m_d_His') . '.html';
+
+        return response()->streamDownload(function () use ($html) {
+            echo $html;
+        }, $filename, [
+            'Content-Type' => 'text/html; charset=UTF-8',
+        ]);
+    }
+
 }

@@ -139,11 +139,18 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
                 {{-- User Avatar Upload Box --}}
                 <div class="flex flex-col items-center text-center space-y-4 relative z-10">
                     <div class="relative group">
-                        <div class="w-32 h-32 rounded-3xl overflow-hidden ring-4 ring-blue-600/30 dark:ring-sky-400/40 shadow-2xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
+                        <div class="w-32 h-32 rounded-3xl overflow-hidden ring-4 ring-blue-600/30 dark:ring-sky-400/40 shadow-2xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center relative">
                             <img src="{{ ($photo ?? null) ? $photo->temporaryUrl() : ($user?->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($user?->name ?? 'U').'&background=06205C&color=fff') }}" 
                                  alt="{{ $user?->name }}" 
                                  class="w-full h-full object-cover">
+                            
+                            {{-- Live Upload Spinner Overlay --}}
+                            <div wire:loading wire:target="photo" class="absolute inset-0 bg-slate-950/80 rounded-3xl flex flex-col items-center justify-center text-white text-[11px] font-bold gap-1.5 z-20 backdrop-blur-xs">
+                                <svg class="animate-spin h-5 w-5 text-amber-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                                <span>{{ $t('جاري الحفظ...', 'Enregistrement...', 'Saving...') }}</span>
+                            </div>
                         </div>
+                        @error('photo') <span class="text-xs text-rose-500 font-bold block mt-1">{{ $message }}</span> @enderror
 
                         {{-- Change Photo Overlay Label Button --}}
                         <label for="photo-upload-hero" class="absolute -bottom-2 -right-2 bg-gradient-to-r from-[#06205C] to-blue-700 hover:from-blue-700 hover:to-blue-900 text-white p-3 rounded-2xl cursor-pointer shadow-xl transition transform hover:scale-110 border-2 border-white dark:border-slate-800 flex items-center justify-center" title="{{ $t('تغيير الصورة الشخصية', 'Changer la photo', 'Change profile picture') }}">

@@ -265,6 +265,10 @@
                                             </button>
                                         </div>
                                         @error('photoFile') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
+                                        <div x-show="isProcessingPhoto" class="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300 text-xs font-bold flex items-center gap-2 mt-2 animate-pulse">
+                                            <svg class="animate-spin h-4 w-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                                            <span>{{ app()->getLocale() === 'fr' ? 'Traitement et optimisation de la photo...' : (app()->getLocale() === 'en' ? 'Optimizing and uploading photo...' : 'جاري معالجة وضغط الصورة ورفعها...') }}</span>
+                                        </div>
 
                                         @if($photoData)
                                             <div class="p-3.5 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-300 dark:border-emerald-700/60 flex items-center justify-between gap-3 shadow-xs mt-2">
@@ -322,6 +326,10 @@
                                                 </button>
                                             </div>
                                             @error('nationalIdFile') <span class="text-[10px] text-rose-600 font-bold mt-1 block">{{ $message }}</span> @enderror
+                                        <div x-show="isProcessingDoc" class="p-3 rounded-xl bg-purple-50 dark:bg-purple-900/40 border border-purple-200 dark:border-purple-700 text-purple-700 dark:text-purple-300 text-xs font-bold flex items-center gap-2 mt-2 animate-pulse">
+                                            <svg class="animate-spin h-4 w-4 text-purple-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                                            <span>{{ app()->getLocale() === 'fr' ? 'Traitement et vérification du document...' : (app()->getLocale() === 'en' ? 'Processing and verifying document...' : 'جاري معالجة ورفع وثيقة الهوية...') }}</span>
+                                        </div>
 
                                             @if($documentData)
                                                 <div class="p-3.5 rounded-2xl bg-blue-50/80 dark:bg-blue-950/30 border border-blue-400/80 dark:border-blue-700/60 flex items-center justify-between gap-3 shadow-xs mt-2">
@@ -647,6 +655,46 @@
                 msgDocError: @js(app()->getLocale() === 'fr' ? 'Le document doit être un fichier PDF ou une image (PNG/JPG).' : (app()->getLocale() === 'en' ? 'Document must be a PDF or image file.' : 'وثيقة الهوية تقبل ملفات PDF أو صور (PNG, JPG, WEBP).')),
                 msgCameraError: @js(__('messages.camera_access_error')),
 
+                isProcessingPhoto: false,
+                isProcessingDoc: false,
+
+                compressImage(file, maxWidth, maxHeight, quality, callback) {
+                    const img = new Image();
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        img.onload = () => {
+                            let w = img.width;
+                            let h = img.height;
+                            if (w > maxWidth || h > maxHeight) {
+                                if (w / h > maxWidth / maxHeight) {
+                                    h = Math.round((h * maxWidth) / w);
+                                    w = maxWidth;
+                                } else {
+                                    w = Math.round((w * maxHeight) / h);
+                                    h = maxHeight;
+                                }
+                            }
+                            const canvas = document.createElement('canvas');
+                            canvas.width = w;
+                            canvas.height = h;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, w, h);
+                            const compressedData = canvas.toDataURL('image/jpeg', quality);
+                            callback(compressedData);
+                        };
+                        img.onerror = () => {
+                            alert('تعذر قراءة الصورة، يرجى اختيار ملف صورة صالح.');
+                            callback(null);
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.onerror = () => {
+                        alert('تعذر قراءة الملف.');
+                        callback(null);
+                    };
+                    reader.readAsDataURL(file);
+                },
+
                 uploadPhotoFile(e) {
                     const file = e.target.files[0];
                     if (!file) return;
@@ -655,13 +703,24 @@
                         e.target.value = '';
                         return;
                     }
-                    const reader = new FileReader();
-                    reader.onload = (evt) => {
-                        this.$wire.setPhotoData(evt.target.result, file.name);
-                        e.target.value = '';
-                    };
-                    reader.readAsDataURL(file);
+                    this.isProcessingPhoto = true;
+                    this.compressImage(file, 1200, 1200, 0.85, (compressed) => {
+                        if (!compressed) {
+                            this.isProcessingPhoto = false;
+                            e.target.value = '';
+                            return;
+                        }
+                        this.$wire.setPhotoData(compressed, file.name).then(() => {
+                            this.isProcessingPhoto = false;
+                            e.target.value = '';
+                        }).catch(() => {
+                            this.isProcessingPhoto = false;
+                            alert('حدث خطأ أثناء رفع الصورة، يرجى المحاولة مرة أخرى.');
+                            e.target.value = '';
+                        });
+                    });
                 },
+
                 uploadDocumentFile(e) {
                     const file = e.target.files[0];
                     if (!file) return;
@@ -670,12 +729,42 @@
                         e.target.value = '';
                         return;
                     }
-                    const reader = new FileReader();
-                    reader.onload = (evt) => {
-                        this.$wire.setDocumentData(evt.target.result, file.name);
+                    if (file.size > 8 * 1024 * 1024) {
+                        alert('حجم الملف كبير جداً. الحد الأقصى المسموح به هو 8 ميجابايت.');
                         e.target.value = '';
-                    };
-                    reader.readAsDataURL(file);
+                        return;
+                    }
+                    this.isProcessingDoc = true;
+                    if (file.type.startsWith('image/')) {
+                        this.compressImage(file, 1600, 1600, 0.85, (compressed) => {
+                            if (!compressed) {
+                                this.isProcessingDoc = false;
+                                e.target.value = '';
+                                return;
+                            }
+                            this.$wire.setDocumentData(compressed, file.name).then(() => {
+                                this.isProcessingDoc = false;
+                                e.target.value = '';
+                            }).catch(() => {
+                                this.isProcessingDoc = false;
+                                alert('حدث خطأ أثناء رفع الوثيقة، يرجى المحاولة مرة أخرى.');
+                                e.target.value = '';
+                            });
+                        });
+                    } else {
+                        const reader = new FileReader();
+                        reader.onload = (evt) => {
+                            this.$wire.setDocumentData(evt.target.result, file.name).then(() => {
+                                this.isProcessingDoc = false;
+                                e.target.value = '';
+                            }).catch(() => {
+                                this.isProcessingDoc = false;
+                                alert('حدث خطأ أثناء رفع وثيقة PDF، يرجى المحاولة مرة أخرى.');
+                                e.target.value = '';
+                            });
+                        };
+                        reader.readAsDataURL(file);
+                    }
                 },
                 async getMediaStream(mode) {
                     const getUM = (c) => {

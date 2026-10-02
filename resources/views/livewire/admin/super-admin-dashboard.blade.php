@@ -43,6 +43,48 @@ $femalePercent = 100 - $malePercent;
         </div>
     </div>
 
+    
+    {{-- ═════════════════════════════════════════════════════════════════════
+         NATIONAL FINALISTS EXPORT & LIST MANAGEMENT (استخراج وتصدير القائمة الرسمية)
+    ═════════════════════════════════════════════════════════════════════ --}}
+    <div class="bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-950 rounded-3xl p-6 sm:p-7 shadow-2xl border-2 border-emerald-500/50 relative overflow-hidden text-white">
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div class="space-y-2">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-black">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>القائمة الرسمية المعتمدة للنهائي الوطني (536 متنافس)</span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-black text-white">
+                    قائمة المتأهلين للنهائيات الوطنية WorldSkills Algeria 2026
+                </h3>
+                <p class="text-xs sm:text-sm text-emerald-100/90 font-medium">
+                    استخراج وتحميل القوائم الاسمية الرسمية للمتنافسين مصنفة ومؤشرة حسب الولايات والمؤسسات التكوينية والتخصصات مع ترويسة الجمهورية الجزائرية.
+                </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+                {{-- Excel Export Button --}}
+                <button wire:click="exportExcel" type="button" class="px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs sm:text-sm shadow-xl hover:shadow-2xl transition duration-200 flex items-center gap-2.5 border border-emerald-300 cursor-pointer">
+                    <svg class="w-5 h-5 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>تصدير قائمة النهائي الوطني (Excel)</span>
+                </button>
+
+                {{-- PDF Print Button --}}
+                <button wire:click="exportPdf" type="button" class="px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs sm:text-sm shadow-xl hover:shadow-2xl transition duration-200 flex items-center gap-2.5 border border-blue-400/40 cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    <span>طباعة القائمة الرسمية (PDF)</span>
+                </button>
+
+                {{-- View All Participants --}}
+                <a href="{{ route('admin.participants.index') }}" class="px-5 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs sm:text-sm shadow transition flex items-center gap-2 border border-slate-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <span>إدارة المتنافسين</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
     {{-- ═════════════════════════════════════════════════════════════════════
          2. CORE STATISTICAL KPI METRICS (الحسابات، طلبات الترشح، الجنس)
     ═════════════════════════════════════════════════════════════════════ --}}

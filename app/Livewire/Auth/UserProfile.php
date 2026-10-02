@@ -61,6 +61,50 @@ class UserProfile extends Component
         }
     }
 
+    
+    public function updatedPhoto()
+    {
+        $this->validate([
+            'photo' => 'required|image|max:5120',
+        ]);
+
+        $path = $this->photo->store('avatars', 'public');
+        $user = Auth::user();
+        if ($user) {
+            $user->update(['avatar_path' => $path]);
+
+            if ($user->participant) {
+                if (\Illuminate\Support\Facades\Schema::hasColumn('participant_profiles', 'photo_path')) {
+                    $user->participant->update(['photo_path' => $path]);
+                }
+
+                $latestReg = $user->participant->registrations()->latest()->first();
+                if ($latestReg) {
+                    $existingPhotoDoc = $latestReg->documents()->whereIn('document_type', ['PHOTO', 'photo', 'official_photo'])->first();
+                    if ($existingPhotoDoc) {
+                        $existingPhotoDoc->update(['file_path' => $path]);
+                    } else {
+                        \App\Models\ParticipantDocument::create([
+                            'registration_id' => $latestReg->id,
+                            'document_type'   => 'PHOTO',
+                            'file_path'       => $path,
+                            'original_name'   => 'avatar.jpg',
+                            'mime_type'       => 'image/jpeg',
+                            'file_size'       => 0,
+                        ]);
+                    }
+                }
+            }
+
+            DelegationMember::where('user_id', $user->id)->update(['photo_path' => $path]);
+        }
+
+        $this->reset('photo');
+        $this->successMessage = app()->getLocale() === 'fr' 
+            ? 'Photo de profil mise à jour avec succès.' 
+            : (app()->getLocale() === 'en' ? 'Profile picture updated successfully.' : 'تم رفع وتحديث الصورة الشخصية بنجاح.');
+    }
+
     public function updateProfile()
     {
         $this->validate([
