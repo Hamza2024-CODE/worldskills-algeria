@@ -152,7 +152,7 @@
                     <td class="text-right bold">{{ $p?->wilaya?->name_ar ?? '—' }}</td>
                     <td class="text-right">{{ $p?->organization?->name_ar ?? '—' }}</td>
                     <td class="text-center bold" style="color: #0066FF;">{{ $r->skill?->code ?? '—' }}</td>
-                    <td class="text-right bold">{{ $r->skill?->getLocalized('name') ?? 'تخصص عام' }}</td>
+                    <td class="text-right bold">{{ $r->specialty_name ?: ($r->skill?->name_ar ?? 'تخصص عام') }}</td>
                     <td class="text-center bold">{{ $r->suit_size ?? '—' }}</td>
                     <td class="text-center bold">{{ $r->shoe_size ?? '—' }}</td>
                     <td class="text-center">{{ $r->height_cm ?? '—' }}</td>

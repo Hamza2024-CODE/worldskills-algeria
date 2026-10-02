@@ -178,7 +178,7 @@
                     <td style="font-weight: 700;">{{ $p?->wilaya?->code ? sprintf('%02d', $p->wilaya->code) . ' - ' : '' }}{{ $p?->wilaya?->name_ar ?? '—' }}</td>
                     <td style="font-size: 9.5px;">{{ $p?->organization?->name_ar ?? '—' }}</td>
                     <td style="font-weight: 700; color: #1e3a8a;">
-                        {{ $r->skill?->code ? '[' . $r->skill->code . '] ' : '' }}{{ $r->skill?->getLocalized('name') ?? 'تخصص عام' }}
+                        {{ $r->specialty_name ?: ($r->skill?->name_ar ?? 'تخصص عام') }}
                     </td>
                     <td style="font-size: 9.5px; text-align: center;">
                         بدلة: <strong>{{ $r->suit_size ?? '—' }}</strong><br>

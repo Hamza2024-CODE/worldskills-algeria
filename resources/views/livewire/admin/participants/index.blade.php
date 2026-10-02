@@ -235,7 +235,7 @@ $t = fn($ar, $fr, $en) => match($locale) { 'fr' => $fr, 'en' => $en, default => 
                             <td class="px-5 py-4">
                                 <div class="space-y-0.5">
                                     <span class="font-black text-slate-900 dark:text-white text-xs block">
-                                        {{ $reg->skill?->getLocalized('name') ?? 'تخصص عام' }}
+                                        {{ $reg->specialty_name ?: ($reg->skill?->name_ar ?? 'تخصص عام') }}
                                     </span>
                                     <span class="font-mono text-[10px] font-black text-purple-600 dark:text-purple-400 block">
                                         {{ $reg->skill?->skill_code }}

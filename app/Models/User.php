@@ -41,7 +41,8 @@ class User extends Authenticatable
             return $participantPhoto;
         }
 
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=06205C&color=fff&bold=true&size=200';
+        $initial = mb_substr(trim($this->name ?: 'U'), 0, 1);
+        return "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' rx='40' fill='%2306205C'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='Arial, sans-serif' font-size='85' font-weight='bold' fill='%23FFFFFF'>{$initial}</text></svg>";
     }
 
     protected $hidden = [
