@@ -100,7 +100,7 @@
     
     <!-- Platform Media & Content Protection System -->
     <x-content-protection />
-</head>
+    <!-- ApexCharts CDN -->\n    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>\n</head>
 <body class="h-full antialiased font-sans flex flex-col">
 
     <!-- Top Navigation Header -->

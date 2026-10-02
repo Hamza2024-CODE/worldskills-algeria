@@ -323,57 +323,177 @@ $femalePercent = 100 - $malePercent;
 {{-- ═════════════════════════════════════════════════════════════════════
      APEXCHARTS INITIALIZATION SCRIPT
 ═════════════════════════════════════════════════════════════════════ --}}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // 1. Roles Donut Chart
-    var roleOptions = {
-        series: @json($roleSeries),
-        labels: @json($roleLabels),
-        chart: { type: 'donut', height: 320, fontFamily: 'inherit' },
-        colors: ['#0066FF', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#6366F1', '#3B82F6'],
-        legend: { position: 'bottom', fontSize: '12px', fontWeight: 700 },
-        dataLabels: { enabled: true },
-        tooltip: { y: { formatter: function(val) { return val + " حساب"; } } }
-    };
-    var roleChart = new ApexCharts(document.querySelector("#rolesDonutChart"), roleOptions);
-    roleChart.render();
+function initSuperAdminCharts() {
+    if (typeof ApexCharts === 'undefined') {
+        setTimeout(initSuperAdminCharts, 120);
+        return;
+    }
 
-    // 2. Status Pie Chart
+    const rolesEl = document.querySelector("#rolesDonutChart");
+    const statusEl = document.querySelector("#statusPieChart");
+    const sectorEl = document.querySelector("#sectorBarChart");
+    const wilayaEl = document.querySelector("#wilayaBarChart");
+
+    if (!statusEl || !rolesEl) return;
+
+    rolesEl.innerHTML = '';
+    statusEl.innerHTML = '';
+    if (sectorEl) sectorEl.innerHTML = '';
+    if (wilayaEl) wilayaEl.innerHTML = '';
+
+    // 1. Roles Donut Chart (توزيع الأدوار)
+    var roleSeries = @json($roleSeries);
+    var roleLabels = @json($roleLabels);
+    if (roleSeries && roleSeries.length > 0) {
+        var roleOptions = {
+            series: roleSeries.map(Number),
+            labels: roleLabels,
+            chart: { type: 'donut', height: 320, fontFamily: 'Cairo, Outfit, sans-serif' },
+            colors: ['#0066FF', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#6366F1', '#3B82F6'],
+            legend: { position: 'bottom', fontSize: '12px', fontWeight: 700 },
+            dataLabels: { enabled: true },
+            tooltip: { y: { formatter: function(val) { return val + " حساب"; } } }
+        };
+        new ApexCharts(rolesEl, roleOptions).render();
+    }
+
+    // 2. Status Donut Chart (النسب المئوية ونسبة القبول)
+    var approved = {{ (int)$approvedRegistrations }};
+    var pending = {{ (int)$pendingRegistrations }};
+    var rejected = {{ (int)$rejectedRegistrations }};
+    var totalRegs = approved + pending + rejected;
+
+    var rawStatus = [
+        { label: 'مقبول ومؤهل رسمياً (Approved)', val: approved, color: '#10B981' },
+        { label: 'قيد الدراسة والانتظار (Pending)', val: pending, color: '#F59E0B' },
+        { label: 'طلب ترشح مرفوض (Rejected)', val: rejected, color: '#EF4444' }
+    ];
+
+    // Filter to active items to prevent zero-slice SVG arc glitches
+    var activeStatus = rawStatus.filter(function(item) { return item.val > 0; });
+    if (activeStatus.length === 0) {
+        activeStatus = [{ label: 'لا توجد بيانات', val: 1, color: '#CBD5E1' }];
+    }
+
+    var statusSeries = activeStatus.map(function(item) { return item.val; });
+    var statusLabels = activeStatus.map(function(item) { return item.label; });
+    var statusColors = activeStatus.map(function(item) { return item.color; });
+
+    var acceptanceRate = totalRegs > 0 ? Math.round((approved / totalRegs) * 100) : 0;
+
     var statusOptions = {
-        series: [@json($approvedRegistrations), @json($pendingRegistrations), @json($rejectedRegistrations)],
-        labels: ['مقبول رسمياً', 'قيد الدراسة والانتظار', 'طلب مرفوض'],
-        chart: { type: 'pie', height: 320, fontFamily: 'inherit' },
-        colors: ['#10B981', '#F59E0B', '#EF4444'],
-        legend: { position: 'bottom', fontSize: '12px', fontWeight: 700 },
-        dataLabels: { enabled: true },
-        tooltip: { y: { formatter: function(val) { return val + " طلب ترشح"; } } }
+        series: statusSeries,
+        labels: statusLabels,
+        colors: statusColors,
+        chart: {
+            type: 'donut',
+            height: 320,
+            fontFamily: 'Cairo, Outfit, sans-serif',
+            animations: { enabled: true, easing: 'easeinout', speed: 800 }
+        },
+        plotOptions: {
+            pie: {
+                donut: {
+                    size: '72%',
+                    labels: {
+                        show: true,
+                        name: {
+                            show: true,
+                            fontSize: '13px',
+                            fontWeight: 700,
+                            color: '#64748B',
+                            offsetY: -6
+                        },
+                        value: {
+                            show: true,
+                            fontSize: '20px',
+                            fontWeight: 900,
+                            color: '#0F172A',
+                            offsetY: 6,
+                            formatter: function (val) {
+                                return val + " مترشح";
+                            }
+                        },
+                        total: {
+                            show: true,
+                            showAlways: true,
+                            label: 'نسبة القبول الكلية',
+                            fontSize: '12px',
+                            fontWeight: 800,
+                            color: '#10B981',
+                            formatter: function (w) {
+                                return acceptanceRate + "% (" + approved + ")";
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        legend: {
+            position: 'bottom',
+            fontSize: '12px',
+            fontWeight: 700,
+            markers: { radius: 12 }
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (val, opts) {
+                return Math.round(val) + "%";
+            },
+            style: {
+                fontSize: '12px',
+                fontWeight: 'bold'
+            },
+            dropShadow: { enabled: false }
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) {
+                    return val + " مترشح";
+                }
+            }
+        }
     };
-    var statusChart = new ApexCharts(document.querySelector("#statusPieChart"), statusOptions);
-    statusChart.render();
+    new ApexCharts(statusEl, statusOptions).render();
 
     // 3. Sector Bar Chart
-    var sectorOptions = {
-        series: [{ name: 'إجمالي المسجلين', data: @json($sectorSeries) }],
-        chart: { type: 'bar', height: 320, fontFamily: 'inherit', toolbar: { show: false } },
-        colors: ['#0066FF'],
-        plotOptions: { bar: { borderRadius: 8, columnWidth: '55%', distributed: true } },
-        xaxis: { categories: @json($sectorLabels), labels: { style: { fontSize: '11px', fontWeight: 700 } } },
-        legend: { show: false },
-        tooltip: { y: { formatter: function(val) { return val + " مسجل"; } } }
-    };
-    var sectorChart = new ApexCharts(document.querySelector("#sectorBarChart"), sectorOptions);
-    sectorChart.render();
+    if (sectorEl) {
+        var sectorSeries = @json($sectorSeries);
+        var sectorLabels = @json($sectorLabels);
+        var sectorOptions = {
+            series: [{ name: 'إجمالي المسجلين', data: sectorSeries.map(Number) }],
+            chart: { type: 'bar', height: 320, fontFamily: 'Cairo, Outfit, sans-serif', toolbar: { show: false } },
+            colors: ['#0066FF'],
+            plotOptions: { bar: { borderRadius: 8, columnWidth: '55%', distributed: true } },
+            xaxis: { categories: sectorLabels, labels: { style: { fontSize: '11px', fontWeight: 700 } } },
+            legend: { show: false },
+            tooltip: { y: { formatter: function(val) { return val + " مسجل"; } } }
+        };
+        new ApexCharts(sectorEl, sectorOptions).render();
+    }
 
     // 4. Wilaya Horizontal Bar Chart
-    var wilayaOptions = {
-        series: [{ name: 'عدد المترشحين', data: @json($wilayaSeries) }],
-        chart: { type: 'bar', height: 320, fontFamily: 'inherit', toolbar: { show: false } },
-        colors: ['#10B981'],
-        plotOptions: { bar: { borderRadius: 6, horizontal: true, barHeight: '60%' } },
-        xaxis: { categories: @json($wilayaLabels), labels: { style: { fontSize: '11px', fontWeight: 700 } } },
-        tooltip: { y: { formatter: function(val) { return val + " مترشح"; } } }
-    };
-    var wilayaChart = new ApexCharts(document.querySelector("#wilayaBarChart"), wilayaOptions);
-    wilayaChart.render();
-});
+    if (wilayaEl) {
+        var wilayaSeries = @json($wilayaSeries);
+        var wilayaLabels = @json($wilayaLabels);
+        var wilayaOptions = {
+            series: [{ name: 'عدد المترشحين', data: wilayaSeries.map(Number) }],
+            chart: { type: 'bar', height: 320, fontFamily: 'Cairo, Outfit, sans-serif', toolbar: { show: false } },
+            colors: ['#10B981'],
+            plotOptions: { bar: { borderRadius: 6, horizontal: true, barHeight: '60%' } },
+            xaxis: { categories: wilayaLabels, labels: { style: { fontSize: '11px', fontWeight: 700 } } },
+            tooltip: { y: { formatter: function(val) { return val + " مترشح"; } } }
+        };
+        new ApexCharts(wilayaEl, wilayaOptions).render();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initSuperAdminCharts);
+document.addEventListener('livewire:navigated', initSuperAdminCharts);
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(initSuperAdminCharts, 100);
+}
 </script>
+

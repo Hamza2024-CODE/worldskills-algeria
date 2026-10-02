@@ -40,7 +40,7 @@ class SuperAdminDashboard extends Component
 
         // ── 2. CANDIDATE APPLICATIONS & REGISTRATIONS (طلبات الترشح والتسجيلات) ──
         $totalRegistrations    = Registration::count();
-        $approvedRegistrations = Registration::where('status', 'APPROVED')->count();
+        $approvedRegistrations = Registration::whereIn('status', ['APPROVED', 'QUALIFIED', 'QUALIFIED_REGIONAL', 'QUALIFIED_NATIONAL', 'COMPLETED'])->count();
         $pendingRegistrations  = Registration::where('status', 'PENDING')->count();
         $rejectedRegistrations = Registration::where('status', 'REJECTED')->count();
 
@@ -60,7 +60,7 @@ class SuperAdminDashboard extends Component
         $topSkills = Skill::with('category')
             ->withCount([
                 'registrations',
-                'registrations as approved_count' => fn($q) => $q->where('status', 'APPROVED')
+                'registrations as approved_count' => fn($q) => $q->whereIn('status', ['APPROVED', 'QUALIFIED', 'QUALIFIED_REGIONAL', 'QUALIFIED_NATIONAL', 'COMPLETED'])
             ])
             ->orderByDesc('registrations_count')
             ->take(6)
@@ -73,7 +73,7 @@ class SuperAdminDashboard extends Component
                 'skill_categories.name_ar',
                 DB::raw('count(distinct skills.id) as skills_count'),
                 DB::raw('count(registrations.id) as total_candidates'),
-                DB::raw('count(case when registrations.status = "APPROVED" then 1 end) as approved_candidates')
+                DB::raw('count(case when registrations.status IN ("APPROVED", "QUALIFIED", "QUALIFIED_REGIONAL", "QUALIFIED_NATIONAL", "COMPLETED") then 1 end) as approved_candidates')
             )
             ->groupBy('skill_categories.id', 'skill_categories.name_ar')
             ->get();
