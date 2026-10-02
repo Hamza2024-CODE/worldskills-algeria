@@ -82,7 +82,40 @@
         
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="flex items-center gap-5">
-                <div class="relative shrink-0">
+                <div class="relative shrink-0" x-data="{
+                    isUploading: false,
+                    compressAndUpload(e) {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        this.isUploading = true;
+                        const reader = new FileReader();
+                        reader.onload = (evt) => {
+                            const img = new Image();
+                            img.onload = () => {
+                                let w = img.width, h = img.height;
+                                const max = 1000;
+                                if (w > max || h > max) {
+                                    if (w > h) { h = Math.round((h * max) / w); w = max; }
+                                    else { w = Math.round((w * max) / h); h = max; }
+                                }
+                                const canvas = document.createElement('canvas');
+                                canvas.width = w; canvas.height = h;
+                                const ctx = canvas.getContext('2d');
+                                ctx.drawImage(img, 0, 0, w, h);
+                                const compressed = canvas.toDataURL('image/jpeg', 0.85);
+                                $wire.uploadPhotoBase64(compressed).then(() => {
+                                    this.isUploading = false;
+                                    e.target.value = '';
+                                }).catch(() => {
+                                    this.isUploading = false;
+                                    e.target.value = '';
+                                });
+                            };
+                            img.src = evt.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }">
                     <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-tr from-amber-400 via-blue-400 to-white p-1 shadow-xl overflow-hidden relative">
                         @if($photoUrl)
                             <img src="{{ $photoUrl }}" alt="{{ $candidateName }}" class="w-full h-full rounded-[14px] object-cover border border-white/20">
@@ -92,10 +125,10 @@
                             </div>
                         @endif
 
-                        {{-- Live Upload Spinner --}}
-                        <div wire:loading wire:target="photo" class="absolute inset-0 bg-slate-950/80 rounded-2xl flex flex-col items-center justify-center text-white text-[10px] font-bold z-20">
-                            <svg class="animate-spin h-4 w-4 text-amber-400 mb-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
-                            <span>جاري الرفع...</span>
+                        {{-- Live Upload Spinner Overlay --}}
+                        <div x-show="isUploading" style="display: none;" class="absolute inset-0 bg-slate-950/85 rounded-2xl flex flex-col items-center justify-center text-white text-[10px] font-bold z-20 backdrop-blur-xs">
+                            <svg class="animate-spin h-5 w-5 text-amber-400 mb-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                            <span>جاري الحفظ...</span>
                         </div>
                     </div>
 
@@ -103,7 +136,7 @@
                     <label for="participant-photo-upload" class="absolute -bottom-1 -left-1 w-7 h-7 rounded-xl bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center shadow-lg border-2 border-[#06205C] cursor-pointer z-10 transition transform hover:scale-110" title="رفع أو تغيير الصورة الشخصية">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     </label>
-                    <input type="file" id="participant-photo-upload" wire:model="photo" accept="image/*" class="hidden">
+                    <input type="file" id="participant-photo-upload" @change="compressAndUpload($event)" accept="image/*" class="hidden">
 
                     @if($isEligibleForBadge)
                         <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-[#06205C] flex items-center justify-center text-[10px] text-white shadow-xs" title="حساب موثق ومقبول"><x-ws.icon name="check" class="w-3.5 h-3.5 text-white" /></span>

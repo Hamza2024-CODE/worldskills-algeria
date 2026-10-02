@@ -200,4 +200,56 @@ class ParticipantDashboard extends Component
     {
         return view('livewire.participant.participant-dashboard');
     }
+
+    public function uploadPhotoBase64(string $base64Data): void
+    {
+        if (!preg_match('/^data:image\/(jpeg|png|webp|jpg);base64,/', $base64Data)) {
+            $this->addError('photo', 'نوع الصورة غير صالح، يرجى اختيار ملف صورة صالح.');
+            return;
+        }
+
+        $user = Auth::user();
+        if (!$user) return;
+
+        $parts = explode(',', $base64Data);
+        $binary = base64_decode($parts[1] ?? '');
+        if (!$binary) {
+            $this->addError('photo', 'تعذر قراءة الصورة.');
+            return;
+        }
+
+        $filename = 'avatars/avatar_' . $user->id . '_' . time() . '.jpg';
+        \Illuminate\Support\Facades\Storage::disk('public')->put($filename, $binary);
+
+        $user->update(['avatar_path' => $filename]);
+
+        if ($this->profile) {
+            if (\Illuminate\Support\Facades\Schema::hasColumn('participant_profiles', 'photo_path')) {
+                $this->profile->update(['photo_path' => $filename]);
+            }
+        }
+
+        if ($this->registration) {
+            $existingPhotoDoc = $this->registration->documents()->whereIn('document_type', ['PHOTO', 'photo', 'official_photo'])->first();
+            if ($existingPhotoDoc) {
+                $existingPhotoDoc->update(['file_path' => $filename]);
+            } else {
+                \App\Models\ParticipantDocument::create([
+                    'registration_id' => $this->registration->id,
+                    'document_type'   => 'PHOTO',
+                    'file_path'       => $filename,
+                    'original_name'   => 'avatar.jpg',
+                    'mime_type'       => 'image/jpeg',
+                    'file_size'       => strlen($binary),
+                ]);
+            }
+            $this->registration->load('documents');
+        }
+
+        $this->resetErrorBag('photo');
+        $this->successMessage = app()->getLocale() === 'fr' 
+            ? 'Photo officielle enregistrée avec succès.' 
+            : (app()->getLocale() === 'en' ? 'Official photo saved successfully.' : 'تم حفظ وتحديث الصورة الشخصية الرسمية للمتسابق بنجاح.');
+    }
+
 }

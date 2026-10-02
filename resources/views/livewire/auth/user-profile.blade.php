@@ -138,15 +138,48 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
 
                 {{-- User Avatar Upload Box --}}
                 <div class="flex flex-col items-center text-center space-y-4 relative z-10">
-                    <div class="relative group">
+                    <div class="relative group" x-data="{
+                        isUploading: false,
+                        compressAndUpload(e) {
+                            const file = e.target.files[0];
+                            if (!file) return;
+                            this.isUploading = true;
+                            const reader = new FileReader();
+                            reader.onload = (evt) => {
+                                const img = new Image();
+                                img.onload = () => {
+                                    let w = img.width, h = img.height;
+                                    const max = 1000;
+                                    if (w > max || h > max) {
+                                        if (w > h) { h = Math.round((h * max) / w); w = max; }
+                                        else { w = Math.round((w * max) / h); h = max; }
+                                    }
+                                    const canvas = document.createElement('canvas');
+                                    canvas.width = w; canvas.height = h;
+                                    const ctx = canvas.getContext('2d');
+                                    ctx.drawImage(img, 0, 0, w, h);
+                                    const compressed = canvas.toDataURL('image/jpeg', 0.85);
+                                    $wire.uploadPhotoBase64(compressed).then(() => {
+                                        this.isUploading = false;
+                                        e.target.value = '';
+                                    }).catch(() => {
+                                        this.isUploading = false;
+                                        e.target.value = '';
+                                    });
+                                };
+                                img.src = evt.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    }">
                         <div class="w-32 h-32 rounded-3xl overflow-hidden ring-4 ring-blue-600/30 dark:ring-sky-400/40 shadow-2xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center relative">
-                            <img src="{{ ($photo ?? null) ? $photo->temporaryUrl() : ($user?->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($user?->name ?? 'U').'&background=06205C&color=fff') }}" 
+                            <img src="{{ $user?->avatar_url }}" 
                                  alt="{{ $user?->name }}" 
                                  class="w-full h-full object-cover">
                             
                             {{-- Live Upload Spinner Overlay --}}
-                            <div wire:loading wire:target="photo" class="absolute inset-0 bg-slate-950/80 rounded-3xl flex flex-col items-center justify-center text-white text-[11px] font-bold gap-1.5 z-20 backdrop-blur-xs">
-                                <svg class="animate-spin h-5 w-5 text-amber-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                            <div x-show="isUploading" style="display: none;" class="absolute inset-0 bg-slate-950/85 rounded-3xl flex flex-col items-center justify-center text-white text-[11px] font-bold gap-1.5 z-20 backdrop-blur-xs">
+                                <svg class="animate-spin h-6 w-6 text-amber-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
                                 <span>{{ $t('جاري الحفظ...', 'Enregistrement...', 'Saving...') }}</span>
                             </div>
                         </div>
@@ -156,7 +189,7 @@ $badgeQrUrl = \App\Services\QrCodeService::generateDataUri($badgeVerifyUrl, 300)
                         <label for="photo-upload-hero" class="absolute -bottom-2 -right-2 bg-gradient-to-r from-[#06205C] to-blue-700 hover:from-blue-700 hover:to-blue-900 text-white p-3 rounded-2xl cursor-pointer shadow-xl transition transform hover:scale-110 border-2 border-white dark:border-slate-800 flex items-center justify-center" title="{{ $t('تغيير الصورة الشخصية', 'Changer la photo', 'Change profile picture') }}">
                             <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         </label>
-                        <input type="file" id="photo-upload-hero" wire:model="photo" accept="image/*" class="hidden">
+                        <input type="file" id="photo-upload-hero" @change="compressAndUpload($event)" accept="image/*" class="hidden">
                     </div>
 
                     <div class="space-y-1.5">
