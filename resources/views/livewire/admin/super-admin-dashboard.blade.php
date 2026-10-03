@@ -505,13 +505,35 @@ function initSuperAdminCharts() {
         var sectorSeries = @json($sectorSeries);
         var sectorLabels = @json($sectorLabels);
         var sectorOptions = {
-            series: [{ name: 'إجمالي المسجلين', data: sectorSeries.map(Number) }],
-            chart: { type: 'bar', height: 320, fontFamily: 'Cairo, Outfit, sans-serif', toolbar: { show: false } },
-            colors: ['#0066FF'],
-            plotOptions: { bar: { borderRadius: 8, columnWidth: '55%', distributed: true } },
-            xaxis: { categories: sectorLabels, labels: { style: { fontSize: '11px', fontWeight: 700 } } },
+            series: [{ name: 'إجمالي المتنافسين', data: sectorSeries.map(Number) }],
+            chart: { type: 'bar', height: 340, fontFamily: 'Cairo, Outfit, sans-serif', toolbar: { show: false } },
+            colors: ['#2563EB', '#0D9488', '#F59E0B', '#8B5CF6', '#EC4899', '#10B981'],
+            plotOptions: { 
+                bar: { 
+                    borderRadius: 8, 
+                    columnWidth: '55%', 
+                    distributed: true,
+                    dataLabels: { position: 'top' }
+                } 
+            },
+            dataLabels: {
+                enabled: true,
+                offsetY: -20,
+                style: { fontSize: '12px', fontWeight: 800, colors: ['#0f172a'] }
+            },
+            xaxis: { 
+                categories: sectorLabels, 
+                labels: { 
+                    rotate: -30,
+                    trim: false,
+                    style: { fontSize: '11px', fontWeight: 700 } 
+                } 
+            },
+            yaxis: {
+                labels: { style: { fontSize: '11px', fontWeight: 600 } }
+            },
             legend: { show: false },
-            tooltip: { y: { formatter: function(val) { return val + " مسجل"; } } }
+            tooltip: { y: { formatter: function(val) { return val + " متنافس مؤهل"; } } }
         };
         new ApexCharts(sectorEl, sectorOptions).render();
     }
